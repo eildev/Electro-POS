@@ -9,7 +9,7 @@
                         <h6 class="card-title">POS Sale</h6>
                     </div> --}}
                     <div class="row">
-                        <div class="mb-2 col-md-6">
+                        {{-- <div class="mb-2 col-md-6">
                             <label for="ageSelect" class="form-label">Barcode</label>
 
                             <div class="input-group">
@@ -17,7 +17,7 @@
                                 <input type="text" class="form-control barcode_input" placeholder="Barcode"
                                     aria-label="Input group example" aria-describedby="btnGroupAddon">
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="mb-2 col-md-6">
                             <label for="date" class="form-label">Date</label>
@@ -80,7 +80,21 @@
                     <div class="mb-3">
                         <h6 class="card-title">Items</h6>
                     </div>
+<style>
+    /* .table > :not(caption) > * > * {
+    padding: 0px;
+    font-size: 10px;
+    }
+    .form-control, .typeahead.tt-input, .typeahead.tt-hint, .select2-container--default .select2-search--dropdown .select2-search__field {
 
+    width: 100%;
+    padding: 0.469rem 0.8rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1;
+
+} */
+</style>
                     <div id="" class="table-responsive">
                         <table class="table">
                             <thead>
@@ -89,6 +103,8 @@
                                     <th>Price</th>
                                     <th>Qty</th>
                                     <th>Discount</th>
+                                    <th>Warranty <br> Status</th>
+                                    <th class="Warranty_duration" style="display: none">Warranty</th>
                                     <th>Sub Total</th>
                                     <th>
                                         <i class="fa-solid fa-trash-can"></i>
@@ -140,7 +156,7 @@
                                 value="0.00" />
                         </div>
                     </div>
-                    <div class="row align-items-center mb-2">
+                    {{-- <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
                             <label for="name" class="form-label">Tax:</label>
                         </div>
@@ -162,11 +178,10 @@
                                 @endif
                             </select>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
-                            <label for="name" class="form-label">Pay Amount <span
-                                    class="text-danger">*</span>:</label>
+                            <label for="name" class="form-label">Pay Amount <span class="text-danger">*</span>:</label>
                         </div>
                         <div class="col-sm-8">
                             <input class="form-control total_payable" name="total_payable" type="number" value=""
@@ -310,6 +325,15 @@
             }
         }
 
+
+            $(document).on('click', '#warranty_status', function() {
+                if ($(this).is(':checked')) {
+                    $('.Warranty_duration').show(); // Show the select option if the checkbox is checked
+                } else {
+                    $('.Warranty_duration').hide(); // Hide the select option if the checkbox is unchecked
+                }
+            });
+
         $(document).ready(function() {
             $('.barcode_input').focus();
             // var currentDate = new Date().toISOString().split('T')[0];
@@ -432,9 +456,11 @@
                     <input type="hidden" class="product_id" name="product_id[]" readonly value="${product.id ?? 0}" />
                     <input type="number" class="form-control product_price${product.id} border-0 "  name="unit_price[]" readonly value="${product.price ?? 0}" />
                 </td>
+
                 <td>
                     <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" value="1" />
                 </td>
+
                 <td style="padding-top: 20px;">
 
                     ${promotion && promotion.discount_type ?
@@ -443,6 +469,32 @@
                             `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk` :
                         (promotion ? `<span class="mt-2">00</span>` : `<span class="mt-2">00</span>`)
                     }
+                </td>
+                <td>
+                    <div class="form-check form-switch mb-2">
+                        <input type="checkbox" class="form-check-input" id="warranty_status">
+                    </div>
+
+                </td>
+                <td class="Warranty_duration" style="display: none;">
+
+                    <!-- <label for="" class="form-label">warranty Period</label> -->
+                    <select class=" form-select" id="" data-width="100%"
+                        onclick="errorRemove(this)";>
+
+                            <option selected disabled>Select Warranty</option>
+                                <option value="6 Month">6 Month</option>
+                                <option value="1 Year">1 Year</option>
+                                <option value="2 Year">2 Year</option>
+                                <option value="3 Year">3 Year</option>
+                                <option value="4 Year">4 Year</option>
+                                <option value="5 Year">5 Year</option>
+
+                            <option selected disabled>No Warranty</option>
+
+                    </select>
+                    <span class="text-danger product_select_error"></span>
+
                 </td>
                 <td>
                     ${
@@ -455,6 +507,8 @@
                             `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price}" />`
                     }
                 </td>
+
+
                 <td style="padding-top: 20px;">
                     <a href="#" class="btn btn-sm btn-danger btn-icon purchase_delete" style="font-size: 8px; height: 25px; width: 25px;" data-id=${product.id}>
                         <i class="fa-solid fa-trash-can" style="font-size: 0.8rem; margin-top: 2px;"></i>
@@ -464,6 +518,9 @@
                     );
                 }
             }
+
+
+
 
 
             // Function to calculate the subtotal for each product
@@ -588,26 +645,26 @@
 
 
             // Product add with barcode
-            $('.barcode_input').change(function() {
-                let barcode = $(this).val();
-                $.ajax({
-                    url: '/product/barcode/find/' + barcode,
-                    type: 'GET',
-                    dataType: 'JSON',
-                    success: function(res) {
-                        if (res.status == 200) {
-                            const product = res.data;
-                            const promotion = res.promotion;
-                            showAddProduct(product, promotion);
-                            updateGrandTotal();
-                            $('.barcode_input').val('');
-                        } else {
-                            toastr.warning(res.error);
-                            $('.barcode_input').val('');
-                        }
-                    }
-                });
-            });
+            // $('.barcode_input').change(function() {
+            //     let barcode = $(this).val();
+            //     $.ajax({
+            //         url: '/product/barcode/find/' + barcode,
+            //         type: 'GET',
+            //         dataType: 'JSON',
+            //         success: function(res) {
+            //             if (res.status == 200) {
+            //                 const product = res.data;
+            //                 const promotion = res.promotion;
+            //                 showAddProduct(product, promotion);
+            //                 updateGrandTotal();
+            //                 $('.barcode_input').val('');
+            //             } else {
+            //                 toastr.warning(res.error);
+            //                 $('.barcode_input').val('');
+            //             }
+            //         }
+            //     });
+            // });
 
             // Select product
             $('.product_select').change(function() {

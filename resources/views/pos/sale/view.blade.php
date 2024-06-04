@@ -115,14 +115,12 @@
                                     <th class="id">#</th>
                                     <th>Invoice <br>Number</th>
                                     <th>Customer</th>
-                                    <th>Items</th>
                                     <th>Date</th>
                                     <th>Discount</th>
                                     <th>Receivable</th>
                                     <th>Paid</th>
                                     <th>Product <br> Returned</th>
-                                    <th>Due/Return</th>
-                                    <th>Purchase <br> Cost</th>
+                                    <th>Due</th>
                                     <th>Profit</th>
                                     <th>Status</th>
                                     <th class="id">Action</th>

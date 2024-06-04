@@ -58,11 +58,11 @@
                     </div>
                     <div class="container-fluid mt-5 d-flex justify-content-center w-100">
                         <div class="table-responsive w-100">
-                            <table class="table table-bordered">
+                            <table id="example" class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Description</th>
+                                        <th>Product Name</th>
                                         <th class="text-end">Unit cost</th>
                                         <th class="text-end">Quantity</th>
                                         <th class="text-end">Discount</th>
