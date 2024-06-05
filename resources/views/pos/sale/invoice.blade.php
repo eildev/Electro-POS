@@ -65,6 +65,7 @@
                                         <th>Product Name</th>
                                         <th class="text-end">Unit cost</th>
                                         <th class="text-end">Quantity</th>
+                                        <th class="text-end">Warranty</th>
                                         <th class="text-end">Discount</th>
                                         <th class="text-end">Total</th>
                                     </tr>
@@ -77,38 +78,14 @@
                                                 <td class="text-start">{{ $product->product->name }}</td>
                                                 <td>{{ $product->rate ?? 0 }}</td>
                                                 <td>{{ $product->qty ?? 0 }}</td>
+                                                <td>{{ $product->wa_duration ?? 0 }}</td>
                                                 <td>{{ $product->discount ?? 0 }}</td>
                                                 <td>{{ $product->sub_total ?? 0 }}</td>
                                             </tr>
                                         @endforeach
                                     @else
                                         <tr class="text-end">
-                                            <td class="text-start">1</td>
-                                            <td class="text-start">PSD to html conversion</td>
-                                            <td>02</td>
-                                            <td>$55</td>
-                                            <td>$110</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">2</td>
-                                            <td class="text-start">Package design</td>
-                                            <td>08</td>
-                                            <td>$34</td>
-                                            <td>$272</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">3</td>
-                                            <td class="text-start">Html template development</td>
-                                            <td>03</td>
-                                            <td>$500</td>
-                                            <td>$1500</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">4</td>
-                                            <td class="text-start">Redesign</td>
-                                            <td>01</td>
-                                            <td>$30</td>
-                                            <td>$30</td>
+                                            <td>Data Not Found</td>
                                         </tr>
                                     @endif
                                 </tbody>
