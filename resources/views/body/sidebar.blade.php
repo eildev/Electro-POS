@@ -136,7 +136,12 @@
                                         Size</a>
                                 </li>
                             @endif
-
+                            @if (Auth::user()->can('tax.menu'))
+                                <li class="nav-item">
+                                    <a href="{{ route('product.tax.add') }}"
+                                        class="nav-link {{ request()->routeIs('product.tax.add') ? 'nav_active' : '' }}">Tax</a>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </li>
@@ -204,6 +209,13 @@
                     </a>
                 </li>
             @endif
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}"
+                    href="{{ route('return.products.list') }}" role="button" aria-controls="general-pages">
+                    <i class="ms-2 ms-2 link-icon" data-feather="book"></i>
+                    <span class="link-title">Return List</span>
+                </a>
+            </li>
             @if (Auth::user()->can('bank.menu'))
                 <li class="nav-item">
                     <a href="{{ route('bank') }}"

@@ -76,7 +76,7 @@ class SaleController extends Controller
 
         if ($validator->passes()) {
 
-            // product Cost
+            // product Cost 
             $productCost = 0;
             $productAll = $request->products;
             foreach ($productAll as $product) {
@@ -84,7 +84,7 @@ class SaleController extends Controller
                 $productCost += $items->cost;
             }
 
-            // Sale Table CRUD
+            // Sale Table CRUD 
             $sale = new Sale;
             $sale->branch_id = Auth::user()->branch_id;
             $sale->customer_id = $request->customer_id;
@@ -117,7 +117,7 @@ class SaleController extends Controller
 
             $saleId = $sale->id;
 
-            // products table CRUD
+            // products table CRUD 
             $products = $request->products;
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
@@ -126,9 +126,7 @@ class SaleController extends Controller
                 $items->product_id = $product['product_id']; // Access 'product_id' as an array key
                 $items->rate = $product['unit_price']; // Access 'unit_price' as an array key
                 $items->qty = $product['quantity'];
-                $items->wa_status = $product['wa_status'];
-                $items->wa_duration = $product['wa_duration'];
-                $items->discount = $product['product_discount'];
+                $items->discount = $product['discount'];
                 $items->sub_total = $product['total_price'];
                 $items->total_purchase_cost = $items2->cost * $product['quantity'];
                 $items->save();
@@ -139,14 +137,14 @@ class SaleController extends Controller
                 $items2->save();
             }
 
-            // customer table CRUD
+            // customer table CRUD 
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->change_amount;
             $customer->total_payable = $customer->total_payable + $request->paid;
             $customer->wallet_balance = $customer->wallet_balance + ($request->change_amount - $request->paid);
             $customer->save();
 
-            // actual Payment
+            // actual Payment 
             $actualPayment = new ActualPayment;
             $actualPayment->branch_id =  Auth::user()->branch_id;
             $actualPayment->payment_type =  'receive';
@@ -156,7 +154,7 @@ class SaleController extends Controller
             $actualPayment->date = $request->sale_date;
             $actualPayment->save();
 
-            // accountTransaction table
+            // accountTransaction table 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
             $accountTransaction->purpose =  'Withdraw';
@@ -250,7 +248,7 @@ class SaleController extends Controller
 
         if ($validator->passes()) {
 
-            // product Cost
+            // product Cost 
             $productCost = 0;
             $productAll = $request->products;
             foreach ($productAll as $product) {
@@ -258,7 +256,7 @@ class SaleController extends Controller
                 $productCost += $items->cost;
             }
 
-            // Sale Table CRUD
+            // Sale Table CRUD 
             $sale = Sale::findOrFail($id);
             $sale->branch_id = Auth::user()->branch_id;
             $sale->customer_id = $request->customer_id;
@@ -291,7 +289,7 @@ class SaleController extends Controller
 
             // $saleId = $sale->id;
 
-            // products table CRUD
+            // products table CRUD 
             $products = $request->products;
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
@@ -311,14 +309,14 @@ class SaleController extends Controller
                 $items2->save();
             }
 
-            // customer table CRUD
+            // customer table CRUD 
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->change_amount;
             $customer->total_payable = $customer->total_payable + $request->paid;
             $customer->wallet_balance = $customer->wallet_balance + ($request->change_amount - $request->paid);
             $customer->save();
 
-            // actual Payment
+            // actual Payment 
             $actualPayment = new ActualPayment;
             $actualPayment->branch_id =  Auth::user()->branch_id;
             $actualPayment->payment_type =  'receive';
@@ -328,7 +326,7 @@ class SaleController extends Controller
             $actualPayment->date = $request->sale_date;
             $actualPayment->save();
 
-            // accountTransaction table
+            // accountTransaction table 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
             $accountTransaction->purpose =  'Withdraw';
@@ -443,7 +441,7 @@ class SaleController extends Controller
             $customer->wallet_balance = $customer->wallet_balance - $request->amount;
             $customer->save();
 
-            // accountTransaction table
+            // accountTransaction table 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
             $accountTransaction->purpose =  'Withdraw';

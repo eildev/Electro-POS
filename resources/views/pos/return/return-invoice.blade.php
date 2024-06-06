@@ -1,11 +1,11 @@
 @extends('master')
 @section('admin')
     @php
-        $branch = App\Models\Branch::findOrFail($sale->branch_id);
-        $customer = App\Models\Customer::findOrFail($sale->customer_id);
-        $products = App\Models\SaleItem::where('sale_id', $sale->id)->get();
+        // $branch = App\Models\Branch::findOrFail($sale->branch_id);
+        // $customer = App\Models\Customer::findOrFail($sale->customer_id);
+        // $products = App\Models\SaleItem::where('sale_id', $sale->id)->get();
     @endphp
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-12">
             <div class="card border-0 shadow-none">
                 <div class="card-body ">
@@ -32,14 +32,7 @@
                             <p class="show_branch_address">{{ $address ?? 'Banasree' }}</p>
                             <p class="show_branch_address">{{ $email ?? '' }}</p>
                             <p class="show_branch_address">{{ $phone ?? '' }}</p>
-                            {{-- <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
-                            <p class="mt-1 mb-1 show_branch_name"><b>{{ $branch->name ?? '' }}</b></p>
-                            <p class="show_branch_address">{{ $branch->address ?? 'accordion ' }}</p>
-                            <p class="show_branch_email">{{ $branch->email ?? '' }}</p>
-                            <p class="show_branch_phone">{{ $branch->phone ?? '' }}</p> --}}
-
                             <hr>
-
 
                             <p class="mt-3 mb-1 show_supplier_name"><b>{{ $customer->name ?? '' }}</b></p>
                             <p class="show_supplier_address">{{ $customer->address ?? '' }}</p>
@@ -205,7 +198,7 @@
                         class="me-2 icon-md"></i>Sale</a>
             </div>
         </div>
-    </div>
+    </div> --}}
     <style>
         @media print {
 

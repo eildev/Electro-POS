@@ -114,7 +114,6 @@ $mode = App\models\PosSetting::all()->first();
                             </label>
                             <select name="invoice_type" class="form-control">
                                 <option value="a4" {{ !empty($allData->id) && $allData->invoice_type == 'a4' ?  'selected' : '' }}>A4</option>
-                                <option value="a5" {{ !empty($allData->id) && $allData->invoice_type == 'a5' ?  'selected' : '' }}>A5</option>
                                 {{-- <option value="a4-2" selected="">A4 - 2</option> --}}
                                 {{-- <option value="a4-3">A4 - 3</option> --}}
                                 <option value="pos" {{ !empty($allData->id) && $allData->invoice_type == 'pos' ?  'selected' : '' }}>Pos Printer</option>
@@ -133,8 +132,6 @@ $mode = App\models\PosSetting::all()->first();
                             <label for="barcode"  style="padding-right: 10px;padding-left: 5px">Single</label>
                             <input type="radio" class="form-check-input" id="barcode1" name="barcode_type" value="a4" {{ !empty($allData->id) && $allData->barcode_type == 'a4' ?  'checked' : '' }}>
                             <label for="barcode1" style="padding-right: 10px;padding-left: 5px">A4</label>
-                            <input type="radio" class="form-check-input" id="barcode2" name="barcode_type" value="a5" {{ !empty($allData->id) && $allData->barcode_type == 'a5' ?  'checked' : '' }}>
-                            <label for="barcode2" style="padding-right: 10px;padding-left: 5px">A5</label>
 
                         </div>
                     </div>
@@ -183,7 +180,7 @@ $mode = App\models\PosSetting::all()->first();
             },
             messages :{
                 company: {
-                    required : 'Company Name Required',
+                    required : 'Compsny Name Required',
                 },
                 invoice_type: {
                     required : 'Select invoice type',
