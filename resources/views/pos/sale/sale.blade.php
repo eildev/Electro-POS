@@ -9,15 +9,18 @@
                         <h6 class="card-title">POS Sale</h6>
                     </div> --}}
                     <div class="row">
-                        <div class="mb-2 col-md-6">
-                            <label for="ageSelect" class="form-label">Barcode</label>
+                        @if ($barcode == 1)
+                            <div class="mb-2 col-md-6">
+                                <label for="ageSelect" class="form-label">Barcode</label>
 
-                            <div class="input-group">
-                                <div class="input-group-text" id="btnGroupAddon"><i class="fa-solid fa-barcode"></i></div>
-                                <input type="text" class="form-control barcode_input" placeholder="Barcode"
-                                    aria-label="Input group example" aria-describedby="btnGroupAddon">
+                                <div class="input-group">
+                                    <div class="input-group-text" id="btnGroupAddon"><i class="fa-solid fa-barcode"></i>
+                                    </div>
+                                    <input type="text" class="form-control barcode_input" placeholder="Barcode"
+                                        aria-label="Input group example" aria-describedby="btnGroupAddon">
+                                </div>
                             </div>
-                        </div>
+                        @endif
 
                         <div class="mb-2 col-md-6">
                             <label for="date" class="form-label">Date</label>
@@ -935,128 +938,131 @@
             })
 
 
-            function saveInvoice(){
+            function saveInvoice() {
                 let customer_id = $('.select-customer').val();
-                        let sale_date = $('.purchase_date').val();
-                        let formattedSaleDate = moment(sale_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
-                        let quantity = totalQuantity;
-                        let total_amount = parseFloat($('.total').val());
-                        let discount = $('.discount_field').val();
-                        let total = parseFloat($('.grand_total').val());
-                        let tax = $('.tax').val();
-                        let change_amount = parseFloat($('.grandTotal').val());
-                        let actual_discount = change_amount - total;
-                        let paid = $('.total_payable').val();
-                        let due = $('.total_due').val();
-                        let note = $('.note').val();
-                        let payment_method = $('.payment_method').val();
-                        // let product_id = $('.product_id').val();
-                        // console.log(total_quantity);
+                let sale_date = $('.purchase_date').val();
+                let formattedSaleDate = moment(sale_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
+                let quantity = totalQuantity;
+                let total_amount = parseFloat($('.total').val());
+                let discount = $('.discount_field').val();
+                let total = parseFloat($('.grand_total').val());
+                let tax = $('.tax').val();
+                let change_amount = parseFloat($('.grandTotal').val());
+                let actual_discount = change_amount - total;
+                let paid = $('.total_payable').val();
+                let due = $('.total_due').val();
+                let note = $('.note').val();
+                let payment_method = $('.payment_method').val();
+                // let product_id = $('.product_id').val();
+                // console.log(total_quantity);
 
-                        let products = [];
+                let products = [];
 
-                        $('tr[class^="data_row"]').each(function() {
-                            let row = $(this);
-                            // Get values from the current row's elements
-                            let product_id = row.find('.product_id').val();
-                            let quantity = row.find('input[name="quantity[]"]').val();
-                            let unit_price = row.find('input[name="unit_price[]"]').val();
-                            let wa_status = row.find(`.warranty_status${product_id}`).is(':checked') ? 1 : 0;
-                            let wa_duration = row.find(`.wa_duration${product_id}`).val();
-                            let discount_amount = row.find(`.discount_amount${product_id}`).text().replace('Tk', '') || 0;
-                            let discount_percentage = row.find(`.discount_percentage${product_id}`).text().replace('%', '') || 0;
+                $('tr[class^="data_row"]').each(function() {
+                    let row = $(this);
+                    // Get values from the current row's elements
+                    let product_id = row.find('.product_id').val();
+                    let quantity = row.find('input[name="quantity[]"]').val();
+                    let unit_price = row.find('input[name="unit_price[]"]').val();
+                    let wa_status = row.find(`.warranty_status${product_id}`).is(':checked') ? 1 : 0;
+                    let wa_duration = row.find(`.wa_duration${product_id}`).val();
+                    let discount_amount = row.find(`.discount_amount${product_id}`).text().replace('Tk',
+                        '') || 0;
+                    let discount_percentage = row.find(`.discount_percentage${product_id}`).text().replace(
+                        '%', '') || 0;
 
-                            let total_price = row.find('input[name="total_price[]"]').val();
-                            // console.log(discount_amount);
-                            // console.log(discount_percentage);
+                    let total_price = row.find('input[name="total_price[]"]').val();
+                    // console.log(discount_amount);
+                    // console.log(discount_percentage);
 
-                            let product_discount = discount_amount || discount_percentage ? (discount_amount ? discount_amount : discount_percentage): 0;
-                            let product = {
-                                product_id,
-                                quantity,
-                                unit_price,
-                                wa_status,
-                                wa_duration,
-                                product_discount,
-                                total_price
+                    let product_discount = discount_amount || discount_percentage ? (discount_amount ?
+                        discount_amount : discount_percentage) : 0;
+                    let product = {
+                        product_id,
+                        quantity,
+                        unit_price,
+                        wa_status,
+                        wa_duration,
+                        product_discount,
+                        total_price
+                    };
+
+                    // Push the object into the products array
+                    products.push(product);
+                });
+
+                let allData = {
+                    // for purchase table
+                    customer_id,
+                    sale_date: formattedSaleDate,
+                    quantity,
+                    total_amount,
+                    discount,
+                    actual_discount,
+                    total,
+                    change_amount,
+                    tax,
+                    paid,
+                    due,
+                    note,
+                    payment_method,
+                    products
+                }
+
+                // console.log(allData);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    url: '/sale/store',
+                    type: 'POST',
+                    data: allData,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            // console.log(res.data);
+                            // $('#paymentModal').modal('hide');
+                            // $('.supplierForm')[0].reset();
+                            // supplierView();
+                            toastr.success(res.message);
+                            let id = res.saleId;
+                            // console.log(id)
+
+                            // window.location.href = '/sale/invoice/' + id;
+                            var printFrame = $('#printFrame')[0];
+                            var printContentUrl = '/sale/print/' +
+                                id; // Specify the URL of the content to be printed
+                            // console.log('{{ route('sale.invoice', 102049) }}');
+                            $('#printFrame').attr('src', printContentUrl);
+
+                            printFrame.onload = function() {
+                                printFrame.contentWindow.focus();
+                                printFrame.contentWindow.print();
+                                // Redirect after printing
+                                printFrame.contentWindow.onafterprint = function() {
+                                    window.location.href = "/sale";
+                                };
                             };
 
-                            // Push the object into the products array
-                            products.push(product);
-                        });
-
-                        let allData = {
-                            // for purchase table
-                            customer_id,
-                            sale_date: formattedSaleDate,
-                            quantity,
-                            total_amount,
-                            discount,
-                            actual_discount,
-                            total,
-                            change_amount,
-                            tax,
-                            paid,
-                            due,
-                            note,
-                            payment_method,
-                            products
+                        } else {
+                            // console.log(res);
+                            if (res.error.customer_id) {
+                                showError('.select-customer', res.error.customer_id);
+                            }
+                            if (res.error.sale_date) {
+                                showError('.purchase_date', res.error.sale_date);
+                            }
+                            if (res.error.payment_method) {
+                                showError('.payment_method', res.error.payment_method);
+                            }
+                            if (res.error.paid) {
+                                showError('.total_payable', res.error.paid);
+                            }
                         }
-
-                        // console.log(allData);
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-
-                        $.ajax({
-                            url: '/sale/store',
-                            type: 'POST',
-                            data: allData,
-                            success: function(res) {
-                                if (res.status == 200) {
-                                    // console.log(res.data);
-                                    // $('#paymentModal').modal('hide');
-                                    // $('.supplierForm')[0].reset();
-                                    // supplierView();
-                                    toastr.success(res.message);
-                                    let id = res.saleId;
-                                    // console.log(id)
-
-                                    // window.location.href = '/sale/invoice/' + id;
-                                    var printFrame = $('#printFrame')[0];
-                                    var printContentUrl = '/sale/print/' +
-                                        id; // Specify the URL of the content to be printed
-                                    // console.log('{{ route('sale.invoice', 102049) }}');
-                                    $('#printFrame').attr('src', printContentUrl);
-
-                                    printFrame.onload = function() {
-                                        printFrame.contentWindow.focus();
-                                        printFrame.contentWindow.print();
-                                        // Redirect after printing
-                                        printFrame.contentWindow.onafterprint = function() {
-                                            window.location.href = "/sale";
-                                        };
-                                    };
-
-                                } else {
-                                    // console.log(res);
-                                    if (res.error.customer_id) {
-                                        showError('.select-customer', res.error.customer_id);
-                                    }
-                                    if (res.error.sale_date) {
-                                        showError('.purchase_date', res.error.sale_date);
-                                    }
-                                    if (res.error.payment_method) {
-                                        showError('.payment_method', res.error.payment_method);
-                                    }
-                                    if(res.error.paid){
-                                        showError('.total_payable', res.error.paid);
-                                    }
-                                }
-                            }
-                        });
+                    }
+                });
             }
 
             const total_payable = document.querySelector('.total_payable');
