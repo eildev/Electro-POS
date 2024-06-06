@@ -57,67 +57,49 @@
                         </div>
                     </div>
                     <div class="container-fluid mt-5 d-flex justify-content-center w-100">
-                        <div class="table-responsive w-100">
+                        <div class=" w-100">
+                            {{-- @dd($products); --}}
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Description</th>
+                                        <th>Product Name</th>
                                         <th class="text-end">Unit cost</th>
                                         <th class="text-end">Quantity</th>
+                                        <th class="text-end">Warranty</th>
                                         <th class="text-end">Discount</th>
                                         <th class="text-end">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if ($products->count() > 0)
+
                                         @foreach ($products as $index => $product)
+
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
                                                 <td class="text-start">{{ $product->product->name }}</td>
                                                 <td>{{ $product->rate ?? 0 }}</td>
                                                 <td>{{ $product->qty ?? 0 }}</td>
+                                                <td>{{ $product->wa_duration ?? 0 }}</td>
                                                 <td>{{ $product->discount ?? 0 }}</td>
                                                 <td>{{ $product->sub_total ?? 0 }}</td>
                                             </tr>
                                         @endforeach
                                     @else
-                                        <tr class="text-end">
-                                            <td class="text-start">1</td>
-                                            <td class="text-start">PSD to html conversion</td>
-                                            <td>02</td>
-                                            <td>$55</td>
-                                            <td>$110</td>
+                                        <tr class="text-center">
+                                            <td>Data Not Found</td>
+
                                         </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">2</td>
-                                            <td class="text-start">Package design</td>
-                                            <td>08</td>
-                                            <td>$34</td>
-                                            <td>$272</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">3</td>
-                                            <td class="text-start">Html template development</td>
-                                            <td>03</td>
-                                            <td>$500</td>
-                                            <td>$1500</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">4</td>
-                                            <td class="text-start">Redesign</td>
-                                            <td>01</td>
-                                            <td>$30</td>
-                                            <td>$30</td>
-                                        </tr>
+
                                     @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="container-fluid mt-5 w-100">
+                    <div class="container-fluid mt-5 ">
                         <div class="row">
-                            <div class="col-md-6 ms-auto">
+                            <div class="col-md-6 ms-auto total_calculation">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <tbody>
@@ -221,6 +203,24 @@
 
             .btn_group {
                 display: none !important;
+            }
+            .total_calculation{
+                float: right !important;
+                /* margin-right: -40px; */
+                width: 40%;
+            }
+            .card-body {
+                padding: 0px !important;
+                margin-left: 0px !important;
+            }
+            .card{
+                /* padding: 0px !important; */
+                /* margin: 0px !important; */
+            }
+            .main-wrapper .page-wrapper .page-content {
+            margin-left: -10px !important;
+            padding: 0px;
+
             }
         }
     </style>
