@@ -88,6 +88,7 @@
                                     <th>Product</th>
                                     <th>Price</th>
                                     <th>Qty</th>
+                                    <th>Warranty</th>
                                     <th>Discount</th>
                                     <th>Sub Total</th>
                                     <th>
@@ -310,6 +311,16 @@
             }
         }
 
+        // define warranty period
+        $(document).on('click', '#warranty_status', function() {
+            if ($(this).is(':checked')) {
+                $(this).closest('div').next('.Warranty_duration').show();
+            } else {
+                $(this).closest('div').next('.Warranty_duration').hide();
+            }
+        });
+
+        // Barcode Related
         $(document).ready(function() {
             $('.barcode_input').focus();
             // var currentDate = new Date().toISOString().split('T')[0];
@@ -435,6 +446,32 @@
                 <td>
                     <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" value="1" />
                 </td>
+                <td>
+                        <div class="form-check form-switch mb-2">
+                            <input type="checkbox" class="form-check-input warranty_status${product.id}" id="warranty_status">
+                        </div>
+
+                        <div class="Warranty_duration" style="display: none;">
+
+                            <!-- <label for="" class="form-label">warranty Period</label> -->
+                            <select class=" form-select wa_duration${product.id}" id="" data-width="100%"
+                                onclick="errorRemove(this)";>
+
+                                    <option selected disabled>Select Warranty</option>
+                                        <option value="6 Month">6 Month</option>
+                                        <option value="1 Year">1 Year</option>
+                                        <option value="2 Year">2 Year</option>
+                                        <option value="3 Year">3 Year</option>
+                                        <option value="4 Year">4 Year</option>
+                                        <option value="5 Year">5 Year</option>
+
+                                    <option selected disabled>No Warranty</option>
+
+                            </select>
+                            <span class="text-danger product_select_error"></span>
+
+                        </div>
+                    </td>
                 <td style="padding-top: 20px;">
 
                     ${promotion && promotion.discount_type ?
@@ -897,12 +934,9 @@
                 // $('.total_payable').val(taxTotal);
             })
 
-            const total_payable = document.querySelector('.total_payable');
-            total_payable.addEventListener('keydown',
-                function(e) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        let customer_id = $('.select-customer').val();
+
+            function saveInvoice(){
+                let customer_id = $('.select-customer').val();
                         let sale_date = $('.purchase_date').val();
                         let formattedSaleDate = moment(sale_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
                         let quantity = totalQuantity;
@@ -927,18 +961,23 @@
                             let product_id = row.find('.product_id').val();
                             let quantity = row.find('input[name="quantity[]"]').val();
                             let unit_price = row.find('input[name="unit_price[]"]').val();
-                            let discount_amount = row.find(`span[class='discount_amount${product_id}']`)
-                                .text() || 0;
-                            let discount_percentage = (row.find(
-                                `span[class='discount_percentage${product_id}']`).text()) || 0;
-                            let total_price = row.find('input[name="total_price[]"]').val();
+                            let wa_status = row.find(`.warranty_status${product_id}`).is(':checked') ? 1 : 0;
+                            let wa_duration = row.find(`.wa_duration${product_id}`).val();
+                            let discount_amount = row.find(`.discount_amount${product_id}`).text().replace('Tk', '') || 0;
+                            let discount_percentage = row.find(`.discount_percentage${product_id}`).text().replace('%', '') || 0;
 
-                            // Create an object with the gathered data
+                            let total_price = row.find('input[name="total_price[]"]').val();
+                            // console.log(discount_amount);
+                            // console.log(discount_percentage);
+
+                            let product_discount = discount_amount || discount_percentage ? (discount_amount ? discount_amount : discount_percentage): 0;
                             let product = {
                                 product_id,
                                 quantity,
                                 unit_price,
-                                discount: discount_amount == 0 ? discount_percentage : 0,
+                                wa_status,
+                                wa_duration,
+                                product_discount,
                                 total_price
                             };
 
@@ -1002,6 +1041,7 @@
                                     };
 
                                 } else {
+                                    // console.log(res);
                                     if (res.error.customer_id) {
                                         showError('.select-customer', res.error.customer_id);
                                     }
@@ -1011,131 +1051,27 @@
                                     if (res.error.payment_method) {
                                         showError('.payment_method', res.error.payment_method);
                                     }
+                                    if(res.error.paid){
+                                        showError('.total_payable', res.error.paid);
+                                    }
                                 }
                             }
                         });
+            }
+
+            const total_payable = document.querySelector('.total_payable');
+            total_payable.addEventListener('keydown',
+                function(e) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        saveInvoice();
                     }
                 })
             // order btn
             $('.payment_btn').click(function(e) {
                 e.preventDefault();
                 // alert('ok');
-                let customer_id = $('.select-customer').val();
-                let sale_date = $('.purchase_date').val();
-                let formattedSaleDate = moment(sale_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
-                let quantity = totalQuantity;
-                let total_amount = parseFloat($('.total').val());
-                let discount = $('.discount_field').val();
-                let total = parseFloat($('.grand_total').val());
-                let tax = $('.tax').val();
-                let change_amount = parseFloat($('.grandTotal').val());
-                let actual_discount = change_amount - total;
-                let paid = $('.total_payable').val();
-                let due = $('.total_due').val();
-                let note = $('.note').val();
-                let payment_method = $('.payment_method').val();
-                // let product_id = $('.product_id').val();
-                // console.log(total_quantity);
-
-                let products = [];
-
-                $('tr[class^="data_row"]').each(function() {
-                    let row = $(this);
-                    // Get values from the current row's elements
-                    let product_id = row.find('.product_id').val();
-                    let quantity = row.find('input[name="quantity[]"]').val();
-                    let unit_price = row.find('input[name="unit_price[]"]').val();
-                    let discount_amount = row.find(`span[class='discount_amount${product_id}']`)
-                        .text() || 0;
-                    let discount_percentage = (row.find(
-                        `span[class='discount_percentage${product_id}']`).text()) || 0;
-                    let total_price = row.find('input[name="total_price[]"]').val();
-
-                    // Create an object with the gathered data
-                    let product = {
-                        product_id,
-                        quantity,
-                        unit_price,
-                        discount: discount_amount == 0 ? discount_percentage : 0,
-                        total_price
-                    };
-
-                    // Push the object into the products array
-                    products.push(product);
-                });
-
-                let allData = {
-                    // for purchase table
-                    customer_id,
-                    sale_date: formattedSaleDate,
-                    quantity,
-                    total_amount,
-                    discount,
-                    actual_discount,
-                    total,
-                    change_amount,
-                    tax,
-                    paid,
-                    due,
-                    note,
-                    payment_method,
-                    products
-                }
-
-                // console.log(allData);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-
-                $.ajax({
-                    url: '/sale/store',
-                    type: 'POST',
-                    data: allData,
-                    success: function(res) {
-                        if (res.status == 200) {
-                            // console.log(res.data);
-                            // $('#paymentModal').modal('hide');
-                            // $('.supplierForm')[0].reset();
-                            // supplierView();
-                            toastr.success(res.message);
-                            let id = res.saleId;
-                            // console.log(id)
-
-                            // window.location.href = '/sale/invoice/' + id;
-                            var printFrame = $('#printFrame')[0];
-                            var printContentUrl = '/sale/print/' +
-                                id; // Specify the URL of the content to be printed
-                            // console.log('{{ route('sale.invoice', 102049) }}');
-                            $('#printFrame').attr('src', printContentUrl);
-
-                            printFrame.onload = function() {
-                                printFrame.contentWindow.focus();
-                                printFrame.contentWindow.print();
-                                // Redirect after printing
-                                printFrame.contentWindow.onafterprint = function() {
-                                    window.location.href = "/sale";
-                                };
-                            };
-
-                        } else {
-                            console.log(res.error)
-                            if (res.error.paid) {
-                                showError('.total_payable', res.error.paid);
-                            }
-                            if (res.error.customer_id) {
-                                showError('.select-customer', res.error.customer_id);
-                            }
-                            if (res.error.sale_date) {
-                                showError('.purchase_date', res.error.sale_date);
-                            }
-                            if (res.error.payment_method) {
-                                showError('.payment_method', res.error.payment_method);
-                            }
-                        }
-                    }
-                });
+                saveInvoice();
 
             })
         })
