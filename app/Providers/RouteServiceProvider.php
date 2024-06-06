@@ -49,6 +49,10 @@ class RouteServiceProvider extends ServiceProvider
                 $email = $settings->email;
                 $invoice_logo_type = $settings->invoice_logo_type;
                 $invoice_type = $settings->invoice_type;
+                $barcode = $settings->barcode;
+                $discount = $settings->discount;
+                $tax = $settings->tax;
+                $selling_price_edit = $settings->selling_price_edit;
                 $view->with([
                     'siteTitle' => $siteTitle,
                     'logo' => $logo,
@@ -58,7 +62,11 @@ class RouteServiceProvider extends ServiceProvider
                     'phone' => $phone,
                     'email' => $email,
                     'invoice_logo_type' => $invoice_logo_type,
-                    'invoice_type' => $invoice_type
+                    'invoice_type' => $invoice_type,
+                    'barcode' => $barcode,
+                    'discount' => $discount,
+                    'tax' => $tax,
+                    'selling_price_edit' => $selling_price_edit
                 ]);
             }
         });

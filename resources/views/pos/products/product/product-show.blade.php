@@ -24,7 +24,9 @@
                                     <th>SN</th>
                                     <th>Image</th>
                                     <th>Name</th>
-                                    <th>Barcode</th>
+                                    @if($barcode == 1)
+                                        <th>Barcode</th>
+                                    @endif
                                     <th>Category</th>
                                     <th>Brand</th>
                                     <th>Price</th>
@@ -43,7 +45,9 @@
                                                     alt="product image">
                                             </td>
                                             <td>{{ $product->name ?? '' }}</td>
+                                            @if($barcode == 1)
                                             <td>{{$product->barcode}}</td>
+                                            @endif
                                             <td>{{ $product->category->name ?? '' }}</td>
                                             <td>{{ $product->brand->name ?? '' }}</td>
                                             <td>{{ $product->price ?? 0 }}</td>
@@ -63,10 +67,12 @@
                                                     <i data-feather="trash-2"></i>
                                                 </a>
                                                 @endif
+                                                @if($barcode == 1)
                                                 <a target="_blank" href="{{ route('product.barcode', $product->id) }}"
                                                     class="btn btn-info btn-icon">
                                                     <i class="fa-solid fa-barcode"></i>
                                                 </a>
+                                                @endif
                                                 {{-- <a href="#"  data-bs-toggle="modal" data-bs-target="#exampleModal{{$product->id}}" class="input-text btn border-dark">
                                                     <i class="fa-solid fa-barcode"></i>
                                                 </a> --}}

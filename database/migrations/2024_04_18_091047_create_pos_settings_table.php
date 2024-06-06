@@ -29,6 +29,10 @@ return new class extends Migration
             $table->enum('barcode_type',['single','a4']);
             $table->integer('low_stock')->default(10);
             $table->boolean('dark_mode')->default(0);
+            $table->boolean('discount')->default(0);
+            $table->boolean('tax')->default(0);
+            $table->boolean('barcode')->default(0);
+            $table->boolean('selling_price_edit')->default(0);
             $table->timestamps();
         });
     }
