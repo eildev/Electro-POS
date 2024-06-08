@@ -438,7 +438,7 @@
                             <td>
                                 <input type="number" product-id="${product.id}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="1" />
                             </td>
-                            <td>
+                            <td class="d-flex align-items-center">
                                 <div class="form-check form-switch mb-2">
                                     <input type="checkbox" class="form-check-input warranty_status${product.id}" id="warranty_status">
                                 </div>
