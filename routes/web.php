@@ -306,6 +306,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/find-qty/{id}', 'findQty')->name('product.find.qty');
         Route::post('/sale/transaction/{id}', 'saleTransaction')->name('sale.transaction');
         Route::get('/sale/customer/{id}', 'saleCustomer')->name('sale.customer');
+        Route::get('/sale/customer/due/{id}', 'saleCustomerDue')->name('sale.customer.due');
         Route::get('/sale/promotions/{id}', 'salePromotions')->name('sale.promotions');
         Route::get('/product/barcode/find/{id}', 'findProductWithBarcode')->name('product.barcode.find');
         Route::get('/sale/product/find/{id}', 'saleProductFind')->name('sale.product.find');

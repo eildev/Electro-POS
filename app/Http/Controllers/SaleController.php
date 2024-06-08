@@ -94,7 +94,7 @@ class SaleController extends Controller
             $sale->order_type = "general";
             $sale->quantity = $request->quantity;
             $sale->total = $request->total_amount;
-            $sale->discount = $request->discount;
+            // $sale->discount = $request->discount;
             $sale->change_amount = $request->total;
             $sale->actual_discount = $request->actual_discount;
             $sale->tax = $request->tax;
@@ -240,7 +240,7 @@ class SaleController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
             'products' => 'required',
@@ -594,6 +594,15 @@ class SaleController extends Controller
         return response()->json([
             'status' => '200',
             'items' => $items
+        ]);
+    }
+
+    public function saleCustomerDue($id)
+    {
+        $customer = Customer::findOrFail($id);
+        return response()->json([
+            'status' => '200',
+            'customer' => $customer
         ]);
     }
 }

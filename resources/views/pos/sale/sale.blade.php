@@ -111,60 +111,81 @@
                 <div class="card-body px-4 py-2">
                     <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
-                            Grand Total :
+                            Product Total :
                         </div>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control grandTotal border-0 " name="" readonly
+                            <input type="number" class="form-control total border-0 " name="total" readonly
                                 value="0.00" />
                         </div>
-
-                        <input type="hidden" class="form-control total border-0 " name="total" readonly value="0.00" />
-
                     </div>
                     <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
                             Discount :
                         </div>
                         <div class="col-sm-8">
-                            {{-- @php
-                                $promotions = App\Models\Promotion::get();
-                            @endphp --}}
-                            {{-- <input type="number" class="form-control discount_field border-0 " name="discount_field"
-                                readonly value="0.00" /> --}}
-                            {{-- <span class="ms-3 discount_field">00</span> --}}
-                            <select class="form-select discount_field" name="discount_field">
-
-                            </select>
+                            <input type="number" class="form-control handsOnDiscount" name="" value="" />
                         </div>
                     </div>
-
-                    <div class="row align-items-center">
+                    <div class="row align-items-center mb-2 previous_due_field">
+                        <div class="col-sm-4">
+                            Sub Total:
+                        </div>
                         <div class="col-sm-8">
-                            <input type="hidden" class="form-control grand_total border-0 " name="grand_total" readonly
+                            <input type="number" class="form-control grand_total border-0 " name="grand_total" readonly
                                 value="0.00" />
                         </div>
                     </div>
                     <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
-                            <label for="name" class="form-label">Tax:</label>
+                            Previous Due :
                         </div>
                         <div class="col-sm-8">
-                            @php
-                                $taxs = App\Models\Tax::get();
-                            @endphp
-                            <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
-                                onblur="errorRemove(this);" value="">
-                                @if ($taxs->count() > 0)
-                                    <option selected disabled>0%</option>
-                                    @foreach ($taxs as $taxs)
-                                        <option value="{{ $taxs->percentage }}">
-                                            {{ $taxs->percentage }} %
-                                        </option>
-                                    @endforeach
-                                @else
-                                    <option selected disabled>Please Add Transaction</option>
-                                @endif
-                            </select>
+                            <input type="number" class="form-control previous_due border-0 " name="previous_due" readonly
+                                value="0.00" />
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center">
+                        {{-- <div class="col-sm-4">
+                            Discount Total :
+                        </div> --}}
+                        <div class="col-sm-8">
+                            <input type="hidden" class="form-control grand_total border-0 " name="grand_total" readonly
+                                value="0.00" />
+                        </div>
+                    </div>
+                    @if ($tax == 1)
+                        <div class="row align-items-center mb-2">
+                            <div class="col-sm-4">
+                                <label for="name" class="form-label">Tax:</label>
+                            </div>
+                            <div class="col-sm-8">
+                                @php
+                                    $taxs = App\Models\Tax::get();
+                                @endphp
+                                <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
+                                    onblur="errorRemove(this);" value="">
+                                    @if ($taxs->count() > 0)
+                                        <option selected disabled>0%</option>
+                                        @foreach ($taxs as $taxs)
+                                            <option value="{{ $taxs->percentage }}">
+                                                {{ $taxs->percentage }} %
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option selected disabled>Please Add Transaction</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                    @endif
+                    <div class="row align-items-center mb-2">
+                        <div class="col-sm-4">
+                            Grand Total :
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control grandTotal border-0 " name="" readonly
+                                value="0.00" />
                         </div>
                     </div>
                     <div class="row align-items-center mb-2">
@@ -180,7 +201,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-sm-4">
-                            Due/Return :
+                            Total Due :
                         </div>
                         <div class="col-sm-8">
                             <input type="number" class="form-control total_due border-0 " name="" readonly
@@ -466,7 +487,8 @@
                                                 `<span class="discount_percentage${product.id} mt-2">${promotion.discount_value}</span>%` :
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
-                                    : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />`
+                                    : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
+                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -477,7 +499,7 @@
                                             :
                                             `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price - promotion.discount_value}" />`
                                         :
-                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" value="${product.price}" />`
+                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price}" />`
                                 }
                             </td>
                             <td style="padding-top: 20px;">
@@ -515,6 +537,7 @@
                                 if (promotion.discount_type == 'percentage') {
                                     let discountPercentage = promotion.discount_value;
                                     subtotal = subtotal - (subtotal * discountPercentage / 100);
+
                                 } else {
                                     let discountAmount = promotion.discount_value;
                                     subtotal = subtotal - discountAmount;
@@ -522,6 +545,7 @@
                             }
                             productSubtotal.val(subtotal.toFixed(2));
                             calculateProductTotal();
+                            calculateCustomerDue();
                         }
                     });
                 });
@@ -556,8 +580,10 @@
                                 }).then((result) => {
                                     if (result.isConfirmed) {
                                         productSubtotal.val(unit_price);
+                                        calculateCustomerDue();
                                     } else {
                                         productSubtotal.val(unit_price);
+                                        calculateCustomerDue();
                                     }
                                 })
                             }
@@ -567,46 +593,44 @@
                 });
             });
 
-            // when product price is Edit
-            $(document).on('change', '.discountProduct', function() {
+            // when discount price is Edit
+            $(document).on('keyup', '.discountProduct', function() {
                 let product_id = $(this).attr('product-id');
                 // alert(product_id);
                 let quantity = $('.productQuantity' + product_id).val();
                 let discountProduct = parseFloat($(this).val());
                 let product_price = parseFloat($('.product_price' + product_id).val());
                 let productSubtotal = $('.product_subtotal' + product_id);
+                let cost_price = parseFloat($('.produt_cost' + product_id).val());
 
                 let subTotal = product_price - discountProduct;
 
-                $.ajax({
-                    url: '/product/find-qty/' + product_id,
-                    type: 'GET',
-                    dataType: 'JSON',
-                    success: function(res) {
-                        if (res.status == 200) {
-                            let product = res.product;
-                            if (subTotal < product.cost) {
-                                Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: "you want to sell this product at a lower price?",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Yes, I want!'
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        productSubtotal.val(subTotal);
-                                    } else {
-                                        $(this).val('');
-                                        productSubtotal.val(product_price);
-                                    }
-                                })
-                            }
-                        }
+                if (subTotal < cost_price) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "you want to sell this product at a lower price?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, I want!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            productSubtotal.val(subTotal);
 
-                    }
-                });
+                            calculateProductTotal();
+                            calculateCustomerDue();
+                        } else {
+                            $(this).val('');
+                            productSubtotal.val(product_price);
+                        }
+                    })
+                } else {
+                    productSubtotal.val(subTotal);
+
+                    calculateProductTotal();
+                    calculateCustomerDue();
+                }
             });
 
 
@@ -632,7 +656,6 @@
             // Function to update grand total when a product is added or deleted
             function updateGrandTotal() {
                 calculateTotal();
-                calculateGrandTotal();
                 updateTotalQuantity();
                 calculateProductTotal();
             }
@@ -650,6 +673,7 @@
                             const promotion = res.promotion;
                             showAddProduct(product, promotion);
                             updateGrandTotal();
+                            calculateCustomerDue();
                             $('.barcode_input').val('');
                         } else {
                             toastr.warning(res.error);
@@ -672,6 +696,7 @@
                             const promotion = res.promotion;
                             showAddProduct(product, promotion);
                             updateGrandTotal();
+                            calculateCustomerDue();
                         }
                     });
                 }
@@ -684,91 +709,58 @@
                 dataRow.remove();
                 updateGrandTotal();
                 updateTotalQuantity();
+                calculateCustomerDue();
             });
 
-            // grandTotalCalulate
-            function calculateGrandTotal() {
+            // Customer Due Calculation
+            function calculateCustomerDue() {
                 let id = $('.select-customer').val();
-                // let total = parseFloat($('.total').val());
-                // console.log(id);
-                if (id) {
-                    $.ajax({
-                        url: `/sale/customer/${id}`,
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function(res) {
-                            // console.log(res)
-                            const promotions = res.promotions;
-                            // console.log(promotions);
-                            if (promotions) {
-                                $('.discount_field').html(
-                                    `<option selected disabled>Select a Discount</option>`);
-                                $.each(promotions, function(index, promotion) {
-                                    $('.discount_field').append(
-                                        `<option value="${promotion.id}">${promotion.promotion_name}(${promotion.discount_value} / ${promotion.discount_type})</option>`
-                                    );
-                                })
-                            } else {
-                                const total = $('.total').val();
-                                $('.grand_total').val(total);
-                                $('.grandTotal').val(total);
-                                // console.log($('.total').val());
-                                // $('.total_payable').val(total);
-                                $('.discount_field').html(
-                                    `<option>No Discount</option>`
-                                );
-                            }
-                        }
-                    })
-                } else {
-                    let total = $('.total').val();
-                    $('.grand_total').val(total);
-                    $('.discount_field').html(
-                        `<option>No Discount</option>`
-                    );
-                    $('.grandTotal').val(total);
-                    // $('.total_payable').val(total);
-                }
-            }
-            calculateGrandTotal();
-            // let id = $('.select-customer').val();
-            // console.log(id);
-            $(document).on('change', '.discount_field', function() {
-                let id = $(this).val();
                 $.ajax({
-                    url: `/sale/promotions/${id}`,
+                    url: `/sale/customer/due/${id}`,
                     type: 'GET',
                     dataType: 'JSON',
                     success: function(res) {
                         // console.log(res)
-                        const promotion = res.promotions;
-                        if (promotion) {
-                            if (promotion.discount_type == 'percentage') {
-                                let total = $('.total').val();
-                                let grandTotalAmount = parseFloat(total - ((total * promotion
-                                    .discount_value) / 100)).toFixed(2);
-                                $('.grand_total').val(grandTotalAmount);
-                                $('.grandTotal').val(grandTotalAmount);
-                                // $('.total_payable').val(grandTotalAmount);
-                            } else {
-                                let total = $('.total').val();
-                                let grandTotalAmount = parseFloat(total - promotion
-                                        .discount_value)
-                                    .toFixed(2);
-                                $('.grand_total').val(grandTotalAmount);
-                                $('.grandTotal').val(grandTotalAmount);
-                                // $('.total_payable').val(grandTotalAmount);
-                            }
+                        const customer = res.customer;
+                        const grand_total = parseFloat($('.grand_total').val());
+                        // const grandTotal = $('.grandTotal').val();
+                        const customerDue = parseFloat(customer.wallet_balance);
+                        // console.log(customerDue);
+
+                        if (customerDue > 0) {
+                            $('.previous_due').val(customerDue);
+                            let amount = grand_total + customerDue;
+                            $('.grandTotal').val(amount);
                         } else {
-                            let total = $('.total').val();
-                            $('.grand_total').val(total);
-                            $('.grandTotal').val(total);
-                            // $('.total_payable').val(total);
-
+                            $('.grandTotal').val(grand_total);
                         }
-
                     }
                 })
+
+            }
+            calculateCustomerDue();
+
+
+            // handson discount calculation 
+            $(document).on('keyup', '.handsOnDiscount', function() {
+                // alert('Ok');
+                let discountPrice = parseFloat($(this).val());
+                let total = parseFloat($('.total').val());
+                let grandTotalAmount = total - discountPrice;
+                if (discountPrice > total) {
+                    toastr.warning('The Discount is higher than the Total amount');
+                    $(this).val('');
+                    $('.grand_total').val(total);
+                    $('.grandTotal').val(total);
+
+                } else if ($(this).val() === '') {
+                    $('.grand_total').val(total);
+                    $('.grandTotal').val(total);
+                } else {
+                    $('.grand_total').val(grandTotalAmount);
+                    $('.grandTotal').val(grandTotalAmount);
+                    calculateCustomerDue();
+                }
             })
 
 
@@ -793,10 +785,12 @@
                                 $('.quantity').val(stock);
                                 // subTotal.val(parseFloat(stock * productPrice).toFixed(2));
                                 updateGrandTotal();
+                                calculateCustomerDue();
                                 toastr.warning('Not enough stock');
                             } else {
                                 // subTotal.val(parseFloat(quantity * productPrice).toFixed(2));
                                 updateGrandTotal();
+                                calculateCustomerDue();
                             }
 
                         }
@@ -824,10 +818,12 @@
                                 $('.quantity').val(stock);
                                 // subTotal.val(parseFloat(stock * productPrice).toFixed(2));
                                 updateGrandTotal();
+                                calculateCustomerDue();
                                 toastr.warning('Not enough stock');
                             } else {
                                 // subTotal.val(parseFloat(quantity * productPrice).toFixed(2));
                                 updateGrandTotal();
+                                calculateCustomerDue();
                             }
 
                         }
@@ -836,9 +832,9 @@
 
             })
 
-            // discount
+            // Customer Due
             $(document).on('change', '.select-customer', function() {
-                calculateGrandTotal();
+                calculateCustomerDue();
             })
 
             // total_payable
@@ -877,15 +873,16 @@
                 let formattedSaleDate = moment(sale_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
                 let quantity = totalQuantity;
                 let total_amount = parseFloat($('.total').val());
-                let discount = $('.discount_field').val();
+                // let discount = $('.discount_field').val();
                 let total = parseFloat($('.grand_total').val());
                 let tax = $('.tax').val();
                 let change_amount = parseFloat($('.grandTotal').val());
-                let actual_discount = change_amount - total;
+                let actual_discount = parseFloat($('.handsOnDiscount').val());
                 let paid = $('.total_payable').val();
                 let due = $('.total_due').val();
                 let note = $('.note').val();
                 let payment_method = $('.payment_method').val();
+                let previous_due = $('.previous_due').val();
                 // let product_id = $('.product_id').val();
                 // console.log(total_quantity);
 
@@ -927,7 +924,6 @@
                     sale_date: formattedSaleDate,
                     quantity,
                     total_amount,
-                    discount,
                     actual_discount,
                     total,
                     change_amount,
@@ -936,7 +932,8 @@
                     due,
                     note,
                     payment_method,
-                    products
+                    products,
+                    previous_due
                 }
 
                 // console.log(allData);
@@ -954,23 +951,20 @@
                         if (res.status == 200) {
                             toastr.success(res.message);
                             let id = res.saleId;
-
-
-                            // window.location.href = '/sale/invoice/' + id;
-                            var printFrame = $('#printFrame')[0];
-                            var printContentUrl = '/sale/print/' +
-                                id; // Specify the URL of the content to be printed
+                            window.location.href = '/sale/invoice/' + id;
+                            // var printFrame = $('#printFrame')[0];
+                            // var printContentUrl = '/sale/print/' + id;
                             // console.log('{{ route('sale.invoice', 102049) }}');
-                            $('#printFrame').attr('src', printContentUrl);
+                            // $('#printFrame').attr('src', printContentUrl);
 
-                            printFrame.onload = function() {
-                                printFrame.contentWindow.focus();
-                                printFrame.contentWindow.print();
-                                // Redirect after printing
-                                printFrame.contentWindow.onafterprint = function() {
-                                    window.location.href = "/sale";
-                                };
-                            };
+                            // printFrame.onload = function() {
+                            //     printFrame.contentWindow.focus();
+                            //     printFrame.contentWindow.print();
+                            //     // Redirect after printing
+                            //     printFrame.contentWindow.onafterprint = function() {
+                            //         window.location.href = "/sale";
+                            //     };
+                            // };
 
                         } else {
                             // console.log(res);
