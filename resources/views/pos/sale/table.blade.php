@@ -10,6 +10,15 @@
             <td>{{ $data->customer->name ?? '' }}
                 <br> ({{ $data->customer->phone ?? '' }})
             </td>
+            <td>
+                <ul>
+                    @foreach ($data->saleItem as $item)
+                        <li>{{ $item->product->name ?? '' }}
+                            <br>({{ $item->product->barcode ?? '' }})
+                        </li>
+                    @endforeach
+                </ul>
+            </td>
             <td>{{ $data->sale_date ?? 0 }}</td>
             <td>৳ {{ $data->actual_discount ?? 0 }}</td>
             <td>
@@ -26,10 +35,10 @@
                 @if ($data->due > 0)
                     <span class="text-danger">৳ {{ $data->due ?? 0 }}</span>
                 @else
-                    ৳ {{ 0 }}
+                    ৳ {{ $data->due ?? 0 }}
                 @endif
             </td>
-            {{-- <td> ৳
+            <td> ৳
                 @php
                     $totalCost = 0;
                 @endphp
@@ -39,15 +48,13 @@
                     @endphp
                 @endforeach
                 {{ $totalCost }}
-            </td> --}}
+            </td>
             <td>
                 ৳ @php
-                    $totalCost = 0;
                     $totalSale = 0;
                 @endphp
                 @foreach ($data->saleItem as $item)
                     @php
-                        $totalCost += $item->product->cost ?? 0;
                         $totalSale += $item->product->price ?? 0;
                     @endphp
                 @endforeach
