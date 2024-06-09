@@ -16,7 +16,7 @@
                                     <a href="#" class="noble-ui-logo logo-light d-block mt-3">{{ $siteTitle }}</a>
                                 @elseif($invoice_logo_type == 'Logo')
                                     @if (!empty($logo))
-                                        <img height="50" width="150" src="{{ url($logo) }}" alt="logo">
+                                        <img height="" width="150" src="{{ url($logo) }}" alt="logo">
                                     @else
                                         <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
                                     @endif
@@ -56,8 +56,8 @@
                                     Date :</span> {{ $sale->sale_date ?? '' }}</h6>
                         </div>
                     </div>
-                    <div class="container-fluid mt-5 d-flex justify-content-center w-100">
-                        <div class=" w-100">
+                    <div class="container-fluid mt-2 d-flex justify-content-center w-100">
+                        <div class="w-100">
                             {{-- @dd($products); --}}
                             <table class="table table-bordered">
                                 <thead>
@@ -73,9 +73,7 @@
                                 </thead>
                                 <tbody>
                                     @if ($products->count() > 0)
-
                                         @foreach ($products as $index => $product)
-
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
                                                 <td class="text-start">{{ $product->product->name }}</td>
@@ -89,39 +87,35 @@
                                     @else
                                         <tr class="text-center">
                                             <td>Data Not Found</td>
-
                                         </tr>
-
                                     @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <div class="container-fluid mt-5 ">
+                    <div class="container-fluid mt-2">
                         <div class="row">
                             <div class="col-md-6 ms-auto total_calculation">
                                 <div class="table-responsive">
                                     <table class="table">
                                         <tbody>
                                             <tr>
-                                                <td>Sub Total</td>
+                                                <td>Product Total</td>
                                                 <td class="text-end">৳ {{ $sale->total }}</td>
                                             </tr>
-                                            @if ($sale->discount != 'No Discount')
-                                                @php
-                                                    $discount = App\Models\Promotion::findOrFail($sale->discount);
-                                                @endphp
-                                                @if ($discount->discount_type == 'percentage')
-                                                    <tr>
-                                                        <td>Discount ({{ $discount->discount_value }} %)</td>
-                                                        <td class="text-end">৳ {{ $sale->change_amount }}</td>
-                                                    </tr>
-                                                @else
-                                                    <tr>
-                                                        <td>Discount (৳ {{ $discount->discount_value }})</td>
-                                                        <td class="text-end">৳ {{ $sale->change_amount }}</td>
-                                                    </tr>
-                                                @endif
+                                            @php
+                                                $subTotal = $sale->total - $sale->actual_discount;
+                                            @endphp
+                                            @if ($sale->actual_discount > 0)
+                                                <tr>
+                                                    <td>Discount</td>
+                                                    <td class="text-end">৳ {{ $sale->actual_discount }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-bold-800">Sub Total</td>
+                                                    <td class="text-bold-800 text-end">৳
+                                                        {{ $subTotal }} </td>
+                                                </tr>
                                             @endif
 
                                             @if ($sale->tax != null)
@@ -130,6 +124,14 @@
                                                     <td class="text-end">৳ {{ $sale->receivable }} </td>
                                                 </tr>
                                             @endif
+                                            @if ($sale->receivable > $subTotal)
+                                                <tr>
+                                                    <td class="text-bold-800">Previous Due</td>
+                                                    <td class="text-bold-800 text-end">৳
+                                                        {{ $sale->receivable - $subTotal }} </td>
+                                                </tr>
+                                            @endif
+
                                             <tr>
                                                 <td class="text-bold-800">Grand Total</td>
                                                 <td class="text-bold-800 text-end">৳ {{ $sale->receivable }} </td>
@@ -145,16 +147,33 @@
                                                     <td class="text-danger text-end">(-) ৳ {{ $sale->paid }} </td>
                                                 </tr>
                                             @endif
-                                            @if ($sale->due >= 0)
-                                                <tr class="bg-dark">
-                                                    <td class="text-bold-800">Balance Due</td>
-                                                    <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
-                                                </tr>
+                                            @php
+                                                $mode = App\models\PosSetting::all()->first();
+                                            @endphp
+                                            @if ($mode->dark_mode == 1)
+                                                @if ($sale->due >= 0)
+                                                    <tr class="">
+                                                        <td class="text-bold-800">Balance Due</td>
+                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                    </tr>
+                                                @else
+                                                    <tr class="">
+                                                        <td class="text-bold-800">Return</td>
+                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                    </tr>
+                                                @endif
                                             @else
-                                                <tr class="bg-dark">
-                                                    <td class="text-bold-800">Return</td>
-                                                    <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
-                                                </tr>
+                                                @if ($sale->due >= 0)
+                                                    <tr class="bg-dark">
+                                                        <td class="text-bold-800">Balance Due</td>
+                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                    </tr>
+                                                @else
+                                                    <tr class="bg-dark">
+                                                        <td class="text-bold-800">Return</td>
+                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                    </tr>
+                                                @endif
                                             @endif
 
                                         </tbody>
@@ -204,22 +223,26 @@
             .btn_group {
                 display: none !important;
             }
-            .total_calculation{
+
+            .total_calculation {
                 float: right !important;
                 /* margin-right: -40px; */
                 width: 40%;
             }
+
             .card-body {
                 padding: 0px !important;
                 margin-left: 0px !important;
             }
-            .card{
+
+            .card {
                 /* padding: 0px !important; */
                 /* margin: 0px !important; */
             }
+
             .main-wrapper .page-wrapper .page-content {
-            margin-left: -10px !important;
-            padding: 0px;
+                margin-left: -10px !important;
+                padding: 0px;
 
             }
         }
