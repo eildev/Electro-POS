@@ -392,29 +392,29 @@
             }
 
 
-            // // Via Sell Product view function
-            // function viewViaSell() {
-            //     $.ajax({
-            //         url: '/product/view/sale',
-            //         method: 'GET',
-            //         success: function(res) {
-            //             // console.log(res);
-            //             const products = res.products;
-            //             $('.view_product').empty();
-            //             if (products.length > 0) {
-            //                 $.each(products, function(index, product) {
-            //                     $('.view_product').append(
-            //                         `<option value="${products.id}">${product.name}(${product.barcode})</option>`
-            //                     );
-            //                 })
-            //             } else {
-            //                 $('.view_product').html(`
-        //                 <option selected disable>Please add Product</option>`)
-            //             }
-            //         }
-            //     })
-            // }
-            // viewViaSell();
+            // Via Sell Product view function
+            function viewViaSell() {
+                $.ajax({
+                    url: '/product/view/sale',
+                    method: 'GET',
+                    success: function(res) {
+                        // console.log(res);
+                        const products = res.products;
+                        $('.view_product').empty();
+                        if (products.length > 0) {
+                            $.each(products, function(index, product) {
+                                $('.view_product').append(
+                                    `<option value="${products.id}">${product.name}(${product.barcode})</option>`
+                                );
+                            })
+                        } else {
+                            $('.view_product').html(`
+                        <option selected disable>Please add Product</option>`)
+                        }
+                    }
+                })
+            }
+            viewViaSell();
 
             // const saveViaProduct = document.querySelector('.save_via_product');
             // saveViaProduct.addEventListener('click', function(e) {
@@ -584,7 +584,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -1057,7 +1057,7 @@
                             // window.location.href = '/sale/print/' + id;
                             var printFrame = $('#printFrame')[0];
 
-                            if (checkPrintType == 'a4' || checkPrintType == 'a4') {
+                            if (checkPrintType == 'a4' || checkPrintType == 'a5') {
                                 var printContentUrl = '/sale/invoice/' + id;
                                 $('#printFrame').attr('src', printContentUrl);
 
