@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PosSetting;
 use App\Models\Product;
 use App\Models\PromotionDetails;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+
 class ProductsController extends Controller
 {
     public function index()
@@ -149,12 +151,21 @@ class ProductsController extends Controller
             return $query->where('status', '=', $status);
         })->where('promotion_type', 'products')->where('logic', 'like', '%' . $id . "%")->latest()->first();
         // dd($promotionDetails->promotion);
+        $discountCheck = PosSetting::where('discount', '=', 1)->first();
+
         if ($promotionDetails) {
-            return response()->json([
-                'status' => '200',
-                'data' => $product,
-                'promotion' => $promotionDetails->promotion,
-            ]);
+            if ($discountCheck) {
+                return response()->json([
+                    'status' => '200',
+                    'data' => $product,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => '200',
+                    'data' => $product,
+                    'promotion' => $promotionDetails->promotion,
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => '200',
@@ -163,7 +174,8 @@ class ProductsController extends Controller
         }
     }
     //
-    public function ProductBarcode($id){
+    public function ProductBarcode($id)
+    {
         $product = Product::findOrFail($id);
         return view('pos.products.product.product-barcode', compact('product'));
     }
