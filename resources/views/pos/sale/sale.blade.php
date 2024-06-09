@@ -447,8 +447,7 @@
                                     <select class=" form-select wa_duration${product.id}" id="" data-width="100%"
                                          onclick="errorRemove(this)";>
                                         <option selected disabled>Select Warranty</option>
-                                        <option value="6 Month">6 Month</option>
-                                        <option value="1 Year">1 Year</option>
+                                        <option value="6 Month">6 Month</option>                                        <option value="1 Year">1 Year</option>
                                         <option value="2 Year">2 Year</option>
                                         <option value="3 Year">3 Year</option>
                                         <option value="4 Year">4 Year</option>
