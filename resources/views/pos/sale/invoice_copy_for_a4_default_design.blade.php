@@ -5,13 +5,9 @@
         $customer = App\Models\Customer::findOrFail($sale->customer_id);
         $products = App\Models\SaleItem::where('sale_id', $sale->id)->get();
     @endphp
-
-<style>
-
-</style>
-    <div class="row ">
-        <div class="col-md-12 ">
-            <div class="card border-0 shadow-none invoice_bg">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-none">
                 <div class="card-body ">
                     <div class="container-fluid d-flex justify-content-between">
                         <div class="col-lg-3 ps-0">
@@ -63,9 +59,8 @@
                     <div class="container-fluid mt-2 d-flex justify-content-center w-100">
                         <div class="w-100">
                             {{-- @dd($products); --}}
-
-                            <table class="table table-bordered invoice_table_bg">
-                                <thead class="invoice_table_th_bg">
+                            <table class="table table-bordered">
+                                <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Product Name</th>
@@ -78,7 +73,6 @@
                                 </thead>
                                 <tbody>
                                     @if ($products->count() > 0)
-                                    @php $lastIndex = 0; @endphp
                                         @foreach ($products as $index => $product)
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
@@ -89,19 +83,7 @@
                                                 <td>{{ $product->discount ?? 0 }}</td>
                                                 <td>{{ $product->sub_total ?? 0 }}</td>
                                             </tr>
-                                            @php $lastIndex = $index + 1; @endphp
                                         @endforeach
-                                        @for ($i = $lastIndex+1; $i < 16; $i++)
-                                        <tr class="text-end">
-                                            <td class="text-start">{{ $i }}</td>
-                                            <td class="text-start"></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                        @endfor
                                     @else
                                         <tr class="text-center">
                                             <td>Data Not Found</td>
@@ -116,7 +98,7 @@
                             <div class="col-md-6 ms-auto total_calculation">
                                 <div class="table-responsive">
                                     <table class="table">
-                                        <tbody class="text-black">
+                                        <tbody>
                                             <tr>
                                                 <td>Product Total</td>
                                                 <td class="text-end">৳ {{ $sale->total }}</td>
@@ -206,7 +188,7 @@
                                 onclick="window.print();"><i data-feather="printer" class="me-2 icon-md"></i>Print
                                 Invoice</a>
                         @elseif($invoice_type == 'a5')
-                            <a href="#" class="btn btn-outline-primary float-end mt-4" onclick="window.print();"><i
+                            <a target="" href="#" class="btn btn-outline-primary float-end mt-4 "><i
                                     data-feather="printer" class="me-2 icon-md"></i>Print Invoice</a>
                         @else
                             <a target="" href="{{ route('sale.print', $sale->id) }}"
@@ -238,8 +220,6 @@
             .page-content {
                 margin-top: 0 !important;
                 padding-top: 0 !important;
-                border: 1px solid blue !important;
-                background-color: none !important;
             }
 
             .btn_group {
@@ -249,8 +229,7 @@
             .total_calculation {
                 float: right !important;
                 /* margin-right: -40px; */
-                width: 50%;
-                color: #000
+                width: 40%;
             }
 
             .card-body {
@@ -264,25 +243,9 @@
             }
 
             .main-wrapper .page-wrapper .page-content {
-                /* margin-left: -10px !important; */
+                margin-left: -10px !important;
                 padding: 0px;
 
-            }
-
-            .table > :not(caption) > * > *{
-                padding: 0 !important;
-            }
-            .invoice_bg{
-                background-color: rgb(255, 255, 255) !important;
-                color: #000 !important;
-            }
-            .invoice_table_bg{
-                background-color: rgb(241, 204, 204) !important;
-                color: #ED0000  !important;
-                border-color: #000
-            }
-            .invoice_table_th_bg{
-                background-color: rgb(247, 121, 37) !important;
             }
         }
     </style>
