@@ -6,9 +6,9 @@
         $products = App\Models\SaleItem::where('sale_id', $sale->id)->get();
     @endphp
 
-<style>
+    <style>
 
-</style>
+    </style>
     <div class="row ">
         <div class="col-md-12 ">
             <div class="card border-0 shadow-none invoice_bg">
@@ -78,7 +78,7 @@
                                 </thead>
                                 <tbody>
                                     @if ($products->count() > 0)
-                                    @php $lastIndex = 0; @endphp
+                                        @php $lastIndex = 0; @endphp
                                         @foreach ($products as $index => $product)
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
@@ -91,16 +91,16 @@
                                             </tr>
                                             @php $lastIndex = $index + 1; @endphp
                                         @endforeach
-                                        @for ($i = $lastIndex+1; $i < 16; $i++)
-                                        <tr class="text-end">
-                                            <td class="text-start">{{ $i }}</td>
-                                            <td class="text-start"></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
+                                        @for ($i = $lastIndex + 1; $i < 16; $i++)
+                                            <tr class="text-end">
+                                                <td class="text-start">{{ $i }}</td>
+                                                <td class="text-start"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
                                         @endfor
                                     @else
                                         <tr class="text-center">
@@ -229,7 +229,15 @@
     </div>
     <style>
         @media print {
-
+            @if ($invoice_type == 'a4')
+                @page {
+                    size: A4;
+                }
+            @elseif($invoice_type == 'a5')
+                @page {
+                    size: A5;
+                }
+            @endif
             nav,
             .footer {
                 display: none !important;
@@ -269,21 +277,61 @@
 
             }
 
-            .table > :not(caption) > * > *{
+            .table> :not(caption)>*>* {
                 padding: 0 !important;
             }
-            .invoice_bg{
+
+            .invoice_bg {
                 background-color: rgb(255, 255, 255) !important;
                 color: #000 !important;
             }
-            .invoice_table_bg{
+
+            .invoice_table_bg {
                 background-color: rgb(241, 204, 204) !important;
-                color: #ED0000  !important;
+                color: #ED0000 !important;
                 border-color: #000
             }
-            .invoice_table_th_bg{
+
+            .invoice_table_th_bg {
                 background-color: rgb(247, 121, 37) !important;
             }
         }
     </style>
+
+    <script>
+        function setPaperSize('$invoice_type') {
+            let styleElement = document.getElementById('print-style');
+
+            if (!styleElement) {
+                styleElement = document.createElement('style');
+                styleElement.id = 'print-style';
+                document.head.appendChild(styleElement);
+            }
+
+            let sizeCss;
+
+            switch (size) {
+                case 'a4':
+                    sizeCss = '@page { size: A4; }';
+                    break;
+                case 'a5':
+                    sizeCss = '@page { size: A5; }';
+                    break;
+                case 'letter':
+                    sizeCss = '@page { size: letter; }';
+                    break;
+                case 'custom':
+                    sizeCss = '@page { size: 210mm 297mm; }'; // Example for A4 size in custom dimensions
+                    break;
+                default:
+                    sizeCss = '@page { size: auto; }'; // Default
+            }
+
+            styleElement.innerHTML = `
+                @media print {
+                    ${sizeCss}
+                }
+            `;
+        }
+    </script>
 @endsection

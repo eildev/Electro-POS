@@ -310,6 +310,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/sale/promotions/{id}', 'salePromotions')->name('sale.promotions');
         Route::get('/product/barcode/find/{id}', 'findProductWithBarcode')->name('product.barcode.find');
         Route::get('/sale/product/find/{id}', 'saleProductFind')->name('sale.product.find');
+        Route::get('/product/view/sale', 'saleViewProduct');
+        Route::post('/sale/via/product/add', 'saleViaProductAdd');
     });
     // Transaction related route(n)
     Route::controller(EmployeeSalaryController::class)->group(function () {

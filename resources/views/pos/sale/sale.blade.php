@@ -5,9 +5,6 @@
         <div class="col-lg-12 grid-margin stretch-card mb-3">
             <div class="card">
                 <div class="card-body px-4 py-2">
-                    {{-- <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="card-title">POS Sale</h6>
-                    </div> --}}
                     <div class="row">
                         @if ($barcode == 1)
                             <div class="mb-2 col-md-6">
@@ -24,11 +21,6 @@
 
                         <div class="mb-2 col-md-6">
                             <label for="date" class="form-label">Date</label>
-                            {{-- <div class="input-group flatpickr" id="flatpickr-date">
-                                <input type="date" class="form-control purchase_date" placeholder="" data-input>
-                                <span class="input-group-text input-group-addon" data-toggle><i
-                                        data-feather="calendar"></i></span>
-                            </div> --}}
                             <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
                                 <span class="input-group-text input-group-addon bg-transparent border-primary"
                                     data-toggle><i data-feather="calendar" class="text-primary"></i></span>
@@ -58,6 +50,18 @@
                             </select>
                             <span class="text-danger product_select_error"></span>
                         </div>
+                        {{-- <div class="mb-1 col-md-6">
+                            <label class="form-label">Product</label>
+                            <div class="d-flex g-3">
+                                <select class="js-example-basic-single form-select product_select view_product"
+                                    data-width="100%" onclick="errorRemove(this);" onblur="errorRemove(this);">
+
+                                </select>
+                                <span class="text-danger product_select_error"></span>
+                                <button class="btn btn-primary ms-2" data-bs-toggle="modal"
+                                    data-bs-target="#viaSellModal">Via Sell</button>
+                            </div>
+                        </div> --}}
                         <div class="mb-1 col-md-6">
                             <label for="password" class="form-label">Customer</label>
                             <div class="d-flex g-3">
@@ -248,7 +252,7 @@
         }
     </style>
     <iframe id="printFrame" src="" width="0" height="0"></iframe>
-    <!-- Modal -->
+    <!-- customer Modal -->
     <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -303,25 +307,59 @@
             </div>
         </div>
     </div>
+    <!-- Via Sell -->
+    <div class="modal fade" id="viaSellModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Via Sell Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="customerForm row">
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Product Name <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control product_name" maxlength="255" name="name"
+                                type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger product_name_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Sell Price <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control sell_price" maxlength="39" name="phone"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger sell_price_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Cost Price <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control cost_price" maxlength="39" name="email"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger cost_price_error"></span>
+                        </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#printButton').on('click', function() {
-                var printFrame = $('#printFrame')[0];
-                var printContentUrl =
-                    '{{ route('sale.invoice', 102049) }}'; // Specify the URL of the content to be printed
-                console.log('{{ route('sale.invoice', 102049) }}');
-                $('#printFrame').attr('src', printContentUrl);
-
-                printFrame.onload = function() {
-                    printFrame.contentWindow.focus();
-                    printFrame.contentWindow.print();
-                };
-            });
-        });
-    </script>
-
-
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Quantity <span class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control via_quantity" maxlength="39" name="address"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger via_quantity"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Total</label>
+                            <input id="defaultconfig" class="form-control via_product_total" maxlength="39"
+                                name="opening_receivable" type="number" readonly>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary save_via_product">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
         // error remove
@@ -352,6 +390,68 @@
                 $(name).focus();
                 $(`${name}_error`).show().text(message);
             }
+
+
+            // Via Sell Product view function
+            function viewViaSell() {
+                $.ajax({
+                    url: '/product/view/sale',
+                    method: 'GET',
+                    success: function(res) {
+                        // console.log(res);
+                        const products = res.products;
+                        $('.view_product').empty();
+                        if (products.length > 0) {
+                            $.each(products, function(index, product) {
+                                $('.view_product').append(
+                                    `<option value="${products.id}">${product.name}(${product.barcode})</option>`
+                                );
+                            })
+                        } else {
+                            $('.view_product').html(`
+                        <option selected disable>Please add Product</option>`)
+                        }
+                    }
+                })
+            }
+            viewViaSell();
+
+            // const saveViaProduct = document.querySelector('.save_via_product');
+            // saveViaProduct.addEventListener('click', function(e) {
+            //     e.preventDefault();
+            //     // alert('ok')
+            //     let formData = new FormData($('.customerForm')[0]);
+            //     $.ajaxSetup({
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         }
+            //     });
+            //     $.ajax({
+            //         url: '/add/customer',
+            //         type: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(res) {
+            //             if (res.status == 200) {
+            //                 // console.log(res);
+            //                 $('#customerModal').modal('hide');
+            //                 $('.customerForm')[0].reset();
+            //                 viewCustomer();
+            //                 toastr.success(res.message);
+            //             } else {
+            //                 // console.log(res);
+            //                 if (res.error.name) {
+            //                     showError('.customer_name', res.error.name);
+            //                 }
+            //                 if (res.error.phone) {
+            //                     showError('.phone', res.error.phone);
+            //                 }
+            //             }
+            //         }
+            //     });
+            // })
+
 
             // customer view function
             function viewCustomer() {
@@ -484,7 +584,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -682,6 +782,7 @@
             // Select product
             $('.product_select').change(function() {
                 let id = $(this).val();
+                console.log(id);
                 if ($(`.data_row${id}`).length === 0 && id) {
                     $.ajax({
                         url: '/product/find/' + id,
@@ -956,7 +1057,7 @@
                             // window.location.href = '/sale/print/' + id;
                             var printFrame = $('#printFrame')[0];
 
-                            if (checkPrintType == 'a4') {
+                            if (checkPrintType == 'a4' || checkPrintType == 'a5') {
                                 var printContentUrl = '/sale/invoice/' + id;
                                 $('#printFrame').attr('src', printContentUrl);
 

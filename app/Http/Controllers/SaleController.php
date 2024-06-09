@@ -605,4 +605,13 @@ class SaleController extends Controller
             'customer' => $customer
         ]);
     }
+    public function saleViewProduct()
+    {
+        $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        // dd($products);
+        return response()->json([
+            'status' => '200',
+            'products' => $products
+        ]);
+    }
 }
