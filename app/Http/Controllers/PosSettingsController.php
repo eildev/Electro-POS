@@ -63,6 +63,13 @@ class PosSettingsController extends Controller
              else{
                 $barcode=0;
              }
+             if($request->has('via_sale')){
+                $via_sale=1;
+             }
+             else{
+                $via_sale=0;
+             }
+
              $values = [
               'company' => $request->input('company'),
              'email' => $request->input('email'),
@@ -78,6 +85,7 @@ class PosSettingsController extends Controller
              'discount' => $discount, // Checkbox value can be checked directly
             'tax' => $tax, // Checkbox value can be checked directly
             'barcode' => $barcode, // Checkbox value can be checked directly
+            'via_sale' => $via_sale, // Checkbox value can be checked directly
              'low_stock' => $request->input('low_stock'),
              'logo' => $requestData['logo'] ?? null,
                 // Add more fields as needed
@@ -113,6 +121,14 @@ class PosSettingsController extends Controller
              else{
                 $barcode=0;
              }
+
+             if($request->has('via_sale')){
+                $via_sale=1;
+             }
+             else{
+                $via_sale=0;
+             }
+
              if($request->has('selling_price_edit')){
                 $selling_price_edit=1;
              }
@@ -132,6 +148,7 @@ class PosSettingsController extends Controller
             'barcode_type' => $request->input('barcode_type'),
             'dark_mode' => $mdVal, // Checkbox value can be checked directly
             'discount' => $discount, // Checkbox value can be checked directly
+            'via_sale' => $via_sale, // Checkbox value can be checked directly
             'tax' => $tax, // Checkbox value can be checked directly
             'barcode' => $barcode, // Checkbox value can be checked directly
             'selling_price_edit' => $selling_price_edit, // Checkbox value can be checked directly

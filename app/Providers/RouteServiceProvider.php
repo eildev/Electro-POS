@@ -53,6 +53,7 @@ class RouteServiceProvider extends ServiceProvider
                 $discount = $settings->discount;
                 $tax = $settings->tax;
                 $selling_price_edit = $settings->selling_price_edit;
+                $via_sale = $settings->via_sale;
                 $view->with([
                     'siteTitle' => $siteTitle,
                     'logo' => $logo,
@@ -66,7 +67,8 @@ class RouteServiceProvider extends ServiceProvider
                     'barcode' => $barcode,
                     'discount' => $discount,
                     'tax' => $tax,
-                    'selling_price_edit' => $selling_price_edit
+                    'selling_price_edit' => $selling_price_edit,
+                    'via_sale' => $via_sale
                 ]);
             }
         });

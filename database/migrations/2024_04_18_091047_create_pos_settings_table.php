@@ -32,6 +32,7 @@ return new class extends Migration
             $table->boolean('discount')->default(0);
             $table->boolean('tax')->default(0);
             $table->boolean('barcode')->default(0);
+            $table->boolean('via_sale')->default(0);
             $table->boolean('selling_price_edit')->default(0);
             $table->timestamps();
         });

@@ -218,6 +218,17 @@
                                 <div class="mb-3 form-valid-groups">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox"
+                                            {{ $mode->via_sale == 1 ? 'checked' : '' }} name="via_sale" role="switch"
+                                            id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Via Sale</label>
+                                    </div>
+                                    {{-- {{ $allData->dark_mode == 2 ?  'checked' : '' }} --}}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3 form-valid-groups">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox"
                                             {{ $mode->selling_price_edit == 1 ? 'checked' : '' }} name="selling_price_edit" role="switch"
                                             id="flexSwitchCheckDefault">
                                         <label class="form-check-label" for="flexSwitchCheckDefault">Selling Price Edit</label>
