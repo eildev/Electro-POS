@@ -187,12 +187,14 @@
                             <a href="#" class="btn btn-outline-primary float-end mt-4 me-3"
                                 onclick="window.print();"><i data-feather="printer" class="me-2 icon-md"></i>Print
                                 Invoice</a>
+                        @elseif($invoice_type == 'a5')
+                            <a target="" href="#" class="btn btn-outline-primary float-end mt-4 "><i
+                                    data-feather="printer" class="me-2 icon-md"></i>Print Invoice</a>
                         @else
-                            <a target="_blank" href="{{ route('sale.print', $sale->id) }}"
+                            <a target="" href="{{ route('sale.print', $sale->id) }}"
                                 class="btn btn-outline-primary float-end mt-4 "><i data-feather="printer"
                                     class="me-2 icon-md"></i>Print Invoice</a>
                         @endif
-
                     </div>
 
                 </div>

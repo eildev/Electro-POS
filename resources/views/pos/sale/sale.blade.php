@@ -234,11 +234,16 @@
                     </div>
 
                     <div class="my-3">
-                        <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
-                            Payment</button>
-                        <button id="printButton" class="btn btn-primary print_btn"><i
-                                class="fa-solid fa-money-check-dollar"></i>
-                            print</button>
+                        @if ($invoice_type == 'a4')
+                            <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
+                                Make Invoice</button>
+                        @elseif($invoice_type == 'a5')
+                            <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
+                                Make Invoice</button>
+                        @else
+                            <button class="btn btn-primary pos_print_btn"><i class="fa-solid fa-money-check-dollar"></i>
+                                Make Invoice</button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -488,7 +493,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -866,6 +871,11 @@
                 // $('.total_payable').val(taxTotal);
             })
 
+            let checkPrintType = '{{ $invoice_type }}';
+            console.log(checkPrintType);
+
+
+
 
             function saveInvoice() {
                 let customer_id = $('.select-customer').val();
@@ -900,10 +910,11 @@
                         '') || 0;
                     let discount_percentage = row.find(`.discount_percentage${product_id}`).text().replace(
                         '%', '') || 0;
+                    let productDiscount = row.find(`.product_discount${product_id}`).val();
                     let total_price = row.find('input[name="total_price[]"]').val();
-
+                    // console.log(productDiscount);
                     let product_discount = discount_amount || discount_percentage ? (discount_amount ?
-                        discount_amount : discount_percentage) : 0;
+                        discount_amount : discount_percentage) : (productDiscount ? productDiscount : 0);
                     let product = {
                         product_id,
                         quantity,
@@ -951,10 +962,9 @@
                         if (res.status == 200) {
                             toastr.success(res.message);
                             let id = res.saleId;
-                            window.location.href = '/sale/invoice/' + id;
+                            window.location.href = '/sale/print/' + id;
                             // var printFrame = $('#printFrame')[0];
                             // var printContentUrl = '/sale/print/' + id;
-                            // console.log('{{ route('sale.invoice', 102049) }}');
                             // $('#printFrame').attr('src', printContentUrl);
 
                             // printFrame.onload = function() {
