@@ -234,16 +234,8 @@
                     </div>
 
                     <div class="my-3">
-                        @if ($invoice_type == 'a4')
-                            <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
-                                Make Invoice</button>
-                        @elseif($invoice_type == 'a5')
-                            <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
-                                Make Invoice</button>
-                        @else
-                            <button class="btn btn-primary pos_print_btn"><i class="fa-solid fa-money-check-dollar"></i>
-                                Make Invoice</button>
-                        @endif
+                        <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
+                            Make Invoice</button>
                     </div>
                 </div>
             </div>
@@ -492,7 +484,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -871,7 +863,7 @@
             })
 
             let checkPrintType = '{{ $invoice_type }}';
-            console.log(checkPrintType);
+            // console.log(checkPrintType);
 
 
 
@@ -886,7 +878,7 @@
                 let total = parseFloat($('.grand_total').val());
                 let tax = $('.tax').val();
                 let change_amount = parseFloat($('.grandTotal').val());
-                let actual_discount = parseFloat($('.handsOnDiscount').val());
+                let actual_discount = parseFloat($('.handsOnDiscount').val()) || 0;
                 let paid = $('.total_payable').val();
                 let due = $('.total_due').val();
                 let note = $('.note').val();
@@ -946,7 +938,7 @@
                     previous_due
                 }
 
-                // console.log(allData);
+                console.log(allData);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -961,19 +953,35 @@
                         if (res.status == 200) {
                             toastr.success(res.message);
                             let id = res.saleId;
-                            window.location.href = '/sale/print/' + id;
-                            // var printFrame = $('#printFrame')[0];
-                            // var printContentUrl = '/sale/print/' + id;
-                            // $('#printFrame').attr('src', printContentUrl);
+                            // window.location.href = '/sale/print/' + id;
+                            var printFrame = $('#printFrame')[0];
 
-                            // printFrame.onload = function() {
-                            //     printFrame.contentWindow.focus();
-                            //     printFrame.contentWindow.print();
-                            //     // Redirect after printing
-                            //     printFrame.contentWindow.onafterprint = function() {
-                            //         window.location.href = "/sale";
-                            //     };
-                            // };
+                            if (checkPrintType == 'a4') {
+                                var printContentUrl = '/sale/invoice/' + id;
+                                $('#printFrame').attr('src', printContentUrl);
+
+                                printFrame.onload = function() {
+                                    printFrame.contentWindow.focus();
+                                    printFrame.contentWindow.print();
+                                    // Redirect after printing
+                                    printFrame.contentWindow.onafterprint = function() {
+                                        window.location.href = "/sale";
+                                    };
+                                };
+                            } else {
+                                var printContentUrl = '/sale/print/' + id;
+                                $('#printFrame').attr('src', printContentUrl);
+
+                                printFrame.onload = function() {
+                                    printFrame.contentWindow.focus();
+                                    printFrame.contentWindow.print();
+                                    // Redirect after printing
+                                    printFrame.contentWindow.onafterprint = function() {
+                                        window.location.href = "/sale";
+                                    };
+                                };
+                            }
+
 
                         } else {
                             // console.log(res);

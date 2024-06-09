@@ -240,7 +240,7 @@ class SaleController extends Controller
     }
     public function update(Request $request, $id)
     {
-        dd($request->all());
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
             'products' => 'required',
