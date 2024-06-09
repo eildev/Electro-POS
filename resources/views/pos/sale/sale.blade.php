@@ -30,7 +30,7 @@
                             </div>
                             <span class="text-danger purchase_date_error"></span>
                         </div>
-                        <div class="mb-1 col-md-6">
+                        {{-- <div class="mb-1 col-md-6">
                             @php
                                 $products = App\Models\Product::where('stock', '>', 0)->get();
                             @endphp
@@ -49,8 +49,8 @@
                                 @endif
                             </select>
                             <span class="text-danger product_select_error"></span>
-                        </div>
-                        {{-- <div class="mb-1 col-md-6">
+                        </div> --}}
+                        <div class="mb-1 col-md-6">
                             <label class="form-label">Product</label>
                             <div class="d-flex g-3">
                                 <select class="js-example-basic-single form-select product_select view_product"
@@ -58,10 +58,10 @@
 
                                 </select>
                                 <span class="text-danger product_select_error"></span>
-                                <button class="btn btn-primary ms-2" data-bs-toggle="modal"
+                                <button class="btn btn-primary ms-2 w-25" data-bs-toggle="modal"
                                     data-bs-target="#viaSellModal">Via Sell</button>
                             </div>
-                        </div> --}}
+                        </div>
                         <div class="mb-1 col-md-6">
                             <label for="password" class="form-label">Customer</label>
                             <div class="d-flex g-3">
@@ -317,7 +317,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="customerForm row">
+                    <form class="viaSellForm row">
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Product Name <span
                                     class="text-danger">*</span></label>
@@ -328,28 +328,28 @@
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Sell Price <span
                                     class="text-danger">*</span></label>
-                            <input id="defaultconfig" class="form-control sell_price" maxlength="39" name="phone"
+                            <input id="defaultconfig" class="form-control sell_price" maxlength="39" name="price"
                                 type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger sell_price_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Cost Price <span
                                     class="text-danger">*</span></label>
-                            <input id="defaultconfig" class="form-control cost_price" maxlength="39" name="email"
+                            <input id="defaultconfig" class="form-control cost_price" maxlength="39" name="cost"
                                 type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger cost_price_error"></span>
                         </div>
 
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Quantity <span class="text-danger">*</span></label>
-                            <input id="defaultconfig" class="form-control via_quantity" maxlength="39" name="address"
+                            <input id="defaultconfig" class="form-control via_quantity" maxlength="39" name="stock"
                                 type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
-                            <span class="text-danger via_quantity"></span>
+                            <span class="text-danger via_quantity_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Total</label>
                             <input id="defaultconfig" class="form-control via_product_total" maxlength="39"
-                                name="opening_receivable" type="number" readonly>
+                                name="via_product_total" type="number" readonly>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -404,7 +404,7 @@
                         if (products.length > 0) {
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
-                                    `<option value="${products.id}">${product.name}(${product.barcode})</option>`
+                                    `<option value="${product.id}">${product.name}(${product.barcode})</option>`
                                 );
                             })
                         } else {
@@ -416,42 +416,47 @@
             }
             viewViaSell();
 
-            // const saveViaProduct = document.querySelector('.save_via_product');
-            // saveViaProduct.addEventListener('click', function(e) {
-            //     e.preventDefault();
-            //     // alert('ok')
-            //     let formData = new FormData($('.customerForm')[0]);
-            //     $.ajaxSetup({
-            //         headers: {
-            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //         }
-            //     });
-            //     $.ajax({
-            //         url: '/add/customer',
-            //         type: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function(res) {
-            //             if (res.status == 200) {
-            //                 // console.log(res);
-            //                 $('#customerModal').modal('hide');
-            //                 $('.customerForm')[0].reset();
-            //                 viewCustomer();
-            //                 toastr.success(res.message);
-            //             } else {
-            //                 // console.log(res);
-            //                 if (res.error.name) {
-            //                     showError('.customer_name', res.error.name);
-            //                 }
-            //                 if (res.error.phone) {
-            //                     showError('.phone', res.error.phone);
-            //                 }
-            //             }
-            //         }
-            //     });
-            // })
 
+            // add via Products
+            $(document).on('click', '.save_via_product', function(e) {
+                e.preventDefault();
+                let formData = new FormData($('.viaSellForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '/via/product/add',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        console.log(res);
+                        if (res.status == 200) {
+                            $('#viaSellModal').modal('hide');
+                            $('.viaSellForm')[0].reset();
+                            viewViaSell();
+                            toastr.success(res.message);
+                        } else {
+                            console.log(res);
+                            if (res.error.name) {
+                                showError('.product_name', res.error.name);
+                            }
+                            if (res.error.cost) {
+                                showError('.cost_price', res.error.cost);
+                            }
+                            if (res.error.price) {
+                                showError('.sell_price', res.error.price);
+                            }
+                            if (res.error.stock) {
+                                showError('.via_quantity', res.error.stock);
+                            }
+                        }
+                    }
+                });
+            })
 
             // customer view function
             function viewCustomer() {
@@ -584,7 +589,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>

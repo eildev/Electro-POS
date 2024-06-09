@@ -4,16 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountTransaction;
 use App\Models\ActualPayment;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Promotion;
 use App\Models\PromotionDetails;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\SubCategory;
 use App\Models\Transaction;
+use App\Models\Unit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Validator;
 
 class SaleController extends Controller
@@ -613,5 +618,84 @@ class SaleController extends Controller
             'status' => '200',
             'products' => $products
         ]);
+    }
+
+    public function saleViaProductAdd(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'price' => 'required',
+            'cost' => 'required',
+            'stock' => 'required',
+        ]);
+
+
+        if ($validator->passes()) {
+            $maxBarcode = Product::where('branch_id', Auth::user()->branch_id)
+                ->max('barcode');
+            $product = new Product;
+            $product->name =  $request->name;
+            $product->branch_id =  Auth::user()->branch_id;
+            if ($maxBarcode > 0) {
+                $product->barcode =  $maxBarcode + 1;
+            } else {
+                $product->barcode =  00001;
+            }
+            $categoryExist = Category::where('slug', 'like', '%via%')->first();
+            if ($categoryExist) {
+                $product->category_id =  $categoryExist->id;
+            } else {
+                $category = new Category;
+                $category->name =  "Via Sell";
+                $category->slug = Str::slug("via-sell");
+                $category->save();
+                $product->category_id =  $category->id;
+            }
+            $subcategoryExist = SubCategory::where('slug', 'like', '%via%')->first();
+            if ($subcategoryExist) {
+                $product->subcategory_id =  $subcategoryExist->id;
+            } else {
+                $categoryExist = Category::where('slug', 'like', '%via%')->first();
+                $subcategory = new SubCategory;
+                $subcategory->category_id =  $categoryExist->id;
+                $subcategory->name =  "Via Sell";
+                $subcategory->slug = Str::slug("via-sell");
+                $subcategory->save();
+                $product->subcategory_id =  $subcategory->id;
+            }
+            $brandExist = Brand::where('slug', 'like', '%via%')->first();
+            if ($brandExist) {
+                $product->brand_id =  $brandExist->id;
+            } else {
+                $brand = new Brand;
+                $brand->name =  "Via Sell";
+                $brand->slug = Str::slug("via-sell");
+                $brand->save();
+                $product->brand_id =  $brand->id;
+            }
+            $product->cost  =  $request->cost;
+            $product->price  =  $request->price;
+            $unitExist = Unit::where('name', 'like', '%Piece%')->first();
+            if ($unitExist) {
+                $product->unit_id =  $unitExist->id;
+            } else {
+                $unit = new Unit;
+                $unit->name =  "Piece";
+                $unit->related_by = 1;
+                $unit->save();
+                $product->unit_id =  $unit->id;
+            }
+            $product->save();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Via Product Save Successfully',
+            ]);
+        } else {
+            return response()->json([
+                'status' => '500',
+                'error' => $validator->messages()
+            ]);
+        }
     }
 }
