@@ -130,17 +130,19 @@
                                     <label class="form-label">Invoice Design
                                         {{-- <span class="text-danger">*</span> --}}
                                     </label>
-                                    <select name="invoice_type" class="form-control">
+                                    {{-- <select name="invoice_type" class="form-control">
                                         <option value="a4"
                                             {{ !empty($allData->id) && $allData->invoice_type == 'a4' ? 'selected' : '' }}>
                                             A4</option>
-                                        {{-- <option value="a4-2" selected="">A4 - 2</option> --}}
-                                        {{-- <option value="a4-3">A4 - 3</option> --}}
                                         <option value="pos"
                                             {{ !empty($allData->id) && $allData->invoice_type == 'pos' ? 'selected' : '' }}>
                                             Pos Printer</option>
-                                        {{-- <option value="pos-2">Pos Printer - 2</option>
-                                <option value="pos-3">Pos Printer - 3</option> --}}
+                                    </select> --}}
+
+                                    <select name="invoice_type" class="form-control">
+                                        <option value="a4" {{ !empty($allData->id) && $allData->invoice_type == 'a4' ?  'selected' : '' }}>A4</option>
+                                        <option value="a5" {{ !empty($allData->id) && $allData->invoice_type == 'a5' ?  'selected' : '' }}>A5</option>
+                                        <option value="pos" {{ !empty($allData->id) && $allData->invoice_type == 'pos' ?  'selected' : '' }}>Pos Printer</option>
                                     </select>
                                 </div>
                             </div>
