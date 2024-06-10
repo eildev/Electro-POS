@@ -114,7 +114,7 @@ class SaleController extends Controller
             // $sale->returned = $request->due;
             $sale->final_receivable = $request->change_amount;
             $sale->payment_method = $request->payment_method;
-            $sale->profit = $request->change_amount - $productCost;
+            $sale->profit = $request->change_amount - ($productCost + $request->actual_discount);
             $sale->note = $request->note;
             $sale->created_at = Carbon::now();
             $sale->save();
@@ -135,7 +135,7 @@ class SaleController extends Controller
                 $items->wa_duration = $product['wa_duration'];
                 $items->discount = $product['product_discount'];
                 $items->sub_total = $product['total_price'];
-                $items->total_purchase_cost = $items2->cost * $product['quantity'];
+                $items->total_purchase_cost = ($items2->cost * $product['quantity']) + $product['product_discount'];
                 $items->save();
 
 
