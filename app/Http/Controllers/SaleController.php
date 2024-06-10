@@ -146,9 +146,10 @@ class SaleController extends Controller
 
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);
-            $customer->total_receivable = $customer->total_receivable + $request->change_amount;
+            $customer->total_receivable = $customer->total_receivable + $request->total;
             $customer->total_payable = $customer->total_payable + $request->paid;
-            $customer->wallet_balance = $customer->wallet_balance + ($request->change_amount - $request->paid);
+            $customer->wallet_balance = $customer->wallet_balance + ($request->total - $request->paid);
+            // $customer->wallet_balance = $customer->wallet_balance - ($request->due);
             $customer->save();
 
             // actual Payment
@@ -686,9 +687,11 @@ class SaleController extends Controller
                 $unit->save();
                 $product->unit_id =  $unit->id;
             }
+            $product->stock = $request->stock;
             $product->save();
             return response()->json([
                 'status' => 200,
+                'products' => $product,
                 'message' => 'Via Product Save Successfully',
             ]);
         } else {

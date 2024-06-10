@@ -438,6 +438,10 @@
                             $('#viaSellModal').modal('hide');
                             $('.viaSellForm')[0].reset();
                             viewViaSell();
+                            let products = res.products;
+                            let quantity = products.stock;
+                            // console.log(quantity);
+                            showAddProduct(products, quantity);
                             toastr.success(res.message);
                         } else {
                             console.log(res);
@@ -456,6 +460,19 @@
                         }
                     }
                 });
+            })
+
+            function viaProductCalculation() {
+                let sellPrice = parseFloat($('.sell_price').val());
+                let quantity = parseFloat($('.via_quantity').val()) || 1;
+                let total = sellPrice * quantity;
+                $('.via_product_total').val(total);
+            }
+            $(document).on('keyup', '.sell_price', function() {
+                viaProductCalculation();
+            })
+            $(document).on('keyup', '.via_quantity', function() {
+                viaProductCalculation();
             })
 
             // customer view function
@@ -538,7 +555,8 @@
             let discountCheck = '{{ $discount }}';
 
             // show Product function
-            function showAddProduct(product, promotion) {
+            function showAddProduct(product, quantity, promotion) {
+                let quantity1 = quantity || 1;
                 // Check if a row with the same product ID already exists
                 let existingRow = $(`.data_row${product.id}`);
                 if (existingRow.length > 0) {
@@ -559,7 +577,7 @@
                                 <input type="number" product-id="${product.id}" class="form-control unit_price product_price${product.id} ${checkSellEdit == 0 ? 'border-0' : ''}" id="product_price" name="unit_price[]" ${checkSellEdit == 0 ? 'readonly' : ''} value="${product.price ?? 0}" />
                             </td>
                             <td>
-                                <input type="number" product-id="${product.id}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="1" />
+                                <input type="number" product-id="${product.id}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="${quantity1}" />
                             </td>
                             <td class="d-flex align-items-center">
                                 <div class="form-check form-switch mb-2">
@@ -589,7 +607,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -600,7 +618,7 @@
                                             :
                                             `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price - promotion.discount_value}" />`
                                         :
-                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price}" />`
+                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price * quantity1}" />`
                                 }
                             </td>
                             <td style="padding-top: 20px;">
@@ -612,10 +630,6 @@
                     );
                 }
             }
-
-
-
-
 
             // Function to calculate the subtotal for each product
             function calculateTotal() {
@@ -658,9 +672,10 @@
             $(document).on('change', '.unit_price', function() {
                 let product_id = $(this).attr('product-id');
                 // alert(product_id);
-                let quantity = $('.productQuantity' + product_id).val();
-                let unit_price = $(this).val();
+                let quantity = parseFloat($('.productQuantity' + product_id).val());
+                let unit_price = parseFloat($(this).val());
                 let productSubtotal = $('.product_subtotal' + product_id);
+                let total = unit_price * quantity;
 
                 $.ajax({
                     url: '/product/find-qty/' + product_id,
@@ -680,13 +695,19 @@
                                     confirmButtonText: 'Yes, I want!'
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        productSubtotal.val(unit_price);
+                                        productSubtotal.val(total);
+                                        calculateProductTotal();
                                         calculateCustomerDue();
                                     } else {
-                                        productSubtotal.val(unit_price);
+                                        productSubtotal.val(total);
+                                        calculateProductTotal();
                                         calculateCustomerDue();
                                     }
                                 })
+                            } else {
+                                productSubtotal.val(total);
+                                calculateProductTotal();
+                                calculateCustomerDue();
                             }
                         }
 
@@ -701,10 +722,10 @@
                 let quantity = $('.productQuantity' + product_id).val();
                 let discountProduct = parseFloat($(this).val());
                 let product_price = parseFloat($('.product_price' + product_id).val());
-                let productSubtotal = $('.product_subtotal' + product_id);
+                let productSubtotal = parseFloat($('.product_subtotal' + product_id).val());
                 let cost_price = parseFloat($('.produt_cost' + product_id).val());
 
-                let subTotal = product_price - discountProduct;
+                let subTotal = productSubtotal - discountProduct;
 
                 if (subTotal < cost_price) {
                     Swal.fire({
@@ -717,18 +738,16 @@
                         confirmButtonText: 'Yes, I want!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            productSubtotal.val(subTotal);
-
+                            $('.product_subtotal' + product_id).val(subTotal);
                             calculateProductTotal();
                             calculateCustomerDue();
                         } else {
                             $(this).val('');
-                            productSubtotal.val(product_price);
+                            $('.product_subtotal' + product_id).val(product_price);
                         }
                     })
                 } else {
-                    productSubtotal.val(subTotal);
-
+                    $('.product_subtotal' + product_id).val(subTotal);
                     calculateProductTotal();
                     calculateCustomerDue();
                 }
@@ -772,7 +791,7 @@
                         if (res.status == 200) {
                             const product = res.data;
                             const promotion = res.promotion;
-                            showAddProduct(product, promotion);
+                            showAddProduct(product, 1, promotion);
                             updateGrandTotal();
                             calculateCustomerDue();
                             $('.barcode_input').val('');
@@ -796,7 +815,7 @@
                         success: function(res) {
                             const product = res.data;
                             const promotion = res.promotion;
-                            showAddProduct(product, promotion);
+                            showAddProduct(product, 1, promotion);
                             updateGrandTotal();
                             calculateCustomerDue();
                         }
@@ -835,6 +854,7 @@
                             $('.grandTotal').val(amount);
                         } else {
                             $('.grandTotal').val(grand_total);
+                            $('.previous_due').val(0);
                         }
                     }
                 })
