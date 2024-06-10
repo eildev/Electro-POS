@@ -114,7 +114,7 @@ class SaleController extends Controller
             // $sale->returned = $request->due;
             $sale->final_receivable = $request->change_amount;
             $sale->payment_method = $request->payment_method;
-            $sale->profit = $request->change_amount - ($productCost);
+            $sale->profit = $request->change_amount - $productCost;
             $sale->note = $request->note;
             $sale->created_at = Carbon::now();
             $sale->save();

@@ -607,7 +607,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -716,7 +716,7 @@
             });
 
             // when discount price is Edit
-            $(document).on('keyup', '.discountProduct', function() {
+            $(document).on('change', '.discountProduct', function() {
                 let product_id = $(this).attr('product-id');
                 // alert(product_id);
                 let quantity = $('.productQuantity' + product_id).val();
@@ -726,6 +726,9 @@
                 let cost_price = parseFloat($('.produt_cost' + product_id).val());
 
                 let subTotal = productSubtotal - discountProduct;
+                console.log(subTotal);
+                console.log(productSubtotal);
+                console.log(discountProduct);
 
                 if (subTotal < cost_price) {
                     Swal.fire({
@@ -806,7 +809,7 @@
             // Select product
             $('.product_select').change(function() {
                 let id = $(this).val();
-                console.log(id);
+                // console.log(id);
                 if ($(`.data_row${id}`).length === 0 && id) {
                     $.ajax({
                         url: '/product/find/' + id,
