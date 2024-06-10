@@ -198,7 +198,7 @@
                                     class="text-danger">*</span>:</label>
                         </div>
                         <div class="col-sm-8">
-                            <input class="form-control total_payable" name="total_payable" type="number" value=""
+                            <input class="form-control total_payable" minlength='0' name="total_payable" type="number" value=""
                                 onkeyup="errorRemove(this);">
                             <span class="text-danger total_payable_error"></span>
                         </div>
@@ -866,7 +866,7 @@
             calculateCustomerDue();
 
 
-            // handson discount calculation 
+            // handson discount calculation
             $(document).on('keyup', '.handsOnDiscount', function() {
                 // alert('Ok');
                 let discountPrice = parseFloat($(this).val());

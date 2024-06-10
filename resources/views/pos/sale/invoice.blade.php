@@ -65,8 +65,8 @@
                             {{-- @dd($products); --}}
 
                             <table class="table table-bordered invoice_table_bg">
-                                <thead class="invoice_table_th_bg">
-                                    <tr>
+                                <thead >
+                                    <tr class="invoice_table_th_bg">
                                         <th>#</th>
                                         <th>Product Name</th>
                                         <th class="text-end">Unit cost</th>
@@ -91,7 +91,7 @@
                                             </tr>
                                             @php $lastIndex = $index + 1; @endphp
                                         @endforeach
-                                        @for ($i = $lastIndex + 1; $i < 16; $i++)
+                                        @for ($i = $lastIndex + 1; $i < 10; $i++)
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $i }}</td>
                                                 <td class="text-start"></td>
@@ -116,7 +116,7 @@
                             <div class="col-md-6 ms-auto total_calculation">
                                 <div class="table-responsive">
                                     <table class="table">
-                                        <tbody class="text-black">
+                                        <tbody class="total_calculation_bg">
                                             <tr>
                                                 <td>Product Total</td>
                                                 <td class="text-end">৳ {{ $sale->total }}</td>
@@ -182,12 +182,12 @@
                                                 @endif
                                             @else
                                                 @if ($sale->due >= 0)
-                                                    <tr class="bg-dark">
+                                                    <tr class="bg-dark print_bg_white">
                                                         <td class="text-bold-800">Balance Due</td>
                                                         <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
                                                     </tr>
                                                 @else
-                                                    <tr class="bg-dark">
+                                                    <tr class="bg-dark print_bg_white">
                                                         <td class="text-bold-800">Return</td>
                                                         <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
                                                     </tr>
@@ -228,6 +228,9 @@
         </div>
     </div>
     <style>
+        .table> :not(caption)>*>* {
+                padding: 0px 10px !important;
+            }
         @media print {
             @if ($invoice_type == 'a4')
                 @page {
@@ -242,12 +245,14 @@
             .footer {
                 display: none !important;
             }
-
             .page-content {
                 margin-top: 0 !important;
                 padding-top: 0 !important;
-                border: 1px solid blue !important;
-                background-color: none !important;
+                min-height: 740px !important;
+                background-color: #eec6a1 !important;
+                /* background-color: #cce9fa !important; */
+                background-color: #fdfdfd !important;
+                border: 1px solid #F38724;
             }
 
             .btn_group {
@@ -278,22 +283,36 @@
             }
 
             .table> :not(caption)>*>* {
-                padding: 0 !important;
+                padding: 0px 10px !important;
             }
 
             .invoice_bg {
-                background-color: rgb(255, 255, 255) !important;
+                background-color: #ffffff !important;
+                /* background-color: #cce9fa !important; */
+                /* background-color: #eec6a1 !important; */
                 color: #000 !important;
+                height: 740px;
             }
 
             .invoice_table_bg {
-                background-color: rgb(241, 204, 204) !important;
-                color: #ED0000 !important;
-                border-color: #000
+                /* background-color: rgb(241, 204, 204) !important; */
+                color: #000000 !important;
+                border-color: #F38724;
             }
 
             .invoice_table_th_bg {
-                background-color: rgb(247, 121, 37) !important;
+                background-color: #F38724 !important;
+                color: #000000 !important;
+            }
+            .invoice_table_th_bg th {
+
+                color: #000000 !important;
+            }
+            .total_calculation_bg{
+                color: #000 !important;
+            }
+            .print_bg_white{
+                background-color: transparent !important;
             }
         }
     </style>
