@@ -34,13 +34,10 @@
                                 <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
                             @endif
                             <p class="show_branch_address w_40">{{ $address ?? 'Banasree' }}</p>
+                            <p class="show_branch_address">{{ $phone ?? '' }}, 01708008705, 01720389177</p>
                             <p class="show_branch_address">{{ $email ?? '' }}</p>
-                            <p class="show_branch_address">{{ $phone ?? '' }}</p>
-                            {{-- <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
-                            <p class="mt-1 mb-1 show_branch_name"><b>{{ $branch->name ?? '' }}</b></p>
-                            <p class="show_branch_address w_40">{{ $branch->address ?? 'accordion ' }}</p>
-                            <p class="show_branch_email">{{ $branch->email ?? '' }}</p>
-                            <p class="show_branch_phone">{{ $branch->phone ?? '' }}</p> --}}
+
+
 
                             <hr>
 
@@ -53,7 +50,7 @@
                         </div>
                         <div class="col-lg-3 pe-0 text-end">
                             <h4 class="fw-bolder text-uppercase text-end mt-4 mb-2">invoice</h4>
-                            <h6 class="text-end mb-5 pb-4"># INV-{{ $sale->invoice_number }}</h6>
+                            <h6 class="text-end mb-5 pb-4"># INV-{{ $sale->invoice_number ?? 0 }}</h6>
                             <p class="text-end mb-1 mt-5">Total </p>
                             <h4 class="text-end fw-normal">৳ {{ $sale->receivable ?? 00.0 }}</h4>
                             <h6 class="mb-0 mt-2 text-end fw-normal"><span class="text-muted show_purchase_date">Invoice
@@ -82,7 +79,7 @@
                                         @foreach ($products as $index => $product)
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
-                                                <td class="text-start">{{ $product->product->name ?? 0 }}</td>
+                                                <td class="text-start">{{ $product->product->name ?? "" }}</td>
                                                 <td>{{ $product->wa_duration ?? 0 }}</td>
                                                 <td>{{ $product->rate ?? 0 }}</td>
                                                 <td>{{ $product->qty ?? 0 }}</td>
@@ -154,25 +151,19 @@
                                                 <td class="text-bold-800">Grand Total</td>
                                                 <td class="text-bold-800 text-end">৳ {{ $sale->receivable }} </td>
                                             </tr>
-                                            @if ($sale->receivable <= $sale->paid)
-                                                <tr>
-                                                    <td>Paid</td>
-                                                    <td class="text-success text-end">৳ {{ $sale->paid }} </td>
-                                                </tr>
-                                            @else
-                                                <tr>
-                                                    <td>Paid</td>
-                                                    <td class="text-danger text-end">(-) ৳ {{ $sale->paid }} </td>
-                                                </tr>
-                                            @endif
+                                            <tr>
+                                                <td>Paid</td>
+                                                <td class="text-success text-end">৳ {{ $sale->paid }} </td>
+                                            </tr>
+
                                             @php
                                                 $mode = App\models\PosSetting::all()->first();
                                             @endphp
                                             @if ($mode->dark_mode == 1)
                                                 @if ($sale->due >= 0)
                                                     <tr class="">
-                                                        <td class="text-bold-800">Due</td>
-                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                        <td class="text-bold-800 text-danger">Due</td>
+                                                        <td class="text-bold-800 text-end text-danger ">৳ {{ $sale->due }} </td>
                                                     </tr>
                                                 @else
                                                     <tr class="">
@@ -184,7 +175,7 @@
                                                 @if ($sale->due >= 0)
                                                     <tr class="bg-dark print_bg_white">
                                                         <td class="text-bold-800">Due</td>
-                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                        <td class="text-bold-800 text-end text-danger">৳ {{ $sale->due }} </td>
                                                     </tr>
                                                 @else
                                                     <tr class="bg-dark print_bg_white">
