@@ -20,13 +20,13 @@
                                     <a href="#" class="noble-ui-logo logo-light d-block mt-3">{{ $siteTitle }}</a>
                                 @elseif($invoice_logo_type == 'Logo')
                                     @if (!empty($logo))
-                                        <img height="" width="150" src="{{ url($logo) }}" alt="logo">
+                                        <img class="margin_left_m_14" height="90" width="150" src="{{ url($logo) }}" alt="logo">
                                     @else
                                         <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
                                     @endif
                                 @elseif($invoice_logo_type == 'Both')
                                     @if (!empty($logo))
-                                        <img height="50" width="150" src="{{ url($logo) }}" alt="logo">
+                                        <img class="margin_left_m_14" height="90" width="150" src="{{ url($logo) }}" alt="logo">
                                     @endif
                                     <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
                                 @endif
@@ -38,7 +38,7 @@
                             <p class="show_branch_address">{{ $phone ?? '' }}</p>
                             {{-- <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
                             <p class="mt-1 mb-1 show_branch_name"><b>{{ $branch->name ?? '' }}</b></p>
-                            <p class="show_branch_address">{{ $branch->address ?? 'accordion ' }}</p>
+                            <p class="show_branch_address w_40">{{ $branch->address ?? 'accordion ' }}</p>
                             <p class="show_branch_email">{{ $branch->email ?? '' }}</p>
                             <p class="show_branch_phone">{{ $branch->phone ?? '' }}</p> --}}
 
@@ -69,9 +69,9 @@
                                     <tr class="invoice_table_th_bg">
                                         <th>#</th>
                                         <th>Product Name</th>
+                                        <th class="text-end">Warranty</th>
                                         <th class="text-end">Unit cost</th>
                                         <th class="text-end">Quantity</th>
-                                        <th class="text-end">Warranty</th>
                                         <th class="text-end">Discount</th>
                                         <th class="text-end">Total</th>
                                     </tr>
@@ -83,15 +83,15 @@
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
                                                 <td class="text-start">{{ $product->product->name }}</td>
+                                                <td>{{ $product->wa_duration ?? 0 }}</td>
                                                 <td>{{ $product->rate ?? 0 }}</td>
                                                 <td>{{ $product->qty ?? 0 }}</td>
-                                                <td>{{ $product->wa_duration ?? 0 }}</td>
                                                 <td>{{ $product->discount ?? 0 }}</td>
                                                 <td>{{ $product->sub_total ?? 0 }}</td>
                                             </tr>
                                             @php $lastIndex = $index + 1; @endphp
                                         @endforeach
-                                        @for ($i = $lastIndex + 1; $i < 10; $i++)
+                                        @for ($i = $lastIndex + 1; $i < 16; $i++)
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $i }}</td>
                                                 <td class="text-start"></td>
@@ -156,12 +156,12 @@
                                             </tr>
                                             @if ($sale->receivable <= $sale->paid)
                                                 <tr>
-                                                    <td>Payment Made</td>
+                                                    <td>Paid</td>
                                                     <td class="text-success text-end">৳ {{ $sale->paid }} </td>
                                                 </tr>
                                             @else
                                                 <tr>
-                                                    <td>Payment Made</td>
+                                                    <td>Paid</td>
                                                     <td class="text-danger text-end">(-) ৳ {{ $sale->paid }} </td>
                                                 </tr>
                                             @endif
@@ -171,7 +171,7 @@
                                             @if ($mode->dark_mode == 1)
                                                 @if ($sale->due >= 0)
                                                     <tr class="">
-                                                        <td class="text-bold-800">Balance Due</td>
+                                                        <td class="text-bold-800">Due</td>
                                                         <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
                                                     </tr>
                                                 @else
@@ -183,7 +183,7 @@
                                             @else
                                                 @if ($sale->due >= 0)
                                                     <tr class="bg-dark print_bg_white">
-                                                        <td class="text-bold-800">Balance Due</td>
+                                                        <td class="text-bold-800">Due</td>
                                                         <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
                                                     </tr>
                                                 @else
@@ -231,6 +231,14 @@
         .table> :not(caption)>*>* {
                 padding: 0px 10px !important;
             }
+            .margin_left_m_14{
+                margin-left: -14px;
+            }
+            .w_40{
+                width: 240px !important;
+                text-wrap: wrap;
+            }
+            
         @media print {
             @if ($invoice_type == 'a4')
                 @page {
@@ -249,10 +257,10 @@
                 margin-top: 0 !important;
                 padding-top: 0 !important;
                 min-height: 740px !important;
-                background-color: #eec6a1 !important;
+                /* background-color: #eec6a1 !important; */
                 /* background-color: #cce9fa !important; */
-                background-color: #fdfdfd !important;
-                border: 1px solid #F38724;
+                background-color: #ffffff !important;
+                /* border: 1px solid #29ADF9; */
             }
 
             .btn_group {
@@ -281,10 +289,17 @@
                 padding: 0px;
 
             }
-
-            .table> :not(caption)>*>* {
-                padding: 0px 10px !important;
+            
+            .margin_left_m_14{
+                margin-left: -14px;
             }
+            .w_40{
+                width: 240px !important;
+            }
+
+            /*.table> :not(caption)>*>* {*/
+            /*    padding: 0px 10px !important;*/
+            /*}*/
 
             .invoice_bg {
                 background-color: #ffffff !important;
@@ -297,11 +312,11 @@
             .invoice_table_bg {
                 /* background-color: rgb(241, 204, 204) !important; */
                 color: #000000 !important;
-                border-color: #F38724;
+                border-color: #29ADF9;
             }
 
             .invoice_table_th_bg {
-                background-color: #F38724 !important;
+                background-color: #29ADF9 !important;
                 color: #000000 !important;
             }
             .invoice_table_th_bg th {
