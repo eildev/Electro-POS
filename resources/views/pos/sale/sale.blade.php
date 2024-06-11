@@ -58,8 +58,10 @@
 
                                 </select>
                                 <span class="text-danger product_select_error"></span>
-                                <button class="btn btn-primary ms-2 w-25" data-bs-toggle="modal"
-                                    data-bs-target="#viaSellModal">Via Sell</button>
+                                @if ($via_sale == 1)
+                                    <button class="btn btn-primary ms-2 w-25" data-bs-toggle="modal"
+                                        data-bs-target="#viaSellModal">Via Sell</button>
+                                @endif
                             </div>
                         </div>
                         <div class="mb-1 col-md-6">
@@ -198,8 +200,8 @@
                                     class="text-danger">*</span>:</label>
                         </div>
                         <div class="col-sm-8">
-                            <input class="form-control total_payable" minlength='0' name="total_payable" type="number" value=""
-                                onkeyup="errorRemove(this);">
+                            <input class="form-control total_payable" minlength='0' name="total_payable" type="number"
+                                value="" onkeyup="errorRemove(this);">
                             <span class="text-danger total_payable_error"></span>
                         </div>
                     </div>
@@ -607,7 +609,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -889,6 +891,7 @@
             })
 
 
+            // quantity  
             $(document).on('click', '.quantity', function(e) {
                 e.preventDefault();
                 let id = $(this).attr("product-id")
@@ -908,22 +911,20 @@
                             let productPrice = res.product.price;
                             if (quantity > stock) {
                                 $('.quantity').val(stock);
-                                // subTotal.val(parseFloat(stock * productPrice).toFixed(2));
                                 updateGrandTotal();
                                 calculateCustomerDue();
                                 toastr.warning('Not enough stock');
                             } else {
-                                // subTotal.val(parseFloat(quantity * productPrice).toFixed(2));
                                 updateGrandTotal();
                                 calculateCustomerDue();
                             }
-
                         }
                     })
                 }
             })
-
-            $(document).on('keyup', '.quantity', function() {
+            // quantity  
+            $(document).on('keyup', '.quantity', function(e) {
+                e.preventDefault();
                 let id = $(this).attr("product-id")
                 let quantity = $(this).val();
                 quantity = parseInt(quantity);
@@ -941,12 +942,10 @@
                             let productPrice = res.product.price;
                             if (quantity > stock) {
                                 $('.quantity').val(stock);
-                                // subTotal.val(parseFloat(stock * productPrice).toFixed(2));
                                 updateGrandTotal();
                                 calculateCustomerDue();
                                 toastr.warning('Not enough stock');
                             } else {
-                                // subTotal.val(parseFloat(quantity * productPrice).toFixed(2));
                                 updateGrandTotal();
                                 calculateCustomerDue();
                             }
@@ -954,7 +953,6 @@
                         }
                     })
                 }
-
             })
 
             // Customer Due
