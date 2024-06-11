@@ -33,7 +33,7 @@
                             @else
                                 <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
                             @endif
-                            <p class="show_branch_address">{{ $address ?? 'Banasree' }}</p>
+                            <p class="show_branch_address w_40">{{ $address ?? 'Banasree' }}</p>
                             <p class="show_branch_address">{{ $email ?? '' }}</p>
                             <p class="show_branch_address">{{ $phone ?? '' }}</p>
                             {{-- <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
@@ -82,7 +82,7 @@
                                         @foreach ($products as $index => $product)
                                             <tr class="text-end">
                                                 <td class="text-start">{{ $index + 1 }}</td>
-                                                <td class="text-start">{{ $product->product->name }}</td>
+                                                <td class="text-start">{{ $product->product->name ?? 0 }}</td>
                                                 <td>{{ $product->wa_duration ?? 0 }}</td>
                                                 <td>{{ $product->rate ?? 0 }}</td>
                                                 <td>{{ $product->qty ?? 0 }}</td>
@@ -235,10 +235,10 @@
                 margin-left: -14px;
             }
             .w_40{
-                width: 240px !important;
+                width: 250px !important;
                 text-wrap: wrap;
             }
-            
+
         @media print {
             @if ($invoice_type == 'a4')
                 @page {
@@ -289,7 +289,7 @@
                 padding: 0px;
 
             }
-            
+
             .margin_left_m_14{
                 margin-left: -14px;
             }
