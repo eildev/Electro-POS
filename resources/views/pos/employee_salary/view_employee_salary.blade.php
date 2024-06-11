@@ -20,10 +20,12 @@
                                 <tr>
                                     <th>SN</th>
                                     <th>Employee Name</th>
-                                    <th>Branch Name</th>
+                                    <th>Branch</th>
                                     <th>Date</th>
                                     <th>Submited Salary</th>
                                     <th>Due Salary</th>
+                                    <th>Submit Date</th>
+                                    <th>Update Date</th>
                                     <th>Note</th>
                                     <th>Action</th>
                                 </tr>
@@ -38,6 +40,8 @@
                                 <td>{{ \Carbon\Carbon::parse($employeSalarys->date)->format('d F Y')   ?? ''}}</td>
                                 <td>{{ $employeSalarys->debit ?? ''}}</td>
                                 <td>{{ $employeSalarys->creadit - $employeSalarys->debit ?? ''}}</td>
+                                <td>{{$employeSalarys->created_at->format('d F Y') ?? ''}}</td>
+                                <td>{{ $employeSalarys->updated_at ? $employeSalarys->updated_at->format('d F Y') : '-' }}</td>
                                 <td>
                                     @php
                                     $note = $employeSalarys->note;

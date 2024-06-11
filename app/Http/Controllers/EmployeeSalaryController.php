@@ -56,6 +56,14 @@ public function EmployeeSalaryStore(Request $request){
         return back()->with($notification);
 
     }
+    $employeeSalaryUp = Employee::where('salary', '<', $request->debit)->exists();
+    if($employeeSalaryUp){
+        $notification = [
+            'error' => 'Salary for this employee is less than the debit amount.',
+            'alert-type' => 'error'
+        ];
+        return back()->with($notification);
+    }
      else {
         $employeeSalary = new EmployeeSalary;
         $employeeSalary->employee_id =  $request->employee_id;
@@ -66,6 +74,8 @@ public function EmployeeSalaryStore(Request $request){
         $employeeSalary->creadit = $employee->salary;
         $employeeSalary->balance = $now_balance;
         $employeeSalary->note =  $request->note;
+        $employeeSalary->created_at = Carbon::now();
+        $employeeSalary->updated_at = NULL;
         $employeeSalary->save();
         $notification = array(
             'message' =>'Employee Salary Send Successfully',
@@ -92,6 +102,7 @@ public function EmployeeSalaryUpdate(Request $request,$id){
     $employeeSalary->date =  $request->date;
     $employeeSalary->balance = $employeeSalary->creadit - $requiestDebit;
     $employeeSalary->note  = $request->note;
+    $employeeSalary->updated_at  =Carbon::now();
     $employeeSalary->update();
     $notification = array(
        'message' =>'Employee Salary Update Successfully',
@@ -146,6 +157,8 @@ public function EmployeeSalaryAdvancedStore(Request $request){
     $employeeSalary->creadit = $employee->salary;
     $employeeSalary->balance = $employee->salary - $requiestDebit;
     $employeeSalary->note =  $request->note;
+    $employeeSalary->created_at = Carbon::now();
+    $employeeSalary->updated_at = NULL;
     $employeeSalary->save();
     $notification = array(
         'message' =>'Employee Salary Send Successfully',
@@ -171,6 +184,7 @@ public function EmployeeSalaryAdvancedUpdate(Request $request,$id){
     $employeeSalary->date =  $request->date;
     $employeeSalary->balance = $employeeSalary->creadit - $requiestDebit;
     $employeeSalary->note  = $request->note;
+    $employeeSalary->updated_at  =Carbon::now();
     $employeeSalary->update();
     $notification = array(
        'message' =>'Employee Salary Advanced Update Successfully',
