@@ -82,25 +82,22 @@
                                 <h6 class="card-title">Return</h6>
                             </div>
                             <div class="row">
-                                <div class="mb-3 col-md-6">
-                                    <label for="ageSelect" class="form-label">Barcode</label>
+                                @if ($barcode == 1)
+                                    <div class="mb-3 col-md-6">
+                                        <label for="ageSelect" class="form-label">Barcode</label>
 
-                                    <div class="input-group">
-                                        <div class="input-group-text" id="btnGroupAddon"><i class="fa-solid fa-barcode"></i>
+                                        <div class="input-group">
+                                            <div class="input-group-text" id="btnGroupAddon"><i
+                                                    class="fa-solid fa-barcode"></i>
+                                            </div>
+                                            <input type="text" class="form-control barcode_input" placeholder="Barcode"
+                                                aria-label="Input group example" aria-describedby="btnGroupAddon">
                                         </div>
-                                        <input type="text" class="form-control barcode_input" placeholder="Barcode"
-                                            aria-label="Input group example" aria-describedby="btnGroupAddon">
                                     </div>
-                                </div>
+                                @endif
 
                                 <div class="mb-3 col-md-6">
                                     <label for="date" class="form-label">Date</label>
-                                    {{-- <div class="input-group flatpickr" id="flatpickr-date">
-                                        <input type="date" class="form-control purchase_date" placeholder="" data-input>
-                                        <span class="input-group-text input-group-addon" data-toggle><i
-                                                data-feather="calendar"></i></span>
-                                    </div> --}}
-
                                     <div class="input-group flatpickr" id="flatpickr-date">
                                         <input type="text" name="date" class="form-control purchase_date"
                                             placeholder="Select date" data-input value="{{ $sale->sale_date }}">
@@ -108,29 +105,20 @@
                                                 data-feather="calendar"></i></span>
                                     </div>
                                     <span class="text-danger purchase_date_error"></span>
-
-
                                 </div>
-                                <div class="mb-3 col-md-6">
-                                    @php
-                                        $products = App\Models\Product::where('stock', '>', 0)->get();
-                                    @endphp
-                                    <label for="ageSelect" class="form-label">Product</label>
-                                    <select class="js-example-basic-single  form-select product_select" data-width="100%"
-                                        onclick="errorRemove(this);" onblur="errorRemove(this);">
-                                        @if ($products->count() > 0)
-                                            <option selected disabled>Select Product</option>
-                                            @foreach ($products as $product)
-                                                <option value="{{ $product->id }}">{{ $product->name }}
-                                                    ({{ $product->stock }}
-                                                    {{ $product->unit->name }} Available)
-                                                </option>
-                                            @endforeach
-                                        @else
-                                            <option selected disabled>Please Add Product</option>
+                                <div class="mb-1 col-md-6">
+                                    <label class="form-label">Product</label>
+                                    <div class="d-flex g-3">
+                                        <select class="js-example-basic-single form-select product_select view_product"
+                                            data-width="100%" onclick="errorRemove(this);" onblur="errorRemove(this);">
+
+                                        </select>
+                                        <span class="text-danger product_select_error"></span>
+                                        @if ($via_sale == 1)
+                                            <button class="btn btn-primary ms-2 w-25" data-bs-toggle="modal"
+                                                data-bs-target="#viaSellModal">Via Sell</button>
                                         @endif
-                                    </select>
-                                    <span class="text-danger product_select_error"></span>
+                                    </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
                                     <label for="password" class="form-label">Customer</label>
@@ -182,20 +170,20 @@
                 <div class="card-body px-4 py-2">
                     <div class="row align-items-center">
                         <div class="col-sm-4">
-                            Previous Paid:
-                        </div>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control availableAmount border-0 " name="" readonly
-                                value="{{ $sale->paid ?? 0 }}" />
-                        </div>
-                    </div>
-                    <div class="row align-items-center">
-                        <div class="col-sm-4">
                             Product Total :
                         </div>
                         <div class="col-sm-8">
                             <input type="number" class="form-control total border-0 " name="" readonly
                                 value="0.00" />
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-sm-4">
+                            Previous Paid:
+                        </div>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control availableAmount border-0 " name="" readonly
+                                value="{{ $sale->paid ?? 0 }}" />
                         </div>
                     </div>
 
@@ -204,39 +192,54 @@
                             Discount :
                         </div>
                         <div class="col-sm-8">
-
+                            <input type="number" class="form-control handsOnDiscount" name=""
+                                value="{{ $sale->actual_discount ?? 0 }}" />
                         </div>
                     </div>
 
                     <div class="row align-items-center">
+                        {{-- <div class="col-sm-4">
+                            Sub Total :
+                        </div> --}}
                         <div class="col-sm-8">
                             <input type="hidden" class="form-control grand_total border-0 " name="grand_total" readonly
                                 value="0.00" />
                         </div>
                     </div>
-                    <div class="row align-items-center mb-2">
+                    <div class="row align-items-center">
                         <div class="col-sm-4">
-                            <label for="name" class="form-label">Tax:</label>
+                            Grand Total :
                         </div>
                         <div class="col-sm-8">
-                            @php
-                                $taxs = App\Models\Tax::get();
-                            @endphp
-                            <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
-                                onblur="errorRemove(this);" value="">
-                                @if ($taxs->count() > 0)
-                                    <option selected disabled>0%</option>
-                                    @foreach ($taxs as $taxs)
-                                        <option value="{{ $taxs->percentage }}">
-                                            {{ $taxs->percentage }} %
-                                        </option>
-                                    @endforeach
-                                @else
-                                    <option selected disabled>Please Add Transaction</option>
-                                @endif
-                            </select>
+                            <input type="number" class="form-control grandTotal border-0 " name="grandTotal" readonly
+                                value="{{ $sale->total - $sale->actual_discount }}" />
                         </div>
                     </div>
+                    @if ($tax == 1)
+                        <div class="row align-items-center mb-2">
+                            <div class="col-sm-4">
+                                <label for="name" class="form-label">Tax:</label>
+                            </div>
+                            <div class="col-sm-8">
+                                @php
+                                    $taxs = App\Models\Tax::get();
+                                @endphp
+                                <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
+                                    onblur="errorRemove(this);" value="">
+                                    @if ($taxs->count() > 0)
+                                        <option selected disabled>0%</option>
+                                        @foreach ($taxs as $taxs)
+                                            <option value="{{ $taxs->percentage }}">
+                                                {{ $taxs->percentage }} %
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option selected disabled>Please Add Transaction</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                    @endif
                     <div class="row align-items-center">
                         <div class="col-sm-4">
                             New Pay:
@@ -300,7 +303,59 @@
         </div>
     </div>
 
-    {{-- table  --}}
+    <!-- Via Sell -->
+    <div class="modal fade" id="viaSellModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Via Sell Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="viaSellForm row">
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Product Name <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control product_name" maxlength="255" name="name"
+                                type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger product_name_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Sell Price <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control sell_price" maxlength="39" name="price"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger sell_price_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Cost Price <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control cost_price" maxlength="39" name="cost"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger cost_price_error"></span>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Quantity <span class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control via_quantity" maxlength="39" name="stock"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger via_quantity_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Total</label>
+                            <input id="defaultconfig" class="form-control via_product_total" maxlength="39"
+                                name="via_product_total" type="number" readonly>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary save_via_product">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <style>
         #printFrame {
@@ -311,7 +366,99 @@
     <iframe id="printFrame" src="" width="0" height="0"></iframe>
 
     <script>
+        function errorRemove(element) {
+            if (element.value != '') {
+                $(element).siblings('span').hide();
+                $(element).css('border-color', 'green');
+            }
+        }
+
+        // define warranty period
+        $(document).on('click', '#warranty_status', function() {
+            if ($(this).is(':checked')) {
+                $(this).closest('div').next('.Warranty_duration').show();
+            } else {
+                $(this).closest('div').next('.Warranty_duration').hide();
+            }
+        });
+
         $(document).ready(function() {
+            function showError(name, message) {
+                $(name).css('border-color', 'red');
+                $(name).focus();
+                $(`${name}_error`).show().text(message);
+            }
+
+
+            // Via Sell Product view function
+            function viewViaSell() {
+                $.ajax({
+                    url: '/product/view/sale',
+                    method: 'GET',
+                    success: function(res) {
+                        // console.log(res);
+                        const products = res.products;
+                        $('.view_product').empty();
+                        if (products.length > 0) {
+                            $.each(products, function(index, product) {
+                                $('.view_product').append(
+                                    `<option value="${product.id}">${product.name}(${product.barcode})</option>`
+                                );
+                            })
+                        } else {
+                            $('.view_product').html(`
+                        <option selected disable>Please add Product</option>`)
+                        }
+                    }
+                })
+            }
+            viewViaSell();
+
+            // add via Products
+            $(document).on('click', '.save_via_product', function(e) {
+                e.preventDefault();
+                let formData = new FormData($('.viaSellForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '/via/product/add',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        console.log(res);
+                        if (res.status == 200) {
+                            $('#viaSellModal').modal('hide');
+                            $('.viaSellForm')[0].reset();
+                            viewViaSell();
+                            let products = res.products;
+                            let quantity = products.stock;
+                            // console.log(quantity);
+                            showAddProduct(products, quantity);
+                            toastr.success(res.message);
+                        } else {
+                            console.log(res);
+                            if (res.error.name) {
+                                showError('.product_name', res.error.name);
+                            }
+                            if (res.error.cost) {
+                                showError('.cost_price', res.error.cost);
+                            }
+                            if (res.error.price) {
+                                showError('.sell_price', res.error.price);
+                            }
+                            if (res.error.stock) {
+                                showError('.via_quantity', res.error.stock);
+                            }
+                        }
+                    }
+                });
+            })
+
             let selectedCustomer = '{{ $selectedCustomer->id }}'
             // customer view function
             function viewCustomer() {
@@ -351,6 +498,10 @@
                 });
             }
 
+            let checkSellEdit = '{{ $selling_price_edit }}';
+            // discount edit check
+            let discountCheck = '{{ $discount }}';
+
             function showAddProduct(product, promotion, quantity = 1) {
                 // Check if a row with the same product ID already exists
                 let existingRow = $(`.data_row${product.id}`);
@@ -365,41 +516,65 @@
                     // If the row doesn't exist, add a new row
                     $('.showData').append(
                         `<tr class="data_row${product.id}">
-            <td>
-                <input type="text" class="form-control product_name${product.id} border-0" name="product_name[]" readonly value="${product.name ?? ""}" />
-            </td>
-            <td>
-                <input type="hidden" class="product_id" name="product_id[]" readonly value="${product.id ?? 0}" />
-                <input type="number" class="form-control product_price${product.id} border-0" name="unit_price[]" readonly value="${product.price ?? 0}" />
-            </td>
-            <td>
-                <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" value="${quantity}" />
-            </td>
-            <td style="padding-top: 20px;">
-                ${promotion && promotion.discount_type ?
-                    promotion.discount_type == 'percentage' ?
-                        `<span class="discount_percentage${product.id} mt-2">${promotion.discount_value}</span>%` :
-                        `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk` :
-                    (promotion ? `<span class="mt-2">00</span>` : `<span class="mt-2">00</span>`)
-                }
-            </td>
-            <td>
-                ${
-                    promotion ?
-                        promotion.discount_type == 'percentage' ?
-                            `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price - (product.price * promotion.discount_value / 100)}" />`
-                            :
-                            `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price - promotion.discount_value}" />`
-                        :
-                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price}" />`
-                }
-            </td>
-            <td style="padding-top: 20px;">
-                <a href="" class="btn btn-sm btn-danger btn-icon purchase_delete return_product" title="Return Product" style="font-size: 8px; height: 25px; width: 25px;" data-id=${product.id}>
-                    <i class="fa-solid fa-rotate-left" style="font-size: 0.8rem; margin-top: 2px;"></i>
-                </a>
-            </td>
-        </tr>`
+                            <td>
+                                <input type="text" class="form-control product_name${product.id} border-0 "  name="product_name[]" readonly value="${product.name ?? ""}" />
+                            </td>
+                            <td>
+                                <input type="hidden" class="product_id" name="product_id[]" readonly value="${product.id ?? 0}"  />
+                                <input type="number" product-id="${product.id}" class="form-control unit_price product_price${product.id} ${checkSellEdit == 0 ? 'border-0' : ''}" id="product_price" name="unit_price[]" ${checkSellEdit == 0 ? 'readonly' : ''} value="${product.price ?? 0}" />
+                            </td>
+                            <td>
+                                <input type="number" product-id="${product.id}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="${quantity}" />
+                            </td>
+                            <td class="d-flex align-items-center">
+                                <div class="form-check form-switch mb-2">
+                                    <input type="checkbox" class="form-check-input warranty_status${product.id}" id="warranty_status">
+                                </div>
+                                <div class="Warranty_duration" style="display: none;">
+                                    <!-- <label for="" class="form-label">warranty Period</label> -->
+                                    <select class=" form-select wa_duration${product.id}" id="" data-width="100%"
+                                         onclick="errorRemove(this)";>
+                                        <option selected disabled>Select Warranty</option>
+                                        <option value="6 Month">6 Month</option>
+                                        <option value="1 Year">1 Year</option>
+                                        <option value="2 Year">2 Year</option>
+                                        <option value="3 Year">3 Year</option>
+                                        <option value="4 Year">4 Year</option>
+                                        <option value="5 Year">5 Year</option>
+                                        <option selected disabled>No Warranty</option>
+                                    </select>
+                                    <span class="text-danger product_select_error"></span>
+                                </div>
+                            </td>
+                            <td style="padding-top: 20px;">
+                                ${
+                                    discountCheck == 0 ?
+                                        promotion ?
+                                            promotion.discount_type == 'percentage' ?
+                                                `<span class="discount_percentage${product.id} mt-2">${promotion.discount_value}</span>%` :
+                                                `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
+                                        : `<span class="mt-2">00</span>`
+                                    : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                }
+                            </td>
+                            <td>
+                                ${
+                                    promotion ?
+                                        promotion.discount_type == 'percentage' ?
+                                            `<input type="number" class="form-control product_subtotal${product.id} border-0 " name="total_price[]" id="productTotal" readonly value="${product.price - (product.price * promotion.discount_value / 100)}" />`
+                                            :
+                                            `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price - promotion.discount_value}" />`
+                                        :
+                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price * quantity}" />`
+                                }
+                            </td>
+                            <td style="padding-top: 20px;">
+                                <a href="#" class="btn btn-sm btn-danger btn-icon purchase_delete" style="font-size: 8px; height: 25px; width: 25px;" data-id=${product.id}>
+                                    <i class="fa-solid fa-trash-can" style="font-size: 0.8rem; margin-top: 2px;"></i>
+                                </a>
+                            </td>
+                        </tr>`
                     );
                 }
             }
@@ -493,6 +668,48 @@
                 }
             })
 
+            // function calculateHandsOnDiscount() {
+            //     let discountPrice = parseFloat($(this).val());
+            //     let total = parseFloat($('.total').val());
+            //     let grandTotalAmount = total - discountPrice;
+            //     if (discountPrice > total) {
+            //         toastr.warning('The Discount is higher than the Total amount');
+            //         $(this).val('');
+            //         $('.grand_total').val(total);
+            //         $('.grandTotal').val(total);
+
+            //     } else if ($(this).val() === '') {
+            //         $('.grand_total').val(total);
+            //         $('.grandTotal').val(total);
+            //     } else {
+            //         $('.grand_total').val(grandTotalAmount);
+            //         $('.grandTotal').val(grandTotalAmount);
+            //     }
+            // }
+            // calculateHandsOnDiscount();
+            // $(document).on('change', '.handsOnDiscount', function() {
+            //     calculateHandsOnDiscount();
+            // })
+            $(document).on('keyup', '.handsOnDiscount', function() {
+                // alert('ok');
+                let discountPrice = parseFloat($(this).val());
+                let total = parseFloat($('.total').val());
+                let grandTotalAmount = total - discountPrice;
+                if (discountPrice > total) {
+                    toastr.warning('The Discount is higher than the Total amount');
+                    $(this).val('');
+                    $('.grand_total').val(total);
+                    $('.grandTotal').val(total);
+
+                } else if ($(this).val() === '') {
+                    $('.grand_total').val(total);
+                    $('.grandTotal').val(total);
+                } else {
+                    $('.grand_total').val(grandTotalAmount);
+                    $('.grandTotal').val(grandTotalAmount);
+                }
+            })
+
             // Function to recalculate total
             function calculateTotal() {
                 // let total = 0;
@@ -516,32 +733,16 @@
                                     let discount_percentage = parseFloat($(
                                         '.discount_percentage' +
                                         productId).text());
-                                    // console.log(discount_percentage);
                                     let disPrice = price - (price * discount_percentage) / 100;
                                     product_subtotal.val(disPrice * qty);
-                                    // total += parseFloat($('.product_subtotal' + productId)
-                                    //     .val());
-                                    // // console.log(total);
-                                    // $('.total').val(total.toFixed(2));
                                 } else {
                                     let discount_amount = parseFloat($('.discount_amount' +
                                         productId).text());
-                                    // console.log(discount_percentage);
                                     let disPrice = price - discount_amount;
-                                    // console.log(disPrice);
                                     product_subtotal.val(disPrice * qty);
-                                    // total += qty * disPrice;
-                                    // total += parseFloat($('.product_subtotal' + productId)
-                                    //     .val());
-                                    // $('.total').val(total.toFixed(2));
-                                    // console.log(total);
                                 }
                             } else {
                                 product_subtotal.val(qty * price);
-                                // total += parseFloat($('.product_subtotal' + productId)
-                                //     .val());
-                                // $('.total').val(total.toFixed(2));
-                                // console.log(total);
                             }
                         }
                     });
@@ -553,7 +754,6 @@
 
                 let prevPaidAmount = $('.availableAmount').val();
                 let grandTotal = $('.grandTotal').val();
-                // console.log(prevPaidAmount, grandTotal)
                 if (grandTotal > prevPaidAmount) {
                     let newPay = parseFloat(grandTotal - prevPaidAmount);
                     $('.newPay').val(newPay.toFixed(2));
