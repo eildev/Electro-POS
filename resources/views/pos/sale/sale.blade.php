@@ -290,7 +290,7 @@
                             <input id="defaultconfig" class="form-control address" maxlength="39" name="address"
                                 type="text">
                         </div>
-                        <div class="mb-3 col-md-6">
+                        {{-- <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Opening Receivable</label>
                             <input id="defaultconfig" class="form-control opening_receivable" maxlength="39"
                                 name="opening_receivable" type="number">
@@ -299,7 +299,13 @@
                             <label for="name" class="form-label">Opening Payable</label>
                             <input id="defaultconfig" class="form-control opening_payable" maxlength="39"
                                 name="opening_payable" type="number">
-                        </div>
+                        </div> --}}
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Previous Due</label>
+                                <input type="number" class="form-control" name="wallet_balance" placeholder="0.00">
+                            </div>
+                        </div><!-- Col -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
