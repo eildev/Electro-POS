@@ -75,16 +75,17 @@
                             <input id="defaultconfig" class="form-control address" maxlength="39" name="address"
                                 type="text">
                         </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Opening Receivable</label>
+                        <div class="mb-3 col-md-12">
+                            <label for="name" class="form-label">Supplier Due(সাপ্লায়ার আপানার
+                                থেকে পাবে)</label>
                             <input id="defaultconfig" class="form-control opening_receivable" maxlength="39"
                                 name="opening_receivable" type="number">
                         </div>
-                        <div class="mb-3 col-md-6">
+                        {{-- <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Opening Payable</label>
                             <input id="defaultconfig" class="form-control opening_payable" maxlength="39"
                                 name="opening_payable" type="number">
-                        </div>
+                        </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

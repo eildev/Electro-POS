@@ -37,7 +37,7 @@
 					</div><!-- Col -->
                     <div class="col-sm-6">
 						<div class="mb-3">
-							<label class="form-label">Wallet Balance</label>
+							<label class="form-label">Previous Due</label>
 							<input type="number" class="form-control" name="wallet_balance" placeholder="0.00">
 						</div>
 					</div><!-- Col -->

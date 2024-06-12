@@ -140,14 +140,17 @@ public function EmployeeSalaryAdvancedStore(Request $request){
     // ->where('date', $request->date)
     ->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])
     ->first();
- if ($employeeSalary) {
+
+if ($employeeSalary) {
     $notification = [
         'error' =>'Salary for this employee and branch has already been Advanced to this month you can update your Employee Salaries Payment',
         'alert-type'=> 'error'
     ];
     return redirect()->route('employee.salary.advanced.view')->with($notification);
 
- } else {
+ }
+
+ else {
     $employeeSalary = new EmployeeSalary;
     $employeeSalary->employee_id =  $request->employee_id;
     $employeeSalary->branch_id =  $request->branch_id;
@@ -168,7 +171,7 @@ public function EmployeeSalaryAdvancedStore(Request $request){
 }
 }
 public function EmployeeSalaryAdvancedView(){
-    $employeSalary = EmployeeSalary::where('debit', '>', 'creadit')->get();
+    $employeSalary = EmployeeSalary::all();
     return view('pos.employee_salary.view_advanced_employee_salary',compact('employeSalary'));
 }//
 public function EmployeeSalaryAdvancedEdit($id){

@@ -46,7 +46,8 @@
                                     $note = $employeSalarys->note;
                                     $noteChunks = str_split($note, 40);
                                     echo implode("<br>", $noteChunks);
-                                    @endphp</td>
+                                    @endphp
+                                    </td>
                                 <td>
                                     <a href="{{route('employee.salary.advanced.edit',$employeSalarys->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit Data">
                                         <i data-feather="edit"></i>

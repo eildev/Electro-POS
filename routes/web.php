@@ -209,6 +209,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/purchase/filter', 'filter')->name('purchase.filter');
         Route::post('/transaction/edit-amount/{id}', 'editTransaction')->name('purchase.edit.transaction');
         Route::get('/purchase/find/{id}', 'find')->name('purchase.find');
+        Route::get('/supplier/details/{id}','getSupplierDetails');
     });
     // damage related route
     Route::controller(DamageController::class)->group(function () {
@@ -416,7 +417,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(CustomeMailControler::class)->group(function () {
         Route::post('/customer-send-email', 'CustomerSendEmail')->name('customer.send.email');
     });
-    // return controller 
+    // return controller
     Route::controller(ReturnController::class)->group(function () {
         Route::get('/return/{id}', 'Return')->name('return');
         Route::post('/return/store', 'store')->name('return.store');

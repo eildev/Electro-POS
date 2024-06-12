@@ -190,8 +190,6 @@
             </div>
 
         </div>
-
-
         <!-- Modal -->
         <div class="modal fade" id="exampleModalLongScollable" tabindex="-1"
             aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
@@ -278,7 +276,8 @@
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th>Total Payable :</th>
+                                        {{-- <th>Total Payable :</th> --}}
+                                        <th>Previous Due:</th>
                                         <th>
                                             (<span class="total_payable_amount">00</span>TK)
                                         </th>
@@ -426,6 +425,29 @@
             }
             supplierView();
 
+            //Supplier Data find
+            function fetchSupplierDetails(supplierId) {
+            $.ajax({
+                url: `/supplier/details/${supplierId}`,
+                method: 'GET',
+                success: function(res) {
+                    const supplier = res.data;
+                    // Update the total_payable_amount with supplier's previous due
+                    $('.total_payable_amount').text(supplier.previous_due);
+                    // Example: If previous_due is a numeric field in the supplier object
+                }
+            });
+         }//
+            $(document).ready(function() {
+            supplierView();
+
+            $('.select-supplier').on('change', function() {
+                const selectedSupplierId = $(this).val();
+                if (selectedSupplierId) {
+                    fetchSupplierDetails(selectedSupplierId);
+                }
+            });
+        });
             // save supplier
             const saveSupplier = document.querySelector('.save_supplier');
             saveSupplier.addEventListener('click', function(e) {

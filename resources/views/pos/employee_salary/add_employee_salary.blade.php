@@ -114,7 +114,6 @@
         });
     });
 //Dropdown js
-
 	$(document).ready(function(){
 		$('select[name="branch_id"]').on('change',function(){
 			var branch_id = $(this).val();
@@ -128,7 +127,7 @@
 						var d = $('select[name= "employee_id"]').empty();
 						$.each(data,function(key,value){
 							$('select[name= "employee_id"]').append(
-								'<option value="'+value.id+'">'+value.full_name+ " (" + value.salary+")"+  '</option>')
+							'<option value="'+value.id+'">'+value.full_name+ " (" + value.salary+")"+  '</option>')
 						});
 					},
 				});

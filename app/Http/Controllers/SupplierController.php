@@ -31,7 +31,10 @@ class SupplierController extends Controller
             $supplier->phone = $request->phone;
             $supplier->address = $request->address;
             $supplier->opening_receivable = $request->opening_receivable;
-            $supplier->opening_payable = $request->opening_payable;
+            $supplier->total_receivable = $request->opening_receivable;
+            $supplier->wallet_balance = $request->opening_receivable;
+            $supplier->opening_payable = $request->opening_payable ?? 0;
+            // $supplier->total_payable = $request->opening_payable;
             $supplier->save();
             return response()->json([
                 'status' => 200,
@@ -103,5 +106,8 @@ class SupplierController extends Controller
             'status' => 200,
             'message' => 'Supplier Deleted Successfully',
         ]);
+    }
+    public function getSupplierDetails(){
+
     }
 }

@@ -61,7 +61,7 @@ class TransactionController extends Controller
         } elseif ($request->account_type == 'customer') {
             $customer = Customer::findOrFail($request->account_id);
             $currentBalance = $customer->wallet_balance;
-            $newBalance = $currentBalance + $request->amount;
+            $newBalance = $currentBalance - $request->amount;
             $tracsBalance = Transaction::where('customer_id', $customer->id)->latest()->first();
             $newTrasBalance = $tracsBalance->balance ?? 0 + $request->amount;
             $transaction = Transaction::create([
