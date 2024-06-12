@@ -86,6 +86,8 @@ class SupplierController extends Controller
             $supplier->address = $request->address;
             $supplier->opening_receivable = $request->opening_receivable;
             $supplier->opening_payable = $request->opening_payable;
+            $supplier->total_receivable = $supplier->total_receivable + $request->opening_receivable;
+            $supplier->total_payable = $supplier->total_payable + $request->opening_payable;
             $supplier->save();
             return response()->json([
                 'status' => 200,

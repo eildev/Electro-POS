@@ -202,61 +202,183 @@
 
 
             // show supplier function
+            // function supplierView() {
+            //     $.ajax({
+            //         url: '/supplier/view',
+            //         method: 'GET',
+            //         success: function(res) {
+            //             const suppliers = res.data;
+            //             $('.showData').empty();
+
+            //             if ($.fn.DataTable.isDataTable('#example')) {
+            //                 $('#example').DataTable().destroy();
+            //             }
+
+            //             if (suppliers.length > 0) {
+            //                 $.each(suppliers, function(index, supplier) {
+            //                     const tr = document.createElement('tr');
+            //                     tr.innerHTML = `
+        //                         <td>${index + 1}</td>
+        //                         <td>${supplier.name ?? ""}</td>
+        //                         <td>${supplier.phone ?? ""}</td>
+        //                         <td>${supplier.total_receivable ?? 0}</td>
+        //                         <td>${supplier.total_payable ?? 0}</td>
+        //                         <td>
+        //                             <span style="color: ${supplier.total_receivable - supplier.total_payable > 0 ? 'red' : ''};">
+        //                                 ${supplier.total_receivable - supplier.total_payable > 0 ? supplier.total_receivable - supplier.total_payable : 0}
+        //                             </span>
+        //                         </td>
+        //                         <td>
+        //                             <span>
+        //                                 ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবে` : ''}
+        //                                 ${supplier.wallet_balance < 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
+        //                                 ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
+        //                             </span>
+        //                         </td>
+        //                         <td>
+        //                             <a href="#" class="btn btn-primary btn-icon supplier_edit" data-id="${supplier.id}" data-bs-toggle="modal" data-bs-target="#edit">
+        //                                 <i class="fa-solid fa-pen-to-square"></i>
+        //                             </a>
+        //                             <a href="#" class="btn btn-danger btn-icon supplier_delete" data-id="${supplier.id}">
+        //                                 <i class="fa-solid fa-trash-can"></i>
+        //                             </a>
+        //                         </td>
+        //                     `;
+            //                     $('.showData').append(tr);
+            //                 });
+            //             } else {
+            //                 $('.showData').html(`
+        //                     <tr>
+        //                         <td colspan='8'>
+        //                             <div class="text-center text-warning mb-2">Data Not Found</div>
+        //                             <div class="text-center">
+        //                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add Supplier<i data-feather="plus"></i></button>
+        //                             </div>
+        //                         </td>
+        //                     </tr>
+        //             `);
+            //             }
+
+            //             // Reinitialize DataTable
+            //             $('#example').DataTable({
+            //                 columnDefs: [{
+            //                     "defaultContent": "-",
+            //                     "targets": "_all"
+            //                 }],
+            //                 dom: 'Bfrtip',
+            //                 buttons: [{
+            //                         extend: 'excelHtml5',
+            //                         text: 'Excel',
+            //                         exportOptions: {
+            //                             header: true,
+            //                             columns: ':visible'
+            //                         },
+            //                         customize: function(xlsx) {
+            //                             return '{{ $header ?? '' }}\n {{ $phone ?? '+880.....' }}\n {{ $email ?? '' }}\n{{ $address ?? '' }}\n\n' +
+            //                                 xlsx + '\n\n';
+            //                         }
+            //                     },
+            //                     {
+            //                         extend: 'pdfHtml5',
+            //                         text: 'PDF',
+            //                         exportOptions: {
+            //                             header: true,
+            //                             columns: ':visible'
+            //                         },
+            //                         customize: function(doc) {
+            //                             doc.content.unshift({
+            //                                 text: '{{ $header ?? '' }}\n {{ $phone ?? '+880.....' }}\n {{ $email ?? '' }}\n{{ $address ?? '' }}',
+            //                                 fontSize: 14,
+            //                                 alignment: 'center',
+            //                                 margin: [0, 0, 0, 12]
+            //                             });
+            //                             doc.content.push({
+            //                                 text: 'Thank you for using our service!',
+            //                                 fontSize: 14,
+            //                                 alignment: 'center',
+            //                                 margin: [0, 12, 0, 0]
+            //                             });
+            //                             return doc;
+            //                         }
+            //                     },
+            //                     {
+            //                         extend: 'print',
+            //                         text: 'Print',
+            //                         exportOptions: {
+            //                             header: true,
+            //                             columns: ':visible'
+            //                         },
+            //                         customize: function(win) {
+            //                             $(win.document.body).prepend(
+            //                                 '<h4>{{ $header }}</br>{{ $phone ?? '+880....' }}</br>Email:{{ $email }}</br>Address:{{ $address }}</h4>'
+            //                             );
+            //                             $(win.document.body).find('h1')
+            //                                 .hide(); // Hide the title element
+            //                         }
+            //                     }
+            //                 ]
+            //             });
+            //         }
+            //     });
+            // }
             function supplierView() {
                 $.ajax({
                     url: '/supplier/view',
                     method: 'GET',
                     success: function(res) {
                         const suppliers = res.data;
+                        // Clear the table body
                         $('.showData').empty();
 
+                        // Destroy the existing DataTable instance if it exists
                         if ($.fn.DataTable.isDataTable('#example')) {
-                            $('#example').DataTable().destroy();
+                            $('#example').DataTable().clear().destroy();
                         }
 
+                        // Check if suppliers data is present
                         if (suppliers.length > 0) {
                             $.each(suppliers, function(index, supplier) {
                                 const tr = document.createElement('tr');
                                 tr.innerHTML = `
-                                    <td>${index + 1}</td>
-                                    <td>${supplier.name ?? ""}</td>
-                                    <td>${supplier.phone ?? ""}</td>
-                                    <td>${supplier.total_receivable ?? 0}</td>
-                                    <td>${supplier.total_payable ?? 0}</td>
-                                    <td>
-                                        <span style="color: ${supplier.total_receivable - supplier.total_payable > 0 ? 'red' : ''};">
-                                            ${supplier.total_receivable - supplier.total_payable > 0 ? supplier.total_receivable - supplier.total_payable : 0}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span>
-                                            ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবে` : ''}
-                                            ${supplier.wallet_balance < 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
-                                            ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-primary btn-icon supplier_edit" data-id="${supplier.id}" data-bs-toggle="modal" data-bs-target="#edit">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-icon supplier_delete" data-id="${supplier.id}">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </a>
-                                    </td>
-                                `;
+                        <td>${index + 1}</td>
+                        <td>${supplier.name ?? ""}</td>
+                        <td>${supplier.phone ?? ""}</td>
+                        <td>${supplier.total_receivable ?? 0}</td>
+                        <td>${supplier.total_payable ?? 0}</td>
+                        <td>
+                            <span style="color: ${supplier.total_receivable - supplier.total_payable > 0 ? 'red' : ''};">
+                                ${supplier.total_receivable - supplier.total_payable > 0 ? supplier.total_receivable - supplier.total_payable : 0}
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবে` : ''}
+                                ${supplier.wallet_balance < 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
+                                ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" class="btn btn-primary btn-icon supplier_edit" data-id="${supplier.id}" data-bs-toggle="modal" data-bs-target="#edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <a href="#" class="btn btn-danger btn-icon supplier_delete" data-id="${supplier.id}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </td>
+                    `;
                                 $('.showData').append(tr);
                             });
                         } else {
                             $('.showData').html(`
-                                <tr>
-                                    <td colspan='8'>
-                                        <div class="text-center text-warning mb-2">Data Not Found</div>
-                                        <div class="text-center">
-                                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add Supplier<i data-feather="plus"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                        `);
+                    <tr>
+                        <td colspan='8'>
+                            <div class="text-center text-warning mb-2">Data Not Found</div>
+                            <div class="text-center">
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add Supplier<i data-feather="plus"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `);
                         }
 
                         // Reinitialize DataTable

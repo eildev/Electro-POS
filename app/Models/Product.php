@@ -24,7 +24,7 @@ class Product extends Model
     }
     function unit()
     {
-        return $this->belongsTo(unit::class, 'unit_id', 'id');
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
     function size()
     {

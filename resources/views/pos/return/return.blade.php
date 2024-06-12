@@ -191,16 +191,12 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-sm-4">
-                            Grand Total :
+                            Product Total :
                         </div>
                         <div class="col-sm-8">
-                            <input type="number" class="form-control grandTotal border-0 " name="" readonly
+                            <input type="number" class="form-control total border-0 " name="" readonly
                                 value="0.00" />
                         </div>
-
-                        <input type="hidden" class="form-control total border-0 " name="total" readonly
-                            value="0.00" />
-
                     </div>
 
                     <div class="row align-items-center mb-2">
@@ -208,15 +204,7 @@
                             Discount :
                         </div>
                         <div class="col-sm-8">
-                            {{-- @php
-                                $promotions = App\Models\Promotion::get();
-                            @endphp --}}
-                            {{-- <input type="number" class="form-control discount_field border-0 " name="discount_field"
-                                readonly value="0.00" /> --}}
-                            {{-- <span class="ms-3 discount_field">00</span> --}}
-                            <select class="form-select discount_field" name="discount_field">
 
-                            </select>
                         </div>
                     </div>
 

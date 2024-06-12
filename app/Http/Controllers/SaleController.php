@@ -126,6 +126,9 @@ class SaleController extends Controller
             $products = $request->products;
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
+                // if($items2->stock > $product['quantity']){
+
+                // }
                 $items = new SaleItem;
                 $items->sale_id = $saleId;
                 $items->product_id = $product['product_id']; // Access 'product_id' as an array key
@@ -136,6 +139,9 @@ class SaleController extends Controller
                 $items->discount = $product['product_discount'];
                 $items->sub_total = $product['total_price'];
                 $items->total_purchase_cost = $items2->cost * $product['quantity'];
+                if ($items2->category->name == 'Via Sell' || $items2->stock == 0) {
+                    $items->sell_type = 'via sell';
+                }
                 $items->save();
 
 
@@ -614,7 +620,6 @@ class SaleController extends Controller
     public function saleViewProduct()
     {
         $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
-        // dd($products);
         return response()->json([
             'status' => '200',
             'products' => $products
