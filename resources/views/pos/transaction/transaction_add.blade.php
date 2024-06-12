@@ -228,9 +228,7 @@
             @foreach ($customer as $customers)
                 options += '<option value="{{ $customers->id }}">{{ $customers->name }}</option>';
             @endforeach
-
         }
-
         document.getElementById("account_id").innerHTML = options;
     });
     //
@@ -242,6 +240,7 @@
     //     $('#supplier-info').hide();;
     // }
     //  });
+
     var account_id=  document.querySelector('.select-account-id');
     account_id.addEventListener('change', function(){
 // alert('ok');

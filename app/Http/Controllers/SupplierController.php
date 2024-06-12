@@ -109,7 +109,5 @@ class SupplierController extends Controller
             'message' => 'Supplier Deleted Successfully',
         ]);
     }
-    public function getSupplierDetails(){
 
-    }
 }
