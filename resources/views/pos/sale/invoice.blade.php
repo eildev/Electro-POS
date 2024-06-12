@@ -39,10 +39,7 @@
                             <p class="show_branch_address">{{ $phone ?? '' }}, 01708008705, 01720389177</p>
                             <p class="show_branch_address">{{ $email ?? '' }}</p>
 
-
-
                             <!--<hr>-->
-
 
                             <p class="mt-2 mb-1 show_supplier_name"><span>Customer Name:</span>
                                 <b>{{ $customer->name ?? '' }}</b>
@@ -263,9 +260,15 @@
                 display: none !important;
                 opacity: 0 !important;
             }
-        @endif
 
-        @media print {
+            <<<<<<< HEAD
+        @endif
+        =======.w_40 {
+            width: 250px !important;
+            text-wrap: wrap;
+        }
+
+        >>>>>>>4bba3b93e146b5db79563edf9317689d9cc7d928 @media print {
             @if ($invoice_type == 'a4')
                 @page {
                     size: A4;
@@ -317,50 +320,51 @@
 
             }
 
-            .margin_left_m_14 {
-                margin-left: -14px;
+            <<<<<<< HEAD .margin_left_m_14 {
+                =======.margin_left_m_14 {
+                    >>>>>>>4bba3b93e146b5db79563edf9317689d9cc7d928 margin-left: -14px;
+                }
+
+                .w_40 {
+                    width: 240px !important;
+                }
+
+                /*.table> :not(caption)>*>* {*/
+                /*    padding: 0px 10px !important;*/
+                /*}*/
+
+                .invoice_bg {
+                    background-color: #ffffff !important;
+                    /* background-color: #cce9fa !important; */
+                    /* background-color: #eec6a1 !important; */
+                    color: #000 !important;
+                    height: 740px;
+                }
+
+                .invoice_table_bg {
+                    /* background-color: rgb(241, 204, 204) !important; */
+                    color: #000000 !important;
+                    border-color: #29ADF9;
+                }
+
+                .invoice_table_th_bg {
+                    background-color: #29ADF9 !important;
+                    color: #000000 !important;
+                }
+
+                .invoice_table_th_bg th {
+
+                    color: #000000 !important;
+                }
+
+                .total_calculation_bg {
+                    color: #000 !important;
+                }
+
+                .print_bg_white {
+                    background-color: transparent !important;
+                }
             }
-
-            .w_40 {
-                width: 240px !important;
-            }
-
-            /*.table> :not(caption)>*>* {*/
-            /*    padding: 0px 10px !important;*/
-            /*}*/
-
-            .invoice_bg {
-                background-color: #ffffff !important;
-                /* background-color: #cce9fa !important; */
-                /* background-color: #eec6a1 !important; */
-                color: #000 !important;
-                height: 740px;
-            }
-
-            .invoice_table_bg {
-                /* background-color: rgb(241, 204, 204) !important; */
-                color: #000000 !important;
-                border-color: #29ADF9;
-            }
-
-            .invoice_table_th_bg {
-                background-color: #29ADF9 !important;
-                color: #000000 !important;
-            }
-
-            .invoice_table_th_bg th {
-
-                color: #000000 !important;
-            }
-
-            .total_calculation_bg {
-                color: #000 !important;
-            }
-
-            .print_bg_white {
-                background-color: transparent !important;
-            }
-        }
     </style>
 
     <script>
