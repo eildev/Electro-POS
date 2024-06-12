@@ -371,4 +371,8 @@ class PurchaseController extends Controller
             ]);
         }
     }
+    public function getSupplierDetails($id){
+        $supplier = Supplier::findOrFail($id);
+        return response()->json(['data' => $supplier], 200);
+    }
 }

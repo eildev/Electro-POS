@@ -45,9 +45,14 @@ class TransactionController extends Controller
         if ($request->account_type == 'supplier') {
             $supplier = Supplier::findOrFail($request->account_id);
             $currentBalance = $supplier->wallet_balance;
-            $newBalance = $currentBalance ?? 0 + $request->amount;
+            $newBalance = $currentBalance ?? 0 - $request->amount;
+            $supplier->wallet_balance = $newBalance ;
+            $newPayble = $supplier->total_payable;
+            $updatePaybele = $newPayble?? 0 + $request->amount;
+            $supplier->total_payable = $updatePaybele;
             $tracBalance = Transaction::where('supplier_id', $supplier->id)->latest()->first();
             $newTraBalance = $tracBalance->balance ?? 0 + $request->amount;
+            // $supplier->update();
             $transaction = Transaction::create([
                 'date' => $request->date,
                 'payment_type' => $request->transaction_type,
@@ -57,7 +62,11 @@ class TransactionController extends Controller
                 'note' => $request->note,
                 'supplier_id' => $request->account_id
             ]);
-            $supplier->update(['wallet_balance' => $newBalance]);
+            // $supplier->update();
+            $supplier->update([
+                'wallet_balance' => $newBalance,
+                'total_payable' => $updatePaybele
+            ]);
         } elseif ($request->account_type == 'customer') {
             $customer = Customer::findOrFail($request->account_id);
             $currentBalance = $customer->wallet_balance;

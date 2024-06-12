@@ -16,6 +16,9 @@
                         <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
                     </div>
+                    @php
+
+                    @endphp
                     <div id="" class="table-responsive">
                         <table id="example" class="table">
                             <thead>
@@ -23,8 +26,6 @@
                                     <th>SN</th>
                                     <th>Name</th>
                                     <th>Phone</th>
-                                    <th>Total Receivable</th>
-                                    <th>Total Payable</th>
                                     <th>Due</th>
                                     <th>Wallet Balance</th>
                                     <th>Actions</th>
@@ -343,8 +344,6 @@
                         <td>${index + 1}</td>
                         <td>${supplier.name ?? ""}</td>
                         <td>${supplier.phone ?? ""}</td>
-                        <td>${supplier.total_receivable ?? 0}</td>
-                        <td>${supplier.total_payable ?? 0}</td>
                         <td>
                             <span style="color: ${supplier.total_receivable - supplier.total_payable > 0 ? 'red' : ''};">
                                 ${supplier.total_receivable - supplier.total_payable > 0 ? supplier.total_receivable - supplier.total_payable : 0}

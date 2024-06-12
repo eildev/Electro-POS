@@ -269,21 +269,28 @@
                                         <th>
                                             <span class="paying_items">0</span>
                                         </th>
-                                        <th>Grand Total :</th>
+                                        <th>Sub Total :</th>
                                         <th>
-                                            <input type="number" name="grand_total"
-                                                class="grandTotal form-control border-0 " readonly value="00">
+                                            <input type="number" name="subTotal" class="subTotal form-control border-0 "
+                                                readonly value="00">
                                         </th>
                                     </tr>
                                     <tr>
                                         {{-- <th>Total Payable :</th> --}}
                                         <th>Previous Due:</th>
                                         <th>
-                                            (<span class="total_payable_amount">00</span>TK)
+                                            (<span class="previous_due">00</span>TK)
                                         </th>
-                                        <th>Total Due :</th>
+                                        <th>Grand Total:</th>
                                         <th>
-                                            <span class="total_due">0</span>
+                                            <input type="number" name="grandTotal"
+                                                class="grandTotal form-control border-0 " readonly value="00">
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="due_text">Due:</th>
+                                        <th>
+                                            (<span class="final_due">00</span>TK)
                                         </th>
                                     </tr>
                                 </thead>
@@ -291,11 +298,7 @@
                         </div>
                         {{-- <form id="signupForm" class="supplierForm row"> --}}
                         <div class="supplierForm row">
-                            <div class="mb-3 col-md-12">
-                                <label for="name" class="form-label">Note</label>
-                                <textarea name="note" class="form-control note" id="" placeholder="Enter Note (Optional)"
-                                    rows="3"></textarea>
-                            </div>
+
 
                             <div class="mb-3 col-md-6">
                                 <label for="name" class="form-label">Transaction Method <span
@@ -348,8 +351,11 @@
                                 </div>
                                 <span class="text-danger total_payable_error"></span>
                             </div>
-
-
+                            <div class="mb-3 col-md-12">
+                                {{-- <label for="name" class="form-label">Note</label> --}}
+                                <input name="note" class="form-control note" id="" placeholder="Enter Note (Optional)"
+                                    rows="3"></input>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -426,28 +432,29 @@
             supplierView();
 
             //Supplier Data find
+            //Previous Due Show Data
             function fetchSupplierDetails(supplierId) {
-            $.ajax({
-                url: `/supplier/details/${supplierId}`,
-                method: 'GET',
-                success: function(res) {
-                    const supplier = res.data;
-                    // Update the total_payable_amount with supplier's previous due
-                    $('.total_payable_amount').text(supplier.previous_due);
-                    // Example: If previous_due is a numeric field in the supplier object
-                }
-            });
-         }//
+                $.ajax({
+                    url: `/supplier/details/${supplierId}`,
+                    method: 'GET',
+                    success: function(res) {
+                        const supplier = res.data;
+                        // console.log(supplier)
+                        $('.previous_due').text(supplier.wallet_balance);
+                    }
+                });
+            } //
             $(document).ready(function() {
-            supplierView();
-
-            $('.select-supplier').on('change', function() {
-                const selectedSupplierId = $(this).val();
-                if (selectedSupplierId) {
-                    fetchSupplierDetails(selectedSupplierId);
-                }
+                supplierView();
+                $('.select-supplier').on('change', function() {
+                    const selectedSupplierId = $(this).val();
+                    if (selectedSupplierId) {
+                        fetchSupplierDetails(selectedSupplierId);
+                    }
+                });
             });
-        });
+
+            //Previous Due Show Data End
             // save supplier
             const saveSupplier = document.querySelector('.save_supplier');
             saveSupplier.addEventListener('click', function(e) {
@@ -484,8 +491,6 @@
                     }
                 });
             })
-
-
             let totalQuantity = 0;
 
             // Function to update total quantity
@@ -596,7 +601,6 @@
                 updateTotalQuantity();
             }
 
-
             $(document).on('keyup', '.quantity', function() {
                 let id = $(this).attr("product-id")
                 let quantity = $(this).val();
@@ -608,8 +612,6 @@
                 subTotal.val(subTotalPrice);
                 updateGrandTotal();
             })
-
-
 
             // discount
             $('.discount_amount').change(function() {
@@ -634,11 +636,13 @@
             // payment button click event
             $('.payment_btn').click(function(e) {
                 e.preventDefault();
-                // $('.total_payable_amount').text($('.grand_total').val());
-                $('.total_due').text($('.grand_total').val());
-                $('.grandTotal').val($('.grand_total').val());
-                $('.paying_items').text(totalQuantity);
 
+                let cumtomer_due = parseFloat($('.previous_due').text());
+                let subtotal = parseFloat($('.grand_total').val());
+                $('.subTotal').val(subtotal);
+                let grandTotal = cumtomer_due + subtotal;
+                $('.grandTotal').val(grandTotal);
+                $('.paying_items').text(totalQuantity);
             })
 
             // paid amount
@@ -647,25 +651,27 @@
                 // alert('ok');
                 let grandTotal = $('.grandTotal').val();
                 $('.total_payable').val(grandTotal);
-                $('.total_payable_amount').text(grandTotal);
                 totalDue();
             })
 
             // total_payable
             $('.total_payable').keyup(function(e) {
-                let grandTotal = parseFloat($('.grandTotal').val());
-                let value = parseFloat($(this).val());
-
+                // alert('ok');
                 totalDue();
-                $('.total_payable_amount').text(value);
             })
 
             // due
             function totalDue() {
-                let pay = $('.total_payable').val();
+                let pay = parseFloat($('.total_payable').val());
                 let grandTotal = parseFloat($('.grandTotal').val());
                 let due = (grandTotal - pay).toFixed(2);
-                $('.total_due').text(due);
+                if (due > 0) {
+                    $('.final_due').text(due);
+                    $('.due_text').text('Due');
+                } else {
+                    $('.final_due').text(-(due));
+                    $('.due_text').text('Return');
+                }
             }
             // console.log(totalQuantity);
 
@@ -677,14 +683,13 @@
                 let taxTotal = ((grandTotal * value) / 100);
                 taxTotal = (taxTotal + grandTotal).toFixed(2);
                 $('.grandTotal').val(taxTotal);
-                $('.total_due').text(taxTotal);
+                $('.final_due').text(taxTotal);
             })
 
 
             $('#purchaseForm').submit(function(event) {
                 event.preventDefault();
                 let formData = new FormData($('#purchaseForm')[0]);
-
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
