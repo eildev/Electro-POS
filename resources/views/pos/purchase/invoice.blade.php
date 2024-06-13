@@ -122,6 +122,10 @@
                                                 </tr>
                                             @endif
                                             <tr>
+                                                <td class="text-bold-800">Previous Due</td>
+                                                <td class="text-bold-800 text-end">৳{{$supplier->wallet_balance}}</td>
+                                            </tr>
+                                            <tr>
                                                 <td class="text-bold-800">Grand Total</td>
                                                 <td class="text-bold-800 text-end">৳ {{ $purchase->grand_total }} </td>
                                             </tr>
