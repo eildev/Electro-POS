@@ -199,17 +199,18 @@
                             <div class="d-flex justify-content-between align-items-baseline">
                                 {{-- <h6 class="card-title mb-0">Invoice</h6> --}}
                             </div>
-                            <div class="row" >
+                            <div class="row">
                                 <div class=" col-md-4 col-5 ">
-                                    <img src="uploads/dashboard/Artboard4@300x-100.jpg" height="50px" width="50px" alt="Image" style="border-radius:5px">
+                                    <img src="uploads/dashboard/Artboard4@300x-100.jpg" height="50px" width="50px"
+                                        alt="Image" style="border-radius:5px">
                                 </div>
                                 <div class="col-md-8 col-7 ">
                                     {{-- <h3 class="mb-2"> {{ $totalInvoiceToday }}
                                         <span style="font-size: 15px;">
                                         (৳ {{ $saleProfitAmount }})</span>
                                 </h3> --}}
-                                <h3 class="responsive-text mar-1">{{ $saleProfitAmount }}</h3>
-                                <h6 class="text-1 mb-0">Profit</h6>
+                                    <h3 class="responsive-text mar-1">{{ $saleProfitAmount }}</h3>
+                                    <h6 class="text-1 mb-0">Profit</h6>
                                 </div>
                             </div>
                         </div>
@@ -224,14 +225,15 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-4 col-5 ">
-                                    <img src="uploads/dashboard/Artboard3@300x-100.jpg" height="50px" width="50px" alt="Image" style="border-radius:5px">
+                                    <img src="uploads/dashboard/Artboard3@300x-100.jpg" height="50px" width="50px"
+                                        alt="Image" style="border-radius:5px">
                                 </div>
                                 <div class="col-md-8 col-7 ">
                                     {{-- <h3 class="mb-2">{{ $todayPurchaseToday }}<span style="font-size: 15px;">
                                             (৳ {{ $todayExpenseAmount }})</span></h3> --}}
                                     <h3 class="responsive-text mar-1">{{ $todayExpenseAmount }}</h3>
-                                 <h6 class="text-1  mb-0">Expense</h6>
-                                 {{-- <h6 class=" mb-0">Total Purchase</h6> --}}
+                                    <h6 class="text-1  mb-0">Expense</h6>
+                                    {{-- <h6 class=" mb-0">Total Purchase</h6> --}}
                                 </div>
                             </div>
                         </div>
@@ -245,14 +247,15 @@
                             </div>
                             <div class="row">
                                 <div class=" col-md-4  col-5">
-                                    <img src="uploads/dashboard/Artboard1@300x-100.jpg" height="50px" width="50px" alt="Image" style="border-radius:5px">
+                                    <img src="uploads/dashboard/Artboard1@300x-100.jpg" height="50px" width="50px"
+                                        alt="Image" style="border-radius:5px">
                                 </div>
                                 <div class="col-md-8  col-7">
                                     {{-- <h3 class="mb-2">{{ $todayInvoiceProductTotal }} <span
                                             style="font-size: 15px;">( ৳
                                             {{ $todayInvoiceProductAmount }})</span></h3> --}}
-                                            <h3 class="responsive-text mar-1">{{ $todayInvoiceProductAmount }}</h3>
-                                            <h6 class="text-1 mb-0">Invoice</h6>
+                                    <h3 class="responsive-text mar-1">{{ $todayInvoiceProductAmount }}</h3>
+                                    <h6 class="text-1 mb-0">Invoice</h6>
                                 </div>
                             </div>
                         </div>
@@ -266,12 +269,13 @@
                             </div>
                             <div class="row">
                                 <div class=" col-md-4  col-5">
-                                    <img src="uploads/dashboard/Artboard5@300x-100.jpg" height="auto" width="50px" alt="Image" style="border-radius:5px">
+                                    <img src="uploads/dashboard/Artboard5@300x-100.jpg" height="auto" width="50px"
+                                        alt="Image" style="border-radius:5px">
                                 </div>
                                 <div class="col-md-8  col-7">
                                     {{-- <h3 class="mb-2"> ৳ {{ $todayInvoiceAmount }}<span
                                             style="font-size: 15px;"> (৳ {{ $todayProfit }})</span></h3> --}}
-                                            <h3 class="responsive-text mar-1">{{$todayPurchaseAmont }}</h3>
+                                    <h3 class="responsive-text mar-1">{{ $todayPurchaseAmont }}</h3>
                                     <h6 class="text-1 mb-0">Purchase</h6>
                                 </div>
                             </div>
@@ -367,29 +371,34 @@
     </div> <!-- row -->
     {{-- //////End Today /////// --}}
 
-<style>
-    @media (max-width: 768px) {
-    .responsive-text {
-        font-size: 1rem; /* Adjust as needed for medium screens */
+    <style>
+        @media (max-width: 768px) {
+            .responsive-text {
+                font-size: 1rem;
+                /* Adjust as needed for medium screens */
 
-    }
-    .grid-margin {
-        margin-bottom: .7rem;
-        padding-right: 6px;
-        padding-left: 6px;
-    }
-    .new-margin{
-        padding-right: 0px!important;
-    }
-    .text-1{
-        font-size: 13px
-    }
-    .mar-1{
-        margin-bottom: 4px
-    }
+            }
 
-}
-</style>
+            .grid-margin {
+                margin-bottom: .7rem;
+                padding-right: 6px;
+                padding-left: 6px;
+            }
+
+            .new-margin {
+                padding-right: 0px !important;
+            }
+
+            .text-1 {
+                font-size: 13px
+            }
+
+            .mar-1 {
+                margin-bottom: 4px
+            }
+
+        }
+    </style>
     {{-- //////Revenew Chart Start /////// --}}
     <div class="row">
         <div class="col-xl-6 grid-margin stretch-card">
@@ -1225,7 +1234,7 @@
         </div>
     </div> <!-- row --> --}}
     {{-- //////End Total Summary /////// --}}
-<br>
+    <br>
     {{-- total chart  --}}
     <div class="row">
         <div class="col-xl-12 grid-margin stretch-card">
