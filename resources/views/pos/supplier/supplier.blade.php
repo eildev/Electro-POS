@@ -27,7 +27,7 @@
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Due</th>
-                                    <th>Wallet Balance</th>
+                                    <th>Due/Return</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -352,7 +352,7 @@
                         <td>
                             <span>
                                 ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবে` : ''}
-                                ${supplier.wallet_balance < 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
+                                ${supplier.wallet_balance < 0 ? ` ${-(supplier.wallet_balance)} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
                                 ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
                             </span>
                         </td>
