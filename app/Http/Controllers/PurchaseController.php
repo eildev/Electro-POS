@@ -56,12 +56,8 @@ class PurchaseController extends Controller
             $purchase->sub_total = $request->sub_total;
             $purchase->tax = $request->tax;
             $purchase->grand_total = $request->grand_total;
-            $supplier = Supplier::findOrFail($request->supplier_id);
-            $supplier->total_receivable = $supplier->total_receivable + $request->grand_total;
             $purchase->paid = $request->total_payable;
-            $supplier->total_payable = $supplier->total_payable + $request->total_payable;
             $purchase->due = $request->grand_total - $request->total_payable;
-            $supplier->wallet_balance = $supplier->wallet_balance + $purchase->due;
             $purchase->carrying_cost = $request->carrying_cost;
             $purchase->payment_method = $request->payment_method;
             $purchase->note = $request->note;
@@ -169,9 +165,9 @@ class PurchaseController extends Controller
 
             // Supplier Crud
             $supplier = Supplier::findOrFail($request->supplier_id);
-            $supplier->total_receivable = $supplier->total_receivable + $request->grand_total;
+            $supplier->total_receivable = $supplier->total_receivable + $request->sub_total;
             $supplier->total_payable = $supplier->total_payable + $request->total_payable;
-            $supplier->wallet_balance = $supplier->wallet_balance + ($request->grand_total - $request->total_payable);
+            $supplier->wallet_balance = $supplier->wallet_balance + ($request->sub_total - $request->total_payable);
             $supplier->save();
 
 
@@ -371,7 +367,8 @@ class PurchaseController extends Controller
             ]);
         }
     }
-    public function getSupplierDetails($id){
+    public function getSupplierDetails($id)
+    {
         $supplier = Supplier::findOrFail($id);
         return response()->json(['data' => $supplier], 200);
     }
