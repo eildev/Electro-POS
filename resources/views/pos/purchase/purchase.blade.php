@@ -16,10 +16,10 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="card-title">Create Purchase</h6>
-                            <button class="btn btn-primary" data-bs-toggle="modal"
+                            {{-- <button class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#exampleModalLongScollable"><i class="fa-solid fa-plus"></i> Add
                                 Supplier
-                            </button>
+                            </button> --}}
                         </div>
                         <div class="row">
                             <div class="mb-3 col-md-6">
