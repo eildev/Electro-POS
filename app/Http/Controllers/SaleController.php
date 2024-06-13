@@ -86,6 +86,7 @@ class SaleController extends Controller
             $productAll = $request->products;
             foreach ($productAll as $product) {
                 $items = Product::findOrFail($product['product_id']);
+                // dd($items->stock);
                 $productCost += $items->cost;
             }
             // Sale Table CRUD
@@ -123,12 +124,50 @@ class SaleController extends Controller
             $saleId = $sale->id;
 
             // products table CRUD
+            // $products = $request->products;
+            // foreach ($products as $product) {
+            //     $items2 = Product::findOrFail($product['product_id']);
+            //     $items = new SaleItem;
+            //     $items->sale_id = $saleId;
+            //     $items->product_id = $product['product_id']; // Access 'product_id' as an array key
+            //     $items->rate = $product['unit_price']; // Access 'unit_price' as an array key
+            //     $items->qty = $product['quantity'];
+            //     $items->wa_status = $product['wa_status'];
+            //     $items->wa_duration = $product['wa_duration'];
+            //     $items->discount = $product['product_discount'];
+            //     $items->sub_total = $product['total_price'];
+            //     $items->total_purchase_cost = $items2->cost * $product['quantity'];
+
+            //     // Default sell_type to normal sell
+            //     $items->sell_type = 'normal sell';
+
+            //     // Check if stock is 0 or if the stock is less than the product quantity
+            //     if ($items2->category->name == 'Via Sell' || $items2->stock == 0 || $items2->stock < $product['quantity']) {
+            //         $items->sell_type = 'via sell';
+            //     }
+
+            //     // Adjust stock for next iteration if applicable
+            //     $items2->stock = $items2->stock - $product['quantity'];
+            //     $items2->total_sold = $items2->total_sold + $product['quantity'];
+            //     $items2->save();
+
+            //     $items->save();
+            // }
+
             $products = $request->products;
+            $sellTypeViaSell = false;
+
+            // First pass to check if any product stock is 0
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
-                // if($items2->stock > $product['quantity']){
+                if ($items2->stock == 0) {
+                    $sellTypeViaSell = true;
+                    break;
+                }
+            }
 
-                // }
+            foreach ($products as $product) {
+                $items2 = Product::findOrFail($product['product_id']);
                 $items = new SaleItem;
                 $items->sale_id = $saleId;
                 $items->product_id = $product['product_id']; // Access 'product_id' as an array key
@@ -139,16 +178,52 @@ class SaleController extends Controller
                 $items->discount = $product['product_discount'];
                 $items->sub_total = $product['total_price'];
                 $items->total_purchase_cost = $items2->cost * $product['quantity'];
-                if ($items2->category->name == 'Via Sell' || $items2->stock == 0) {
+
+                // Determine sell_type
+                if ($sellTypeViaSell || $items2->category->name == 'Via Sell' || $items2->stock == 0) {
                     $items->sell_type = 'via sell';
+                } else {
+                    $items->sell_type = 'normal sell';
                 }
-                $items->save();
 
+                // Adjust stock for next iteration if applicable
+                if ($items2->stock < $product['quantity']) {
+                    // Create a new entry for extra products
+                    $extraQuantity = $product['quantity'] - $items2->stock;
+                    $items->qty = $items2->stock;
+                    $items2->stock = 0;
+                    $items2->total_sold += $items->qty;
 
-                $items2->stock = $items2->stock - $product['quantity'];
-                $items2->total_sold = $items2->total_sold + $product['quantity'];
+                    $items->save();
+
+                    // Create new SaleItem for extra products
+                    $extraItem = new SaleItem;
+                    $extraItem->sale_id = $saleId;
+                    $extraItem->product_id = $product['product_id'];
+                    $extraItem->rate = $product['unit_price'];
+                    $extraItem->qty = $extraQuantity;
+                    $extraItem->wa_status = $product['wa_status'];
+                    $extraItem->wa_duration = $product['wa_duration'];
+                    $extraItem->discount = $product['product_discount'];
+                    $extraItem->sub_total = $product['unit_price'] * $extraQuantity;
+                    $extraItem->total_purchase_cost = $items2->cost * $extraQuantity;
+                    $extraItem->sell_type = 'via sell';
+
+                    $extraItem->save();
+                } else {
+                    $items2->stock -= $product['quantity'];
+                    $items2->total_sold += $product['quantity'];
+
+                    $items->save();
+                }
+
                 $items2->save();
             }
+
+
+
+
+
 
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);

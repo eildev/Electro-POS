@@ -206,7 +206,7 @@
                         </div>
                     </div>
                     <div class="row align-items-center">
-                        <div class="col-sm-4">
+                        <div class="col-sm-4 due_text">
                             Total Due :
                         </div>
                         <div class="col-sm-8">
@@ -290,16 +290,6 @@
                             <input id="defaultconfig" class="form-control address" maxlength="39" name="address"
                                 type="text">
                         </div>
-                        {{-- <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Opening Receivable</label>
-                            <input id="defaultconfig" class="form-control opening_receivable" maxlength="39"
-                                name="opening_receivable" type="number">
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Opening Payable</label>
-                            <input id="defaultconfig" class="form-control opening_payable" maxlength="39"
-                                name="opening_payable" type="number">
-                        </div> --}}
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label class="form-label">Previous Due</label>
@@ -412,7 +402,7 @@
                         if (products.length > 0) {
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
-                                    `<option value="${product.id}">${product.name}(${product.barcode})</option>`
+                                    `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
                                 );
                             })
                         } else {
@@ -615,7 +605,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -898,37 +888,6 @@
 
 
             // quantity  
-            $(document).on('click', '.quantity', function(e) {
-                e.preventDefault();
-                let id = $(this).attr("product-id")
-                let quantity = $(this).val();
-                quantity = parseInt(quantity);
-                let subTotal = $('.product_subtotal' + id);
-                if (quantity < 0) {
-                    toastr.warning('quantity must be positive value');
-                    $(this).val('');
-                } else {
-                    $.ajax({
-                        url: `/product/find-qty/${id}`,
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function(res) {
-                            let stock = res.product.stock;
-                            let productPrice = res.product.price;
-                            if (quantity > stock) {
-                                $('.quantity').val(stock);
-                                updateGrandTotal();
-                                calculateCustomerDue();
-                                toastr.warning('Not enough stock');
-                            } else {
-                                updateGrandTotal();
-                                calculateCustomerDue();
-                            }
-                        }
-                    })
-                }
-            })
-            // quantity  
             $(document).on('keyup', '.quantity', function(e) {
                 e.preventDefault();
                 let id = $(this).attr("product-id")
@@ -947,19 +906,65 @@
                             let stock = res.product.stock;
                             let productPrice = res.product.price;
                             if (quantity > stock) {
-                                $('.quantity').val(stock);
                                 updateGrandTotal();
                                 calculateCustomerDue();
-                                toastr.warning('Not enough stock');
+                                toastr.success(
+                                    `Your Product Quantity is ${stock}. You are selling additional products through Via Sell`
+                                )
                             } else {
                                 updateGrandTotal();
                                 calculateCustomerDue();
                             }
-
                         }
                     })
                 }
             })
+            // quantity  
+            // $(document).on('keyup', '.quantity', function(e) {
+            //     e.preventDefault();
+            //     let id = $(this).attr("product-id")
+            //     let quantity = $(this).val();
+            //     quantity = parseInt(quantity);
+            //     let subTotal = $('.product_subtotal' + id);
+            //     if (quantity < 0) {
+            //         toastr.warning('quantity must be positive value');
+            //         $(this).val('');
+            //     } else {
+            //         $.ajax({
+            //             url: `/product/find-qty/${id}`,
+            //             type: 'GET',
+            //             dataType: 'JSON',
+            //             success: function(res) {
+            //                 let stock = res.product.stock;
+            //                 let productPrice = res.product.price;
+            //                 if (quantity > stock) {
+            //                     Swal.fire({
+            //                         title: `Your Product quantity is ${stock}`,
+            //                         text: "you want to sell extra product at Via Sell",
+            //                         icon: 'warning',
+            //                         showCancelButton: true,
+            //                         confirmButtonColor: '#3085d6',
+            //                         cancelButtonColor: '#d33',
+            //                         confirmButtonText: 'Yes, I want!'
+            //                     }).then((result) => {
+            //                         if (result.isConfirmed) {
+            //                             updateGrandTotal();
+            //                             calculateCustomerDue();
+            //                         } else {
+            //                             $('.quantity').val(stock);
+            //                             updateGrandTotal();
+            //                             calculateCustomerDue();
+            //                         }
+            //                     })
+            //                 } else {
+            //                     updateGrandTotal();
+            //                     calculateCustomerDue();
+            //                 }
+
+            //             }
+            //         })
+            //     }
+            // })
 
             // Customer Due
             $(document).on('change', '.select-customer', function() {
@@ -968,10 +973,7 @@
 
             // total_payable
             $('.total_payable').keyup(function(e) {
-                let grandTotal = parseFloat($('.grandTotal').val());
-                let value = parseFloat($(this).val());
                 totalDue();
-                // $('.total_payable_amount').text(value);
             })
 
             // due
@@ -979,7 +981,13 @@
                 let pay = $('.total_payable').val();
                 let grandTotal = parseFloat($('.grandTotal').val());
                 let due = (grandTotal - pay).toFixed(2);
-                $('.total_due').val(due);
+                if (due > 0) {
+                    $('.total_due').val(due);
+                    $('.due_text').text('Due');
+                } else {
+                    $('.total_due').val(-(due));
+                    $('.due_text').text('Return');
+                }
             }
 
 
@@ -1012,8 +1020,8 @@
                 let tax = $('.tax').val();
                 let change_amount = parseFloat($('.grandTotal').val());
                 let actual_discount = parseFloat($('.handsOnDiscount').val()) || 0;
-                let paid = $('.total_payable').val();
-                let due = $('.total_due').val();
+                let paid = parseFloat($('.total_payable').val());
+                let due = change_amount - paid;
                 let note = $('.note').val();
                 let payment_method = $('.payment_method').val();
                 let previous_due = $('.previous_due').val();
