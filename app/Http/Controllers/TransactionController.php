@@ -44,21 +44,26 @@ class TransactionController extends Controller
     {
         if ($request->account_type == 'supplier') {
             $supplier = Supplier::findOrFail($request->account_id);
+            // dd($request->account_id);
             $currentBalance = $supplier->wallet_balance;
-            $newBalance = $currentBalance ?? 0 - $request->amount;
+            $currentBalance = $currentBalance ?? 0;
+            $newBalance = floatval($currentBalance) - floatval($request->amount);
             $supplier->wallet_balance = $newBalance ;
-            $newPayble = $supplier->total_payable;
-            $updatePaybele = $newPayble?? 0 + $request->amount;
+            $newPayble = $supplier->total_payable ?? 0;
+            $updatePaybele = floatval($newPayble) + floatval($request->amount);
+            // dd($tracBalance->balance);
             $supplier->total_payable = $updatePaybele;
             $tracBalance = Transaction::where('supplier_id', $supplier->id)->latest()->first();
-            $newTraBalance = $tracBalance->balance ?? 0 + $request->amount;
+            $debitBalance = floatval($tracBalance->balance);
+            $updateTraBalance = ($debitBalance ?? 0) + floatval($request->amount);
+            // dd($updateTraBalance);
             // $supplier->update();
             $transaction = Transaction::create([
                 'date' => $request->date,
                 'payment_type' => $request->transaction_type,
                 'debit' => $request->amount,
                 'payment_method' => $request->payment_method,
-                'balance' => $newTraBalance,
+                'balance' => $updateTraBalance,
                 'note' => $request->note,
                 'supplier_id' => $request->account_id
             ]);
@@ -67,7 +72,7 @@ class TransactionController extends Controller
                 'wallet_balance' => $newBalance,
                 'total_payable' => $updatePaybele
             ]);
-        } elseif ($request->account_type == 'customer') {
+        } else if ($request->account_type == 'customer') {
             $customer = Customer::findOrFail($request->account_id);
             $currentBalance = $customer->wallet_balance;
             $newBalance = $currentBalance - $request->amount;

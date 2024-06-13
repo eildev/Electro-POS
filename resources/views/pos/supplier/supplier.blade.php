@@ -27,7 +27,7 @@
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Due</th>
-                                    <th>Wallet Balance</th>
+                                    <th>Due/Return</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -131,7 +131,7 @@
                             <label for="name" class="form-label">Address</label>
                             <input id="defaultconfig" class="form-control edit_address" maxlength="39" name="address"
                                 type="text">
-                        </div>
+                        {{-- </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Opening Receivable</label>
                             <input id="defaultconfig" class="form-control edit_opening_receivable" maxlength="39"
@@ -141,7 +141,7 @@
                             <label for="name" class="form-label">Opening Payable</label>
                             <input id="defaultconfig" class="form-control edit_opening_payable" maxlength="39"
                                 name="opening_payable" type="number">
-                        </div>
+                        </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -352,7 +352,7 @@
                         <td>
                             <span>
                                 ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবে` : ''}
-                                ${supplier.wallet_balance < 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
+                                ${supplier.wallet_balance < 0 ? ` ${-(supplier.wallet_balance)} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
                                 ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
                             </span>
                         </td>

@@ -35,25 +35,20 @@
                         <td style="width:15%;">Payment No :</td>
                         <td style="width: 35%;">{{$transaction->id}}</td>
                         <td style="width:15%;">Date :</td>
-                        <td>{{ \Carbon\Carbon::parse($transaction->date)->format('d F Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($transaction->date)->format('d F Y') ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Name :</td>
-                        <td colspan="3"> {{$transaction['supplier']['name'] ?? $transaction['customer']['name']}}</td>
-
+                        <td colspan="3"> {{$transaction['supplier']['name'] ?? $transaction['customer']['name'] ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Address :</td>
-                        <td colspan="3">{{$transaction['supplier']['address'] ?? $transaction['customer']['address']}}</td>
+                        <td colspan="3">{{$transaction['supplier']['address'] ?? $transaction['customer']['address'] ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Mobile :</td>
-                        <td colspan="3">{{$transaction['supplier']['phone'] ?? $transaction['customer']['phone']}}</td>
+                        <td colspan="3">{{$transaction['supplier']['phone'] ?? $transaction['customer']['phone'] ?? ''}} </td>
                     </tr>
-
                     <tr>
                         <td>Account Type :</td>
                         <td>
@@ -64,11 +59,9 @@
                             <span>Supplier</span>
                           @endif
                         </td>
-
                         <td>Account:</td>
-                     <td>{{$transaction['bank']['name']}}</td>
+                     <td>{{$transaction['bank']['name'] ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Transaction Type :</td>
                         <td colspan="3" style="text-transform: capitalize">
