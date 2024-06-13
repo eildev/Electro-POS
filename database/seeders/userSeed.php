@@ -34,11 +34,7 @@ class userSeed extends Seeder
                 'id' => 3,
                 'name' => 'Demo',
                 'email' => 'demo@gmail.com',
-<<<<<<< HEAD
-                'phone' => '12345678',
-=======
                 'phone' => '1234538',
->>>>>>> 690cc98c4007643616f0185afb11840f9a796c8f
                 'branch_id' => 1,
                 'password' => Hash::make('12345678'),
             ],
