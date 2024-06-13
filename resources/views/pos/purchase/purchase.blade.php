@@ -283,7 +283,7 @@
                                         </th>
                                         <th>Grand Total:</th>
                                         <th>
-                                            <input type="number" name="grandTotal"
+                                            <input type="number" name="grand_total"
                                                 class="grandTotal form-control border-0 " readonly value="00">
                                         </th>
                                     </tr>
@@ -571,7 +571,6 @@
                 }
 
             })
-
 
             // Function to recalculate total
             function calculateTotal() {
