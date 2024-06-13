@@ -255,13 +255,13 @@
             @endif
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('employee*') ? '' : 'collapsed' }}"
-                    data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false"
+                    data-bs-toggle="collapse" href="#employee" role="button" aria-expanded="false"
                     aria-controls="emails">
                     <i class="link-icon" data-feather="mail"></i>
                     <span class="link-title">Employee</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('employee*') ? 'show' : '' }}" id="emails">
+                <div class="collapse {{ request()->routeIs('employee*') ? 'show' : '' }}" id="employee">
                     <ul class="nav sub-menu">
                         @if (Auth::user()->can('employee.menu'))
                             <li class="nav-item ">
@@ -445,7 +445,7 @@
                         <span class="link-title">Role & Permission</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs('report*') ? '' : 'show' }}" id="role">
+                    <div class="collapse {{ request()->routeIs('role*') ? '' : 'show' }}" id="role">
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('role-and-permission.all-permission'))
                                 <li class="nav-item">
