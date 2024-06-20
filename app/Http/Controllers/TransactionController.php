@@ -54,8 +54,12 @@ class TransactionController extends Controller
             // dd($tracBalance->balance);
             $supplier->total_payable = $updatePaybele;
             $tracBalance = Transaction::where('supplier_id', $supplier->id)->latest()->first();
-            $debitBalance = floatval($tracBalance->balance);
-            $updateTraBalance = ($debitBalance ?? 0) + floatval($request->amount);
+            if ($tracBalance !== null) {
+                $debitBalance = floatval($tracBalance->balance);
+                $updateTraBalance = ($debitBalance ?? 0) + floatval($request->amount);
+            } else {
+                $updateTraBalance = floatval($request->amount); // Set to default value or handle
+            }
             // dd($updateTraBalance);
             // $supplier->update();
             $transaction = Transaction::create([
