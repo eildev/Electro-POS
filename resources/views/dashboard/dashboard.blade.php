@@ -365,6 +365,13 @@
                         </div>
                     </div>
                 </div> --}}
+
+                <div class="card">
+                    <p>profit : {{ $saleProfitAmount }}</p>
+                    <p>expense : {{ $todayExpenseAmount }}</p>
+                    <p>sale: {{ $todayInvoiceProductAmount }}</p>
+                    <p>purchase : {{ $todayPurchaseAmont }}</p>
+                    <p>cash collection : {{ $todayPurchaseAmont }}</p>
             </div>
         </div>
 

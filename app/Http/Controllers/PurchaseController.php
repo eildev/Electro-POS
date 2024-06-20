@@ -195,6 +195,7 @@ class PurchaseController extends Controller
         // return view('pos.purchase.view');
         return view('pos.purchase.view', compact('purchase'));
     }
+
     public function viewAll()
     {
         $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->latest()->get();
