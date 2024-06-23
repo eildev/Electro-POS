@@ -287,7 +287,11 @@
                     type: 'GET',
                     success: function(data) {
                         // console.log(data.category.name);
-                        $('.category_name_edit').val(data.subcategory.id);
+                        if (data.subcategory && data.subcategory.category_id) {
+                            $('.category_name_edit').val(data.subcategory.category_id);
+                        } else {
+                            console.log('Category ID not found');
+                        }
                         $('.edit_subcategory_name').val(data.subcategory.name);
                         $('.update_subcategory').val(data.subcategory.id);
                         if (data.subcategory.image) {
