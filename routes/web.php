@@ -390,6 +390,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/sms/report/filter', 'SmsReportFilter')->name('sms.report.filter');
             // MONNTHLY Report
             Route::get('/monthly/report', 'monthlyReport')->name('report.monthly');
+            Route::get('/daily/balance', 'dailyBalance')->name('daily.balance');
+        });
+    });
+    // Report related routes
+    Route::controller(CompanyBalanceController::class)->group(function () {
+        Route::group(['prefix' => 'daily'], function () {
+            Route::get('/balance', 'dailyBalance')->name('balance');
         });
     });
     // Report related routes

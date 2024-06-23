@@ -176,8 +176,6 @@ class SaleController extends Controller
                 $items->wa_status = $product['wa_status'];
                 $items->wa_duration = $product['wa_duration'];
                 $items->discount = $product['product_discount'];
-                $items->sub_total = $product['total_price'];
-                $items->total_purchase_cost = $items2->cost * $product['quantity'];
 
                 // Determine sell_type
                 if ($sellTypeViaSell || $items2->category->name == 'Via Sell' || $items2->stock == 0) {
@@ -188,9 +186,13 @@ class SaleController extends Controller
 
                 // Adjust stock for next iteration if applicable
                 if ($items2->stock < $product['quantity']) {
-                    // Create a new entry for extra products
-                    $extraQuantity = $product['quantity'] - $items2->stock;
+                    // If stock is less than the quantity needed
                     $items->qty = $items2->stock;
+                    $items->sub_total = ($product['unit_price'] * $items->qty) - ($product['product_discount'] * ($items->qty / $product['quantity']));
+                    $items->total_purchase_cost = $items2->cost * $items->qty;
+
+                    // Adjust the remaining quantity and create extra item
+                    $extraQuantity = $product['quantity'] - $items2->stock;
                     $items2->stock = 0;
                     $items2->total_sold += $items->qty;
 
@@ -204,13 +206,17 @@ class SaleController extends Controller
                     $extraItem->qty = $extraQuantity;
                     $extraItem->wa_status = $product['wa_status'];
                     $extraItem->wa_duration = $product['wa_duration'];
-                    $extraItem->discount = $product['product_discount'];
+                    $extraItem->discount = 0; // Apply discount only once to the first item
                     $extraItem->sub_total = $product['unit_price'] * $extraQuantity;
                     $extraItem->total_purchase_cost = $items2->cost * $extraQuantity;
-                    $extraItem->sell_type = 'via sell';
+                    $extraItem->sell_type = 'normal sell';
 
                     $extraItem->save();
                 } else {
+                    // If stock is sufficient
+                    $items->sub_total = ($product['unit_price'] * $product['quantity']) - $product['product_discount'];
+                    $items->total_purchase_cost = $items2->cost * $product['quantity'];
+
                     $items2->stock -= $product['quantity'];
                     $items2->total_sold += $product['quantity'];
 
@@ -219,7 +225,6 @@ class SaleController extends Controller
 
                 $items2->save();
             }
-
 
 
 
