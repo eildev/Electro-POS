@@ -239,7 +239,7 @@
                                 ${index+1}
                             </td>
                             <td>
-                                ${subcategory.category_id ?? ""}
+                        ${subcategory.category ? subcategory.category.name : ""}
                             </td>
                             <td>
                                 ${subcategory.name ?? ""}
