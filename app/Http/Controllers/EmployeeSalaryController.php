@@ -142,11 +142,23 @@ public function EmployeeSalaryAdvancedStore(Request $request){
     ->first();
 
 if ($employeeSalary) {
-    $notification = [
-        'error' =>'Salary for this employee and branch has already been Advanced to this month you can update your Employee Salaries Payment',
-        'alert-type'=> 'error'
-    ];
-    return redirect()->route('employee.salary.advanced.view')->with($notification);
+    if (!empty($employeeSalary) && (float) (($employeeSalary->balance - $request->debit) < 0)) {
+        $notification = [
+            'error' =>'This Month Full Advanced Already Paid Or Salary limit reached',
+            'alert-type'=> 'error'
+        ];
+        return back()->with($notification);
+
+    } else{
+        $employeeSalary->debit =  $employeeSalary->debit  +  $request->debit;
+        $employeeSalary->balance = $employeeSalary->balance - $request->debit;
+        $employeeSalary->update();
+        $notification = array(
+            'message' =>'Employee Salary Advanced Updated Successfully',
+             'alert-type'=> 'info'
+         );
+        return redirect()->route('employee.salary.advanced.view')->with($notification);
+    }
 
  }
 
@@ -164,7 +176,7 @@ if ($employeeSalary) {
     $employeeSalary->updated_at = NULL;
     $employeeSalary->save();
     $notification = array(
-        'message' =>'Employee Salary Send Successfully',
+        'message' =>'Advanced Employee Salary Send Successfully',
          'alert-type'=> 'info'
      );
     return redirect()->route('employee.salary.advanced.view')->with($notification);
@@ -181,7 +193,6 @@ public function EmployeeSalaryAdvancedEdit($id){
     return view('pos.employee_salary.edit_advanced_employee_salary',compact('employeeSalary','employees','branch'));
 }
 public function EmployeeSalaryAdvancedUpdate(Request $request,$id){
-    // dd($request->all());
     $employeeSalary = EmployeeSalary::findOrFail($id);
     $requiestDebit = $employeeSalary->debit = $employeeSalary->debit + $request->debit;
     $employeeSalary->date =  $request->date;
