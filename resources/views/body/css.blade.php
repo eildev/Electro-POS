@@ -82,6 +82,12 @@
     .dt-search {
         float: right;
     }
+    .btn svg{
+        background: transparent !important;
+    }
+    .page-breadcrumb .breadcrumb{
+        padding: 12px;
+    }
 </style>
 {{-- jquery plugin  --}}
 
