@@ -113,8 +113,6 @@ class PurchaseController extends Controller
                 $items2->stock += $request->quantity[$i];
                 $items2->save();
             }
-
-
             // actual payment CRUD
             $actualPayment = new ActualPayment;
             $actualPayment->branch_id =  Auth::user()->branch_id;
