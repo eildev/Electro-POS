@@ -504,8 +504,6 @@
                 });
                 // console.log(totalQuantity);
             }
-
-
             // Function to update SL numbers
             function updateSLNumbers() {
                 $('.showData > tr').each(function(index) {
