@@ -27,7 +27,7 @@ class SaleController extends Controller
     public function index()
     {
         $withoutPurchase = Product::whereDoesntHave('purchaseItems')->get();
-        return view('pos.sale.sale',compact('withoutPurchase'));
+        return view('pos.sale.sale', compact('withoutPurchase'));
     }
     public function getCustomer()
     {
@@ -253,7 +253,7 @@ class SaleController extends Controller
             // accountTransaction table
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Withdraw';
+            $accountTransaction->purpose =  'Deposit';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
             // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
