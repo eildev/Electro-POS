@@ -13,8 +13,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-// use Validator;
-use Illuminate\Support\Facades\Validator;
+use Validator;
+// use Illuminate\Support\Facades\Validator;
 
 class PurchaseController extends Controller
 {
@@ -29,7 +29,7 @@ class PurchaseController extends Controller
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
             'date' => 'required',
-            'total_quantity' => 'required',
+            // 'total_quantity' => 'required',
             'payment_method' => 'required',
             'document' => 'file|mimes:jpg,pdf,png,svg,webp,jpeg,gif|max:5120'
 
