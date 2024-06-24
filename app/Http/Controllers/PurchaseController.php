@@ -131,7 +131,8 @@ class PurchaseController extends Controller
             $accountTransaction->purpose =  'Withdraw';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->debit = $request->total_payable;
-            // $accountTransaction->balance = $accountTransaction->balance - $request->paid;
+            $oldBalance = AccountTransaction::latest()->first();
+            $accountTransaction->balance = $oldBalance->balance - $request->paid;
             $accountTransaction->created_at =  $purchaseDate;
             $accountTransaction->save();
 
@@ -310,6 +311,8 @@ class PurchaseController extends Controller
             $accountTransaction->purpose =  'Deposit';
             $accountTransaction->account_id =  $request->transaction_account;
             $accountTransaction->debit = $request->amount;
+            $oldBalance = AccountTransaction::latest()->first();
+            $accountTransaction->balance = $oldBalance->balance - $request->amount;
             $accountTransaction->save();
 
             // transaction related CRUD

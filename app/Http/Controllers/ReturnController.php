@@ -122,7 +122,8 @@ class ReturnController extends Controller
             $accountTransaction->purpose =  'Withdraw';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
-            // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
+            $oldBalance = AccountTransaction::latest()->first();
+            $accountTransaction->balance = $oldBalance->balance - $request->paid;
             $accountTransaction->save();
 
 

@@ -125,37 +125,6 @@ class SaleController extends Controller
 
             $saleId = $sale->id;
 
-            // products table CRUD
-            // $products = $request->products;
-            // foreach ($products as $product) {
-            //     $items2 = Product::findOrFail($product['product_id']);
-            //     $items = new SaleItem;
-            //     $items->sale_id = $saleId;
-            //     $items->product_id = $product['product_id']; // Access 'product_id' as an array key
-            //     $items->rate = $product['unit_price']; // Access 'unit_price' as an array key
-            //     $items->qty = $product['quantity'];
-            //     $items->wa_status = $product['wa_status'];
-            //     $items->wa_duration = $product['wa_duration'];
-            //     $items->discount = $product['product_discount'];
-            //     $items->sub_total = $product['total_price'];
-            //     $items->total_purchase_cost = $items2->cost * $product['quantity'];
-
-            //     // Default sell_type to normal sell
-            //     $items->sell_type = 'normal sell';
-
-            //     // Check if stock is 0 or if the stock is less than the product quantity
-            //     if ($items2->category->name == 'Via Sell' || $items2->stock == 0 || $items2->stock < $product['quantity']) {
-            //         $items->sell_type = 'via sell';
-            //     }
-
-            //     // Adjust stock for next iteration if applicable
-            //     $items2->stock = $items2->stock - $product['quantity'];
-            //     $items2->total_sold = $items2->total_sold + $product['quantity'];
-            //     $items2->save();
-
-            //     $items->save();
-            // }
-
             $products = $request->products;
             $sellTypeViaSell = false;
 
@@ -211,8 +180,7 @@ class SaleController extends Controller
                     $extraItem->discount = 0; // Apply discount only once to the first item
                     $extraItem->sub_total = $product['unit_price'] * $extraQuantity;
                     $extraItem->total_purchase_cost = $items2->cost * $extraQuantity;
-                    $extraItem->sell_type = 'normal sell';
-
+                    $extraItem->sell_type = 'via sell';
                     $extraItem->save();
                 } else {
                     // If stock is sufficient
@@ -544,7 +512,8 @@ class SaleController extends Controller
             $accountTransaction->purpose =  'Withdraw';
             $accountTransaction->account_id =  $request->transaction_account;
             $accountTransaction->credit = $request->amount;
-            // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
+            $oldBalance = AccountTransaction::latest()->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->paid;
             $accountTransaction->save();
 
             $transaction = new Transaction;
