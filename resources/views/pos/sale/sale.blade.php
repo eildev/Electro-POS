@@ -317,14 +317,14 @@
                 <div class="modal-body">
                     <form class="viaSellForm row">
                         {{-- //New Field Add --}}
-                        <div class="mb-3 col-md-12">
+                        {{-- <div class="mb-3 col-md-12">
                             <label for="without_purchase" class="form-label">Without Purchase</label>
                             <select class=" form-select" data-width="100%" name="without_purchase" >
                                @foreach ($withoutPurchase as $withoutPurse )
                                <option value="{{$withoutPurse->id}}">{{$withoutPurse->name}}</option>
                                @endforeach
                             </select>
-                        </div>
+                        </div> --}}
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Product Name <span
                                     class="text-danger">*</span></label>
