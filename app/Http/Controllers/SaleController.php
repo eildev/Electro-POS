@@ -707,7 +707,6 @@ class SaleController extends Controller
             'products' => $products
         ]);
     }
-
     public function saleViaProductAdd(Request $request)
     {
         // dd($request->all());
@@ -717,7 +716,6 @@ class SaleController extends Controller
             'cost' => 'required',
             'stock' => 'required',
         ]);
-
 
         if ($validator->passes()) {
             $maxBarcode = Product::where('branch_id', Auth::user()->branch_id)
@@ -772,7 +770,7 @@ class SaleController extends Controller
                 $unit->name =  "Piece";
                 $unit->related_by = 1;
                 $unit->save();
-                $product->unit_id =  $unit->id;
+                $product->unit_id = $unit->id;
             }
             $product->stock = $request->stock;
             $product->save();

@@ -318,8 +318,8 @@
                     <form class="viaSellForm row">
                         {{-- //New Field Add --}}
                         <div class="mb-3 col-md-12">
-                            <label for="name" class="form-label">Without Purchase</label>
-                            <select class=" form-select" data-width="100%" name="" >
+                            <label for="without_purchase" class="form-label">Without Purchase</label>
+                            <select class=" form-select" data-width="100%" name="without_purchase" >
                                @foreach ($withoutPurchase as $withoutPurse )
                                <option value="{{$withoutPurse->id}}">{{$withoutPurse->name}}</option>
                                @endforeach
@@ -440,7 +440,7 @@
                     processData: false,
                     contentType: false,
                     success: function(res) {
-                        console.log(res);
+                        // console.log(res);
                         if (res.status == 200) {
                             $('#viaSellModal').modal('hide');
                             $('.viaSellForm')[0].reset();
@@ -451,7 +451,7 @@
                             showAddProduct(products, quantity);
                             toastr.success(res.message);
                         } else {
-                            console.log(res);
+                            // console.log(res);
                             if (res.error.name) {
                                 showError('.product_name', res.error.name);
                             }

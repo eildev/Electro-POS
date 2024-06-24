@@ -40,30 +40,50 @@ public function EmployeeSalaryStore(Request $request){
         } else {
             $now_balance=(float) $request->debit;
         }
-    if (!empty($employeeSalary) && (float) $employeeSalary->balance < $debit) {
-        $notification = [
-            'error' =>'Salary for this employee and branch has already been inserted to to this month you can update your employee Salaries',
-            'alert-type'=> 'error',
-        ];
-        return back()->with($notification);
+    // if (!empty($employeeSalary) && (float) $employeeSalary->balance < $debit) {
+    //     $notification = [
+    //         'error' =>'Salary for this employee and branch has already been inserted to to this month you can update your employee Salaries',
+    //         'alert-type'=> 'error',
+    //     ];
+    //     return back()->with($notification);
 
-    }
+    // }
+    // if ($employeeSalary) {
+    //     $notification = [
+    //         'error' =>'Salary for this employee and branch has already been inserted to to this month you can update your employee Salaries',
+    //         'alert-type'=> 'error'
+    //     ];
+    // return back()->with($notification);
+
+    // }
+    // $employeeSalaryUp = Employee::where('salary', '<', $request->debit)->exists();
+    // if($employeeSalaryUp){
+    //     $notification = [
+    //         'error' => 'Salary for this employee is less than the debit amount.',
+    //         'alert-type' => 'error'
+    //     ];
+    //     return back()->with($notification);
+    // }
     if ($employeeSalary) {
-        $notification = [
-            'error' =>'Salary for this employee and branch has already been inserted to to this month you can update your employee Salaries',
-            'alert-type'=> 'error'
-        ];
-    return back()->with($notification);
+        if (!empty($employeeSalary) && (float) (($employeeSalary->balance - $request->debit) < 0)) {
+            $notification = [
+                'error' =>'This Month Full Already Paid Or Salary limit reached',
+                'alert-type'=> 'error'
+            ];
+            return back()->with($notification);
 
-    }
-    $employeeSalaryUp = Employee::where('salary', '<', $request->debit)->exists();
-    if($employeeSalaryUp){
-        $notification = [
-            'error' => 'Salary for this employee is less than the debit amount.',
-            'alert-type' => 'error'
-        ];
-        return back()->with($notification);
-    }
+        } else{
+            $employeeSalary->debit =  $employeeSalary->debit  +  $request->debit;
+            $employeeSalary->balance = $employeeSalary->balance - $request->debit;
+            $employeeSalary->update();
+            $notification = array(
+                'message' =>'Employee Salary Updated Successfully',
+                 'alert-type'=> 'info'
+             );
+            return redirect()->route('employee.salary.advanced.view')->with($notification);
+        }
+
+     }
      else {
         $employeeSalary = new EmployeeSalary;
         $employeeSalary->employee_id =  $request->employee_id;
