@@ -31,7 +31,7 @@ class SupplierController extends Controller
             $supplier->phone = $request->phone;
             $supplier->address = $request->address;
             $supplier->opening_receivable = $request->opening_receivable ?? 0;
-            $supplier->total_receivable = $request->opening_receivable ??0;
+            $supplier->total_receivable = $request->opening_receivable ?? 0;
             $supplier->wallet_balance = $request->opening_receivable ?? 0;
             $supplier->opening_payable = $request->opening_payable ?? 0;
             // $supplier->total_payable = $request->opening_payable;
@@ -109,5 +109,4 @@ class SupplierController extends Controller
             'message' => 'Supplier Deleted Successfully',
         ]);
     }
-
 }
