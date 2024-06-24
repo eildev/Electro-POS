@@ -26,8 +26,8 @@ class SaleController extends Controller
 {
     public function index()
     {
-        $withoutPurchase = Product::whereDoesntHave('purchaseItems')->get();
-        return view('pos.sale.sale', compact('withoutPurchase'));
+        // $withoutPurchase = Product::whereDoesntHave('purchaseItems')->get();
+        return view('pos.sale.sale');
     }
     public function getCustomer()
     {

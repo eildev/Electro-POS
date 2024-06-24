@@ -92,7 +92,7 @@ public function EmployeeSalaryStore(Request $request){
         $employeeSalary->date =  $request->date;
         $employee = Employee::findOrFail( $request->employee_id);
         $employeeSalary->creadit = $employee->salary;
-        $employeeSalary->balance = $now_balance;
+        $employeeSalary->balance = $employeeSalary->creadit - $request->debit;
         $employeeSalary->note =  $request->note;
         $employeeSalary->created_at = Carbon::now();
         $employeeSalary->updated_at = NULL;
