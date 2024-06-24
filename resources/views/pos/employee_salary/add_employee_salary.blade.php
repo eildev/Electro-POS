@@ -139,18 +139,20 @@
         //
         $('select[name="employee_id"]').on('change', function(){
         var employee_id = $(this).val();
+        // alert(employee_id);
         let date = document.querySelector('.start-date').value;
         if(employee_id){
             // AJAX request to fetch additional information about the selected employee
             $.ajax({
-                url: "{{('/employee/info')}}/"+employee_id,
+                url: '/employee/info/' +employee_id,
                 type: "GET",
                 dataType: 'json',
                 data: {
                     date
                 },
                 success: function(employee){
-                    // console.log()
+                // alert(employee.data)
+                    // console.log(employee.data);
                     if(employee.data !== null){
                         $('#employeeSalary').text( "Due: ৳ "+(employee.data.creadit - employee.data.debit));
                         if(employee.data.creadit != employee.data.debit) {

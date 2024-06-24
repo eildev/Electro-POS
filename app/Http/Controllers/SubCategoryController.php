@@ -60,10 +60,12 @@ class SubCategoryController extends Controller
     {
         //   $subcategories = SubCategory::all();
         $subcategories = $this->subCategory->getAllSubCategory();
-        // return view('pos.products.category-show-table', compact('categories'))->render();
+        $subcategories->load('category');
+
         return response()->json([
             "status" => 200,
-            "data" => $subcategories
+            "data" => $subcategories,
+
         ]);
     } //
     public function edit($id)

@@ -15,6 +15,7 @@ use App\Models\SaleItem;
 use App\Models\SubCategory;
 use App\Models\Transaction;
 use App\Models\Unit;
+use App\Models\PurchaseItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +26,8 @@ class SaleController extends Controller
 {
     public function index()
     {
-        return view('pos.sale.sale');
+        $withoutPurchase = Product::whereDoesntHave('purchaseItems')->get();
+        return view('pos.sale.sale',compact('withoutPurchase'));
     }
     public function getCustomer()
     {

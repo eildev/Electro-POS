@@ -40,7 +40,6 @@
                                 <select class="js-example-basic-single form-select category_id" id="category_name"
                                     name="category_id" onchange="errorRemove(this);">
                                     @if ($categories->count() > 0)
-                                        <option selected disabled>Select category</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
@@ -55,7 +54,7 @@
                                         class="text-danger">*</span></label>
                                 <select class="js-example-basic-single form-select subcategory_id" name="subcategory_id"
                                     onchange="errorRemove(this);">
-                                    <option selected disabled>Select Subcategory</option>
+                                    {{-- <option selected disabled>Select Subcategory</option> --}}
                                 </select>
                                 <span class="text-danger subcategory_id_error"></span>
                             </div>
@@ -67,7 +66,7 @@
                                 <select class="js-example-basic-single form-select brand_id" name="brand_id"
                                     onchange="errorRemove(this);">
                                     @if ($brands->count() > 0)
-                                        <option selected disabled>Select Brand</option>
+                                        {{-- <option selected disabled>Select Brand</option> --}}
                                         @foreach ($brands as $brand)
                                             <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                         @endforeach
@@ -190,12 +189,17 @@
             }
 
             // when select category
+            subCategory($('.category_id').val());
             $('.category_id').change(function() {
                 let id = $(this).val();
                 // alert(id);
                 if (id) {
-                    $.ajax({
-                        url: '/subcategory/find/' + id,
+                    subCategory(id);
+                }
+            })
+            function subCategory(categoryId) {
+                $.ajax({
+                        url: '/subcategory/find/' + categoryId,
                         type: 'GET',
                         dataType: 'JSON',
                         success: function(res) {
@@ -208,9 +212,9 @@
                                 if (res.data.length > 0) {
 
                                     // console.log(res.data)
-                                    $('.subcategory_id').html(
-                                        '<option selected disabled>Select a SubCategory</option>'
-                                    );
+                                    // $('.subcategory_id').html(
+                                    //     '<option selected disabled>Select a SubCategory</option>'
+                                    // );
                                     $.each(res.data, function(key, item) {
                                         $('.subcategory_id').append(
                                             `<option value="${item.id}">${item.name}</option>`
@@ -240,9 +244,7 @@
                             }
                         }
                     });
-                }
-            })
-
+            }
 
             // product save
             $('.save_product').click(function(e) {

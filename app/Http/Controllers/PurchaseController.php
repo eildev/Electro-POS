@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+// use Illuminate\Support\Facades\Validator;
 
 class PurchaseController extends Controller
 {
@@ -28,10 +29,11 @@ class PurchaseController extends Controller
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
             'date' => 'required',
+            // 'total_quantity' => 'required',
             'payment_method' => 'required',
             'document' => 'file|mimes:jpg,pdf,png,svg,webp,jpeg,gif|max:5120'
-        ]);
 
+        ]);
 
         if ($validator->passes()) {
             $totalQty = 0;
@@ -113,8 +115,6 @@ class PurchaseController extends Controller
                 $items2->stock += $request->quantity[$i];
                 $items2->save();
             }
-
-
             // actual payment CRUD
             $actualPayment = new ActualPayment;
             $actualPayment->branch_id =  Auth::user()->branch_id;
@@ -195,6 +195,7 @@ class PurchaseController extends Controller
         // return view('pos.purchase.view');
         return view('pos.purchase.view', compact('purchase'));
     }
+
     public function viewAll()
     {
         $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->latest()->get();

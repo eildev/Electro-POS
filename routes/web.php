@@ -27,6 +27,7 @@ use App\Http\Controllers\DamageController;
 use App\Http\Controllers\CustomeMailControler;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\CompanyBalanceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -390,6 +391,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/sms/report/filter', 'SmsReportFilter')->name('sms.report.filter');
             // MONNTHLY Report
             Route::get('/monthly/report', 'monthlyReport')->name('report.monthly');
+            Route::get('/daily/balance', 'dailyBalance')->name('daily.balance');
+        });
+    });
+    // Report related routes
+    Route::controller(CompanyBalanceController::class)->group(function () {
+        Route::group(['prefix' => 'daily'], function () {
+            Route::get('/balance', 'dailyBalance')->name('balance');
         });
     });
     // Report related routes

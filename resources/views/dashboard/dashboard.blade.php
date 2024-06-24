@@ -365,7 +365,33 @@
                         </div>
                     </div>
                 </div> --}}
-            </div>
+                @php
+                    $mysales =  App\Models\Sale::whereDate('created_at',Carbon::now())->get();
+                    $mypurchase =  App\Models\Purchase::whereDate('created_at',Carbon::now())->get();
+                    $myexpenses =  App\Models\Expense::whereDate('created_at',Carbon::now())->get();
+                @endphp
+                <div class="col-md-3  col-xl-3 col-6  grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                {{-- <h6 class="card-title mb-0">invoice amount</h6> --}}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 col-12 p-0">
+                                    <p>Total Sales : {{ $mysales->sum('final_receivable') }}</p>
+                                    <p>Paid : {{ $mysales->sum('paid') }}</p>
+                                    <p>Due: {{ $mysales->sum('due') }}</p>
+                                    <p>----------------------------------</p>
+                                    <p>Total Purchase : {{ $mypurchase->sum('grand_total') }}</p>
+                                    <p>Paid : {{ $mypurchase->sum('paid') }}</p>
+                                    <p>Due : {{ $mypurchase->sum('due') }}</p>
+                                    <p>----------------------------------</p>
+                                    <p>Total Expenses : {{ $myexpenses->sum('amount') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>
 
     </div> <!-- row -->
