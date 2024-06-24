@@ -256,8 +256,7 @@ class SaleController extends Controller
             $accountTransaction->purpose =  'Deposit';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = $oldBalance->balance + $request->paid;
+            // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
             $accountTransaction->save();
 
             $transaction = Transaction::where('customer_id', $request->customer_id)->first();
