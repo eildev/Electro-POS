@@ -128,7 +128,7 @@ class PurchaseController extends Controller
             // account Transaction crud
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Deposit';
+            $accountTransaction->purpose =  'Withdraw';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->debit = $request->total_payable;
             // $accountTransaction->balance = $accountTransaction->balance - $request->paid;

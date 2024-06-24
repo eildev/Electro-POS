@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountTransaction;
 use App\Models\Bank;
+use App\Models\Transaction;
 use App\Repositories\RepositoryInterfaces\BankInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class BankController extends Controller
@@ -39,7 +42,16 @@ class BankController extends Controller
             $bank->account = $request->account;
             $bank->email = $request->email;
             $bank->opening_balance = $request->opening_balance;
+            $bank->balance = $request->opening_balance;
             $bank->save();
+
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->purpose =  'Deposit';
+            $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->credit = $request->opening_balance;
+            $accountTransaction->save();
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Bank Save Successfully',
@@ -95,6 +107,25 @@ class BankController extends Controller
             $bank->email = $request->email;
             $bank->opening_balance = $request->opening_balance;
             $bank->save();
+
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->purpose =  'Deposit';
+            $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->credit = $request->opening_balance;
+            $accountTransaction->save();
+
+            // $transaction = new Transaction;
+            // $transaction->date =  $request->sale_date;
+            // $transaction->payment_type = 'receive';
+            // $transaction->particulars = 'Sale#' . $saleId;
+            // $transaction->customer_id = $request->customer_id;
+            // $transaction->credit = $request->change_amount;
+            // $transaction->debit = $request->paid;
+            // $transaction->balance = $request->change_amount - $request->paid;
+            // $transaction->payment_method = $request->payment_method;
+            // $transaction->save();
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Bank Update Successfully',

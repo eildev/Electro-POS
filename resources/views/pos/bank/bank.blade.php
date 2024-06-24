@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Bank')
+@section('title', '| Bank')
 @section('admin')
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
