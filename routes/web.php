@@ -27,6 +27,7 @@ use App\Http\Controllers\DamageController;
 use App\Http\Controllers\CustomeMailControler;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\CompanyBalanceController;
 use Illuminate\Support\Facades\Route;
 
 /*

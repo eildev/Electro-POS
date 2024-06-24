@@ -43,7 +43,7 @@ public function EmployeeSalaryStore(Request $request){
     if (!empty($employeeSalary) && (float) $employeeSalary->balance < $debit) {
         $notification = [
             'error' =>'Salary for this employee and branch has already been inserted to to this month you can update your employee Salaries',
-            'alert-type'=> 'error'
+            'alert-type'=> 'error',
         ];
         return back()->with($notification);
 
@@ -53,7 +53,7 @@ public function EmployeeSalaryStore(Request $request){
             'error' =>'Salary for this employee and branch has already been inserted to to this month you can update your employee Salaries',
             'alert-type'=> 'error'
         ];
-        return back()->with($notification);
+    return back()->with($notification);
 
     }
     $employeeSalaryUp = Employee::where('salary', '<', $request->debit)->exists();
@@ -221,6 +221,7 @@ public function EmployeeSalaryAdvancedDelete($id){
           return  json_encode($branch);
     }//
     public function getEmployeeInfo(Request $request,$employee_id){
+        // dd($employee_id);
         $requestMonth = Carbon::createFromFormat('Y-m-d', $request->date)->format('m');
         $requestYear = Carbon::createFromFormat('Y-m-d', $request->date)->format('Y');
         // Get the first and last day of the month
@@ -229,6 +230,7 @@ public function EmployeeSalaryAdvancedDelete($id){
         $employee = EmployeeSalary::where('employee_id',$employee_id)
         ->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])
         ->latest()->first();
+        // dd($employee);
         return response()->json([
             'data' => $employee
         ]);
