@@ -141,7 +141,7 @@
                                         <br>
                                         Discount
                                         <br>
-                                        Total Due
+                                        Previous Due
                                         <br>
                                         Grand Total
                                         <br>
@@ -149,12 +149,15 @@
                                         <br>
                                         <br>
                                     <td colspan="1" class="text-end">
-                                        {{ $sale->total ?? 0 }} <br>
-                                        {{ $sale->actual_discount ?? 0 }} <br>
-                                        {{ $sale->due > 0 ? $sale->due : 0 }} <br>
-                                        {{ $sale->final_receivable ?? 0 }} <br>
+                                        <span class="productTotal"> {{ number_format($sale->total, 2) ?? 0 }}</span> <br>
+                                        <span class="discount">{{ number_format($sale->actual_discount, 2) ?? 0 }}</span>
                                         <br>
-                                        <button class="btn btn-primary">
+                                        <span class="previousDue"></span>{{ number_format($previousDue, 2) ?? 0 }} <br>
+                                        <span
+                                            class="grandTotal">{{ number_format($sale->final_receivable, 2) ?? 0 }}</span>
+                                        <br>
+                                        <br>
+                                        <button class="btn btn-primary return_product">
                                             Return Products
                                         </button>
                                     </td>
@@ -168,6 +171,10 @@
     </div>
 
     <style>
+        .hidden {
+            display: none !important;
+        }
+
         #printFrame {
             display: none;
         }
@@ -177,9 +184,29 @@
     <script>
         $(document).ready(function() {
 
+            function updateTotals() {
+                let total = 0;
+                let discount = parseFloat($('.discount').text()) || 0;
+                let previousDue = parseFloat("{{ $previousDue, 2 ?? 0 }}");
+                // console.log(previousDue);
+
+                $('tbody tr').each(function() {
+                    if (!$(this).hasClass('hidden')) {
+                        let subTotal = parseFloat($(this).find('td:nth-child(5)').text()) || 0;
+                        total += subTotal;
+                    }
+                });
+
+                let finalReceivable = (total - discount) + previousDue;
+
+                $('.productTotal').text(total.toFixed(2));
+                $('.grandTotal').text(finalReceivable.toFixed(2));
+            }
+
             $(document).on('click', '.no_return_btn', function(e) {
                 e.preventDefault();
-                $(this).closest('tr').hide();
+                $(this).closest('tr').addClass('hidden');
+                updateTotals();
             });
 
 
