@@ -1,16 +1,65 @@
+<style>
+    .search_result{
+        background-color: #c7f1ff;
+        max-height: 400px;
+        overflow-y: scroll;
+        width: 83%;
+        position: absolute;
+        margin-top: 50px;
+        display: none;
+        /* border-width: 0px 1px 1px 1px; */
+        /* border-style: solid; */
+        /* border-color: #00a9f1; */
+        box-shadow: 1px 1px 3px gray;
+    }
+
+     /* Scroll bar Style  */
+    /* width */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 5px grey;
+   */
+
+  box-shadow: inset 0 0 5px transparent;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #00a9f1;
+  border-radius: 10px;
+}
+</style>
 <nav class="navbar">
     <a href="#" class="sidebar-toggler">
         <i data-feather="menu"></i>
     </a>
     <div class="navbar-content">
-        <form class="search-form">
+        <div class="search-form">
             <div class="input-group">
                 {{-- <div class="input-group-text">
                     <i data-feather="search"></i>
                 </div> --}}
-                <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
+                <input type="text" style="border: 1px solid #00a9f1" class="form-control" id="global_search" placeholder="Search here..." autocomplete="off">
             </div>
-        </form>
+        </div>
+        <div class="search_result">
+            <table class="table">
+                <thead class="table_header">
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Available Stock</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody class="findData">
+                </tbody>
+            </table>
+        </div>
         <ul class="navbar-nav">
             {{-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
