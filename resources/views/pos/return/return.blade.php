@@ -13,59 +13,73 @@
                         <div class="col-md-12">
                             <h6 class="card-title">Basic Details</h6>
                             <div class="row">
-                                <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Order Id </label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                <div class="col-sm-6 d-flex justify-content-between align-items-center">
+                                    <label for="exampleInputUsername2" class="col-form-label">Order Id </label>
+                                    <span>:</span>
+                                </div>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                         </b>{{ $sale->invoice_number ?? 00 }}</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Customer Name</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Customer Name :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                         </b>{{ $sale->customer->name ?? '' }}</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Product Price</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                        </b>{{ $sale->total ?? 0 }}</label>
+                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Product Price :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ number_format($sale->total, 2) ?? 0 }}</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Discount </label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                            {{ $sale->actual_discount ?? 0 }}</b></label>
+                                <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Discount :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->actual_discount, 2) ?? 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Total Receivable:</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                            {{ $sale->receivable ?? 0 }}</b></label>
+                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Previous Due :</label>
+                                <div class="col-sm-6 text-end">
+                                    @php
+                                        $total = $sale->total - $sale->actual_discount;
+                                        $previousDue = $sale->receivable - $total;
+                                    @endphp
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($previousDue, 2) ?? 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Total Paid:</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                            {{ $sale->paid ?? 0 }}</b></label>
+                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Total Receivable :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->receivable, 2) ?? 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Due</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Total Paid :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->paid, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Due :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                             {{ $sale->due > 0 ? $sale->due : 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="exampleInputMobile" class="col-sm-6 col-form-label">Returned Product
-                                    Value</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                    Value :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                             00</b></label>
                                 </div>
                             </div>

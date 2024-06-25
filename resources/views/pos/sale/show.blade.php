@@ -83,32 +83,7 @@
                                         @endforeach
                                     @else
                                         <tr class="text-end">
-                                            <td class="text-start">1</td>
-                                            <td class="text-start">PSD to html conversion</td>
-                                            <td>02</td>
-                                            <td>$55</td>
-                                            <td>$110</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">2</td>
-                                            <td class="text-start">Package design</td>
-                                            <td>08</td>
-                                            <td>$34</td>
-                                            <td>$272</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">3</td>
-                                            <td class="text-start">Html template development</td>
-                                            <td>03</td>
-                                            <td>$500</td>
-                                            <td>$1500</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">4</td>
-                                            <td class="text-start">Redesign</td>
-                                            <td>01</td>
-                                            <td>$30</td>
-                                            <td>$30</td>
+                                            <td>No Data Found</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -120,59 +95,94 @@
                             <div class="col-md-6 ms-auto">
                                 <div class="table-responsive">
                                     <table class="table">
-                                        <tbody>
+                                        <tbody class="total_calculation_bg">
                                             <tr>
-                                                <td>Sub Total</td>
-                                                <td class="text-end">৳ {{ $sale->total }}</td>
-                                            </tr>
-                                            @if ($sale->discount != 'No Discount')
                                                 @php
-                                                    $discount = App\Models\Promotion::findOrFail($sale->discount);
+                                                    $productTotal = number_format($sale->total, 2);
                                                 @endphp
-                                                @if ($discount->discount_type == 'percentage')
-                                                    <tr>
-                                                        <td>Discount ({{ $discount->discount_value }} %)</td>
-                                                        <td class="text-end">৳ {{ $sale->change_amount }}</td>
-                                                    </tr>
-                                                @else
-                                                    <tr>
-                                                        <td>Discount (৳ {{ $discount->discount_value }})</td>
-                                                        <td class="text-end">৳ {{ $sale->change_amount }}</td>
-                                                    </tr>
-                                                @endif
+                                                <td>Product Total</td>
+                                                <td class="text-end">৳ {{ $productTotal }}</td>
+                                            </tr>
+                                            @php
+                                                $subTotal = floatval($sale->total - $sale->actual_discount);
+                                            @endphp
+                                            @if ($sale->actual_discount > 0)
+                                                @php
+                                                    $subTotalFormatted = number_format($subTotal, 2);
+                                                    $discount = number_format($sale->actual_discount, 2);
+                                                @endphp
+                                                <tr>
+                                                    <td>Discount</td>
+                                                    <td class="text-end">৳ {{ $discount }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-bold-800">Sub Total</td>
+                                                    <td class="text-bold-800 text-end">৳
+                                                        {{ $subTotalFormatted }} </td>
+                                                </tr>
                                             @endif
 
                                             @if ($sale->tax != null)
                                                 <tr>
                                                     <td>TAX ({{ $sale->tax }}%)</td>
-                                                    <td class="text-end">৳ {{ $sale->receivable }} </td>
+                                                    <td class="text-end">৳ {{ number_format($sale->receivable, 2) }} </td>
                                                 </tr>
                                             @endif
+                                            @if ($sale->receivable > $subTotal)
+                                                @php
+                                                    $previousDue = floatval($sale->receivable - $subTotal);
+                                                    $previousDueFormatted = number_format($previousDue, 2);
+                                                @endphp
+                                                <tr>
+                                                    <td class="text-bold-800">Previous Due</td>
+                                                    <td class="text-bold-800 text-end">৳
+                                                        {{ $previousDueFormatted }} </td>
+                                                </tr>
+                                            @endif
+
                                             <tr>
                                                 <td class="text-bold-800">Grand Total</td>
-                                                <td class="text-bold-800 text-end">৳ {{ $sale->receivable }} </td>
+                                                <td class="text-bold-800 text-end">৳
+                                                    {{ number_format($sale->receivable, 2) }}
+                                                </td>
                                             </tr>
-                                            @if ($sale->receivable <= $sale->paid)
-                                                <tr>
-                                                    <td>Payment Made</td>
-                                                    <td class="text-success text-end">৳ {{ $sale->paid }} </td>
-                                                </tr>
+                                            <tr>
+                                                <td>Paid</td>
+                                                <td class="text-success text-end">৳ {{ number_format($sale->paid, 2) }}
+                                                </td>
+                                            </tr>
+
+                                            @php
+                                                $mode = App\models\PosSetting::all()->first();
+                                            @endphp
+                                            @if ($mode->dark_mode == 1)
+                                                @if ($sale->due >= 0)
+                                                    <tr class="">
+                                                        <td class="text-bold-800 text-danger">Due</td>
+                                                        <td class="text-bold-800 text-end text-danger ">৳
+                                                            {{ number_format($sale->due, 2) }} </td>
+                                                    </tr>
+                                                @else
+                                                    <tr class="">
+                                                        <td class="text-bold-800">Return</td>
+                                                        <td class="text-bold-800 text-end">৳
+                                                            {{ number_format($sale->due, 2) }} </td>
+                                                    </tr>
+                                                @endif
                                             @else
-                                                <tr>
-                                                    <td>Payment Made</td>
-                                                    <td class="text-danger text-end">(-) ৳ {{ $sale->paid }} </td>
-                                                </tr>
-                                            @endif
-                                            @if ($sale->due >= 0)
-                                                <tr class="bg-dark">
-                                                    <td class="text-bold-800">Balance Due</td>
-                                                    <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
-                                                </tr>
-                                            @else
-                                                <tr class="bg-dark">
-                                                    <td class="text-bold-800">Return</td>
-                                                    <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
-                                                </tr>
+                                                @if ($sale->due >= 0)
+                                                    <tr class="bg-dark print_bg_white">
+                                                        <td class="text-bold-800">Due</td>
+                                                        <td class="text-bold-800 text-end text-danger">৳
+                                                            {{ number_format($sale->due, 2) }} </td>
+                                                    </tr>
+                                                @else
+                                                    <tr class="bg-dark print_bg_white">
+                                                        <td class="text-bold-800">Return</td>
+                                                        <td class="text-bold-800 text-end">৳
+                                                            {{ number_format($sale->due, 2) }} </td>
+                                                    </tr>
+                                                @endif
                                             @endif
 
                                         </tbody>
