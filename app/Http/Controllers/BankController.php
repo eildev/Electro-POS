@@ -95,7 +95,7 @@ class BankController extends Controller
             'branch_name' => 'required|max:149',
             'phone_number' => 'required|max:19',
             'account' => 'required',
-            'opening_balance' => 'required',
+            // 'opening_balance' => 'required',
         ]);
         if ($validator->passes()) {
             $bank = Bank::findOrFail($id);
@@ -105,14 +105,14 @@ class BankController extends Controller
             $bank->phone_number = $request->phone_number;
             $bank->account = $request->account;
             $bank->email = $request->email;
-            $bank->opening_balance = $request->opening_balance;
+            // $bank->opening_balance = $request->opening_balance;
             $bank->save();
 
-            $accountTransaction = AccountTransaction::where('account_id', $id)->first();
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = (($oldBalance->balance - $accountTransaction->credit) + $request->opening_balance);
-            $accountTransaction->credit = $request->opening_balance;
-            $accountTransaction->save();
+            // $accountTransaction = AccountTransaction::where('account_id', $id)->first();
+            // $oldBalance = AccountTransaction::latest()->first();
+            // $accountTransaction->balance = (($oldBalance->balance - $accountTransaction->credit) + $request->opening_balance);
+            // $accountTransaction->credit = $request->opening_balance;
+            // $accountTransaction->save();
 
             return response()->json([
                 'status' => 200,
