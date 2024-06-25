@@ -128,8 +128,12 @@ class PurchaseController extends Controller
             $accountTransaction->purpose =  'Withdraw';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->debit = $request->total_payable;
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = $oldBalance->balance - $request->paid;
+            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance - $request->paid;
+            } else {
+                $accountTransaction->balance = $accountTransaction->balance - $request->paid;
+            }
             $accountTransaction->created_at =  $purchaseDate;
             $accountTransaction->save();
             // get Transaction Model
@@ -306,8 +310,12 @@ class PurchaseController extends Controller
             $accountTransaction->purpose =  'Deposit';
             $accountTransaction->account_id =  $request->transaction_account;
             $accountTransaction->debit = $request->amount;
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = $oldBalance->balance - $request->amount;
+            $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance - $request->paid;
+            } else {
+                $accountTransaction->balance = $accountTransaction->balance - $request->paid;
+            }
             $accountTransaction->save();
 
             // transaction related CRUD

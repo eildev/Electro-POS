@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\AccountTransaction;
 use App\Models\Bank;
+use Carbon\Carbon;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +17,7 @@ class ExpenseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-        ],[
+        ], [
             'name' => 'required Expense Category Name'
         ]);
         $expenseCategory = new ExpenseCategory;
@@ -62,19 +63,19 @@ class ExpenseController extends Controller
         $expense->save();
         // account Transaction crud
         $accountTransaction = new AccountTransaction;
-            $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Withdraw';
-            $accountTransaction->account_id =  $request->bank_account_id;
-            $oldBalance = AccountTransaction::latest()->first();
-            if ($oldBalance) {
-                $accountTransaction->debit = $oldBalance->debit + $request->amount;
-                $accountTransaction->balance = $oldBalance->balance - $request->amount;
-            } else {
-                 $accountTransaction->debit = $request->amount;
-                 $accountTransaction->balance = -$request->amount;
-            }
-           $accountTransaction->created_at = $request->expense_date;
-            $accountTransaction->save();
+        $accountTransaction->branch_id =  Auth::user()->branch_id;
+        $accountTransaction->purpose =  'Withdraw';
+        $accountTransaction->account_id =  $request->bank_account_id;
+        $accountTransaction->debit = $request->amount;
+        $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
+        // dd($oldBalance->balance);
+        if ($oldBalance) {
+            $accountTransaction->balance = $oldBalance->balance - $request->amount;
+        } else {
+            $accountTransaction->balance = $accountTransaction->balance - $request->amount;
+        }
+        $accountTransaction->created_at = Carbon::now();
+        $accountTransaction->save();
 
         $notification = [
             'message' => 'Expense Added Successfully',
@@ -90,7 +91,7 @@ class ExpenseController extends Controller
         $expenseCategory = ExpenseCategory::latest()->get();
         // $expenseCategory  = ExpenseCategory::latest()->get();
         $expense = Expense::latest()->get();
-        return view('pos.expense.view_expense', compact('expense', 'expenseCat','bank','expenseCategory'));
+        return view('pos.expense.view_expense', compact('expense', 'expenseCat', 'bank', 'expenseCategory'));
     } //
 
     public function ExpenseEdit($id)
@@ -177,9 +178,10 @@ class ExpenseController extends Controller
             'status' => 200,
             'message' => 'Expense Category updated successfully',
         ]);
-    }//
+    } //
     ///Expense Filter view //
-    public function ExpenseFilterView(Request $request){
+    public function ExpenseFilterView(Request $request)
+    {
         $expenseCat = ExpenseCategory::latest()->get();
         // $expenseCategory  = ExpenseCategory::latest()->get();
         $expense =  Expense::when($request->startDate && $request->endDate, function ($query) use ($request) {
