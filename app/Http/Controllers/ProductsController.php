@@ -179,4 +179,23 @@ class ProductsController extends Controller
         $product = Product::findOrFail($id);
         return view('pos.products.product.product-barcode', compact('product'));
     }
+    public function globalSearch($search_value)
+    {
+        $product = Product::where('search_value');
+
+        $products = Product::where('name','LIKE','%'.$search_value.'%')
+        ->orWhere('details','LIKE','%'.$search_value.'%')
+        ->orWhere('price','LIKE','%'.$search_value.'%')
+        ->orWhereHas('category', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+        ->orWhereHas('subcategory', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+        ->orWhereHas('brand', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+
+        ->get();
+
+        return response()->json([
+            'products' => $products,
+            'status' => 200
+        ]);
+    }
+
 }

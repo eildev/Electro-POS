@@ -145,6 +145,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/destroy/{id}', 'destroy')->name('product.destroy');
         Route::get('/product/find/{id}', 'find')->name('product.find');
         Route::get('/product/barcode/{id}', 'ProductBarcode')->name('product.barcode');
+        Route::get('/search/{value}', 'globalSearch');
     });
     // Product  related route(n)
     Route::controller(EmployeeController::class)->group(function () {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\EmployeeSalary;
 use App\Models\Employee;
 use App\Models\Branch;
+use App\Models\Bank;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -17,10 +18,12 @@ public function EmployeeSalaryAdd(Request $request){
     //     ->whereMonth('date', Carbon::now()->format('m'));;
     // })->get();
     $employees = Employee::latest()->get();
+    $bank = Bank::latest()->get();
     $branch = Branch::latest()->get();
-    return view('pos.employee_salary.add_employee_salary',compact('employees','branch'));
+    return view('pos.employee_salary.add_employee_salary',compact('employees','branch','bank'));
 }//
 public function EmployeeSalaryStore(Request $request){
+
         $requestMonth = Carbon::createFromFormat('Y-m-d', $request->date)->format('m');
         $requestYear = Carbon::createFromFormat('Y-m-d', $request->date)->format('Y');
         // Get the first and last day of the month
@@ -93,6 +96,7 @@ public function EmployeeSalaryStore(Request $request){
         $employee = Employee::findOrFail( $request->employee_id);
         $employeeSalary->creadit = $employee->salary;
         $employeeSalary->balance = $employeeSalary->creadit - $request->debit;
+        $employeeSalary->payment_method =  $request->payment_method;
         $employeeSalary->note =  $request->note;
         $employeeSalary->created_at = Carbon::now();
         $employeeSalary->updated_at = NULL;
@@ -121,6 +125,7 @@ public function EmployeeSalaryUpdate(Request $request,$id){
     $requiestDebit = $employeeSalary->debit = $employeeSalary->debit + $request->debit;
     $employeeSalary->date =  $request->date;
     $employeeSalary->balance = $employeeSalary->creadit - $requiestDebit;
+    $employeeSalary->payment_method  = $request->payment_method;
     $employeeSalary->note  = $request->note;
     $employeeSalary->updated_at  =Carbon::now();
     $employeeSalary->update();

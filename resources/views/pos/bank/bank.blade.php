@@ -154,13 +154,13 @@
                             <input id="defaultconfig" class="form-control edit_email" maxlength="39" name="email"
                                 type="email">
                         </div>
-                        <div class="mb-3 col-md-12">
+                        {{-- <div class="mb-3 col-md-12">
                             <label for="name" class="form-label">Opening Balance</label>
                             <input id="defaultconfig" class="form-control edit_opening_balance" maxlength="39"
                                 name="opening_balance" type="number" onkeyup="errorRemove(this);"
                                 onblur="errorRemove(this);">
                             <span class="text-danger edit_opening_balance_error"></span>
-                        </div>
+                        </div> --}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
