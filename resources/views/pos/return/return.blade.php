@@ -23,7 +23,10 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Customer Name :</label>
+                                <div class="col-sm-6 d-flex justify-content-between align-items-center">
+                                    <label for="exampleInputUsername2" class="col-form-label">Customer Name</label>
+                                    <span>:</span>
+                                </div>
                                 <div class="col-sm-6 text-end">
                                     <label for="exampleInputUsername2" class="col-form-label"><b>
                                         </b>{{ $sale->customer->name ?? '' }}</label>
