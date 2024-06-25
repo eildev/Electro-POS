@@ -118,7 +118,7 @@ class PurchaseController extends Controller
             $actualPayment->payment_type =  'pay';
             $actualPayment->payment_method =  $request->payment_method;
             $actualPayment->supplier_id = $request->supplier_id;
-            $actualPayment->amount = $request->total_payable;;
+            $actualPayment->amount = $request->total_payable;
             $actualPayment->date =  $purchaseDate;
             $actualPayment->save();
 

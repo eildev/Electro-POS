@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
+use App\Models\AccountTransaction;
 use App\Models\Bank;
 use Validator;
 use Illuminate\Support\Facades\Auth;
@@ -52,12 +53,29 @@ class ExpenseController extends Controller
         $expense->spender =  $request->spender;
         $expense->bank_account_id =  $request->bank_account_id;
         $expense->note =  $request->note;
+
         if ($request->image) {
             $imageName = rand() . '.' . $request->image->extension();
             $request->image->move(public_path('uploads/expense/'), $imageName);
             $expense->image = $imageName;
         }
         $expense->save();
+        // account Transaction crud
+        $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->purpose =  'Withdraw';
+            $accountTransaction->account_id =  $request->bank_account_id;
+            $oldBalance = AccountTransaction::latest()->first();
+            if ($oldBalance) {
+                $accountTransaction->debit = $oldBalance->debit + $request->amount;
+                $accountTransaction->balance = $oldBalance->balance - $request->amount;
+            } else {
+                 $accountTransaction->debit = $request->amount;
+                 $accountTransaction->balance = -$request->amount;
+            }
+           $accountTransaction->created_at = $request->expense_date;
+            $accountTransaction->save();
+
         $notification = [
             'message' => 'Expense Added Successfully',
             'alert-type' => 'info'
