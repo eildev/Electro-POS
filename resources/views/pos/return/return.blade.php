@@ -212,8 +212,8 @@
 
             $(document).on('click', '.return_product', function(e) {
                 e.preventDefault();
-                let id = $(this).attr('data-id');
-                // alert(id);
+
+                alert("ok");
 
                 let saleId = '{{ $sale->id }}';
                 let customer_id = $('.select-customer').val();
