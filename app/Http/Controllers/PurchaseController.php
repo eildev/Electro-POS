@@ -25,16 +25,13 @@ class PurchaseController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
             'date' => 'required',
-            // 'total_quantity' => 'required',
+            // 'products' => 'required',
             'payment_method' => 'required',
             'document' => 'file|mimes:jpg,pdf,png,svg,webp,jpeg,gif|max:5120'
-
         ]);
-
         if ($validator->passes()) {
             $totalQty = 0;
             $totalAmount = 0;
@@ -121,7 +118,7 @@ class PurchaseController extends Controller
             $actualPayment->payment_type =  'pay';
             $actualPayment->payment_method =  $request->payment_method;
             $actualPayment->supplier_id = $request->supplier_id;
-            $actualPayment->amount = $request->total_payable;;
+            $actualPayment->amount = $request->total_payable;
             $actualPayment->date =  $purchaseDate;
             $actualPayment->save();
 
@@ -131,14 +128,16 @@ class PurchaseController extends Controller
             $accountTransaction->purpose =  'Withdraw';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->debit = $request->total_payable;
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = $oldBalance->balance - $request->paid;
+            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance - $request->paid;
+            } else {
+                $accountTransaction->balance = $accountTransaction->balance - $request->paid;
+            }
             $accountTransaction->created_at =  $purchaseDate;
             $accountTransaction->save();
-
             // get Transaction Model
             $transaction = Transaction::where('supplier_id', $request->supplier_id)->first();
-
             // Transaction table CRUD
             if ($transaction) {
                 // Update existing transaction
@@ -311,8 +310,12 @@ class PurchaseController extends Controller
             $accountTransaction->purpose =  'Deposit';
             $accountTransaction->account_id =  $request->transaction_account;
             $accountTransaction->debit = $request->amount;
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = $oldBalance->balance - $request->amount;
+            $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance - $request->paid;
+            } else {
+                $accountTransaction->balance = $accountTransaction->balance - $request->paid;
+            }
             $accountTransaction->save();
 
             // transaction related CRUD

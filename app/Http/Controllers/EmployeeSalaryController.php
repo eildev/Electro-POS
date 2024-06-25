@@ -21,6 +21,7 @@ public function EmployeeSalaryAdd(Request $request){
     return view('pos.employee_salary.add_employee_salary',compact('employees','branch'));
 }//
 public function EmployeeSalaryStore(Request $request){
+
         $requestMonth = Carbon::createFromFormat('Y-m-d', $request->date)->format('m');
         $requestYear = Carbon::createFromFormat('Y-m-d', $request->date)->format('Y');
         // Get the first and last day of the month

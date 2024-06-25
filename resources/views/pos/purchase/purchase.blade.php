@@ -25,8 +25,7 @@
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Supplier</label>
                                 <select class="js-example-basic-single form-select select-supplier supplier_id"
-                                    data-width="100%" onclick="errorRemove(this);" onblur="errorRemove(this);"
-                                    name="supplier_id">
+                                    data-width="100%" onclick="errorRemove(this);" name="supplier_id">
                                     <option value="">Select Supplier</option>
                                 </select>
                                 <span class="text-danger supplier_id_error"></span>
@@ -55,7 +54,7 @@
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
                                 <select class="js-example-basic-single form-select product_select" data-width="100%"
-                                    onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                    onclick="errorRemove(this);">
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Product</option>
                                         @foreach ($products as $product)
@@ -309,7 +308,6 @@
                                 <select class="form-select payment_method" data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" name="payment_method">
                                     @if ($payments->count() > 0)
-                                        <option selected disabled>Select Payment Method</option>
                                         @foreach ($payments as $payemnt)
                                             <option value="{{ $payemnt->id }}">
                                                 {{ $payemnt->name }}
@@ -353,8 +351,8 @@
                             </div>
                             <div class="mb-3 col-md-12">
                                 {{-- <label for="name" class="form-label">Note</label> --}}
-                                <input name="note" class="form-control note" id="" placeholder="Enter Note (Optional)"
-                                    rows="3"></input>
+                                <input name="note" class="form-control note" id=""
+                                    placeholder="Enter Note (Optional)" rows="3"></input>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -380,21 +378,6 @@
             }
         }
         $(document).ready(function() {
-
-            // var currentDate = new Date().toISOString().split('T')[0];
-            // $('.purchase_date').val(currentDate);
-            //     // console.log('hello');
-            //     function getTodayDate() {
-            //         const today = new Date();
-            //         const year = today.getFullYear();
-            //         const month = today.getMonth(); // Month is 0-indexed, add 1 to get the correct month
-            //         const day = today.getDate();
-            //         // console.log(`${year} - ${month} - ${day}`);
-            //         document.querySelector('.purchase_date').value = `${year} - ${month} - ${day}`;
-            //         return `${year} - ${month} - ${day}`;
-            //     }
-            //     getTodayDate();
-
 
             // show error
             function showError(name, message) {
@@ -541,7 +524,9 @@
                                             <input type="number" class="form-control product_price${product.id} border-0 "  name="unit_price[]" readonly value="${product.cost ?? 0}" />
                                         </td>
                                         <td>
-                                            <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" value="" />
+                                            <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" min="1" value="" />
+
+                                            <div class="validation-message text-danger" style="display: none;">Please enter a quantity of at least 1.</div>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control product_subtotal${product.id} border-0 "  name="total_price[]" readonly value="00.00" />
@@ -559,13 +544,7 @@
                         })
                     }
                 } else {
-                    Swal.fire({
-                        position: "top-end",
-                        icon: "warning",
-                        title: "Please select A Supplier",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    toastr.warning('Please Select Supplier');
                 }
 
             })
@@ -628,18 +607,35 @@
                 updateGrandTotal();
                 updateSLNumbers();
                 updateTotalQuantity();
-            })
+            });
 
             // payment button click event
             $('.payment_btn').click(function(e) {
                 e.preventDefault();
-
                 let cumtomer_due = parseFloat($('.previous_due').text());
                 let subtotal = parseFloat($('.grand_total').val());
                 $('.subTotal').val(subtotal);
                 let grandTotal = cumtomer_due + subtotal;
                 $('.grandTotal').val(grandTotal);
                 $('.paying_items').text(totalQuantity);
+                var isValid = true;
+                //Quantity Message
+                $('.quantity').each(function() {
+                    var quantity = $(this).val();
+                    if (!quantity || quantity < 1) {
+                        isValid = false;
+                        return false;
+                    }
+                });
+                if (!isValid) {
+                    event.preventDefault();
+                    // alert('Please enter a quantity of at least 1 for all products.');
+                    toastr.error('Please enter a quantity of at least 1 .)');
+                    $('#paymentModal').modal('hide');
+                } else {
+
+                }
+                //End Quantity Message
             })
 
             // paid amount
@@ -650,13 +646,11 @@
                 $('.total_payable').val(grandTotal);
                 totalDue();
             })
-
             // total_payable
             $('.total_payable').keyup(function(e) {
                 // alert('ok');
                 totalDue();
             })
-
             // due
             function totalDue() {
                 let pay = parseFloat($('.total_payable').val());
@@ -707,16 +701,15 @@
                             window.location.href = '/purchase/invoice/' + id;
 
                         } else {
-
                             console.log(res.error);
                             if (res.error.payment_method == null) {
                                 $('#paymentModal').modal('hide');
                                 if (res.error.supplier_id) {
                                     showError('.supplier_id', res.error.supplier_id);
                                 }
-                                if (res.error.products) {
-                                    showError('.product_select', res.error.products);
-                                }
+                                // if (res.error.products) {
+                                //     showError('.product_select', res.error.products);
+                                // }
                                 if (res.error.purchase_date) {
                                     showError('.purchase_date', res.error.purchase_date);
                                 }

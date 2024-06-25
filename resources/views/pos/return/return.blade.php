@@ -13,59 +13,76 @@
                         <div class="col-md-12">
                             <h6 class="card-title">Basic Details</h6>
                             <div class="row">
-                                <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Order Id </label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                <div class="col-sm-6 d-flex justify-content-between align-items-center">
+                                    <label for="exampleInputUsername2" class="col-form-label">Order Id </label>
+                                    <span>:</span>
+                                </div>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                         </b>{{ $sale->invoice_number ?? 00 }}</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Customer Name</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                <div class="col-sm-6 d-flex justify-content-between align-items-center">
+                                    <label for="exampleInputUsername2" class="col-form-label">Customer Name</label>
+                                    <span>:</span>
+                                </div>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                         </b>{{ $sale->customer->name ?? '' }}</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Product Price</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                        </b>{{ $sale->total ?? 0 }}</label>
+                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Product Price :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ number_format($sale->total, 2) ?? 0 }}</label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Discount </label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                            {{ $sale->actual_discount ?? 0 }}</b></label>
+                                <label for="exampleInputUsername2" class="col-sm-6 col-form-label">Discount :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->actual_discount, 2) ?? 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Total Receivable:</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                            {{ $sale->receivable ?? 0 }}</b></label>
+                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Previous Due :</label>
+                                <div class="col-sm-6 text-end">
+                                    @php
+                                        $total = $sale->total - $sale->actual_discount;
+                                        $previousDue = $sale->receivable - $total;
+                                    @endphp
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($previousDue, 2) ?? 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Total Paid:</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
-                                            {{ $sale->paid ?? 0 }}</b></label>
+                                <label for="exampleInputEmail2" class="col-sm-6 col-form-label">Total Receivable :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->receivable, 2) ?? 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row">
-                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Due</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Total Paid :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->paid, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-sm-6 col-form-label">Due :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                             {{ $sale->due > 0 ? $sale->due : 0 }}</b></label>
                                 </div>
                             </div>
                             <div class="row mb-3">
                                 <label for="exampleInputMobile" class="col-sm-6 col-form-label">Returned Product
-                                    Value</label>
-                                <div class="col-sm-6">
-                                    <label for="exampleInputUsername2" class="col-form-label"><b>:
+                                    Value :</label>
+                                <div class="col-sm-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
                                             00</b></label>
                                 </div>
                             </div>
@@ -124,7 +141,7 @@
                                         <br>
                                         Discount
                                         <br>
-                                        Total Due
+                                        Previous Due
                                         <br>
                                         Grand Total
                                         <br>
@@ -132,12 +149,15 @@
                                         <br>
                                         <br>
                                     <td colspan="1" class="text-end">
-                                        {{ $sale->total ?? 0 }} <br>
-                                        {{ $sale->actual_discount ?? 0 }} <br>
-                                        {{ $sale->due > 0 ? $sale->due : 0 }} <br>
-                                        {{ $sale->final_receivable ?? 0 }} <br>
+                                        <span class="productTotal"> {{ number_format($sale->total, 2) ?? 0 }}</span> <br>
+                                        <span class="discount">{{ number_format($sale->actual_discount, 2) ?? 0 }}</span>
                                         <br>
-                                        <button class="btn btn-primary">
+                                        <span class="previousDue"></span>{{ number_format($previousDue, 2) ?? 0 }} <br>
+                                        <span
+                                            class="grandTotal">{{ number_format($sale->final_receivable, 2) ?? 0 }}</span>
+                                        <br>
+                                        <br>
+                                        <button class="btn btn-primary return_product">
                                             Return Products
                                         </button>
                                     </td>
@@ -151,6 +171,10 @@
     </div>
 
     <style>
+        .hidden {
+            display: none !important;
+        }
+
         #printFrame {
             display: none;
         }
@@ -160,16 +184,36 @@
     <script>
         $(document).ready(function() {
 
+            function updateTotals() {
+                let total = 0;
+                let discount = parseFloat($('.discount').text()) || 0;
+                let previousDue = parseFloat("{{ $previousDue, 2 ?? 0 }}");
+                // console.log(previousDue);
+
+                $('tbody tr').each(function() {
+                    if (!$(this).hasClass('hidden')) {
+                        let subTotal = parseFloat($(this).find('td:nth-child(5)').text()) || 0;
+                        total += subTotal;
+                    }
+                });
+
+                let finalReceivable = (total - discount) + previousDue;
+
+                $('.productTotal').text(total.toFixed(2));
+                $('.grandTotal').text(finalReceivable.toFixed(2));
+            }
+
             $(document).on('click', '.no_return_btn', function(e) {
                 e.preventDefault();
-                $(this).closest('tr').hide();
+                $(this).closest('tr').addClass('hidden');
+                updateTotals();
             });
 
 
             $(document).on('click', '.return_product', function(e) {
                 e.preventDefault();
-                let id = $(this).attr('data-id');
-                // alert(id);
+
+                alert("ok");
 
                 let saleId = '{{ $sale->id }}';
                 let customer_id = $('.select-customer').val();

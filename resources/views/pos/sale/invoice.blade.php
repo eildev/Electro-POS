@@ -129,45 +129,59 @@
                                     <table class="table">
                                         <tbody class="total_calculation_bg">
                                             <tr>
+                                                @php
+                                                    $productTotal = number_format($sale->total, 2);
+                                                @endphp
                                                 <td>Product Total</td>
-                                                <td class="text-end">৳ {{ $sale->total }}</td>
+                                                <td class="text-end">৳ {{ $productTotal }}</td>
                                             </tr>
                                             @php
-                                                $subTotal = $sale->total - $sale->actual_discount;
+                                                $subTotal = floatval($sale->total - $sale->actual_discount);
                                             @endphp
                                             @if ($sale->actual_discount > 0)
+                                                @php
+                                                    $subTotalFormatted = number_format($subTotal, 2);
+                                                    $discount = number_format($sale->actual_discount, 2);
+                                                @endphp
                                                 <tr>
                                                     <td>Discount</td>
-                                                    <td class="text-end">৳ {{ $sale->actual_discount }}</td>
+                                                    <td class="text-end">৳ {{ $discount }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="text-bold-800">Sub Total</td>
                                                     <td class="text-bold-800 text-end">৳
-                                                        {{ $subTotal }} </td>
+                                                        {{ $subTotalFormatted }} </td>
                                                 </tr>
                                             @endif
 
                                             @if ($sale->tax != null)
                                                 <tr>
                                                     <td>TAX ({{ $sale->tax }}%)</td>
-                                                    <td class="text-end">৳ {{ $sale->receivable }} </td>
+                                                    <td class="text-end">৳ {{ number_format($sale->receivable, 2) }} </td>
                                                 </tr>
                                             @endif
                                             @if ($sale->receivable > $subTotal)
+                                                @php
+                                                    $previousDue = floatval($sale->receivable - $subTotal);
+                                                    $previousDueFormatted = number_format($previousDue, 2);
+                                                @endphp
                                                 <tr>
                                                     <td class="text-bold-800">Previous Due</td>
                                                     <td class="text-bold-800 text-end">৳
-                                                        {{ $sale->receivable - $subTotal }} </td>
+                                                        {{ $previousDueFormatted }} </td>
                                                 </tr>
                                             @endif
 
                                             <tr>
                                                 <td class="text-bold-800">Grand Total</td>
-                                                <td class="text-bold-800 text-end">৳ {{ $sale->receivable }} </td>
+                                                <td class="text-bold-800 text-end">৳
+                                                    {{ number_format($sale->receivable, 2) }}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>Paid</td>
-                                                <td class="text-success text-end">৳ {{ $sale->paid }} </td>
+                                                <td class="text-success text-end">৳ {{ number_format($sale->paid, 2) }}
+                                                </td>
                                             </tr>
 
                                             @php
@@ -178,12 +192,13 @@
                                                     <tr class="">
                                                         <td class="text-bold-800 text-danger">Due</td>
                                                         <td class="text-bold-800 text-end text-danger ">৳
-                                                            {{ $sale->due }} </td>
+                                                            {{ number_format($sale->due, 2) }} </td>
                                                     </tr>
                                                 @else
                                                     <tr class="">
                                                         <td class="text-bold-800">Return</td>
-                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                        <td class="text-bold-800 text-end">৳
+                                                            {{ number_format($sale->due, 2) }} </td>
                                                     </tr>
                                                 @endif
                                             @else
@@ -191,12 +206,13 @@
                                                     <tr class="bg-dark print_bg_white">
                                                         <td class="text-bold-800">Due</td>
                                                         <td class="text-bold-800 text-end text-danger">৳
-                                                            {{ $sale->due }} </td>
+                                                            {{ number_format($sale->due, 2) }} </td>
                                                     </tr>
                                                 @else
                                                     <tr class="bg-dark print_bg_white">
                                                         <td class="text-bold-800">Return</td>
-                                                        <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
+                                                        <td class="text-bold-800 text-end">৳
+                                                            {{ number_format($sale->due, 2) }} </td>
                                                     </tr>
                                                 @endif
                                             @endif
