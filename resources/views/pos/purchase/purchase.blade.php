@@ -541,7 +541,9 @@
                                             <input type="number" class="form-control product_price${product.id} border-0 "  name="unit_price[]" readonly value="${product.cost ?? 0}" />
                                         </td>
                                         <td>
-                                            <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" value="" />
+                                            <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" min="1" value="" />
+
+                                            <div class="validation-message text-danger" style="display: none;">Please enter a quantity of at least 1.</div>
                                         </td>
                                         <td>
                                             <input type="number" class="form-control product_subtotal${product.id} border-0 "  name="total_price[]" readonly value="00.00" />
@@ -628,18 +630,34 @@
                 updateGrandTotal();
                 updateSLNumbers();
                 updateTotalQuantity();
-            })
+            });
 
             // payment button click event
             $('.payment_btn').click(function(e) {
                 e.preventDefault();
-
                 let cumtomer_due = parseFloat($('.previous_due').text());
                 let subtotal = parseFloat($('.grand_total').val());
                 $('.subTotal').val(subtotal);
                 let grandTotal = cumtomer_due + subtotal;
                 $('.grandTotal').val(grandTotal);
                 $('.paying_items').text(totalQuantity);
+                var isValid = true;
+                //Quantity Message
+$('.quantity').each(function() {
+    var quantity = $(this).val();
+    if (!quantity || quantity < 1) {
+        isValid = false;
+        return false;
+    }
+});
+if (!isValid) {
+    event.preventDefault();
+    // alert('Please enter a quantity of at least 1 for all products.');
+    toastr.error('Please enter a quantity of at least 1 .)');
+} else {
+
+}
+//End Quantity Message
             })
 
             // paid amount
@@ -650,13 +668,11 @@
                 $('.total_payable').val(grandTotal);
                 totalDue();
             })
-
             // total_payable
             $('.total_payable').keyup(function(e) {
                 // alert('ok');
                 totalDue();
             })
-
             // due
             function totalDue() {
                 let pay = parseFloat($('.total_payable').val());
