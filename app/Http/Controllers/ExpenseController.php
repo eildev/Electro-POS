@@ -71,12 +71,7 @@ class ExpenseController extends Controller
         $accountTransaction->account_id =  $request->bank_account_id;
         $accountTransaction->debit = $request->amount;
         $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
-        // dd($oldBalance->balance);
-        if ($oldBalance) {
-            $accountTransaction->balance = $oldBalance->balance - $request->amount;
-        } else {
-            $accountTransaction->balance = $accountTransaction->balance - $request->amount;
-        }
+        $accountTransaction->balance = $oldBalance->balance - $request->amount;
         $accountTransaction->created_at = Carbon::now();
         $accountTransaction->save();
         $notification = [
