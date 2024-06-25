@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CompanyBalance;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CompanyBalanceController extends Controller
 {

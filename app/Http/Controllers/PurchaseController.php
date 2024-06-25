@@ -28,11 +28,11 @@ class PurchaseController extends Controller
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
             'date' => 'required',
-            //'quantity' => 'required',
+            // 'products' => 'required',
             'payment_method' => 'required',
             'document' => 'file|mimes:jpg,pdf,png,svg,webp,jpeg,gif|max:5120'
         ]);
-        if ($validator->passes()){
+        if ($validator->passes()) {
             $totalQty = 0;
             $totalAmount = 0;
             // Assuming all arrays have the same length
