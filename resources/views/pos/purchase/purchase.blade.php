@@ -50,7 +50,10 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 @php
-                                    $products = App\Models\Product::orderBy('stock', 'asc')->get();
+                                    $category = App\Models\Category::where('slug', 'via-sell')->first();
+                                    $products = App\Models\Product::where('category_id', '!=', $category->id)
+                                        ->orderBy('stock', 'asc')
+                                        ->get();
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
                                 <select class="js-example-basic-single form-select product_select" data-width="100%"
@@ -456,14 +459,13 @@
                     processData: false,
                     contentType: false,
                     success: function(res) {
+
                         if (res.status == 200) {
-                            // console.log(res);
                             $('#exampleModalLongScollable').modal('hide');
                             $('.supplierForm')[0].reset();
                             supplierView();
                             toastr.success(res.message);
                         } else {
-                            // console.log(res);
                             if (res.error.name) {
                                 showError('.supplier_name', res.error.name);
                             }
@@ -694,12 +696,17 @@
                     processData: false,
                     contentType: false,
                     success: function(res) {
+                        // console.log(res);
                         if (res.status == 200) {
                             $('#paymentModal').modal('hide');
                             toastr.success(res.message);
                             let id = res.purchaseId;
                             window.location.href = '/purchase/invoice/' + id;
 
+                        } else if (res.status == 400) {
+                            toastr.warning(res.message);
+                            showError('.payment_method',
+                                'please Select Another Payment Method');
                         } else {
                             console.log(res.error);
                             if (res.error.payment_method == null) {

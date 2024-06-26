@@ -79,6 +79,7 @@ class SaleController extends Controller
             'sale_date' => 'required',
             'payment_method' => 'required',
             'paid' => 'required',
+            'products' => 'required',
         ]);
 
         if ($validator->passes()) {
@@ -122,7 +123,6 @@ class SaleController extends Controller
             $sale->created_at = Carbon::now();
             $sale->save();
 
-
             $saleId = $sale->id;
 
             $products = $request->products;
@@ -137,10 +137,11 @@ class SaleController extends Controller
                 }
             }
 
-
+            // dd($sellTypeViaSell);
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
                 $items = new SaleItem;
+                // dd($items);
                 $items->sale_id = $saleId;
                 $items->product_id = $product['product_id']; // Access 'product_id' as an array key
                 $items->rate = $product['unit_price']; // Access 'unit_price' as an array key
@@ -198,9 +199,6 @@ class SaleController extends Controller
             }
 
 
-
-
-
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->total;
@@ -226,7 +224,7 @@ class SaleController extends Controller
             $accountTransaction->reference_id = $saleId;
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
-            $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
+            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
             $accountTransaction->balance = $oldBalance->balance + $request->paid;
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();

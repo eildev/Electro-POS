@@ -196,12 +196,11 @@
                     </div>
                     <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
-                            <label for="name" class="form-label">Pay Amount <span
-                                    class="text-danger">*</span>:</label>
+                            <label for="name" class="form-label">Pay Amount :</label>
                         </div>
                         <div class="col-sm-8">
                             <input class="form-control total_payable" minlength='0' name="total_payable" type="number"
-                                value="" onkeyup="errorRemove(this);">
+                                value="">
                             <span class="text-danger total_payable_error"></span>
                         </div>
                     </div>
@@ -320,7 +319,7 @@
                         {{-- <div class="mb-3 col-md-12">
                             <label for="without_purchase" class="form-label">Without Purchase</label>
                             <select class=" form-select" data-width="100%" name="without_purchase" >
-                               @foreach ($withoutPurchase as $withoutPurse )
+                               @foreach ($withoutPurchase as $withoutPurse)
                                <option value="{{$withoutPurse->id}}">{{$withoutPurse->name}}</option>
                                @endforeach
                             </select>
@@ -614,7 +613,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -733,9 +732,9 @@
                 let cost_price = parseFloat($('.produt_cost' + product_id).val());
 
                 let subTotal = productSubtotal - discountProduct;
-                console.log(subTotal);
-                console.log(productSubtotal);
-                console.log(discountProduct);
+                // console.log(subTotal);
+                // console.log(productSubtotal);
+                // console.log(discountProduct);
 
                 if (subTotal < cost_price) {
                     Swal.fire({
@@ -1029,7 +1028,7 @@
                 let tax = $('.tax').val();
                 let change_amount = parseFloat($('.grandTotal').val());
                 let actual_discount = parseFloat($('.handsOnDiscount').val()) || 0;
-                let paid = parseFloat($('.total_payable').val());
+                let paid = parseFloat($('.total_payable').val()) || 0;
                 let due = change_amount - paid;
                 let note = $('.note').val();
                 let payment_method = $('.payment_method').val();
@@ -1088,7 +1087,7 @@
                     previous_due
                 }
 
-                console.log(allData);
+                // console.log(allData);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1146,6 +1145,9 @@
                             }
                             if (res.error.paid) {
                                 showError('.total_payable', res.error.paid);
+                            }
+                            if (res.error.products) {
+                                toastr.warning("Please Select a Product to sell");
                             }
                         }
                     }

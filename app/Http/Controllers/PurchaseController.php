@@ -31,7 +31,7 @@ class PurchaseController extends Controller
             'document' => 'file|mimes:jpg,pdf,png,svg,webp,jpeg,gif|max:5120'
         ]);
         if ($validator->passes()) {
-            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest()->first();
+            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
             // dd($oldBalance);
             if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->total_payable) {
                 $totalQty = 0;
@@ -101,10 +101,9 @@ class PurchaseController extends Controller
                 $accountTransaction->reference_id = $purchaseId;
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->debit = $request->total_payable;
-                $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest()->first();
-                dd($oldBalance);
+                $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
                 $accountTransaction->balance = $oldBalance->balance - $request->total_payable;
-                $accountTransaction->created_at =  $purchaseDate;
+                $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
                 // get Transaction Model
                 $transaction = Transaction::where('supplier_id', $request->supplier_id)->first();
