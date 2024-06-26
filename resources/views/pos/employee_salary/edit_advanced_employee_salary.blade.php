@@ -43,7 +43,18 @@
 							<input type="number" class="form-control"value="{{$employeeSalary->balance}}"  name="debit"  placeholder="0.00">
 						</div>
 					</div><!-- Col -->
-					<div class="col-sm-12 form-valid-groups">
+                    <div class="col-sm-6 form-valid-groups">
+						<div class="mb-3">
+							<label class="form-label">Select Bank Acoount <span class="text-danger">*</span></label>
+                            <select class="form-select js-example-basic-single" name="payment_method">
+                                 <option selected="" disabled>Select Bank Name</option>
+                                 @foreach ($bank as $item)
+                                <option value="{{$item->id}}" {{$item->id == $employeeSalary->payment_method ? 'selected' : ''}}>{{$item->name}}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div><!-- Col -->
+					<div class="col-sm-6 form-valid-groups">
 						<div class="mb-3">
 							<label class="form-label">Advanced Salaray Reason Note</label>
 							<textarea name="note" class="form-control" id="" cols="20" rows="5">{{$employeeSalary->note}}</textarea>
