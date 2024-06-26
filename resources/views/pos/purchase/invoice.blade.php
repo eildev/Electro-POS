@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Purchase Invoice')
+@section('title', '| Purchase Invoice')
 @section('admin')
     @php
         $branch = App\Models\Branch::findOrFail($purchase->branch_id);
@@ -123,7 +123,8 @@
                                             @endif
                                             <tr>
                                                 <td class="text-bold-800">Previous Due</td>
-                                                <td class="text-bold-800 text-end">৳{{$supplier->wallet_balance}}</td>
+                                                <td class="text-bold-800 text-end">
+                                                    ৳{{ number_format($purchase->paid - $purchase->sub_total, 2) }}</td>
                                             </tr>
                                             <tr>
                                                 <td class="text-bold-800">Grand Total</td>

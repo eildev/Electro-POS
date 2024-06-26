@@ -137,7 +137,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <input type="number" class="form-control discount_amount"
-                                                        name="discount_amount" value="0.00" />
+                                                    name="discount_amount" value="0.00" />
                                                     {{-- @php
                                                     $promotions = App\Models\Promotion::get();
                                                 @endphp

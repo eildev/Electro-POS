@@ -91,7 +91,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-7 grid-margin stretch-card">
+        <div class="col-lg-8 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body px-4 py-2">
                     <div class="mb-3">
@@ -115,7 +115,7 @@
                             <tbody>
                                 @if ($saleItems->count() > 0)
                                     @foreach ($saleItems as $saleItem)
-                                        <tr>
+                                        <tr data-id="{{ $saleItem->id }}">
                                             <td>{{ $saleItem->product['name'] }}</td>
                                             <td>{{ $saleItem->rate }}</td>
                                             <td>{{ $saleItem->qty }}</td>
@@ -213,110 +213,61 @@
             $(document).on('click', '.return_product', function(e) {
                 e.preventDefault();
 
-                alert("ok");
+                let productTotal = parseFloat($('.productTotal').text()) || 0;
+                let discount = parseFloat($('.discount').text()) || 0;
+                let previousDue = parseFloat("{{ $previousDue, 2 ?? 0 }}") || 0;
+                let grandTotal = parseFloat($('.grandTotal').text()) || 0;
+                let customerId = '{{ $customer->id }}'
+                let saleId = '{{ $sale->id }}'
 
-                let saleId = '{{ $sale->id }}';
-                let customer_id = $('.select-customer').val();
-                let sale_date = $('.purchase_date').val();
-                let formattedSaleDate = moment(sale_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
-                let quantity = totalQuantity;
-                let total_amount = parseFloat($('.total').val());
-                let discount = $('.discount_field').val();
-                let total = parseFloat($('.grand_total').val());
-                let tax = $('.tax').val();
-                let change_amount = parseFloat($('.grandTotal').val());
-                let actual_discount = change_amount - total;
-                let paid = $('.total_payable').val();
-                let due = $('.total_due').val();
-                let note = $('.note').val();
-                let payment_method = $('.payment_method').val();
-                let product_id = $('.product_id').val();
-                let newPay = $('.newPay').val();
-                // console.log(saleId, quantity, total_amount, discount, total, change_amount, actual_discount,
-                //     paid, due, payment_method, product_id);
+                let returnedProducts = [];
 
-
-                let products = [];
-
-                $('tr[class^="data_row"]').each(function() {
-                    let row = $(this);
-                    // Get values from the current row's elements
-                    let product_id = row.find('.product_id').val();
-                    let quantity = row.find('input[name="quantity[]"]').val();
-                    let unit_price = row.find('input[name="unit_price[]"]').val();
-                    let discount_amount = row.find(`span[class='discount_amount${product_id}']`)
-                        .text() || 0;
-                    let discount_percentage = (row.find(
-                        `span[class='discount_percentage${product_id}']`).text()) || 0;
-                    let total_price = row.find('input[name="total_price[]"]').val();
-
-                    // Create an object with the gathered data
-                    let product = {
-                        product_id,
-                        quantity,
-                        unit_price,
-                        discount: discount_amount == 0 ? discount_percentage : 0,
-                        total_price
-                    };
-
-                    // Push the object into the products array
-                    products.push(product);
+                $('tbody tr').each(function() {
+                    if (!$(this).hasClass('hidden')) {
+                        let product = {
+                            id: $(this).attr('data-id'),
+                            name: $(this).find('td:nth-child(1)').text(),
+                            price: parseFloat($(this).find('td:nth-child(2)').text()) || 0,
+                            qty: parseFloat($(this).find('td:nth-child(3)').text()) || 0,
+                            discount: parseFloat($(this).find('td:nth-child(4)').text()) || 0,
+                            sub_total: parseFloat($(this).find('td:nth-child(5)').text()) || 0,
+                        };
+                        returnedProducts.push(product);
+                    }
                 });
 
-                let sale_id = '{{ $sale->id }}'
-
-                let allData = {
-                    // for purchase table
-                    sale_id,
-                    customer_id,
-                    sale_date: formattedSaleDate,
-                    quantity,
-                    total_amount,
+                // console.log(returnedProducts);
+                const allData = {
+                    productTotal,
                     discount,
-                    actual_discount,
-                    total,
-                    change_amount,
-                    tax,
-                    paid,
-                    due,
-                    note,
-                    payment_method,
-                    products,
-                    id,
-                    newPay
+                    previousDue,
+                    grandTotal,
+                    customerId,
+                    saleId,
+                    returnedProducts
                 }
+
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+
                 $.ajax({
-                    url: '/return/item/store',
+                    url: '/return/store',
                     type: 'POST',
                     data: allData,
-                    success: function(res) {
-                        if (res.status == 200) {
-                            let dataRow = $('.data_row' + id);
-                            dataRow.remove();
-                            // Recalculate grand total
-                            updateGrandTotal();
-                            updateTotalQuantity();
-                            newPaidAmount();
-                            toastr.success(res.message);
+                    success: function(response) {
+                        if (response.status == 200) {
+                            alert('Products returned successfully!');
                         } else {
-                            let dataRow = $('.data_row' + id);
-                            dataRow.remove();
-
-                            updateGrandTotal();
-                            updateTotalQuantity();
-                            newPaidAmount();
-                            toastr.success(res.message);
+                            alert('Products returned unsuccessfully!');
                         }
 
                     }
-                })
-            })
-        });
+                });
+            });
+        })
     </script>
 
 

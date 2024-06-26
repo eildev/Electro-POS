@@ -289,22 +289,22 @@
                     <ul class="nav sub-menu">
                         @if (Auth::user()->can('employee.menu'))
                             <li class="nav-item ">
-                                <a href="{{ route('employee.view') }}"
-                                    class="nav-link {{ request()->routeIs('employee.view') ? 'nav_active' : '' }}">Add
+                                <a href="{{ route('employee.add') }}"
+                                    class="nav-link {{ request()->routeIs('employee.add') ? 'nav_active' : '' }}">Add
                                     Employee</a>
                             </li>
                         @endif
                         @if (Auth::user()->can('employee-salary.menu'))
                             <li class="nav-item">
                                 <a href="{{ route('employee.salary.add') }}"
-                                    class="nav-link {{ request()->routeIs('employee.salary.add') ? 'nav_active' : '' }}">Manage
+                                    class="nav-link {{ request()->routeIs('employee.salary.add') ? 'nav_active' : '' }}">Add
                                     Employee Salary</a>
                             </li>
                         @endif
                         @if (Auth::user()->can('advanced-employee-salary.menu'))
                             <li class="nav-item">
                                 <a href="{{ route('advanced.employee.salary.add') }}"
-                                    class="nav-link {{ request()->routeIs('advanced.employee.salary.add') ? 'nav_active' : '' }}">Advanced
+                                    class="nav-link {{ request()->routeIs('advanced.employee.salary.add') ? 'nav_active' : '' }}">Add Advanced
                                     Employee Salary</a>
                             </li>
                         @endif

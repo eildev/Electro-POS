@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use App\Repositories\RepositoryInterfaces\CategoryInterface;
 class CategoryController extends Controller

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 class PaymentMethodController extends Controller
 {
     public function PaymentMethodAdd(){
