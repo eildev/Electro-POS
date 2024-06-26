@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <div class="input-group flatpickr" id="flatpickr-date">
-                                    <input type="text" class="form-control start-date" placeholder="Start date" data-input>
+                                    <input type="text"  class="form-control start-date" placeholder="Start date" data-input>
                                     <span class="input-group-text input-group-addon" data-toggle><i data-feather="calendar"></i></span>
                                   </div>
                             </div><!-- Col -->
@@ -174,7 +174,7 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Amount<span class="text-danger">*</span></label>
-                                            <input type="number" name="amount" class="form-control" placeholder="Enter Amount">
+                                            <input type="number" name="amount" value="{{old('amount')}}" class="form-control" placeholder="Enter Amount">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">

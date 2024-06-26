@@ -14,7 +14,8 @@ use App\Models\SaleItem;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class ReturnController extends Controller
 {
@@ -123,7 +124,7 @@ class ReturnController extends Controller
         // $customer->wallet_balance = $customer->wallet_balance + ($request->change_amount - $request->paid);
         // $customer->save();
 
-        // // actual Payment 
+        // // actual Payment
         // $actualPayment = new ActualPayment;
         // $actualPayment->branch_id =  Auth::user()->branch_id;
         // $actualPayment->payment_type =  'receive';
@@ -134,7 +135,7 @@ class ReturnController extends Controller
         // $actualPayment->save();
 
 
-        // // accountTransaction table 
+        // // accountTransaction table
         // $accountTransaction = new AccountTransaction;
         // $accountTransaction->branch_id =  Auth::user()->branch_id;
         // $accountTransaction->purpose =  'Withdraw';
@@ -217,7 +218,7 @@ class ReturnController extends Controller
 
         $returnItems = new ReturnItem;
         $returnItems->return_id = 0;
-        // $returnItems->sale_item_id = $product['product_id']; 
+        // $returnItems->sale_item_id = $product['product_id'];
         $returnItems->product_id = $request->id;
         $returnItems->quantity = $saleItem->qty;
         $returnItems->unit_price = $saleItem->rate; // Access 'unit_price' as an array key

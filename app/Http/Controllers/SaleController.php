@@ -20,7 +20,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class SaleController extends Controller
 {

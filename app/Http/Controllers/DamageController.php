@@ -9,7 +9,8 @@ use App\Models\Damage;
 use App\Models\Product;
 
 use Illuminate\Support\Facades\Auth;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class DamageController extends Controller
 {
@@ -53,8 +54,6 @@ class DamageController extends Controller
             $damage->date = $formattedDate;
             $damage->note = $request->note;
             $damage->save();
-
-
             $product_qty->stock = $product_qty->stock - $request->pc;
             $product_qty->save();
         }
@@ -62,7 +61,7 @@ class DamageController extends Controller
             'message' => 'Damage Add Successfully',
             'alert-type' => 'info'
         );
-        return redirect()->back()->with($notification);
+        return redirect()->route('damage.view')->with($notification);
     }
 
 
@@ -93,13 +92,44 @@ class DamageController extends Controller
 
         return view('pos.damage.edit', compact('damage_info'));
     }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+
+            'product_id' => 'required|max:255',
+            'pc' => 'required|max:255',
+            'date' => 'required|max:50',
+        ]);
+
+        if ($validator->passes()) {
+            $data = $request->all();
+
+            // $this->damage_repo->create($data);
+            // @dd($data);
+
+            $product_qty = Product::findOrFail($request->product_id);
+            $stock = $product_qty->stock;
+            $damage = Damage::findOrFail($id);
+            $damage->product_id = $request->product_id;
+            $damage->qty = $request->pc;
+            $damage->branch_id = Auth::user()->branch_id;
+            $formattedDate = date('Y-m-d H:i:s', strtotime($request->date));
+            $damage->date = $formattedDate;
+            $damage->note = $request->note;
+            $damage->update();
+
+
+            $product_qty->stock = $product_qty->stock - $request->pc;
+            $product_qty->save();
+        }
+        $notification = array(
+            'message' => 'Damage Update Successfully',
+            'alert-type' => 'info'
+        );
+        return redirect()->route('damage.view')->with($notification);
     }
 
     /**
