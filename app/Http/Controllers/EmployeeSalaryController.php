@@ -86,7 +86,7 @@ public function EmployeeSalaryStore(Request $request){
         $accountTransaction = new AccountTransaction;
         $accountTransaction->branch_id =  Auth::user()->branch_id;
         $accountTransaction->reference_id = $employeeSalary->id;
-        $accountTransaction->purpose =  'Employ Salary';
+        $accountTransaction->purpose =  'Employee Salary';
         $accountTransaction->account_id =  $request->payment_method;
         $accountTransaction->debit = $request->debit; // $request->Amount
         $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -120,7 +120,7 @@ public function EmployeeSalaryStore(Request $request){
         $accountTransaction = new AccountTransaction;
         $accountTransaction->branch_id =  Auth::user()->branch_id;
         $accountTransaction->reference_id = $employeeSalary->id;
-        $accountTransaction->purpose =  'Employ Salary';
+        $accountTransaction->purpose =  'Employee Salary';
         $accountTransaction->account_id =  $request->payment_method;
         $accountTransaction->debit = $request->debit; // $request->Amount
         $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -152,23 +152,44 @@ public function EmployeeSalaryEdit($id){
     $bank = Bank::latest()->get();
     $branch = Branch::latest()->get();
     return view('pos.employee_salary.edit_employee_salary',compact('employeeSalary','employees','branch','bank'));
-}//EmployeeSalaryEdit
+}//Employee Salary Edit
 public function EmployeeSalaryUpdate(Request $request,$id){
     // dd($request->all());
+    $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+    if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
+
     $employeeSalary = EmployeeSalary::findOrFail($id);
     $requiestDebit = $employeeSalary->debit = $employeeSalary->debit + $request->debit;
     $employeeSalary->date =  $request->date;
     $employeeSalary->balance = $employeeSalary->creadit - $requiestDebit;
     $employeeSalary->payment_method  = $request->payment_method;
     $employeeSalary->note  = $request->note;
-    $employeeSalary->updated_at  =Carbon::now();
+    $employeeSalary->updated_at  = Carbon::now();
     $employeeSalary->update();
+     //account Transaction Crud
+     $accountTransaction = new AccountTransaction;
+     $accountTransaction->branch_id =  Auth::user()->branch_id;
+     $accountTransaction->reference_id = $employeeSalary->id;
+     $accountTransaction->purpose =  'Employee Salary';
+     $accountTransaction->account_id =  $request->payment_method;
+     $accountTransaction->debit = $request->debit; // $request->Amount
+     $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+     $accountTransaction->balance = $oldBalance->balance - $request->debit;
+     $accountTransaction->created_at = Carbon::now();
+     $accountTransaction->save();
+
     $notification = array(
        'message' =>'Employee Salary Update Successfully',
         'alert-type'=> 'info'
     );
     return redirect()->route('employee.salary.view')->with($notification);
-
+} else {
+    $notification = [
+        'warning' => 'Your account Balance is low Please Select Another account',
+        'alert-type' => 'warning'
+    ];
+    return redirect()->back()->with($notification);
+}
 }//
 public function EmployeeSalaryDelete($id){
     EmployeeSalary::findOrFail($id)->delete();
@@ -220,7 +241,7 @@ if ($employeeSalary) {
          $accountTransaction = new AccountTransaction;
          $accountTransaction->branch_id =  Auth::user()->branch_id;
          $accountTransaction->reference_id = $employeeSalary->id;
-         $accountTransaction->purpose =  'Employ Salary';
+         $accountTransaction->purpose =  'Employee Salary';
          $accountTransaction->account_id =  $request->payment_method;
          $accountTransaction->debit = $request->debit; // $request->Amount
          $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -233,9 +254,7 @@ if ($employeeSalary) {
          );
         return redirect()->route('employee.salary.advanced.view')->with($notification);
     }
-
  }
-
  else {
     $employeeSalary = new EmployeeSalary;
     $employeeSalary->employee_id =  $request->employee_id;
@@ -254,7 +273,7 @@ if ($employeeSalary) {
      $accountTransaction = new AccountTransaction;
      $accountTransaction->branch_id =  Auth::user()->branch_id;
      $accountTransaction->reference_id = $employeeSalary->id;
-     $accountTransaction->purpose =  'Employ Salary';
+     $accountTransaction->purpose =  'Employee Salary';
      $accountTransaction->account_id =  $request->payment_method;
      $accountTransaction->debit = $request->debit; // $request->Amount
      $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -287,6 +306,9 @@ public function EmployeeSalaryAdvancedEdit($id){
     return view('pos.employee_salary.edit_advanced_employee_salary',compact('employeeSalary','employees','branch','bank'));
 }
 public function EmployeeSalaryAdvancedUpdate(Request $request,$id){
+    $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+    if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
+
     $employeeSalary = EmployeeSalary::findOrFail($id);
     $requiestDebit = $employeeSalary->debit = $employeeSalary->debit + $request->debit;
     $employeeSalary->date =  $request->date;
@@ -294,12 +316,29 @@ public function EmployeeSalaryAdvancedUpdate(Request $request,$id){
     $employeeSalary->note  = $request->note;
     $employeeSalary->updated_at  =Carbon::now();
     $employeeSalary->update();
+     //account Transaction Crud
+     $accountTransaction = new AccountTransaction;
+     $accountTransaction->branch_id =  Auth::user()->branch_id;
+     $accountTransaction->reference_id = $employeeSalary->id;
+     $accountTransaction->purpose =  'Employee Salary';
+     $accountTransaction->account_id =  $request->payment_method;
+     $accountTransaction->debit = $request->debit; // $request->Amount
+     $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+     $accountTransaction->balance = $oldBalance->balance - $request->debit;
+     $accountTransaction->created_at = Carbon::now();
+     $accountTransaction->save();
     $notification = array(
        'message' =>'Employee Salary Advanced Update Successfully',
         'alert-type'=> 'info'
     );
     return redirect()->route('employee.salary.advanced.view')->with($notification);
-
+} else {
+    $notification = [
+        'warning' => 'Your account Balance is low Please Select Another account',
+        'alert-type' => 'warning'
+    ];
+    return redirect()->back()->with($notification);
+}
 }//
 public function EmployeeSalaryAdvancedDelete($id){
     EmployeeSalary::findOrFail($id)->delete();

@@ -8,7 +8,8 @@ use App\Models\Transaction;
 use App\Repositories\RepositoryInterfaces\BankInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class BankController extends Controller
 {
@@ -132,3 +133,5 @@ class BankController extends Controller
         ]);
     }
 }
+
+

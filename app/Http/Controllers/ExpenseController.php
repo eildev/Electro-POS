@@ -8,7 +8,8 @@ use App\Models\ExpenseCategory;
 use App\Models\AccountTransaction;
 use App\Models\Bank;
 use Carbon\Carbon;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 class ExpenseController extends Controller
@@ -38,16 +39,15 @@ class ExpenseController extends Controller
     } //
     public function ExpenseStore(Request $request)
     {
-        $request->validate([
-            'purpose' => 'required',
-            'amount' => 'required',
-            'spender' => 'required',
-            'expense_category_id' => 'required',
-            'expense_date' => 'required',
-        ]);
         $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
         if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
-
+            $request->validate([
+                'purpose' => 'required',
+                'amount' => 'required',
+                'spender' => 'required',
+                'expense_category_id' => 'required',
+                'expense_date' => 'required',
+            ]);
         $expense = new Expense;
         $expense->branch_id =  Auth::user()->branch_id;
         $expense->expense_date =  $request->expense_date;
