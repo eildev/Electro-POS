@@ -47,15 +47,17 @@ class ReturnController extends Controller
         }
 
         if ($totalQty > 0) {
+            $productTotalWithoutDiscount = $productTotal - $totalDiscount;
             $sale = Sale::findOrFail($request->saleId);
-            dd($sale);
-            $sale->qty = $totalQty;
-            $sale->total = $productTotal;
-            $sale->actual_discount = $totalDiscount;
-            $sale->change_amount = $productTotal - $totalDiscount;
+            $sale->quantity = $sale->quantity - $totalQty;
+            $sale->total = $sale->total - $productTotal;
+            $sale->actual_discount = $sale->actual_discount - $totalDiscount;
+            $sale->change_amount = $sale->change_amount - $productTotalWithoutDiscount;
             $sale->receivable = $request->grandTotal;
             $sale->final_receivable = $request->grandTotal;
             $sale->due = $request->grandTotal - $sale->paid;
+            $sale->total_purchase_cost = $productCost;
+            $sale->profit = $productTotalWithoutDiscount - $productCost;
         }
 
         // $sale->paid = $sale->paid - $request->change_amount;
