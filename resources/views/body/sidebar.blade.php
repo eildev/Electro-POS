@@ -160,22 +160,22 @@
             @endif
             @if (Auth::user()->can('purchase.menu'))
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button"
-                        aria-expanded="false" aria-controls="uiComponents">
+                    <a class="nav-link {{ request()->routeIs('purchase*') ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#uiComponen" role="button"
+                        aria-expanded="false" aria-controls="uiComponen">
                         <i class="link-icon" data-feather="feather"></i>
                         <span class="link-title">Purchase</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse" id="uiComponents">
+                    <div class="collapse {{ request()->routeIs('purchase*') ? 'show' : '' }}" id="uiComponen">
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('purchase.add'))
                                 <li class="nav-item">
-                                    <a href="{{ route('purchase') }}" class="nav-link">Add Purchase</a>
+                                    <a href="{{ route('purchase') }}" class="nav-link {{ request()->routeIs('purchase') ? 'nav_active' : '' }}">Add Purchase</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('purchase.list'))
                                 <li class="nav-item">
-                                    <a href="{{ route('purchase.view') }}" class="nav-link">Manage Purchase</a>
+                                    <a href="{{ route('purchase.view') }}" class="nav-link {{ request()->routeIs('purchase.view') ? 'nav_active' : '' }}">Manage Purchase</a>
                                 </li>
                             @endif
                         </ul>
@@ -209,6 +209,30 @@
                     </a>
                 </li>
             @endif
+            {{-- @if (Auth::user()->can('return.menu'))
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="return" role="button"
+                        aria-expanded="false" aria-controls="uiComponents">
+                        <i class="link-icon" data-feather="feather"></i>
+                        <span class="link-title">Return</span>
+                        <i class="link-arrow" data-feather="chevron-down"></i>
+                    </a>
+                    <div class="collapse" id="uiComponents">
+                        <ul class="nav sub-menu">
+                            @if (Auth::user()->can('return.add'))
+                                <li class="nav-item">
+                                    <a href="{{ route('return.add') }}" class="nav-link">Add Return</a>
+                                </li>
+                            @endif
+                            @if (Auth::user()->can('return.list'))
+                                <li class="nav-item">
+                                    <a href="{{ route('return.view') }}" class="nav-link">Manage Return</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </div>
+                </li>
+            @endif --}}
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}"
                     href="{{ route('return.products.list') }}" role="button" aria-controls="general-pages">
@@ -434,18 +458,19 @@
                 <a href="{{ route('return.add') }}"
                     class="nav-link {{ request()->routeIs('return.add') ? 'nav_active' : '' }}">Return</a>
             </li> --}}
+
             <li class="nav-item nav-category">SETTING & CUSTOMIZE</li>
             <!---Role & Permission--->
             @if (Auth::user()->can('role-and-permission.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('role*') ? 'collapsed' : '' }}"
-                        data-bs-toggle="collapse" href="#role" role="button" aria-expanded="false"
-                        aria-controls="emails">
+                        data-bs-toggle="collapse" href="#role_permission" role="button" aria-expanded="false"
+                        aria-controls="role_permission">
                         <i class="fa-solid fa-users-gear link-icon"></i>
                         <span class="link-title">Role & Permission</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs('role*') ? '' : 'show' }}" id="role">
+                    <div class="collapse {{ request()->routeIs('role*') ? '' : 'show' }}" id="role_permission">
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('role-and-permission.all-permission'))
                                 <li class="nav-item">
