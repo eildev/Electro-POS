@@ -103,7 +103,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="mb-3 col-md-6">
+                            {{-- <div class="mb-3 col-md-6">
                                 <label for="name" class="form-label">Stock</label>
                                 <input class="form-control" name="stock" type="number" placeholder="00"
                                     value="{{ $product->stock ?? '' }}">
@@ -112,7 +112,7 @@
                                 <label for="name" class="form-label">Main Unit Stock</label>
                                 <input class="form-control" name="main_unit_stock" type="number" placeholder="00"
                                     value="{{ $product->main_unit_stock ?? '' }}">
-                            </div>
+                            </div> --}}
                             {{-- <div class="mb-3 col-md-6">
                                 <label for="name" class="form-label">Total Sold</label>
                                 <input class="form-control" name="total_sold" type="number" placeholder="00"

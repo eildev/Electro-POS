@@ -28,9 +28,6 @@ class BankController extends Controller
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:99',
-            'branch_name' => 'required|max:149',
-            'phone_number' => 'required|max:19',
-            'account' => 'required',
             'opening_balance' => 'required',
         ]);
 
@@ -47,7 +44,7 @@ class BankController extends Controller
 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Deposit';
+            $accountTransaction->purpose =  'Bank';
             $accountTransaction->account_id =  $bank->id;
             $accountTransaction->credit = $request->opening_balance;
             $accountTransaction->balance = $accountTransaction->balance + $request->opening_balance;

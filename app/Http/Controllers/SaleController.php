@@ -15,7 +15,6 @@ use App\Models\SaleItem;
 use App\Models\SubCategory;
 use App\Models\Transaction;
 use App\Models\Unit;
-use App\Models\PurchaseItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -138,6 +137,7 @@ class SaleController extends Controller
                 }
             }
 
+
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
                 $items = new SaleItem;
@@ -222,10 +222,13 @@ class SaleController extends Controller
             // accountTransaction table
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Deposit';
+            $accountTransaction->purpose =  'Sale';
+            $accountTransaction->reference_id = $saleId;
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
-            // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
+            $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->paid;
+            $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
 
             $transaction = Transaction::where('customer_id', $request->customer_id)->first();
@@ -394,10 +397,13 @@ class SaleController extends Controller
             // accountTransaction table
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Withdraw';
+            $accountTransaction->reference_id = $sale->id;
+            $accountTransaction->purpose =  'Sale';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
-            // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
+            $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->paid;
+            $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
 
             $transaction = Transaction::where('customer_id', $request->customer_id)->first();
@@ -509,11 +515,13 @@ class SaleController extends Controller
             // accountTransaction table
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Withdraw';
+            $accountTransaction->purpose =  'Sale';
+            $accountTransaction->reference_id = $id;
             $accountTransaction->account_id =  $request->transaction_account;
             $accountTransaction->credit = $request->amount;
-            $oldBalance = AccountTransaction::latest()->first();
-            $accountTransaction->balance = $oldBalance->balance + $request->paid;
+            $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->amount;
+            $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
 
             $transaction = new Transaction;

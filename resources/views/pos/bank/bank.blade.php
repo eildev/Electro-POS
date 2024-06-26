@@ -59,7 +59,7 @@
                             <span class="text-danger bank_name_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Branch Name <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Branch Name </label>
                             <input id="defaultconfig" class="form-control branch_name" maxlength="39" name="branch_name"
                                 type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger branch_name_error"></span>
@@ -70,14 +70,13 @@
                                 type="text">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Phone Nnumber <span
-                                    class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Phone Nnumber </label>
                             <input id="defaultconfig" class="form-control phone_number" maxlength="39" name="phone_number"
                                 type="tel" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger phone_number_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Account <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Account </label>
                             <input id="defaultconfig" class="form-control account" maxlength="39" name="account"
                                 type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger account_error"></span>
@@ -125,23 +124,20 @@
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Branch Name</label>
                             <input id="defaultconfig" class="form-control edit_branch_name" maxlength="39"
-                                name="branch_name" type="text" onkeyup="errorRemove(this);"
-                                onblur="errorRemove(this);">
-                            <span class="text-danger edit_branch_name_error"></span>
+                                name="branch_name" type="text">
+
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Manager Name/Owner Name</label>
                             <input id="defaultconfig" class="form-control edit_manager_name" maxlength="39"
-                                name="manager_name" type="text" onkeyup="errorRemove(this);"
-                                onblur="errorRemove(this);">
-                            <span class="text-danger edit_manager_name_error"></span>
+                                name="manager_name" type="text">
+
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Phone Nnumber</label>
                             <input id="defaultconfig" class="form-control edit_phone_number" maxlength="39"
-                                name="phone_number" type="tel" onkeyup="errorRemove(this);"
-                                onblur="errorRemove(this);">
-                            <span class="text-danger edit_phone_number_error"></span>
+                                name="phone_number" type="tel">
+
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Account</label>
@@ -211,18 +207,6 @@
                         } else {
                             if (res.error.name) {
                                 showError('.bank_name', res.error.name);
-                            }
-                            if (res.error.branch_name) {
-                                showError('.branch_name', res.error.branch_name);
-                            }
-                            if (res.error.manager_name) {
-                                showError('.manager_name', res.error.manager_name);
-                            }
-                            if (res.error.phone_number) {
-                                showError('.phone_number', res.error.phone_number);
-                            }
-                            if (res.error.account) {
-                                showError('.account', res.error.account);
                             }
                             if (res.error.opening_balance) {
                                 showError('.opening_balance', res.error.opening_balance);
