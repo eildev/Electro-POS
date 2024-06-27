@@ -148,7 +148,7 @@
                                                 <label for="ageSelect" class="form-label">Select Bank
                                                     Acoount</label>
                                                 <select
-                                                    class="form-select bank_id is-valid js-example-basic-single"data-width="100%"
+                                                    class="form-select bank_id is-valid @error('bank_account_id') is-invalid @enderror js-example-basic-single"data-width="100%"
                                                     name="bank_account_id" aria-invalid="false">
                                                     <option selected="" disabled="" value="">Select
                                                         Bank</option>
@@ -157,6 +157,9 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
+                                                @error('bank_account_id')
+                                                <div class="alert alert-danger">{{ $message }}</div>
+                                                @enderror
                                                 <span class="text-danger related_sign_error"></span>
                                             </div>
                                         </div>

@@ -15,7 +15,6 @@
                         @csrf
                         <div class="row">
                             <!-- Col -->
-
                             <div class="mb-3 col-md-6">
                                 @php
                                     $products = App\Models\Product::get();
@@ -26,7 +25,7 @@
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Damaged Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
+                                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name }} ({{ $product->stock }}
                                                 {{ $product->unit->name }})</option>
                                         @endforeach
                                     @else
@@ -44,7 +43,7 @@
                                     </label>
 
                                     <input type="text" id="damageQty" name="pc" onkeyup="damage_qty(this);"
-                                        class="form-control" placeholder="0" disabled autocomplete="off">
+                                        class="form-control" placeholder="0" value="{{ old('pc') }}" disabled autocomplete="off">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -54,7 +53,7 @@
                                         <span class="input-group-text input-group-addon bg-transparent border-primary"
                                             data-toggle><i data-feather="calendar" class="text-primary"></i></span>
                                         <input type="text" name="date"
-                                            class="form-control bg-transparent border-primary" placeholder="Select date"
+                                            class="form-control bg-transparent border-primary" value="{{ old('date') }}" placeholder="Select date"
                                             data-input>
                                     </div>
                                     {{-- <input type="date"  class="form-control" placeholder="Enter Date"> --}}
@@ -63,7 +62,7 @@
                             <div class="col-sm-6">
                                 <div class="mb-3">
                                     <label class="form-label">Note</label>
-                                    <textarea name="note" class="form-control" placeholder="Write About Damages" rows="4" cols="50"></textarea>
+                                    <textarea name="note" class="form-control" value="{{ old('note') }}" placeholder="Write About Damages" rows="4" cols="50"></textarea>
                                 </div>
                             </div><!-- Col -->
                         </div><!-- Row -->
