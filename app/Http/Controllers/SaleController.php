@@ -83,7 +83,6 @@ class SaleController extends Controller
         ]);
 
         if ($validator->passes()) {
-
             // product Cost
             $productCost = 0;
             $productAll = $request->products;
@@ -137,7 +136,7 @@ class SaleController extends Controller
                 }
             }
 
-            // dd($sellTypeViaSell);
+            //  dd($sellTypeViaSell);
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
                 $items = new SaleItem;
@@ -151,24 +150,22 @@ class SaleController extends Controller
                 $items->discount = $product['product_discount'];
 
                 // Determine sell_type
-                if ($sellTypeViaSell || $items2->category->name == 'Via Sell' || $items2->stock == 0) {
+                if ($sellTypeViaSell && $items2->category->name == 'Via Sell' && $items2->stock == 0) {
+                    //Only Change || to &&
                     $items->sell_type = 'via sell';
                 } else {
                     $items->sell_type = 'normal sell';
                 }
-
                 // Adjust stock for next iteration if applicable
                 if ($items2->stock < $product['quantity']) {
                     // If stock is less than the quantity needed
                     $items->qty = $items2->stock;
                     $items->sub_total = ($product['unit_price'] * $items->qty) - ($product['product_discount'] * ($items->qty / $product['quantity']));
                     $items->total_purchase_cost = $items2->cost * $items->qty;
-
                     // Adjust the remaining quantity and create extra item
                     $extraQuantity = $product['quantity'] - $items2->stock;
                     $items2->stock = 0;
                     $items2->total_sold += $items->qty;
-
                     $items->save();
 
                     // Create new SaleItem for extra products
@@ -195,8 +192,6 @@ class SaleController extends Controller
 
                 $items2->save();
             }
-
-
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->total;
@@ -222,6 +217,7 @@ class SaleController extends Controller
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+            // dd($oldBalance->balance);
             $accountTransaction->balance = $oldBalance->balance + $request->paid;
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
