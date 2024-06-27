@@ -429,9 +429,10 @@ Route::middleware('auth')->group(function () {
     // return controller
     Route::controller(ReturnController::class)->group(function () {
         Route::get('/return/{id}', 'Return')->name('return');
-        Route::post('/return/store', 'store')->name('return.store');
+        // Route::post('/return/store', 'store')->name('return.store');
+        Route::post('/return/store', 'store')->name('return.add');
         Route::post('/return/item/store', 'storeReturnItem')->name('return.item.store');
-        // Route::get('/return/views', 'viewReturn')->name('return.view');
+        Route::get('/return/views', 'viewReturn')->name('return.view');
         Route::get('/return/products/list', 'returnProductsList')->name('return.products.list');
         Route::get('/return/products/delete/{id}', 'returnProductsDelete')->name('return.products.delete');
         Route::get('/return/products/invoice/{id}', 'returnProductsInvoice')->name('return.products.invoice');
