@@ -28,6 +28,7 @@ use App\Http\Controllers\CustomeMailControler;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\CompanyBalanceController;
+use App\Http\Controllers\ViaSaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -211,7 +212,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/purchase/filter', 'filter')->name('purchase.filter');
         Route::post('/transaction/edit-amount/{id}', 'editTransaction')->name('purchase.edit.transaction');
         Route::get('/purchase/find/{id}', 'find')->name('purchase.find');
-        Route::get('/supplier/details/{id}','getSupplierDetails');
+        Route::get('/supplier/details/{id}', 'getSupplierDetails');
     });
     // damage related route
     Route::controller(DamageController::class)->group(function () {
@@ -472,6 +473,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/manage/edit/{id}', 'AdminManageEdit')->name('admin.manage.edit');
         Route::get('/admin/manage/delete/{id}', 'AdminManageDelete')->name('admin.manage.delete');
         Route::post('/admin/manage/update/{id}', 'AdminManageUpdate')->name('update.admin.manage');
+    });
+
+    // via sale Route 
+    Route::controller(ViaSaleController::class)->group(function () {
+        Route::get('/via-sale', 'index')->name('via.sale');
+        Route::get('/via-sale/get/{id}', 'viaSaleGet')->name('via.sale.get');
+        Route::post('/via-sale/payment/{id}', 'viaSalePayment')->name('via.sale.payment');
     });
 });
 
