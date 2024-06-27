@@ -59,6 +59,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', 'edit')->name('profile.edit');
         Route::patch('/profile', 'update')->name('profile.update');
         Route::delete('/profile', 'destroy')->name('profile.destroy');
+        Route::get('/user/profile', 'UserProfileEdit')->name('user.profile.edit');
+        Route::get('profile', 'UserProfile')->name('user.profile');
+        Route::post('user/profile/update', 'UserProfileUpdate')->name('user.profile.update');
     });
 
     // category related route

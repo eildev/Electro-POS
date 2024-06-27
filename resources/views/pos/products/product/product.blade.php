@@ -20,7 +20,7 @@
                                 <label for="name" class="form-label">Product Name <span
                                         class="text-danger">*</span></label>
                                 <input class="form-control name" onblur="generateCode(this);" name="name" type="text"
-                                    onkeyup="errorRemove(this);" onchange="errorRemove(this);">
+                                    onkeyup="errorRemove(this);" onchange="errorRemove(this);" value="{{ old('name') }}">
                                 <span class="text-danger name_error"></span>
                             </div>
                             <div class="mb-3 col-md-6">
@@ -41,7 +41,7 @@
                                     name="category_id" onchange="errorRemove(this);">
                                     @if ($categories->count() > 0)
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}" {{ old('category_name') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Category</option>
@@ -68,7 +68,7 @@
                                     @if ($brands->count() > 0)
                                         {{-- <option selected disabled>Select Brand</option> --}}
                                         @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                            <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Brand</option>
@@ -78,20 +78,19 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="password" class="form-label">Cost Price</label>
-                                <input class="form-control" name="cost" type='number' placeholder="00.00" />
+                                <input class="form-control" name="cost" value="{{ old('cost') }}" type='number' placeholder="00.00" />
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="password" class="form-label">Sale Price <span
                                         class="text-danger">*</span></label>
-                                <input class="form-control price" name="price" type='number' placeholder="00.00"
+                                <input class="form-control price" name="price" value="{{ old('price') }}" type='number' placeholder="00.00"
                                     onkeyup="errorRemove(this);" onblur="errorRemove(this);" />
                                 <span class="text-danger price_error"></span>
                             </div>
                             <div class="mb-3 col-12">
                                 <label for="" class="form-label">Description</label>
-                                <textarea class="form-control" name="details" id="tinymceExample" rows="5"></textarea>
+                                <textarea class="form-control" value="{{ old('details') }}" name="details" id="tinymceExample" rows="5"></textarea>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -115,7 +114,7 @@
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Color</label>
                                 {{-- <div id="pickr_1"></div> --}}
-                                <input type="color" class="form-control" name="color" id="">
+                                <input type="color" class="form-control" value="{{ old('color') }}" name="color" id="">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Size </label>
@@ -133,7 +132,7 @@
                                     @if ($units->count() > 0)
                                         <option selected disabled>Select Unit</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                            <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Unit</option>

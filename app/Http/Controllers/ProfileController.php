@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Branch;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -56,5 +59,45 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+    public function UserProfileEdit(){
+        $branch = Branch::all();
+        $user = Auth::user();
+        return view('pos.profile.profile-edit',compact('branch','user'));
+    }
+    public function UserProfile(){
+        $branch = Branch::all();
+        $user = Auth::user();
+        return view('pos.profile.profile',compact('branch','user'));
+    }//
+    public function UserProfileUpdate(Request $request){
+        $userProfile = Auth::user();
+        $user = User::findOrFail($userProfile->id); // Retrieve user by ID
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        // Handle the profile image upload
+        $user->name =  $request->name;
+        $user->email =  $request->email;
+        $user->phone =  $request->phone;
+        $user->address =  $request->address;
+
+        $previousImagePath = public_path('uploads/profile/') . $user->photo;
+        if (file_exists($previousImagePath)) {
+            unlink($previousImagePath);
+        }
+        if ($request->image) {
+            $imageName = rand() . '.' . $request->image->extension();
+            $request->image->move(public_path('uploads/profile/'), $imageName);
+            $user->photo = $imageName;
+        }
+        $user->update();
+        $notification = array(
+            'message' => 'Profile updated successfully',
+            'alert-type' => 'info'
+        );
+        return redirect()->route('user.profile')->with($notification);
+
     }
 }
