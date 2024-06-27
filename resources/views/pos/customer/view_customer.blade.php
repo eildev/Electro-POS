@@ -1,14 +1,14 @@
 @extends('master')
-@section('title','| Customer List')
+@section('title', '| Customer List')
 @section('admin')
 
     <div class="row">
-        @if(Auth::user()->can('customer.add'))
-        <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
-            <div class="">
-                <h4 class="text-right"><a href="{{ route('customer.add') }}" class="btn btn-info">Add New Customer</a></h4>
+        @if (Auth::user()->can('customer.add'))
+            <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
+                <div class="">
+                    <h4 class="text-right"><a href="{{ route('customer.add') }}" class="btn btn-info">Add New Customer</a></h4>
+                </div>
             </div>
-        </div>
         @endif
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
@@ -23,11 +23,6 @@
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Branch</th>
-                                    {{-- <th>Opening Receivable</th>
-                                    <th>Opening Payable</th>
-
-                                    <th>Total Receivable</th>
-                                    <th>Total Payable</th> --}}
                                     <th>Due</th>
                                     <th>Wallet Balance</th>
                                     <th>Action</th>
@@ -41,14 +36,9 @@
                                             <td>{{ $customer->name ?? '' }}</td>
                                             <td>{{ $customer->phone ?? '' }}</td>
                                             <td>{{ $customer['branch']['name'] ?? '' }}</td>
-                                            {{-- <td>{{ $customer->opening_receivable ?? 0 }}</td>
-                                            <td>{{ $customer->opening_payable ?? 0 }}</td>
-                                            <td>{{ $customer->total_receivable ?? 0 }}</td>
-                                            <td>{{ $customer->total_payable ?? 0 }}</td> --}}
                                             <td>
-                                                @if ($customer->sales->sum('due') > 0)
-                                                    <span class="text-danger">৳
-                                                        {{ $customer->sales->sum('due') ?? 0 }}</span>
+                                                @if ($customer->wallet_balance > 0)
+                                                    <span class="text-danger">৳ {{ $customer->wallet_balance ?? 0 }}</span>
                                                 @else
                                                     <span>৳ 0</span>
                                                 @endif
@@ -73,17 +63,17 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if(Auth::user()->can('customer.edit'))
-                                                <a href="{{ route('customer.edit', $customer->id) }}"
-                                                    class="btn btn-sm btn-primary btn-icon">
-                                                    <i data-feather="edit"></i>
-                                                </a>
+                                                @if (Auth::user()->can('customer.edit'))
+                                                    <a href="{{ route('customer.edit', $customer->id) }}"
+                                                        class="btn btn-sm btn-primary btn-icon">
+                                                        <i data-feather="edit"></i>
+                                                    </a>
                                                 @endif
-                                                @if(Auth::user()->can('customer.delete'))
-                                                <a href="{{ route('customer.delete', $customer->id) }}" id="delete"
-                                                    class="btn btn-sm btn-danger btn-icon">
-                                                    <i data-feather="trash-2"></i>
-                                                </a>
+                                                @if (Auth::user()->can('customer.delete'))
+                                                    <a href="{{ route('customer.delete', $customer->id) }}" id="delete"
+                                                        class="btn btn-sm btn-danger btn-icon">
+                                                        <i data-feather="trash-2"></i>
+                                                    </a>
                                                 @endif
                                             </td>
                                         </tr>
