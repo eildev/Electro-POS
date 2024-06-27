@@ -470,7 +470,7 @@
                         <span class="link-title">Role & Permission</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs('role*') ? '' : 'show' }}" id="role_permission">
+                    <div class="collapse {{ request()->routeIs('role*') ? 'show' : '' }}" id="role_permission">
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('role-and-permission.all-permission'))
                                 <li class="nav-item">
