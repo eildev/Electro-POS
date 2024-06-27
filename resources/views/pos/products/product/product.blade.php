@@ -91,7 +91,6 @@
                                 <label for="" class="form-label">Description</label>
                                 <textarea class="form-control" value="{{ old('details') }}" name="details" id="tinymceExample" rows="5"></textarea>
                             </div>
-
                         </div>
                     </div>
                 </div>
