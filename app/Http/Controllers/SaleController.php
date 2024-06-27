@@ -188,10 +188,8 @@ class SaleController extends Controller
                     // If stock is sufficient
                     $items->sub_total = ($product['unit_price'] * $product['quantity']) - $product['product_discount'];
                     $items->total_purchase_cost = $items2->cost * $product['quantity'];
-
                     $items2->stock -= $product['quantity'];
                     $items2->total_sold += $product['quantity'];
-
                     $items->save();
                 }
 
@@ -204,7 +202,6 @@ class SaleController extends Controller
             $customer->total_receivable = $customer->total_receivable + $request->total;
             $customer->total_payable = $customer->total_payable + $request->paid;
             $customer->wallet_balance = $customer->wallet_balance + ($request->total - $request->paid);
-            // $customer->wallet_balance = $customer->wallet_balance - ($request->due);
             $customer->save();
 
             // actual Payment
