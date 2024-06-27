@@ -233,6 +233,36 @@
                     </div>
                 </li>
             @endif --}}
+                        <!---Admin Manage--->
+                        @if (Auth::user()->can('return.menu'))
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('return*') ? '' : 'collapsed' }}"
+                                data-bs-toggle="collapse" href="#return-manage" role="button" aria-expanded="false"
+                                aria-controls="emails">
+                                <i class="fa-solid fa-users-gear link-icon"></i>
+                                <span class="link-title">Returns</span>
+                                <i class="link-arrow" data-feather="chevron-down"></i>
+                            </a>
+                            <div class="collapse {{ request()->routeIs('return*') ? 'show' : '' }}" id="return-manage">
+                                <ul class="nav sub-menu">
+                                    {{-- @if (Auth::user()->can('return.add')) --}}
+                                        <li class="nav-item">
+                                            <a href="{{ route('return.products.list') }}"
+                                                class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}">All
+                                                return</a>
+                                        </li>
+                                    {{-- @endif --}}
+                                    {{-- @if (Auth::user()->can('return-manage.add')) --}}
+                                        <li class="nav-item">
+                                            <a href="{{ route('return.add') }}"
+                                                class="nav-link {{ request()->routeIs('return.add') ? 'nav_active' : '' }}">Add
+                                                return</a>
+                                        </li>
+                                    {{-- @endif --}}
+                                </ul>
+                            </div>
+                        </li>
+                    @endif
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}"
                     href="{{ route('return.products.list') }}" role="button" aria-controls="general-pages">
@@ -453,11 +483,6 @@
                     </div>
                 </li>
             @endif
-            {{-- <li class="nav-item nav-category">Return</li>
-            <li class="nav-item">
-                <a href="{{ route('return.add') }}"
-                    class="nav-link {{ request()->routeIs('return.add') ? 'nav_active' : '' }}">Return</a>
-            </li> --}}
 
             <li class="nav-item nav-category">SETTING & CUSTOMIZE</li>
             <!---Role & Permission--->
