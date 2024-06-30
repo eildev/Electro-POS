@@ -124,7 +124,6 @@ class SaleController extends Controller
             $sale->save();
 
             $saleId = $sale->id;
-
             $products = $request->products;
             $sellTypeViaSell = false;
 
@@ -151,6 +150,7 @@ class SaleController extends Controller
                 $items->discount = $product['product_discount'];
 
                 // Determine sell_type
+
                 if ($sellTypeViaSell && $items2->category->name == 'Via Sell' && $items2->stock == 0) {
                     //Only Change || to &&
                     $items->sell_type = 'via sell';
@@ -167,7 +167,10 @@ class SaleController extends Controller
                     $extraQuantity = $product['quantity'] - $items2->stock;
                     $items2->stock = 0;
                     $items2->total_sold += $items->qty;
-                    $items->save();
+
+                    if ($items->qty > 0) {
+                        $items->save();
+                    }
 
                     // Create new SaleItem for extra products
                     $extraItem = new SaleItem;
@@ -183,7 +186,7 @@ class SaleController extends Controller
                     $extraItem->sell_type = 'via sell';
                     $extraItem->save();
                 } else {
-                    // If stock is sufficient
+                    // If stock is sufficient - -
                     $items->sub_total = ($product['unit_price'] * $product['quantity']) - $product['product_discount'];
                     $items->total_purchase_cost = $items2->cost * $product['quantity'];
                     $items2->stock -= $product['quantity'];

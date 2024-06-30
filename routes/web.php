@@ -62,6 +62,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/user/profile', 'UserProfileEdit')->name('user.profile.edit');
         Route::get('profile', 'UserProfile')->name('user.profile');
         Route::post('user/profile/update', 'UserProfileUpdate')->name('user.profile.update');
+        /////////////////////////Change Password//////////////////////
+        Route::get('/change-password', 'ChangePassword')->name('user.change.password');
+        Route::post('/update-password', 'updatePassword')->name('user.update.password');
     });
 
     // category related route
