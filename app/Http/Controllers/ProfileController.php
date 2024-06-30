@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
@@ -99,5 +99,30 @@ class ProfileController extends Controller
         );
         return redirect()->route('user.profile')->with($notification);
 
+    }
+    //Change Passsword
+    public function ChangePassword(){
+        return view('pos.profile.change-password');
+    }
+    public function updatePassword(Request $request){
+        $validateData = $request->validate([
+            'oldpassword' => 'required',
+            'newpassword' => 'required',
+            'confirm_password' => 'required|same:newpassword',
+
+        ]);
+
+        $hashedPassword = Auth::user()->password;
+        if (Hash::check($request->oldpassword,$hashedPassword )) {
+            $users = User::find(Auth::id());
+            $users->password = bcrypt($request->newpassword);
+            $users->save();
+
+            session()->flash('message','Password Updated Successfully');
+            return redirect()->back();
+        } else{
+            session()->flash('error','Old password is not match');
+            return redirect()->back();
+        }
     }
 }

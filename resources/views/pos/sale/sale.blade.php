@@ -30,26 +30,6 @@
                             </div>
                             <span class="text-danger purchase_date_error"></span>
                         </div>
-                        {{-- <div class="mb-1 col-md-6">
-                            @php
-                                $products = App\Models\Product::where('stock', '>', 0)->get();
-                            @endphp
-                            <label for="ageSelect" class="form-label">Product</label>
-                            <select class="js-example-basic-single  form-select product_select" data-width="100%"
-                                onclick="errorRemove(this);" onblur="errorRemove(this);">
-                                @if ($products->count() > 0)
-                                    <option selected disabled>Select Product</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
-                                            {{ $product->unit->name }} Available )
-                                        </option>
-                                    @endforeach
-                                @else
-                                    <option selected disabled>Please Add Product</option>
-                                @endif
-                            </select>
-                            <span class="text-danger product_select_error"></span>
-                        </div> --}}
                         <div class="mb-1 col-md-6">
                             <label class="form-label">Product</label>
                             <div class="d-flex g-3">
@@ -74,6 +54,9 @@
                                 <button class="btn btn-primary ms-2" data-bs-toggle="modal"
                                     data-bs-target="#customerModal">Add</button>
                             </div>
+                        </div>
+                        <div>
+                            <input type="hidden" class="generate_invoice">
                         </div>
                     </div>
                 </div>
@@ -315,15 +298,6 @@
                 </div>
                 <div class="modal-body">
                     <form class="viaSellForm row">
-                        {{-- //New Field Add --}}
-                        {{-- <div class="mb-3 col-md-12">
-                            <label for="without_purchase" class="form-label">Without Purchase</label>
-                            <select class=" form-select" data-width="100%" name="without_purchase" >
-                               @foreach ($withoutPurchase as $withoutPurse)
-                               <option value="{{$withoutPurse->id}}">{{$withoutPurse->name}}</option>
-                               @endforeach
-                            </select>
-                        </div> --}}
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Product Name <span
                                     class="text-danger">*</span></label>
@@ -353,10 +327,50 @@
                             <span class="text-danger via_quantity_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Supplier Name</label>
+                            <input id="defaultconfig" class="form-control via_supplier_name" name="via_supplier_name"
+                                type="text">
+                        </div>
+                        <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Total</label>
                             <input id="defaultconfig" class="form-control via_product_total" maxlength="39"
                                 name="via_product_total" type="number" readonly>
                         </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Total Pay</label>
+                            <input id="defaultconfig" class="form-control via_total_pay" name="via_total_pay"
+                                type="number" readonly>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Paid</label>
+                            <input id="defaultconfig" class="form-control via_paid" name="via_paid" type="number">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Payement Method <span
+                                    class="text-danger">*</span></label>
+                            @php
+                                $payments = App\Models\Bank::all();
+                            @endphp
+                            <select class="form-select transaction_account" data-width="100%" name="transaction_account"
+                                onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                @if ($payments->count() > 0)
+                                    {{-- <option selected disabled>Select Transaction</option> --}}
+                                    @foreach ($payments as $payment)
+                                        <option value="{{ $payment->id }}">{{ $payment->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option selected disabled>Please Add Payment</option>
+                                @endif
+                            </select>
+                            <span class="text-danger transaction_account_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Due</label>
+                            <input id="defaultconfig" class="form-control via_due" name="via_due" type="number"
+                                readonly>
+                            <input type="hidden" class="invoice_number" name="invoice_number" />
+                        </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -375,6 +389,8 @@
                 $(element).css('border-color', 'green');
             }
         }
+
+
 
         // define warranty period
         $(document).on('click', '#warranty_status', function() {
@@ -397,6 +413,13 @@
                 $(`${name}_error`).show().text(message);
             }
 
+            // generateInvoice 
+            function generateInvoice() {
+                let invoice_number = '{{ rand(123456, 99999) }}';
+                $('.generate_invoice').val(invoice_number);
+                $('.invoice_number').val(invoice_number);
+            }
+            generateInvoice();
 
             // Via Sell Product view function
             function viewViaSell() {
@@ -449,6 +472,12 @@
                             // console.log(quantity);
                             showAddProduct(products, quantity);
                             toastr.success(res.message);
+                            $(window).on('beforeunload', function() {
+                                return 'Are you sure you want to leave? because You Add a Via Sale Product?';
+                            });
+                        } else if (res.status == 400) {
+                            $('#viaSellModal').modal('hide');
+                            toastr.warning(res.message);
                         } else {
                             // console.log(res);
                             if (res.error.name) {
@@ -463,22 +492,41 @@
                             if (res.error.stock) {
                                 showError('.via_quantity', res.error.stock);
                             }
+                            if (res.error.transaction_account) {
+                                showError('.transaction_account', res.error
+                                    .transaction_account);
+                            }
                         }
                     }
                 });
             })
 
+            // via Product Calculation 
             function viaProductCalculation() {
                 let sellPrice = parseFloat($('.sell_price').val());
+                let costPrice = parseFloat($('.cost_price').val()) || 1;
                 let quantity = parseFloat($('.via_quantity').val()) || 1;
                 let total = sellPrice * quantity;
+                let totalCost = costPrice * quantity;
                 $('.via_product_total').val(total);
+                $('.via_total_pay').val(totalCost);
             }
             $(document).on('keyup', '.sell_price', function() {
                 viaProductCalculation();
             })
             $(document).on('keyup', '.via_quantity', function() {
                 viaProductCalculation();
+            })
+            $(document).on('keyup', '.cost_price', function() {
+                viaProductCalculation();
+            })
+
+            // via sell due 
+            $(document).on('keyup', '.via_paid', function() {
+                let viaTotalPay = parseFloat($('.via_total_pay').val());
+                let paid = parseFloat($(this).val()) || 0;
+                let due = viaTotalPay - paid;
+                $('.via_due').val(due);
             })
 
             // customer view function
@@ -613,7 +661,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -927,52 +975,7 @@
                     })
                 }
             })
-            // quantity
-            // $(document).on('keyup', '.quantity', function(e) {
-            //     e.preventDefault();
-            //     let id = $(this).attr("product-id")
-            //     let quantity = $(this).val();
-            //     quantity = parseInt(quantity);
-            //     let subTotal = $('.product_subtotal' + id);
-            //     if (quantity < 0) {
-            //         toastr.warning('quantity must be positive value');
-            //         $(this).val('');
-            //     } else {
-            //         $.ajax({
-            //             url: `/product/find-qty/${id}`,
-            //             type: 'GET',
-            //             dataType: 'JSON',
-            //             success: function(res) {
-            //                 let stock = res.product.stock;
-            //                 let productPrice = res.product.price;
-            //                 if (quantity > stock) {
-            //                     Swal.fire({
-            //                         title: `Your Product quantity is ${stock}`,
-            //                         text: "you want to sell extra product at Via Sell",
-            //                         icon: 'warning',
-            //                         showCancelButton: true,
-            //                         confirmButtonColor: '#3085d6',
-            //                         cancelButtonColor: '#d33',
-            //                         confirmButtonText: 'Yes, I want!'
-            //                     }).then((result) => {
-            //                         if (result.isConfirmed) {
-            //                             updateGrandTotal();
-            //                             calculateCustomerDue();
-            //                         } else {
-            //                             $('.quantity').val(stock);
-            //                             updateGrandTotal();
-            //                             calculateCustomerDue();
-            //                         }
-            //                     })
-            //                 } else {
-            //                     updateGrandTotal();
-            //                     calculateCustomerDue();
-            //                 }
 
-            //             }
-            //         })
-            //     }
-            // })
 
             // Customer Due
             $(document).on('change', '.select-customer', function() {
@@ -1014,9 +1017,6 @@
             let checkPrintType = '{{ $invoice_type }}';
             // console.log(checkPrintType);
 
-
-
-
             function saveInvoice() {
                 let customer_id = $('.select-customer').val();
                 let sale_date = $('.purchase_date').val();
@@ -1033,6 +1033,7 @@
                 let note = $('.note').val();
                 let payment_method = $('.payment_method').val();
                 let previous_due = $('.previous_due').val();
+                let invoice_number = $('.generate_invoice').val();
                 // let product_id = $('.product_id').val();
                 // console.log(total_quantity);
 
@@ -1084,7 +1085,8 @@
                     note,
                     payment_method,
                     products,
-                    previous_due
+                    previous_due,
+                    invoice_number
                 }
 
                 // console.log(allData);
@@ -1131,7 +1133,7 @@
                                 };
                             }
 
-
+                            $(window).off('beforeunload');
                         } else {
                             // console.log(res);
                             if (res.error.customer_id) {

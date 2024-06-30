@@ -160,8 +160,9 @@
             @endif
             @if (Auth::user()->can('purchase.menu'))
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('purchase*') ? '' : 'collapsed' }}" data-bs-toggle="collapse" href="#uiComponen" role="button"
-                        aria-expanded="false" aria-controls="uiComponen">
+                    <a class="nav-link {{ request()->routeIs('purchase*') ? '' : 'collapsed' }}"
+                        data-bs-toggle="collapse" href="#uiComponen" role="button" aria-expanded="false"
+                        aria-controls="uiComponen">
                         <i class="link-icon" data-feather="feather"></i>
                         <span class="link-title">Purchase</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
@@ -170,18 +171,29 @@
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('purchase.add'))
                                 <li class="nav-item">
-                                    <a href="{{ route('purchase') }}" class="nav-link {{ request()->routeIs('purchase') ? 'nav_active' : '' }}">Add Purchase</a>
+                                    <a href="{{ route('purchase') }}"
+                                        class="nav-link {{ request()->routeIs('purchase') ? 'nav_active' : '' }}">Add
+                                        Purchase</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('purchase.list'))
                                 <li class="nav-item">
-                                    <a href="{{ route('purchase.view') }}" class="nav-link {{ request()->routeIs('purchase.view') ? 'nav_active' : '' }}">Manage Purchase</a>
+                                    <a href="{{ route('purchase.view') }}"
+                                        class="nav-link {{ request()->routeIs('purchase.view') ? 'nav_active' : '' }}">Manage
+                                        Purchase</a>
                                 </li>
                             @endif
                         </ul>
                     </div>
                 </li>
             @endif
+            <li class="nav-item">
+                <a href="{{ route('via.sale') }}"
+                    class="nav-link {{ request()->routeIs('via.sale') ? 'nav_active' : '' }}">
+                    <i class="ms-2 fa-solid fa-tag link-icon"></i>
+                    <span class="link-title">Via Sale</span>
+                </a>
+            </li>
             @if (Auth::user()->can('promotion.menu'))
                 <li class="nav-item">
                     <a href="{{ route('promotion.view') }}"
@@ -334,7 +346,8 @@
                         @if (Auth::user()->can('advanced-employee-salary.menu'))
                             <li class="nav-item">
                                 <a href="{{ route('advanced.employee.salary.add') }}"
-                                    class="nav-link {{ request()->routeIs('advanced.employee.salary.add') ? 'nav_active' : '' }}">Add Advanced
+                                    class="nav-link {{ request()->routeIs('advanced.employee.salary.add') ? 'nav_active' : '' }}">Add
+                                    Advanced
                                     Employee Salary</a>
                             </li>
                         @endif
