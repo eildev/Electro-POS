@@ -413,7 +413,7 @@
                 $(`${name}_error`).show().text(message);
             }
 
-            // generateInvoice 
+            // generateInvoice
             function generateInvoice() {
                 let invoice_number = '{{ rand(123456, 99999) }}';
                 $('.generate_invoice').val(invoice_number);
@@ -430,12 +430,8 @@
                         // console.log(res);
                         const products = res.products;
                         $('.view_product').empty();
-                        // Append the disabled "Select Product" option
-                        $('.view_product').append(
-                            `<option selected disabled>Select Product</option>`
-                        );
+
                         if (products.length > 0) {
-                            //New Add
                             $('.view_product').append(
                                 `<option selected disabled>Select Product</option>`
                                 );
