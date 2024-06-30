@@ -442,6 +442,10 @@
                         const products = res.products;
                         $('.view_product').empty();
                         if (products.length > 0) {
+                            //New Add
+                            $('.view_product').append(
+                                `<option selected disabled>Select Product</option>`
+                                );
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
                                     `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
@@ -509,7 +513,7 @@
                 });
             })
 
-            // via Product Calculation 
+            // via Product Calculation
             function viaProductCalculation() {
                 let sellPrice = parseFloat($('.sell_price').val());
                 let quantity = parseFloat($('.via_quantity').val()) || 1;
@@ -523,7 +527,7 @@
                 viaProductCalculation();
             })
 
-            // via sell due 
+            // via sell due
             $(document).on('keyup', '.via_paid', function() {
                 let viaProductTotal = parseFloat($('.via_product_total').val());
                 let paid = parseFloat($(this).val()) || 0;
