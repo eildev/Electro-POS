@@ -123,7 +123,6 @@ class SaleController extends Controller
             $sale->save();
 
             $saleId = $sale->id;
-
             $products = $request->products;
             $sellTypeViaSell = false;
 
@@ -150,12 +149,13 @@ class SaleController extends Controller
                 $items->discount = $product['product_discount'];
 
                 // Determine sell_type
+
                 if ($sellTypeViaSell && $items2->category->name == 'Via Sell' && $items2->stock == 0) {
                     //Only Change || to &&
                     $items->sell_type = 'via sell';
                 } else {
                     $items->sell_type = 'normal sell';
-                }
+                }   
                 // Adjust stock for next iteration if applicable
                 if ($items2->stock < $product['quantity']) {
                     // If stock is less than the quantity needed
