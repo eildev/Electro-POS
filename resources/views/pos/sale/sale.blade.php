@@ -413,7 +413,7 @@
                 $(`${name}_error`).show().text(message);
             }
 
-            // generateInvoice 
+            // generateInvoice
             function generateInvoice() {
                 let invoice_number = '{{ rand(123456, 99999) }}';
                 $('.generate_invoice').val(invoice_number);
@@ -430,7 +430,11 @@
                         // console.log(res);
                         const products = res.products;
                         $('.view_product').empty();
+
                         if (products.length > 0) {
+                            $('.view_product').append(
+                                `<option selected disabled>Select Product</option>`
+                                );
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
                                     `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
@@ -501,7 +505,7 @@
                 });
             })
 
-            // via Product Calculation 
+            // via Product Calculation
             function viaProductCalculation() {
                 let sellPrice = parseFloat($('.sell_price').val());
                 let costPrice = parseFloat($('.cost_price').val()) || 1;
@@ -521,7 +525,7 @@
                 viaProductCalculation();
             })
 
-            // via sell due 
+            // via sell due
             $(document).on('keyup', '.via_paid', function() {
                 let viaTotalPay = parseFloat($('.via_total_pay').val());
                 let paid = parseFloat($(this).val()) || 0;
@@ -538,6 +542,7 @@
                         const customers = res.allData;
                         // console.log(customers);
                         $('.select-customer').empty();
+                        // Append the disabled "Select Product" option
                         if (customers.length > 0) {
                             $.each(customers, function(index, customer) {
                                 $('.select-customer').append(
@@ -661,7 +666,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>

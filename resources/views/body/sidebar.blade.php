@@ -31,6 +31,7 @@
         .sub-menu .nav-item .nav-link {
             padding-left: 5px !important;
         }
+
     </style>
     <div class="sidebar-body">
         <ul class="nav">
@@ -597,8 +598,5 @@
     </div>
 </nav>
 
-{{-- <style>
-    .nav-link {
-        padding: 5px;
-    }
-</style> --}}
+
+
