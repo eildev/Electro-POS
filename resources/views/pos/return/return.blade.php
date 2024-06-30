@@ -236,7 +236,7 @@
                     }
                 });
 
-                // console.log(returnedProducts);
+                console.log(returnedProducts);
                 const allData = {
                     productTotal,
                     discount,
@@ -247,25 +247,25 @@
                     returnedProducts
                 }
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+                // $.ajaxSetup({
+                //     headers: {
+                //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                //     }
+                // });
 
-                $.ajax({
-                    url: '/return/store',
-                    type: 'POST',
-                    data: allData,
-                    success: function(response) {
-                        if (response.status == 200) {
-                            alert('Products returned successfully!');
-                        } else {
-                            alert('Products returned unsuccessfully!');
-                        }
+                // $.ajax({
+                //     url: '/return/store',
+                //     type: 'POST',
+                //     data: allData,
+                //     success: function(response) {
+                //         if (response.status == 200) {
+                //             alert('Products returned successfully!');
+                //         } else {
+                //             alert('Products returned unsuccessfully!');
+                //         }
 
-                    }
-                });
+                //     }
+                // });
             });
         })
     </script>
