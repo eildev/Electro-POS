@@ -430,6 +430,10 @@
                         // console.log(res);
                         const products = res.products;
                         $('.view_product').empty();
+                        // Append the disabled "Select Product" option
+                        $('.view_product').append(
+                            `<option selected disabled>Select Product</option>`
+                        );
                         if (products.length > 0) {
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
@@ -538,6 +542,7 @@
                         const customers = res.allData;
                         // console.log(customers);
                         $('.select-customer').empty();
+                        // Append the disabled "Select Product" option
                         if (customers.length > 0) {
                             $.each(customers, function(index, customer) {
                                 $('.select-customer').append(
@@ -661,7 +666,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
