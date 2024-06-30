@@ -353,10 +353,44 @@
                             <span class="text-danger via_quantity_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Supplier Name</label>
+                            <input id="defaultconfig" class="form-control via_supplier_name" name="via_supplier_name"
+                                type="text">
+                        </div>
+                        <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Total</label>
                             <input id="defaultconfig" class="form-control via_product_total" maxlength="39"
                                 name="via_product_total" type="number" readonly>
                         </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Paid</label>
+                            <input id="defaultconfig" class="form-control via_paid" name="via_paid" type="number">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Payement Method <span
+                                    class="text-danger">*</span></label>
+                            @php
+                                $payments = App\Models\Bank::all();
+                            @endphp
+                            <select class="form-select transaction_account" data-width="100%" name="transaction_account"
+                                onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                @if ($payments->count() > 0)
+                                    {{-- <option selected disabled>Select Transaction</option> --}}
+                                    @foreach ($payments as $payment)
+                                        <option value="{{ $payment->id }}">{{ $payment->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option selected disabled>Please Add Payment</option>
+                                @endif
+                            </select>
+                            <span class="text-danger transaction_account_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Due</label>
+                            <input id="defaultconfig" class="form-control via_due" name="via_due" type="number"
+                                readonly>
+                        </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -449,6 +483,9 @@
                             // console.log(quantity);
                             showAddProduct(products, quantity);
                             toastr.success(res.message);
+                        } else if (res.status == 400) {
+                            $('#viaSellModal').modal('hide');
+                            toastr.warning(res.message);
                         } else {
                             // console.log(res);
                             if (res.error.name) {
@@ -463,11 +500,16 @@
                             if (res.error.stock) {
                                 showError('.via_quantity', res.error.stock);
                             }
+                            if (res.error.transaction_account) {
+                                showError('.transaction_account', res.error
+                                    .transaction_account);
+                            }
                         }
                     }
                 });
             })
 
+            // via Product Calculation 
             function viaProductCalculation() {
                 let sellPrice = parseFloat($('.sell_price').val());
                 let quantity = parseFloat($('.via_quantity').val()) || 1;
@@ -479,6 +521,14 @@
             })
             $(document).on('keyup', '.via_quantity', function() {
                 viaProductCalculation();
+            })
+
+            // via sell due 
+            $(document).on('keyup', '.via_paid', function() {
+                let viaProductTotal = parseFloat($('.via_product_total').val());
+                let paid = parseFloat($(this).val()) || 0;
+                let due = viaProductTotal - paid;
+                $('.via_due').val(due);
             })
 
             // customer view function
@@ -613,7 +663,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -927,52 +977,7 @@
                     })
                 }
             })
-            // quantity
-            // $(document).on('keyup', '.quantity', function(e) {
-            //     e.preventDefault();
-            //     let id = $(this).attr("product-id")
-            //     let quantity = $(this).val();
-            //     quantity = parseInt(quantity);
-            //     let subTotal = $('.product_subtotal' + id);
-            //     if (quantity < 0) {
-            //         toastr.warning('quantity must be positive value');
-            //         $(this).val('');
-            //     } else {
-            //         $.ajax({
-            //             url: `/product/find-qty/${id}`,
-            //             type: 'GET',
-            //             dataType: 'JSON',
-            //             success: function(res) {
-            //                 let stock = res.product.stock;
-            //                 let productPrice = res.product.price;
-            //                 if (quantity > stock) {
-            //                     Swal.fire({
-            //                         title: `Your Product quantity is ${stock}`,
-            //                         text: "you want to sell extra product at Via Sell",
-            //                         icon: 'warning',
-            //                         showCancelButton: true,
-            //                         confirmButtonColor: '#3085d6',
-            //                         cancelButtonColor: '#d33',
-            //                         confirmButtonText: 'Yes, I want!'
-            //                     }).then((result) => {
-            //                         if (result.isConfirmed) {
-            //                             updateGrandTotal();
-            //                             calculateCustomerDue();
-            //                         } else {
-            //                             $('.quantity').val(stock);
-            //                             updateGrandTotal();
-            //                             calculateCustomerDue();
-            //                         }
-            //                     })
-            //                 } else {
-            //                     updateGrandTotal();
-            //                     calculateCustomerDue();
-            //                 }
 
-            //             }
-            //         })
-            //     }
-            // })
 
             // Customer Due
             $(document).on('change', '.select-customer', function() {
@@ -1013,9 +1018,6 @@
 
             let checkPrintType = '{{ $invoice_type }}';
             // console.log(checkPrintType);
-
-
-
 
             function saveInvoice() {
                 let customer_id = $('.select-customer').val();

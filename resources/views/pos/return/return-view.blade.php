@@ -108,6 +108,7 @@
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title">Sales Table</h6>
+
                     <div class="table-responsive">
                         <table id="example" class="table">
                             <thead>

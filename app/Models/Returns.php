@@ -17,4 +17,13 @@ class Returns extends Model
     {
         return $this->hasMany(ReturnItem::class, 'return_id', 'id');
     }
+
+    protected $fillable = [
+        'invoice_id', 'return_date', 'return_reason', 'return_type', 'processed_by'
+    ];
+
+    public function details()
+    {
+        return $this->hasMany(ReturnDetail::class);
+    }
 }
