@@ -481,7 +481,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/manage/update/{id}', 'AdminManageUpdate')->name('update.admin.manage');
     });
 
-    // via sale Route 
+    // via sale Route
     Route::controller(ViaSaleController::class)->group(function () {
         Route::get('/via-sale', 'index')->name('via.sale');
         Route::get('/via-sale/get/{id}', 'viaSaleGet')->name('via.sale.get');
