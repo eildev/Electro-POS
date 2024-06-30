@@ -78,4 +78,9 @@ class ViaSaleController extends Controller
             ]);
         }
     }
+    public function viaSaleInvoice($id)
+    {
+        $viaSale = ViaSale::findOrFail($id);
+        return view('pos.via_sale.invoice', compact('viaSale'));
+    }
 }

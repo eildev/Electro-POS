@@ -98,7 +98,7 @@ class SaleController extends Controller
             $sale->customer_id = $request->customer_id;
             $sale->sale_date = $request->sale_date;
             $sale->sale_by = Auth::user()->id;
-            $sale->invoice_number = rand(123456, 99999);
+            $sale->invoice_number = $request->invoice_number;
             $sale->order_type = "general";
             $sale->quantity = $request->quantity;
             $sale->total = $request->total_amount;
@@ -484,6 +484,7 @@ class SaleController extends Controller
     }
     public function saleTransaction(Request $request, $id)
     {
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             "transaction_account" => 'required',
             "amount" => 'required|',
@@ -514,7 +515,8 @@ class SaleController extends Controller
             $accountTransaction->reference_id = $id;
             $accountTransaction->account_id =  $request->transaction_account;
             $accountTransaction->credit = $request->amount;
-            $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
+            $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
+            dd($oldBalance->balance);
             $accountTransaction->balance = $oldBalance->balance + $request->amount;
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
@@ -755,17 +757,17 @@ class SaleController extends Controller
 
                 $viaSale = new ViaSale;
                 $viaSale->invoice_date = Carbon::now();
-                $viaSale->supplier_name = $request->via_supplier_name;
+                $viaSale->invoice_number = $request->invoice_number;
                 $viaSale->supplier_name = $request->via_supplier_name;
                 $viaSale->product_id = $product->id;
                 $viaSale->product_name = $request->name;
                 $viaSale->quantity = $request->stock;
                 $viaSale->cost_price = $request->cost;
                 $viaSale->sale_price = $request->price;
-                $viaSale->sub_total = $request->via_product_total;
+                $viaSale->sub_total = $request->via_total_pay;
                 if ($request->via_paid == null) {
                     $viaSale->paid = 0;
-                    $viaSale->due = $request->via_product_total;
+                    $viaSale->due = $request->via_total_pay;
                 } else {
                     $viaSale->paid = $request->via_paid;
                     $viaSale->due = $request->via_due;
