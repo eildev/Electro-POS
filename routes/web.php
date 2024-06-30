@@ -483,6 +483,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/via-sale', 'index')->name('via.sale');
         Route::get('/via-sale/get/{id}', 'viaSaleGet')->name('via.sale.get');
         Route::post('/via-sale/payment/{id}', 'viaSalePayment')->name('via.sale.payment');
+        Route::get('/via-sale/invoice/{id}', 'viaSaleInvoice')->name('via.sale.invoice');
     });
 });
 

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('via_sales', function (Blueprint $table) {
             $table->id();
             $table->date('invoice_date')->nullable();
-            $table->bigInteger('sale_id')->nullable();
+            $table->bigInteger('invoice_number')->nullable();
             $table->string('supplier_name')->nullable();
             $table->bigInteger('product_id')->nullable();
             $table->string('product_name')->nullable();

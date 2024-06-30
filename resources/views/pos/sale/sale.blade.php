@@ -30,26 +30,6 @@
                             </div>
                             <span class="text-danger purchase_date_error"></span>
                         </div>
-                        {{-- <div class="mb-1 col-md-6">
-                            @php
-                                $products = App\Models\Product::where('stock', '>', 0)->get();
-                            @endphp
-                            <label for="ageSelect" class="form-label">Product</label>
-                            <select class="js-example-basic-single  form-select product_select" data-width="100%"
-                                onclick="errorRemove(this);" onblur="errorRemove(this);">
-                                @if ($products->count() > 0)
-                                    <option selected disabled>Select Product</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
-                                            {{ $product->unit->name }} Available )
-                                        </option>
-                                    @endforeach
-                                @else
-                                    <option selected disabled>Please Add Product</option>
-                                @endif
-                            </select>
-                            <span class="text-danger product_select_error"></span>
-                        </div> --}}
                         <div class="mb-1 col-md-6">
                             <label class="form-label">Product</label>
                             <div class="d-flex g-3">
@@ -74,6 +54,9 @@
                                 <button class="btn btn-primary ms-2" data-bs-toggle="modal"
                                     data-bs-target="#customerModal">Add</button>
                             </div>
+                        </div>
+                        <div>
+                            <input type="hidden" class="generate_invoice">
                         </div>
                     </div>
                 </div>
@@ -315,15 +298,6 @@
                 </div>
                 <div class="modal-body">
                     <form class="viaSellForm row">
-                        {{-- //New Field Add --}}
-                        {{-- <div class="mb-3 col-md-12">
-                            <label for="without_purchase" class="form-label">Without Purchase</label>
-                            <select class=" form-select" data-width="100%" name="without_purchase" >
-                               @foreach ($withoutPurchase as $withoutPurse)
-                               <option value="{{$withoutPurse->id}}">{{$withoutPurse->name}}</option>
-                               @endforeach
-                            </select>
-                        </div> --}}
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Product Name <span
                                     class="text-danger">*</span></label>
@@ -363,6 +337,11 @@
                                 name="via_product_total" type="number" readonly>
                         </div>
                         <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Total Pay</label>
+                            <input id="defaultconfig" class="form-control via_total_pay" name="via_total_pay"
+                                type="number" readonly>
+                        </div>
+                        <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Paid</label>
                             <input id="defaultconfig" class="form-control via_paid" name="via_paid" type="number">
                         </div>
@@ -389,6 +368,7 @@
                             <label for="name" class="form-label">Due</label>
                             <input id="defaultconfig" class="form-control via_due" name="via_due" type="number"
                                 readonly>
+                            <input type="hidden" class="invoice_number" name="invoice_number" />
                         </div>
 
                 </div>
@@ -409,6 +389,8 @@
                 $(element).css('border-color', 'green');
             }
         }
+
+
 
         // define warranty period
         $(document).on('click', '#warranty_status', function() {
@@ -431,6 +413,13 @@
                 $(`${name}_error`).show().text(message);
             }
 
+            // generateInvoice 
+            function generateInvoice() {
+                let invoice_number = '{{ rand(123456, 99999) }}';
+                $('.generate_invoice').val(invoice_number);
+                $('.invoice_number').val(invoice_number);
+            }
+            generateInvoice();
 
             // Via Sell Product view function
             function viewViaSell() {
@@ -483,6 +472,9 @@
                             // console.log(quantity);
                             showAddProduct(products, quantity);
                             toastr.success(res.message);
+                            $(window).on('beforeunload', function() {
+                                return 'Are you sure you want to leave? because You Add a Via Sale Product?';
+                            });
                         } else if (res.status == 400) {
                             $('#viaSellModal').modal('hide');
                             toastr.warning(res.message);
@@ -512,9 +504,12 @@
             // via Product Calculation 
             function viaProductCalculation() {
                 let sellPrice = parseFloat($('.sell_price').val());
+                let costPrice = parseFloat($('.cost_price').val()) || 1;
                 let quantity = parseFloat($('.via_quantity').val()) || 1;
                 let total = sellPrice * quantity;
+                let totalCost = costPrice * quantity;
                 $('.via_product_total').val(total);
+                $('.via_total_pay').val(totalCost);
             }
             $(document).on('keyup', '.sell_price', function() {
                 viaProductCalculation();
@@ -522,12 +517,15 @@
             $(document).on('keyup', '.via_quantity', function() {
                 viaProductCalculation();
             })
+            $(document).on('keyup', '.cost_price', function() {
+                viaProductCalculation();
+            })
 
             // via sell due 
             $(document).on('keyup', '.via_paid', function() {
-                let viaProductTotal = parseFloat($('.via_product_total').val());
+                let viaTotalPay = parseFloat($('.via_total_pay').val());
                 let paid = parseFloat($(this).val()) || 0;
-                let due = viaProductTotal - paid;
+                let due = viaTotalPay - paid;
                 $('.via_due').val(due);
             })
 
@@ -663,7 +661,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -1035,6 +1033,7 @@
                 let note = $('.note').val();
                 let payment_method = $('.payment_method').val();
                 let previous_due = $('.previous_due').val();
+                let invoice_number = $('.generate_invoice').val();
                 // let product_id = $('.product_id').val();
                 // console.log(total_quantity);
 
@@ -1086,7 +1085,8 @@
                     note,
                     payment_method,
                     products,
-                    previous_due
+                    previous_due,
+                    invoice_number
                 }
 
                 // console.log(allData);
@@ -1133,7 +1133,7 @@
                                 };
                             }
 
-
+                            $(window).off('beforeunload');
                         } else {
                             // console.log(res);
                             if (res.error.customer_id) {

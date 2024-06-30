@@ -84,11 +84,11 @@
                         <a class="dropdown-item" href="{{ route('return', $data->id) }}"><i
                                 style="transform: rotate(90deg);" class="fa-solid fa-arrow-turn-down me-2"></i></i>
                             Return</a>
-                        @if ($data->due > 0)
+                        {{-- @if ($data->due > 0)
                             <a class="dropdown-item add_payment" href="#" data-bs-toggle="modal"
                                 data-bs-target="#paymentModal" data-id="{{ $data->id }}"><i
                                     class="fa-solid fa-credit-card me-2"></i> Payment</a>
-                        @endif
+                        @endif --}}
                         @if (Auth::user()->can('	pos-manage.delete'))
                             <a class="dropdown-item" id="delete" href="{{ route('sale.destroy', $data->id) }}"><i
                                     class="fa-solid fa-trash-can me-2"></i>Delete</a>

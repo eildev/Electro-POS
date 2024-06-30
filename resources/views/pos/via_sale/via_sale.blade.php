@@ -38,7 +38,7 @@
                                             <td>{{ $via->supplier_name ?? '' }}</td>
                                             <td>{{ $via->product_name ?? '' }}</td>
                                             <td>{{ $via->quantity ?? 0 }}</td>
-                                            <td>{{ $via->sale_price ?? 0 }}</td>
+                                            <td>{{ $via->cost_price ?? 0 }}</td>
                                             <td>{{ $via->sub_total ?? 0 }}</td>
                                             <td>{{ $via->paid ?? 0 }}</td>
                                             <td>{{ $via->due ?? 0 }}</td>
@@ -55,7 +55,8 @@
                                                         Manage
                                                     </button>
                                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                        <a class="dropdown-item" href="#"><i
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('via.sale.invoice', $via->id) }}"><i
                                                                 class="fa-solid fa-file-invoice me-2"></i> Invoice</a>
                                                         @if ($via->status == 0)
                                                             <a class="dropdown-item add_payment" href="#"
