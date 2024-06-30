@@ -436,6 +436,7 @@ Route::middleware('auth')->group(function () {
     // return controller
     Route::controller(ReturnController::class)->group(function () {
         Route::get('/return/{id}', 'Return')->name('return');
+        Route::get('/return/find/{id}', 'ReturnItems');
         // Route::post('/return/store', 'store')->name('return.store');
         Route::post('/return/store', 'store')->name('return.add');
         Route::post('/return/item/store', 'storeReturnItem')->name('return.item.store');
@@ -481,7 +482,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/manage/update/{id}', 'AdminManageUpdate')->name('update.admin.manage');
     });
 
-    // via sale Route 
+    // via sale Route
     Route::controller(ViaSaleController::class)->group(function () {
         Route::get('/via-sale', 'index')->name('via.sale');
         Route::get('/via-sale/get/{id}', 'viaSaleGet')->name('via.sale.get');

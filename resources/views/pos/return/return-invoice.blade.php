@@ -5,7 +5,6 @@
         $customer = App\Models\Customer::findOrFail($sale->customer_id);
         $sale_items = App\Models\SaleItem::where('sale_id', $sale->id)->get();
 
-
     @endphp
 
     <style>
@@ -15,66 +14,105 @@
         <div class="col-md-12 stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title text-info">Add Damage</h6>
-                    <form id="myValidForm" action="{{ route('damage.store') }}" method="post">
-                        @csrf
-                        <div class="row">
-                            <!-- Col -->
-                            <div class="mb-3 col-md-6">
-                                @php
-                                    $products = App\Models\Product::get();
-                                @endphp
-                                <label for="ageSelect" class="form-label">Product <span class="text-danger">*</span></label>
-                                <select class="js-example-basic-single form-select" name="product_id" data-width="100%"
-                                    onchange="show_quantity(this)">
-                                    @if ($products->count() > 0)
-                                        <option selected disabled>Select Damaged Product</option>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name }} ({{ $product->stock }}
-                                                {{ $product->unit->name }})</option>
+                    <h6 class="card-title text-info">Add Return Product</h6>
+                    @csrf
+                    <div class="row">
+                        <!-- Col -->
+                        <div class="mb-3 col-md-6">
+
+                            <label for="" class="form-label">Product <span class="text-danger">*</span></label>
+
+                            <div class="d-flex g-3">
+
+                                <select class="js-example-basic-single form-select product_select" data-width="100%">
+
+                                    @if ($sale_items->count() > 0)
+                                        <option selected disabled>Select Returned Product</option>
+                                        @foreach ($sale_items as $product)
+                                            <option value="{{ $product->id }}"
+                                                {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                                                {{ $product->product->name }}
+                                                ({{ $product->stock }} {{ $product->unit->name ?? '' }})
+                                            </option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Product</option>
                                     @endif
                                 </select>
-                                <span class="text-danger product_select_error"></span>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="mb-3 form-valid-groups">
-                                    <label class="form-label">Quantity
-                                        <span class="text-danger">*</span>
-                                        <span class="text-primary" id="show_stock"></span>
-                                        <span class="text-primary" id="show_unit"></span>
-                                    </label>
-
-                                    <input type="text" id="damageQty" name="pc" onkeyup="damage_qty(this);"
-                                        class="form-control" placeholder="0" value="{{ old('pc') }}" disabled autocomplete="off">
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="mb-3 form-valid-groups">
-                                    <label class="form-label">Date<span class="text-danger">*</span></label>
-                                    <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
-                                        <span class="input-group-text input-group-addon bg-transparent border-primary"
-                                            data-toggle><i data-feather="calendar" class="text-primary"></i></span>
-                                        <input type="text" name="date"
-                                            class="form-control bg-transparent border-primary" value="{{ old('date') }}" placeholder="Select date"
-                                            data-input>
-                                    </div>
-                                    {{-- <input type="date"  class="form-control" placeholder="Enter Date"> --}}
-                                </div>
-                            </div><!-- Col -->
-                            <div class="col-sm-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Note</label>
-                                    <textarea name="note" class="form-control" value="{{ old('note') }}" placeholder="Write About Damages" rows="4" cols="50"></textarea>
-                                </div>
-                            </div><!-- Col -->
-                        </div><!-- Row -->
-                        <div>
-                            <input type="submit" id="submit_btn" class="btn btn-primary submit" value="Save" disabled>
                         </div>
-                    </form>
+
+                        <div class="col-sm-6">
+                            <div class="mb-3 form-valid-groups">
+                                <label class="form-label">Date<span class="text-danger">*</span></label>
+                                <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
+                                    <span class="input-group-text input-group-addon bg-transparent border-primary"
+                                        data-toggle><i data-feather="calendar" class="text-primary"></i></span>
+                                    <input type="text" name="date" class="form-control bg-transparent border-primary return_date"
+                                        value="" placeholder="Select date" data-input>
+                                </div>
+                                {{-- <input type="date"  class="form-control" placeholder="Enter Date"> --}}
+                            </div>
+                        </div><!-- Col -->
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label class="form-label">Note</label>
+                                <textarea name="note" class="form-control return_purpose" value="{{ old('note') }}" placeholder="Write About Damages"
+                                    rows="4" cols="50"></textarea>
+                            </div>
+                        </div><!-- Col -->
+                    </div><!-- Row -->
+                    <div>
+                        <input type="submit" id="submit_btn" class="btn btn-primary submit" value="Save" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 mb-1 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body px-4 py-2">
+                    <div class="mb-3">
+                        <h6 class="card-title">Items</h6>
+                    </div>
+
+                    <div id="" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="showData">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="col-md-6" >
+                        <div id="" class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>Product Total</td>
+                                        <td class="text-end">
+                                            <span class="all_product_total"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="my-3">
+                        <button class="btn btn-primary return_btn"><i class="fa-solid fa-money-check-dollar"></i>
+                            Make Invoice</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -88,8 +126,8 @@
                                     <a href="#" class="noble-ui-logo logo-light d-block mt-3">{{ $siteTitle }}</a>
                                 @elseif($invoice_logo_type == 'Logo')
                                     @if (!empty($logo))
-                                        <img class="margin_left_m_14" height="90" width="150" src="{{ url($logo) }}"
-                                            alt="logo">
+                                        <img class="margin_left_m_14" height="90" width="150"
+                                            src="{{ url($logo) }}" alt="logo">
                                     @else
                                         <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
                                     @endif
@@ -318,6 +356,258 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+
+            // show Product function
+            function showAddProduct(product) {
+
+                $('.showData').append(
+                    `<tr class="data_row${product.id}" product-id="${product.id}">
+                        <td>
+                            ${product.product.name}
+                        </td>
+                        <td>
+                            <input type="number" product-id="${product.id}" class="form-control unit_price product_price${product.id}" id="product_price" name="unit_price[]" readonly value="${product.rate ?? 0}" />
+                        </td>
+                        <td>
+                            <input type="number" product-id="${product.id}" maxLength="${product.qty}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="1" />
+                        </td>
+
+
+                        <td><input type="number" class="form-control subTotal border-0 productTotal${product.id}" name="total_price[]" id="productTotal" readonly value="${product.rate ?? 0}" /></td>
+
+                        <td style="padding-top: 20px;">
+                            <a href="#" class="btn btn-sm btn-danger btn-icon purchase_delete" style="font-size: 8px; height: 25px; width: 25px;" data-id=${product.id}>
+                                <i class="fa-solid fa-trash-can" style="font-size: 0.8rem; margin-top: 2px;"></i>
+                            </a>
+                        </td>
+                    </tr>`
+                );
+
+            }
+
+            // // Function to calculate the subtotal for each product
+            $(document).on('keyup', '.quantity', function() {
+                let productId = $(this).attr('product-id');
+                let unitPrice = parseFloat($(`.product_price${productId}`).val());
+                let quantity = parseInt($(this).val());
+                let max_quantity = $(this).attr('maxLength');
+
+                if (quantity > max_quantity) {
+                    toastr.warning('Quantity should not exceed ' + max_quantity);
+                    $(this).val(max_quantity);
+                    let subTotal = unitPrice * max_quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                } else if (quantity < 1) {
+                    toastr.warning('Quantity should not less than 1');
+                    $(this).val(1);
+                    let subTotal = unitPrice * 1;
+                    $(`.productTotal${productId}`).val(subTotal);
+                } else {
+                    let subTotal = unitPrice * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                }
+
+            });
+            $(document).on('click', '.quantity', function() {
+                let productId = $(this).attr('product-id');
+                let unitPrice = parseFloat($(`.product_price${productId}`).val());
+                let quantity = parseInt($(this).val());
+                let max_quantity = $(this).attr('maxLength');
+
+                if (quantity > max_quantity) {
+                    toastr.warning('Quantity should not exceed ' + max_quantity);
+                    $(this).val(max_quantity);
+                    let subTotal = unitPrice * max_quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                } else if (quantity < 1) {
+                    toastr.warning('Quantity should not less than 1');
+                    $(this).val(1);
+                    let subTotal = unitPrice * 1;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                } else {
+                    let subTotal = unitPrice * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                }
+            });
+
+
+            // Select product
+            $(document).on('change', '.product_select', function() {
+                // alert('Select product');
+                let id = $(this).val();
+
+                if ($(`.data_row${id}`).length === 0 && id) {
+                    $.ajax({
+                        url: '/return/find/' + id,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        success: function(res) {
+                            const product = res.sale_items;
+                            // console.log(product);
+                            // const promotion = res.promotion;
+                            showAddProduct(product);
+                            calculateProductTotal();
+                            // updateGrandTotal();
+                            // calculateCustomerDue();
+                        }
+                    });
+                }
+            });
+
+            // Purchase delete
+            $(document).on('click', '.purchase_delete', function(e) {
+                let id = $(this).attr('data-id');
+                let dataRow = $('.data_row' + id);
+                dataRow.remove();
+                calculateProductTotal();
+                // updateGrandTotal();
+                // updateTotalQuantity();
+                // calculateCustomerDue();
+            });
+
+            // Function to calculate the grand total from all products
+            function calculateProductTotal() {
+                let allProductTotal = document.querySelectorAll('#productTotal');
+                let allTotal = 0;
+                allProductTotal.forEach(product => {
+                    let productValue = parseFloat(product.value);
+                    if (!isNaN(productValue)) {
+                        allTotal += productValue;
+                    }
+                });
+                // console.log(allTotal);
+
+                $('.all_product_total').text(allTotal.toFixed(2));
+            }
+            calculateProductTotal();
+
+            function returnInvoice() {
+
+                let sale_id = '{{$sale->id}}';
+                let customer_id = '{{$customer->id}}';
+                let return_date = $('.return_date').val();
+                let formattedReturnDate = moment(return_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
+
+                let refund_amount = parseFloat($('.all_product_total').text());
+                let note = $('.return_purpose').val();
+
+                let products = [];
+
+                $('tr[class^="data_row"]').each(function() {
+                    let row = $(this);
+                    // Get values from the current row's elements
+
+                    let product_id = $(this).attr('product-id');;
+                    let quantity = row.find('input[name="quantity[]"]').val();
+                    let unit_price = row.find('input[name="unit_price[]"]').val();
+
+                    let total_price = row.find('input[name="total_price[]"]').val();
+                    // console.log(productDiscount);
+
+                    let product = {
+                        product_id,
+                        quantity,
+                        unit_price,
+                        total_price
+                    };
+
+                    // Push the object into the products array
+                    products.push(product);
+                });
+                // console.log(products);
+
+                let allData = {
+                    // for purchase table
+                    sale_id,
+                    customer_id,
+                    return_date,
+                    formattedReturnDate,
+                    refund_amount,
+                    note,
+                    products
+                }
+
+                // console.log(allData);
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    url: '/return/store',
+                    type: 'POST',
+                    data: allData,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            toastr.success(res.message);
+                            let id = res.saleId;
+                            // window.location.href = '/sale/print/' + id;
+                            var printFrame = $('#printFrame')[0];
+
+                            if (checkPrintType == 'a4' || checkPrintType == 'a5') {
+                                var printContentUrl = '/sale/invoice/' + id;
+                                $('#printFrame').attr('src', printContentUrl);
+
+                                printFrame.onload = function() {
+                                    printFrame.contentWindow.focus();
+                                    printFrame.contentWindow.print();
+                                    // Redirect after printing
+                                    printFrame.contentWindow.onafterprint = function() {
+                                        window.location.href = "/sale";
+                                    };
+                                };
+                            } else {
+                                var printContentUrl = '/sale/print/' + id;
+                                $('#printFrame').attr('src', printContentUrl);
+
+                                printFrame.onload = function() {
+                                    printFrame.contentWindow.focus();
+                                    printFrame.contentWindow.print();
+                                    // Redirect after printing
+                                    printFrame.contentWindow.onafterprint = function() {
+                                        window.location.href = "/sale";
+                                    };
+                                };
+                            }
+
+                            $(window).off('beforeunload');
+                        } else {
+                            // console.log(res);
+                            if (res.error.customer_id) {
+                                showError('.select-customer', res.error.customer_id);
+                            }
+                            if (res.error.sale_date) {
+                                showError('.purchase_date', res.error.sale_date);
+                            }
+                            if (res.error.payment_method) {
+                                showError('.payment_method', res.error.payment_method);
+                            }
+                            if (res.error.paid) {
+                                showError('.total_payable', res.error.paid);
+                            }
+                            if (res.error.products) {
+                                toastr.warning("Please Select a Product to sell");
+                            }
+                        }
+                    }
+                });
+            }
+
+            // order btn
+            $('.return_btn').click(function(e) {
+                e.preventDefault();
+                returnInvoice();
+            })
+        })
+    </script>
     <style>
         .table> :not(caption)>*>* {
             padding: 0px 10px !important;

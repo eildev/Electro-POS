@@ -18,11 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('invoice_id');
             $table->dateTime('return_date');
             $table->string('return_reason');
-            $table->string('return_type');
             $table->unsignedBigInteger('processed_by');
 
             $table->integer('total');
-            $table->integer('discount_amount');
             $table->integer('grand_total');
             $table->tinyInteger('status')->default(0);
 

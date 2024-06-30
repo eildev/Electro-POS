@@ -140,6 +140,7 @@ class PermissionSeeder extends Seeder
             ['id' => 99, 'name' => 'branch.delete', 'guard_name' => 'web', 'group_name' => 'branch'],
 
             ['id' => 100, 'name' => 'report.menu', 'guard_name' => 'web', 'group_name' => '	report'],
+            ['id' => 101, 'name' => 'return.menu', 'guard_name' => 'web', 'group_name' => '	return'],
 
             // add more permissions as needed
         ];

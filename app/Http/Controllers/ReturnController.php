@@ -24,10 +24,20 @@ class ReturnController extends Controller
         $sale = Sale::findOrFail($id);
         return view('pos.return.return-invoice', compact('sale'));
     }
+    public function ReturnItems($id)
+    {
+        $sales = SaleItem::findOrFail($id);
+        $sales->load('product');
+        // dd($sales);
+        return response()->json([
+                    'status' => '200',
+                    'sale_items' => $sales,
+                ]);
+    }
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         // $validator = Validator::make($request->all(), [
         //     'customerId' => 'required',
         //     'returnedProducts' => 'required',
