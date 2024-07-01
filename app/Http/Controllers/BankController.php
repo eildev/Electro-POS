@@ -148,6 +148,7 @@ class BankController extends Controller
 
         if ($validator->passes()) {
             $bank = Bank::findOrFail($id);
+            dd($bank->all());
             $bank->opening_balance = $bank->opening_balance + $request->update_balance;
             $bank->update_balance =  $request->update_balance;
             $bank->purpose = $request->purpose;
