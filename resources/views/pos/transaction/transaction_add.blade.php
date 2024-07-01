@@ -148,7 +148,7 @@
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Transaction Type <span class="text-danger">*</span></label>
-                                            <select class="form-select bank_id "data-width="100%" name="transaction_type" id="transaction_type" aria-invalid="false">
+                                            <select class="form-select bank_id"  data-width="100%" name="transaction_type" id="transaction_type" aria-invalid="false" >
                                                 <option selected="" disabled value="">Select Type</option>
                                                 <option value="receive">Cash Receive</option>
                                                 <option value="pay">Cash Payment</option>
@@ -257,8 +257,8 @@
             $('#account-details').text('Name: ' + data.info.name);
             $('#due_invoice_count').text('Due Invoice Count: '+data.count);
             $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
-            $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
-            $('#total_due').text('Total Due: '+data.info.total_payable);
+            // $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
+            $('#total_due').text('Total Due: '+data.info.wallet_balance);
         },
         error: function(xhr, status, error) {
             // Error handling
