@@ -26,8 +26,8 @@
                                     <th>Manager/Owner Name</th>
                                     <th>Phone Number</th>
                                     <th>Account</th>
-                                    <th>Email</th>
                                     <th>Opening Balance</th>
+                                    <th>Current Balance</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -217,7 +217,8 @@
             })
 
 
-            // show Unit
+
+
             function bankView() {
                 // console.log('hello');
                 $.ajax({
@@ -225,63 +226,57 @@
                     method: 'GET',
                     success: function(res) {
                         const banks = res.data;
-                        // console.log(banks);
+                        console.log(banks);
                         $('.showData').empty();
                         if (banks.length > 0) {
                             $.each(banks, function(index, bank) {
+                                // Calculate the sum of account_transaction balances
+                                let totalBalance = 0;
+                                if (Array.isArray(bank.account_transaction)) {
+                                    totalBalance = bank.account_transaction.reduce((sum,
+                                        transaction) => {
+                                        return sum + (parseFloat(transaction.balance) ||
+                                            0);
+                                    }, 0);
+                                }
+
                                 const tr = document.createElement('tr');
                                 tr.innerHTML = `
-                            <td>
-                                ${index+1}
-                            </td>
-                            <td>
-                                ${bank.name ?? ""}
-                            </td>
-                            <td>
-                                ${bank.branch_name ?? ""}
-                            </td>
-                            <td>
-                                ${bank.manager_name ?? ""}
-                            </td>
-                            <td>
-                                ${bank.phone_number ?? 0 }
-                            </td>
-                            <td>
-                                ${bank.account ?? 0 }
-                            </td>
-                            <td>
-                                ${bank.email ?? "" }
-                            </td>
-                            <td>
-                                ${bank.opening_balance ?? 0 }
-                            </td>
-                            <td>
-                                <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
-                                <a href="#" class="btn btn-danger btn-icon bank_delete" data-id=${bank.id}>
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </a>
-                            </td>
-                            `;
+                                    <td>${index + 1}</td>
+                                    <td>${bank.name ?? ""}</td>
+                                    <td>${bank.branch_name ?? ""}</td>
+                                    <td>${bank.manager_name ?? ""}</td>
+                                    <td>${bank.phone_number ?? 0}</td>
+                                    <td>${bank.account ?? 0}</td>
+                                    <td>${bank.opening_balance ?? 0}</td>
+                                    <td>${totalBalance}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="#" class="btn btn-danger btn-icon bank_delete" data-id=${bank.id}>
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
+                                    </td>
+                                `;
                                 $('.showData').append(tr);
-                            })
+                            });
                         } else {
                             $('.showData').html(`
                             <tr>
-                                <td colspan='8'>
+                                <td colspan='9'>
                                     <div class="text-center text-warning mb-2">Data Not Found</div>
                                     <div class="text-center">
-                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add
-                                            Bank Info<i data-feather="plus"></i></button>
+                                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add Bank Info<i data-feather="plus"></i></button>
                                     </div>
                                 </td>
-                            </tr>`)
+                            </tr>
+                            `);
                         }
-
                     }
-                })
+                });
             }
+
             bankView();
 
             // edit Unit

@@ -65,6 +65,10 @@ class BankController extends Controller
     {
         // $banks = Bank::get();
         $banks = $this->bankrepo->getAllBank();
+        $banks->load('accountTransaction');
+
+        // dd($banks);
+
         return response()->json([
             "status" => 200,
             "data" => $banks
@@ -133,5 +137,3 @@ class BankController extends Controller
         ]);
     }
 }
-
-
