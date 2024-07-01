@@ -137,16 +137,6 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
-                                            <label class="form-label">Transaction Type <span class="text-danger">*</span></label>
-                                            <select class="form-select bank_id "data-width="100%" name="transaction_type" aria-invalid="false">
-                                                <option selected="" disabled value="">Select Type</option>
-                                                <option value="receive">Cash Receive</option>
-                                                <option value="pay">Cash Payment</option>
-                                            </select>
-                                        </div>
-                                    </div><!-- Col -->
-                                    <div class="col-sm-6">
-                                        <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Account Type<span class="text-danger">*</span></label>
                                             <select class="form-select" data-width="100%" name="account_type" id="account_type" aria-invalid="false">
                                                 <option selected disabled value="">Select Account Type</option>
@@ -155,6 +145,17 @@
                                             </select>
                                         </div>
                                     </div><!-- Col -->
+                                    <div class="col-sm-6">
+                                        <div class="mb-3 form-valid-groups">
+                                            <label class="form-label">Transaction Type <span class="text-danger">*</span></label>
+                                            <select class="form-select bank_id"  data-width="100%" name="transaction_type" id="transaction_type" aria-invalid="false" >
+                                                <option selected="" disabled value="">Select Type</option>
+                                                <option value="receive">Cash Receive</option>
+                                                <option value="pay">Cash Payment</option>
+                                            </select>
+                                        </div>
+                                    </div><!-- Col -->
+
                                     <div class="col-sm-6">
                                         <div class="mb-3">
                                             <label class="form-label">Account ID<span class="text-danger">*</span></label>
@@ -255,9 +256,9 @@
            console.log(data);
             $('#account-details').text('Name: ' + data.info.name);
             $('#due_invoice_count').text('Due Invoice Count: '+data.count);
-            // $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
-            $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
-            $('#total_due').text('Total Due: '+data.info.total_payable);
+            $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
+            // $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
+            $('#total_due').text('Total Due: '+data.info.wallet_balance);
         },
         error: function(xhr, status, error) {
             // Error handling
@@ -345,6 +346,19 @@ $(document).ready(function (){
             window.print();
 
         });
+
+
+        ///
+        document.getElementById('account_type').addEventListener('change', function() {
+    var accountType = this.value;
+    var transactionType = document.getElementById('transaction_type');
+    if (accountType === 'customer') {
+        transactionType.value = 'receive';
+    }
+    if (accountType === 'supplier') {
+        transactionType.value = 'pay';
+    }
+});
 </script>
 <style>
     @media print {
