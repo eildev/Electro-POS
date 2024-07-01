@@ -259,20 +259,12 @@
                     method: 'GET',
                     success: function(res) {
                         const banks = res.data;
-                        // console.log(banks);
+                        // console.log(banks.account_transaction);
                         $('.showData').empty();
                         if (banks.length > 0) {
                             $.each(banks, function(index, bank) {
                                 // Calculate the sum of account_transaction balances
-                                let totalBalance = 0;
-                                if (Array.isArray(bank.account_transaction)) {
-                                    totalBalance = bank.account_transaction.reduce((sum,
-                                        transaction) => {
-                                        return sum + (parseFloat(transaction.balance) ||
-                                            0);
-                                    }, 0);
-                                }
-
+                                console.log(bank);
                                 const tr = document.createElement('tr');
                                 tr.innerHTML = `
                                     <td>${index + 1}</td>
@@ -282,7 +274,7 @@
                                     <td>${bank.phone_number ?? 0}</td>
                                     <td>${bank.account ?? 0}</td>
                                     <td>${bank.opening_balance ?? 0}</td>
-                                    <td>${totalBalance.toFixed(2)}</td>
+                                    <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
                                         <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
                                               <i class="fas fa-money-bill"></i>

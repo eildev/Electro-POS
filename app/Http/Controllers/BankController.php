@@ -69,8 +69,12 @@ class BankController extends Controller
         $banks = $this->bankrepo->getAllBank();
         $banks->load('accountTransaction');
 
-        // dd($banks);
+        // Add latest transaction to each bank
+        foreach ($banks as $bank) {
+            $bank->latest_transaction = $bank->accountTransaction()->latest()->first();
+        }
 
+        // dd($banks);
         return response()->json([
             "status" => 200,
             "data" => $banks
@@ -148,7 +152,7 @@ class BankController extends Controller
 
         if ($validator->passes()) {
             $bank = Bank::findOrFail($id);
-            dd($bank->all());
+            // dd($bank->update_balance);
             $bank->opening_balance = $bank->opening_balance + $request->update_balance;
             $bank->update_balance =  $request->update_balance;
             $bank->purpose = $request->purpose;
