@@ -155,13 +155,13 @@ class BankController extends Controller
             $bank->opening_balance = $bank->opening_balance + $request->update_balance;
             $bank->update_balance =  $request->update_balance;
             $bank->purpose = $request->purpose;
-            $bank->note = $request->note;
             $bank->save();
 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
             $accountTransaction->purpose =  'Add Bank Balance';
             $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->note =  $request->note;
             $accountTransaction->credit = $request->update_balance;
             $oldBalance = AccountTransaction::where('account_id', $id)->latest('created_at')->first();
             $accountTransaction->balance = $oldBalance->balance + $request->update_balance;

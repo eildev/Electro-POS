@@ -114,11 +114,12 @@ class TransactionController extends Controller
             $currentBalance = $customer->wallet_balance;
             $newBalance = $currentBalance - $request->amount;
             $tracsBalance = Transaction::where('customer_id', $customer->id)->latest()->first();
-            $newTrasBalance = $tracsBalance->balance ?? 0 + $request->amount;
+            $transBalance = $tracsBalance->balance?? 0;
+            $newTrasBalance = $transBalance + $request->amount;
             $transaction = Transaction::create([
                 'date' => $request->date,
                 'payment_type' => $request->transaction_type,
-                'debit' => $request->amount,
+                'credit' => $request->amount,
                 'payment_method' => $request->payment_method,
                 'note' => $request->note,
                 'balance' => $newTrasBalance,
@@ -131,9 +132,9 @@ class TransactionController extends Controller
              $accountTransaction->reference_id = $transaction->id;
              $accountTransaction->purpose =  'Transactions';
              $accountTransaction->account_id =  $request->payment_method;
-             $accountTransaction->debit = $request->amount;
+             $accountTransaction->credit = $request->amount;
              $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-             $accountTransaction->balance = $oldBalance->balance - $request->amount;
+             $accountTransaction->balance = $oldBalance->balance + $request->amount;
              $accountTransaction->created_at = Carbon::now();
              $accountTransaction->save();
              $notification = [

@@ -22,7 +22,6 @@ return new class extends Migration
             $table->decimal('opening_balance', 12, 2)->default(0);
             $table->decimal('update_balance', 12, 2)->default(0);
             $table->string('purpose')->nullable();
-            $table->text('note')->nullable();
             $table->timestamps();
         });
     }
