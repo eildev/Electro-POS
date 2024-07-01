@@ -284,15 +284,23 @@
                                     <td>${bank.opening_balance ?? 0}</td>
                                     <td>${totalBalance.toFixed(2)}</td>
                                     <td>
-                                        <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
-                                              <i class="fas fa-money-bill"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-icon bank_delete" data-id=${bank.id}>
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </a>
+                                        <div class="dropdown">
+                                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+                                                            <i class="fas fa-money-bill"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-icon bank_delete" data-id=${bank.id}>
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                    </div>
+                                    </div>
                                     </td>
                                 `;
                                 $('.showData').append(tr);

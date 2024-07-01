@@ -141,14 +141,12 @@ class BankController extends Controller
     //Bank balance Add
     public function BankBalaneAdd(Request $request, $id)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'update_balance' => 'required',
         ]);
 
         if ($validator->passes()) {
             $bank = Bank::findOrFail($id);
-            dd($bank->all());
             $bank->opening_balance = $bank->opening_balance + $request->update_balance;
             $bank->update_balance =  $request->update_balance;
             $bank->purpose = $request->purpose;
