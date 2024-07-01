@@ -111,7 +111,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Unit</h5>
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Bank Info</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                 </div>
                 <div class="modal-body">
@@ -282,13 +282,13 @@
                                         Manage
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+                                    <a href="#" class="btn btn-sm btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
                                                             <i class="fas fa-money-bill"></i>
                                     </a>
-                                    <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+                                    <a href="#" class="btn btn-sm btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </a>
-                                    <a href="#" class="btn btn-danger btn-icon bank_delete" data-id=${bank.id}>
+                                    <a href="#" class="btn btn-sm btn-danger btn-icon bank_delete" data-id=${bank.id}>
                                         <i class="fa-solid fa-trash-can"></i>
                                     </a>
                                     </div>
@@ -450,7 +450,6 @@
                 $('.add_balance').val(id);
 
             })
-
 
             //Add Balance
             $('.add_balance').click(function(e) {
