@@ -474,7 +474,11 @@
                             toastr.success(res.message);
                         } else {
                             if (res.error.name) {
+<<<<<<< HEAD
                                 showError('.add_balance', res.error.name);
+=======
+                                showError('.edit_bank_name', res.error.name);
+>>>>>>> eda2087ba0188332ba5c88fa17ab4397b7d8d3fb
                             }
 
                         }
