@@ -31,11 +31,11 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->phone = $request->phone;
             $supplier->address = $request->address;
-            $supplier->opening_receivable = $request->opening_receivable ?? 0;
-            $supplier->total_receivable = $request->opening_receivable ?? 0;
-            $supplier->wallet_balance = $request->opening_receivable ?? 0;
-            $supplier->opening_payable = $request->opening_payable ?? 0;
-            // $supplier->total_payable = $request->opening_payable;
+            $supplier->opening_receivable = 0;
+            $supplier->total_receivable = $request->opening_receivable;
+            $supplier->wallet_balance = $supplier->wallet_balance - $request->opening_receivable;
+            $supplier->opening_payable = $request->opening_receivable;
+            $supplier->total_payable = 0;
             $supplier->save();
             return response()->json([
                 'status' => 200,

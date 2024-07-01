@@ -22,7 +22,13 @@ class PurchaseController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
+        // dd($request->sub_total - $request->total_payable);
+        // $supplier = Supplier::findOrFail($request->supplier_id);
+        // $supplier->total_receivable = $supplier->total_receivable + $request->sub_total;
+        // $supplier->total_payable = $supplier->total_payable + $request->total_payable;
+        // dd($supplier->wallet_balance - ($request->sub_total - $request->total_payable));
+        // $supplier->wallet_balance = $supplier->wallet_balance - ($request->sub_total - $request->total_payable);
+
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
             'date' => 'required',
@@ -136,7 +142,7 @@ class PurchaseController extends Controller
                 $supplier = Supplier::findOrFail($request->supplier_id);
                 $supplier->total_receivable = $supplier->total_receivable + $request->sub_total;
                 $supplier->total_payable = $supplier->total_payable + $request->total_payable;
-                $supplier->wallet_balance = $supplier->wallet_balance + ($request->sub_total - $request->total_payable);
+                $supplier->wallet_balance = $supplier->wallet_balance - ($request->sub_total - $request->total_payable);
                 $supplier->save();
 
 

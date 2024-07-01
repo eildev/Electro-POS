@@ -228,8 +228,8 @@
                                         </td>
                                         <td>
                                             <span>
-                                                ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবে` : ''}
-                                                ${supplier.wallet_balance < 0 ? ` ${-(supplier.wallet_balance)} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
+                                                ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
+                                                ${supplier.wallet_balance < 0 ? ` ${-(supplier.wallet_balance)} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবেন` : ''}
                                                 ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
                                             </span>
                                         </td>
