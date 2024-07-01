@@ -40,7 +40,6 @@
         </div>
     </div>
 
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModalLongScollable" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
@@ -103,8 +102,6 @@
             </div>
         </div>
     </div>
-
-
     {{-- //Edit Modal --}}
     <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
@@ -179,7 +176,7 @@
                 <div class="modal-body">
                     <form id="addBalaceForm" class="addBalaceForm row">
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Balance Amount</label>
+                            <label for="name" class="form-label">Balance Amount <span class="text-danger">*</span></label>
                             <input id="defaultconfig" type="number" class="form-control add_amount"
                                 name="update_balance" type="text" onkeyup="errorRemove(this);"
                                 onblur="errorRemove(this);">
@@ -187,8 +184,16 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Purpose</label>
-                            <input id="defaultconfig" class="form-control " maxlength="39" name="purpose"
-                                type="text">
+                               <select class="form-control" name="purpose" id="">
+                                <option value="investment">Investment</option>
+                                <option value="loan">loan</option>
+                                <option value="borrow">Borrow</option>
+                                <option value="others">Others</option>
+                               </select>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label for="name" class="form-label">Note</label>
+                                <textarea class="form-control" name="note" id="" cols="30" rows="5"></textarea>
                         </div>
                 </div>
                 <div class="modal-footer">

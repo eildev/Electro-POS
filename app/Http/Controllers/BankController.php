@@ -155,6 +155,7 @@ class BankController extends Controller
             $bank->opening_balance = $bank->opening_balance + $request->update_balance;
             $bank->update_balance =  $request->update_balance;
             $bank->purpose = $request->purpose;
+            $bank->note = $request->note;
             $bank->save();
 
             $accountTransaction = new AccountTransaction;
