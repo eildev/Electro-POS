@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('debit', 12, 2)->nullable()->comment('Submit Salary');
             $table->decimal('creadit', 12, 2)->nullable()->comment('Employee Salary on Employee Salary Table');
             $table->decimal('balance', 12, 2)->comment('creadit - debit');
-            $table->integer('payment_method');
+            $table->bigInteger('payment_method');
             $table->text('note')->nullable();
             $table->timestamps();
         });
