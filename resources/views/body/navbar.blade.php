@@ -348,7 +348,6 @@
 @endphp
 <script>
     const darkMode = "{{ $mode->dark_mode }}";
-    console.log(darkMode);
     const searchResult = document.querySelector('.search_result');
 
     if (darkMode == 1) {
