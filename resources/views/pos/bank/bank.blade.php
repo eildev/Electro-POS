@@ -104,7 +104,38 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal add balance -->
+    <div class="modal fade" id="bank_money_add" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Balane</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm" class="addBalaceForm row">
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Balance Amount</label>
+                            <input id="defaultconfig" type="number" class="form-control edit_bank_name" maxlength="100" name="balance_amount"
+                                type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger bank_name_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Purpose</label>
+                            <input id="defaultconfig" class="form-control edit_branch_name" maxlength="39"
+                                name="purpose" type="text">
+                         </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary add_balance">Add Balace</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{-- //Edit Modal --}}
     <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -166,7 +197,6 @@
             </div>
         </div>
     </div>
-
     <script>
         // error remove
         function errorRemove(element) {
@@ -251,6 +281,9 @@
                                     <td>${bank.opening_balance ?? 0}</td>
                                     <td>${totalBalance}</td>
                                     <td>
+                                        <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+                                              <i class="fas fa-money-bill"></i>
+                                        </a>
                                         <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
@@ -279,6 +312,44 @@
 
             bankView();
 
+            //Add Balance
+
+            $('.add_balance').click(function(e) {
+                e.preventDefault();
+                // alert('ok');
+                let id = $(this).val();
+                alert(id);
+                // console.log(id);
+                let formData = new FormData($('.addBalaceForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: `/bank/balane/add/${id}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            // $('#edit').modal('hide');
+                            // $('.editBankForm')[0].reset();
+                            // bankView();
+                            toastr.success(res.message);
+                        } else {
+                            if (res.error.name) {
+                                showError('.edit_bank_name', res.error.name);
+                            }
+                            if (res.error.branch_name) {
+                                showError('.edit_branch_name', res.error.branch_name);
+                            }
+
+                        }
+                    }
+                });
+            })//end
             // edit Unit
             $(document).on('click', '.bank_edit', function(e) {
                 e.preventDefault();

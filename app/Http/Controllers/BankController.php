@@ -136,4 +136,8 @@ class BankController extends Controller
             'message' => 'Bank Deleted Successfully',
         ]);
     }
+    //Bank balance Add
+    public function BankBalaneAdd(Request $request ,$id){
+
+    }
 }
