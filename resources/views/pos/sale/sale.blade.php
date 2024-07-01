@@ -390,8 +390,6 @@
             }
         }
 
-
-
         // define warranty period
         $(document).on('click', '#warranty_status', function() {
             if ($(this).is(':checked')) {
@@ -401,19 +399,19 @@
             }
         });
 
-        // Barcode Related
+        //  jquery redy function 
         $(document).ready(function() {
+            // Barcode Focused
             $('.barcode_input').focus();
-            // var currentDate = new Date().toISOString().split('T')[0];
-            // $('.purchase_date').val(currentDate);
-            // show error
+
+            // showError Function 
             function showError(name, message) {
                 $(name).css('border-color', 'red');
                 $(name).focus();
                 $(`${name}_error`).show().text(message);
             }
 
-            // generateInvoice
+            // generate Invoice number
             function generateInvoice() {
                 let invoice_number = '{{ rand(123456, 99999) }}';
                 $('.generate_invoice').val(invoice_number);
@@ -434,7 +432,7 @@
                         if (products.length > 0) {
                             $('.view_product').append(
                                 `<option selected disabled>Select Product</option>`
-                                );
+                            );
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
                                     `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
@@ -666,7 +664,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>

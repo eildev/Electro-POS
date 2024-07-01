@@ -1,6 +1,5 @@
 <style>
     .search_result {
-        background-color: #c7f1ff;
         max-height: 400px;
         overflow-y: scroll;
         width: 83%;
@@ -11,6 +10,14 @@
         /* border-style: solid; */
         /* border-color: #00a9f1; */
         box-shadow: 1px 1px 3px gray;
+    }
+
+    .search_result.dark {
+        background-color: #c7f1ff;
+    }
+
+    .search_result.light {
+        background-color: #00a9f1;
     }
 
     /* Scroll bar Style  */
@@ -44,7 +51,7 @@
                 {{-- <div class="input-group-text">
                     <i data-feather="search"></i>
                 </div> --}}
-                <input type="text" style="border: 1px solid #00a9f1" class="form-control" id="global_search"
+                <input type="text" style="border: 1px solid #00a9f1" class="form-control py-2" id="global_search"
                     placeholder="Search here..." autocomplete="off">
             </div>
         </div>
@@ -209,8 +216,9 @@
                     </div>
                 </div>
             </li> --}}
+
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button"
+                <a class="nav-link dropdown-toggle my_nav" href="#" id="notificationDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i data-feather="bell"></i>
                     <div class="indicator">
@@ -287,7 +295,7 @@
                 $user = Illuminate\Support\Facades\Auth::user();
             @endphp
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                <a class="nav-link dropdown-toggle my_nav" href="#" id="profileDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img class="wd-30 ht-30 rounded-circle"
                         src="{{ $user->photo ? asset('uploads/profile/' . $user->photo) : asset('assets/images/default-user.svg') }}"
@@ -335,3 +343,17 @@
         </ul>
     </div>
 </nav>
+@php
+    $mode = App\models\PosSetting::all()->first();
+@endphp
+<script>
+    const darkMode = "{{ $mode->dark_mode }}";
+    console.log(darkMode);
+    const searchResult = document.querySelector('.search_result');
+
+    if (darkMode == 1) {
+        searchResult.classList.add('dark');
+    } else {
+        searchResult.classList.add('light');
+    }
+</script>
