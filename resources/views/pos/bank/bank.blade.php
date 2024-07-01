@@ -26,7 +26,7 @@
                                     <th>Manager/Owner Name</th>
                                     <th>Phone Number</th>
                                     <th>Account</th>
-                                    <th>Opening Balance</th>
+                                    {{-- <th>Opening Balance</th> --}}
                                     <th>Balance</th>
                                     <th>Action</th>
                                 </tr>
@@ -39,7 +39,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModalLongScollable" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
@@ -103,15 +102,13 @@
             </div>
         </div>
     </div>
-
-
     {{-- //Edit Modal --}}
     <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Unit</h5>
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Edit Bank Info</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                 </div>
                 <div class="modal-body">
@@ -179,7 +176,7 @@
                 <div class="modal-body">
                     <form id="addBalaceForm" class="addBalaceForm row">
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Balance Amount</label>
+                            <label for="name" class="form-label">Balance Amount <span class="text-danger">*</span></label>
                             <input id="defaultconfig" type="number" class="form-control add_amount"
                                 name="update_balance" type="text" onkeyup="errorRemove(this);"
                                 onblur="errorRemove(this);">
@@ -187,8 +184,16 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Purpose</label>
-                            <input id="defaultconfig" class="form-control " maxlength="39" name="purpose"
-                                type="text">
+                               <select class="form-control" name="purpose" id="">
+                                <option value="investment">Investment</option>
+                                <option value="loan">loan</option>
+                                <option value="borrow">Borrow</option>
+                                <option value="others">Others</option>
+                               </select>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label for="name" class="form-label">Note</label>
+                                <textarea class="form-control" name="note" id="" cols="30" rows="5"></textarea>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -273,18 +278,26 @@
                                     <td>${bank.manager_name ?? ""}</td>
                                     <td>${bank.phone_number ?? 0}</td>
                                     <td>${bank.account ?? 0}</td>
-                                    <td>${bank.opening_balance ?? 0}</td>
+
                                     <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
-                                        <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
-                                              <i class="fas fa-money-bill"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-danger btn-icon bank_delete" data-id=${bank.id}>
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </a>
+                                        <div class="dropdown">
+                                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Manage
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <a href="#" class="btn btn-sm btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+                                                            <i class="fas fa-money-bill"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-sm btn-danger btn-icon bank_delete" data-id=${bank.id}>
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </a>
+                                    </div>
+                                    </div>
                                     </td>
                                 `;
                                 $('.showData').append(tr);
@@ -442,7 +455,6 @@
                 $('.add_balance').val(id);
 
             })
-
 
             //Add Balance
             $('.add_balance').click(function(e) {

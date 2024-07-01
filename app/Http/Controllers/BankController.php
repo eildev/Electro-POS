@@ -145,7 +145,6 @@ class BankController extends Controller
     //Bank balance Add
     public function BankBalaneAdd(Request $request, $id)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'update_balance' => 'required',
         ]);
@@ -162,6 +161,7 @@ class BankController extends Controller
             $accountTransaction->branch_id =  Auth::user()->branch_id;
             $accountTransaction->purpose =  'Add Bank Balance';
             $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->note =  $request->note;
             $accountTransaction->credit = $request->update_balance;
             $oldBalance = AccountTransaction::where('account_id', $id)->latest('created_at')->first();
             $accountTransaction->balance = $oldBalance->balance + $request->update_balance;
