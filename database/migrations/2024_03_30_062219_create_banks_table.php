@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('account');
             $table->string('email', 200)->nullable();
             $table->decimal('opening_balance', 12, 2)->default(0);
+            $table->decimal('update_balance', 12, 2)->default(0);
+            $table->text('purpose')->nullable();
             $table->timestamps();
         });
     }

@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 // use Validator;
 use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\alert;
+
 class BankController extends Controller
 {
     private $bankrepo;
@@ -138,6 +140,35 @@ class BankController extends Controller
     }
     //Bank balance Add
     public function BankBalaneAdd(Request $request ,$id){
+        $validator = Validator::make($request->all(), [
+            'update_balance' => 'required',
+        ]);
 
+        if ($validator->passes()) {
+            $bank = Bank::findOrFail($id);
+            $bank->opening_balance = $bank->opening_balance + $request->update_balance;
+            $bank->update_balance =  $request->update_balance;
+            $bank->purpose = $request->purpose;
+            $bank->save();
+
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->purpose =  'Update Bank Balance';
+            $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->debit = $request->update_balance;
+            $oldBalance = AccountTransaction::where('account_id', $id)->latest('created_at')->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->update_balance;
+            $accountTransaction->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Bank Save Successfully',
+            ]);
+        } else {
+            return response()->json([
+                'status' => '500',
+                'error' => $validator->messages()
+            ]);
+        }
     }
 }

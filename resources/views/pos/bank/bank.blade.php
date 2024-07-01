@@ -114,18 +114,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="signupForm" class="addBalaceForm row">
+                    <form id="addBalaceForm" class="addBalaceForm row">
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Balance Amount</label>
-                            <input id="defaultconfig" type="number" class="form-control edit_bank_name" maxlength="100" name="balance_amount"
-                                type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
-                            <span class="text-danger bank_name_error"></span>
+                            <input id="defaultconfig" type="number" class="form-control add_balance" maxlength="100"
+                                name="update_balance" type="text">
+                            <span class="text-danger add_balance_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Purpose</label>
-                            <input id="defaultconfig" class="form-control edit_branch_name" maxlength="39"
+                            <input id="defaultconfig" class="form-control " maxlength="39"
                                 name="purpose" type="text">
-                         </div>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -256,7 +256,7 @@
                     method: 'GET',
                     success: function(res) {
                         const banks = res.data;
-                        console.log(banks);
+                        // console.log(banks);
                         $('.showData').empty();
                         if (banks.length > 0) {
                             $.each(banks, function(index, bank) {
@@ -309,47 +309,11 @@
                     }
                 });
             }
-
             bankView();
 
-            //Add Balance
 
-            $('.add_balance').click(function(e) {
-                e.preventDefault();
-                // alert('ok');
-                let id = $(this).val();
-                alert(id);
-                // console.log(id);
-                let formData = new FormData($('.addBalaceForm')[0]);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    url: `/bank/balane/add/${id}`,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(res) {
-                        if (res.status == 200) {
-                            // $('#edit').modal('hide');
-                            // $('.editBankForm')[0].reset();
-                            // bankView();
-                            toastr.success(res.message);
-                        } else {
-                            if (res.error.name) {
-                                showError('.edit_bank_name', res.error.name);
-                            }
-                            if (res.error.branch_name) {
-                                showError('.edit_branch_name', res.error.branch_name);
-                            }
 
-                        }
-                    }
-                });
-            })//end
+
             // edit Unit
             $(document).on('click', '.bank_edit', function(e) {
                 e.preventDefault();
@@ -471,6 +435,49 @@
                                 }
                             }
                         });
+                    }
+                });
+            })
+
+
+            // add id in bank modal
+            $(document).on('click', '.bank_money_add', function(e) {
+                e.preventDefault();
+                let id = this.getAttribute('data-id');
+                $('.add_balance').val(id);
+
+            })
+
+
+            //Add Balance
+            $('.add_balance').click(function(e) {
+                e.preventDefault();
+                let id = $(this).val();
+                // console.log(id);
+                let formData = new FormData($('#addBalaceForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: `/bank/balane/add/${id}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            $('.bank_money_add').modal('hide');
+                            $('#addBalaceForm')[0].reset();
+                            bankView();
+                            toastr.success(res.message);
+                        } else {
+                            if (res.error.name) {
+                                showError('.add_balance', res.error.name);
+                            }
+
+                        }
                     }
                 });
             })
