@@ -27,7 +27,7 @@
                                     <th>Phone Number</th>
                                     <th>Account</th>
                                     <th>Opening Balance</th>
-                                    <th>Current Balance</th>
+                                    <th>Balance</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -104,37 +104,7 @@
         </div>
     </div>
 
-    <!-- Modal add balance -->
-    <div class="modal fade" id="bank_money_add" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Balane</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addBalaceForm" class="addBalaceForm row">
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Balance Amount</label>
-                            <input id="defaultconfig" type="number" class="form-control add_balance" maxlength="100"
-                                name="update_balance" type="text">
-                            <span class="text-danger add_balance_error"></span>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Purpose</label>
-                            <input id="defaultconfig" class="form-control " maxlength="39"
-                                name="purpose" type="text">
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary add_balance">Add Balace</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
+
     {{-- //Edit Modal --}}
     <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
@@ -197,6 +167,38 @@
             </div>
         </div>
     </div>
+    <!-- Modal add balance -->
+    <div class="modal fade" id="bank_money_add" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Balane</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBalaceForm" class="addBalaceForm row">
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Balance Amount</label>
+                            <input id="defaultconfig" type="number" class="form-control add_amount"
+                                name="update_balance" type="text" onkeyup="errorRemove(this);"
+                                onblur="errorRemove(this);">
+                            <span class="text-danger add_amount_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Purpose</label>
+                            <input id="defaultconfig" class="form-control " maxlength="39" name="purpose"
+                                type="text">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary add_balance">Add Balace</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         // error remove
         function errorRemove(element) {
@@ -205,6 +207,7 @@
                 $(element).css('border-color', 'green');
             }
         }
+
         $(document).ready(function() {
             // show error
             function showError(name, message) {
@@ -279,7 +282,7 @@
                                     <td>${bank.phone_number ?? 0}</td>
                                     <td>${bank.account ?? 0}</td>
                                     <td>${bank.opening_balance ?? 0}</td>
-                                    <td>${totalBalance}</td>
+                                    <td>${totalBalance.toFixed(2)}</td>
                                     <td>
                                         <a href="#" class="btn btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
                                               <i class="fas fa-money-bill"></i>
@@ -468,17 +471,13 @@
                     contentType: false,
                     success: function(res) {
                         if (res.status == 200) {
-                            $('.bank_money_add').modal('hide');
+                            $('#bank_money_add').modal('hide');
                             $('#addBalaceForm')[0].reset();
                             bankView();
                             toastr.success(res.message);
                         } else {
-                            if (res.error.name) {
-<<<<<<< HEAD
-                                showError('.add_balance', res.error.name);
-=======
-                                showError('.edit_bank_name', res.error.name);
->>>>>>> eda2087ba0188332ba5c88fa17ab4397b7d8d3fb
+                            if (res.error.update_balance) {
+                                showError('.add_amount', res.error.update_balance);
                             }
 
                         }

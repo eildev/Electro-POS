@@ -139,7 +139,9 @@ class BankController extends Controller
         ]);
     }
     //Bank balance Add
-    public function BankBalaneAdd(Request $request ,$id){
+    public function BankBalaneAdd(Request $request, $id)
+    {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'update_balance' => 'required',
         ]);
@@ -153,16 +155,16 @@ class BankController extends Controller
 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Update Bank Balance';
+            $accountTransaction->purpose =  'Add Bank Balance';
             $accountTransaction->account_id =  $bank->id;
-            $accountTransaction->debit = $request->update_balance;
+            $accountTransaction->credit = $request->update_balance;
             $oldBalance = AccountTransaction::where('account_id', $id)->latest('created_at')->first();
             $accountTransaction->balance = $oldBalance->balance + $request->update_balance;
             $accountTransaction->save();
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Bank Save Successfully',
+                'message' => 'Add Money Successfully',
             ]);
         } else {
             return response()->json([
