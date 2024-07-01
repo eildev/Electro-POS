@@ -255,7 +255,7 @@
            console.log(data);
             $('#account-details').text('Name: ' + data.info.name);
             $('#due_invoice_count').text('Due Invoice Count: '+data.count);
-            $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
+            // $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
             $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
             $('#total_due').text('Total Due: '+data.info.total_payable);
         },

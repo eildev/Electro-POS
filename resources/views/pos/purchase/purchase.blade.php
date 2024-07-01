@@ -418,7 +418,6 @@
             supplierView();
 
             //Supplier Data find
-            //Previous Due Show Data
             function fetchSupplierDetails(supplierId) {
                 $.ajax({
                     url: `/supplier/details/${supplierId}`,
@@ -426,7 +425,11 @@
                     success: function(res) {
                         const supplier = res.data;
                         // console.log(supplier)
-                        $('.previous_due').text(supplier.wallet_balance);
+                        if (supplier.wallet_balance > 0) {
+                            $('.previous_due').text(supplier.wallet_balance);
+                        } else {
+                            $('.previous_due').text(-(supplier.wallet_balance));
+                        }
                     }
                 });
             } //
