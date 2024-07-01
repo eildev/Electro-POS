@@ -19,5 +19,4 @@ class ReturnItem extends Model
     {
         return $this->belongsTo(Returns::class);
     }
-
 }

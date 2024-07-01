@@ -1,5 +1,5 @@
 <style>
-    .search_result{
+    .search_result {
         background-color: #c7f1ff;
         max-height: 400px;
         overflow-y: scroll;
@@ -13,26 +13,26 @@
         box-shadow: 1px 1px 3px gray;
     }
 
-     /* Scroll bar Style  */
+    /* Scroll bar Style  */
     /* width */
-::-webkit-scrollbar {
-  width: 7px;
-}
+    ::-webkit-scrollbar {
+        width: 7px;
+    }
 
-/* Track */
-::-webkit-scrollbar-track {
-  /* box-shadow: inset 0 0 5px grey;
+    /* Track */
+    ::-webkit-scrollbar-track {
+        /* box-shadow: inset 0 0 5px grey;
    */
 
-  box-shadow: inset 0 0 5px transparent;
-  border-radius: 10px;
-}
+        box-shadow: inset 0 0 5px transparent;
+        border-radius: 10px;
+    }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #00a9f1;
-  border-radius: 10px;
-}
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #00a9f1;
+        border-radius: 10px;
+    }
 </style>
 <nav class="navbar">
     <a href="#" class="sidebar-toggler">
@@ -44,7 +44,8 @@
                 {{-- <div class="input-group-text">
                     <i data-feather="search"></i>
                 </div> --}}
-                <input type="text" style="border: 1px solid #00a9f1" class="form-control" id="global_search" placeholder="Search here..." autocomplete="off">
+                <input type="text" style="border: 1px solid #00a9f1" class="form-control" id="global_search"
+                    placeholder="Search here..." autocomplete="off">
             </div>
         </div>
         <div class="search_result">
@@ -282,13 +283,14 @@
                     </div>
                 </div>
             </li>
-                @php
-                    $user = Illuminate\Support\Facades\Auth::user();
-                @endphp
+            @php
+                $user = Illuminate\Support\Facades\Auth::user();
+            @endphp
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="wd-30 ht-30 rounded-circle" src="{{ $user->photo ? asset('uploads/profile/' . $user->photo) : asset('assets/images/default-user.svg') }}"
+                    <img class="wd-30 ht-30 rounded-circle"
+                        src="{{ $user->photo ? asset('uploads/profile/' . $user->photo) : asset('assets/images/default-user.svg') }}"
                         alt="profile">
                 </a>
 
@@ -296,7 +298,8 @@
                 <div class="dropdown-menu p-0" aria-labelledby="profileDropdown">
                     <div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
                         <div class="mb-3">
-                            <img class="wd-80 ht-80 rounded-circle" src="{{ $user->photo ? asset('uploads/profile/' . $user->photo) : asset('assets/images/default-user.svg') }}"
+                            <img class="wd-80 ht-80 rounded-circle"
+                                src="{{ $user->photo ? asset('uploads/profile/' . $user->photo) : asset('assets/images/default-user.svg') }}"
                                 alt="">
                         </div>
                         <div class="text-center">
@@ -306,13 +309,13 @@
                     </div>
                     <ul class="list-unstyled p-1">
                         <li class="dropdown-item py-2">
-                            <a href="{{route('user.profile')}}" class="text-body ms-0">
+                            <a href="{{ route('user.profile') }}" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="user"></i>
                                 <span>Profile</span>
                             </a>
                         </li>
                         <li class="dropdown-item py-2">
-                            <a href="{{route('user.change.password')}}" class="text-body ms-0">
+                            <a href="{{ route('user.change.password') }}" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="repeat"></i>
                                 <span>Change Password</span>
                             </a>
