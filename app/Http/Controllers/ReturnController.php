@@ -14,20 +14,30 @@ use App\Models\SaleItem;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-// use Validator;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ReturnController extends Controller
 {
     public function Return($id)
     {
         $sale = Sale::findOrFail($id);
-        return view('pos.return.return', compact('sale'));
+        return view('pos.return.return-invoice', compact('sale'));
+    }
+    public function ReturnItems($id)
+    {
+        $sales = SaleItem::findOrFail($id);
+        $sales->load('product');
+        // dd($sales);
+        return response()->json([
+                    'status' => '200',
+                    'sale_items' => $sales,
+                ]);
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         // $validator = Validator::make($request->all(), [
         //     'customerId' => 'required',
         //     'returnedProducts' => 'required',
@@ -250,3 +260,95 @@ class ReturnController extends Controller
         return view('pos.return.return-invoice', compact('return'));
     }
 }
+
+
+
+
+// namespace App\Http\Controllers;
+
+// use Illuminate\Http\Request;
+// use App\Models\Return;
+// use App\Models\ReturnDetail;
+// use App\Models\Invoice;
+// use App\Models\Product;
+// use Illuminate\Support\Facades\DB;
+
+// class ReturnController extends Controller
+// {
+//     public function initiateReturn(Request $request)
+//     {
+//         $validated = $request->validate([
+//             'invoice_id' => 'required|exists:invoices,id',
+//             'products' => 'required|array',
+//             'products.*.product_id' => 'required|exists:products,id',
+//             'products.*.quantity' => 'required|integer|min:1',
+//             'return_reason' => 'required|string',
+//             'return_type' => 'required|string|in:refund,exchange',
+//             'new_product_id' => 'nullable|exists:products,id',
+//             'additional_payment' => 'nullable|numeric|min:0',
+//         ]);
+
+//         DB::beginTransaction();
+//         try {
+//             $return = Return::create([
+//                 'invoice_id' => $request->invoice_id,
+//                 'return_date' => now(),
+//                 'return_reason' => $request->return_reason,
+//                 'return_type' => $request->return_type,
+//                 'processed_by' => auth()->id(),
+//             ]);
+
+//             foreach ($request->products as $product) {
+//                 $refundAmount = $this->calculateRefund($request->invoice_id, $product['product_id'], $product['quantity']);
+//                 ReturnDetail::create([
+//                     'return_id' => $return->id,
+//                     'product_id' => $product['product_id'],
+//                     'quantity' => $product['quantity'],
+//                     'refund_amount' => $refundAmount,
+//                     'new_product_id' => $request->new_product_id,
+//                     'additional_payment' => $request->additional_payment,
+//                 ]);
+
+//                 // Process return based on type
+//                 if ($request->return_type == 'refund') {
+//                     $this->processRefund($product['product_id'], $product['quantity'], $refundAmount);
+//                 } elseif ($request->return_type == 'exchange') {
+//                     $this->processExchange($product['product_id'], $product['quantity'], $request->new_product_id, $refundAmount, $request->additional_payment);
+//                 }
+//             }
+
+//             DB::commit();
+//             return response()->json(['status' => 'Return processed successfully']);
+//         } catch (\Exception $e) {
+//             DB::rollBack();
+//             return response()->json(['error' => 'Error processing return: ' . $e->getMessage()], 500);
+//         }
+//     }
+
+//     protected function calculateRefund($invoiceId, $productId, $quantity)
+//     {
+//         // Logic to calculate the refund amount based on the product and quantity
+//         $product = Product::find($productId);
+//         return $product->price * $quantity;
+//     }
+
+//     protected function processRefund($productId, $quantity, $refundAmount)
+//     {
+//         // Logic to process the refund, update inventory, and financial records
+//         $product = Product::find($productId);
+//         $product->stock += $quantity;
+//         $product->save();
+//     }
+
+//     protected function processExchange($productId, $quantity, $newProductId, $refundAmount, $additionalPayment)
+//     {
+//         // Logic to process the exchange, update inventory, and financial records
+//         $product = Product::find($productId);
+//         $product->stock += $quantity;
+//         $product->save();
+
+//         $newProduct = Product::find($newProductId);
+//         $newProduct->stock -= $quantity;
+//         $newProduct->save();
+//     }
+// }

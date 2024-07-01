@@ -413,7 +413,7 @@
                 $(`${name}_error`).show().text(message);
             }
 
-            // generateInvoice 
+            // generateInvoice
             function generateInvoice() {
                 let invoice_number = '{{ rand(123456, 99999) }}';
                 $('.generate_invoice').val(invoice_number);
@@ -430,11 +430,11 @@
                         // console.log(res);
                         const products = res.products;
                         $('.view_product').empty();
-                        // Append the disabled "Select Product" option
-                        $('.view_product').append(
-                            `<option selected disabled>Select Product</option>`
-                        );
+
                         if (products.length > 0) {
+                            $('.view_product').append(
+                                `<option selected disabled>Select Product</option>`
+                                );
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
                                     `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
@@ -505,7 +505,7 @@
                 });
             })
 
-            // via Product Calculation 
+            // via Product Calculation
             function viaProductCalculation() {
                 let sellPrice = parseFloat($('.sell_price').val());
                 let costPrice = parseFloat($('.cost_price').val()) || 1;
@@ -525,7 +525,7 @@
                 viaProductCalculation();
             })
 
-            // via sell due 
+            // via sell due
             $(document).on('keyup', '.via_paid', function() {
                 let viaTotalPay = parseFloat($('.via_total_pay').val());
                 let paid = parseFloat($(this).val()) || 0;

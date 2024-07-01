@@ -14,9 +14,6 @@ class ReturnItem extends Model
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
-    protected $fillable = [
-        'return_id', 'product_id', 'quantity', 'refund_amount', 'new_product_id', 'additional_payment'
-    ];
 
     public function return()
     {

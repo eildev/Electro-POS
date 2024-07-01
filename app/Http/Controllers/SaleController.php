@@ -62,7 +62,7 @@ class SaleController extends Controller
             $customer->save();
             return response()->json([
                 'status' => 200,
-                'message' => 'successfully save',
+                'message' => 'Successfully Save',
             ]);
         } else {
             return response()->json([
