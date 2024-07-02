@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('qty');
             $table->decimal('sub_total', 12, 2);
             $table->decimal('total_purchase_cost', 12, 2)->nullable();
+            $table->decimal('total_profit', 12, 2)->nullable();
             $table->enum('sell_type', ['via sell', 'normal sell']);
             $table->timestamps();
         });

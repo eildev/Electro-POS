@@ -47,10 +47,10 @@
                             data-bs-target="#paymentModal" data-id="{{ $data->id }}"><i
                                 class="fa-solid fa-credit-card me-2"></i> Payment</a>
                         @endif --}}
-                        @if (Auth::user()->can('purchase.edit'))
+                        {{-- @if (Auth::user()->can('purchase.edit'))
                             <a class="dropdown-item" href="{{ route('purchase.edit', $data->id) }}"><i
                                     class="fa-solid fa-pen-to-square me-2"></i> Edit</a>
-                        @endif
+                        @endif --}}
                         @if (Auth::user()->can('purchase.delete'))
                             <a class="dropdown-item" id="delete"
                                 href="{{ route('purchase.destroy', $data->id) }}"><i

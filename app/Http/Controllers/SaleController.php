@@ -76,11 +76,13 @@ class SaleController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'customer_id' => 'required',
+            'customer_id' => 'required|numeric',
             'sale_date' => 'required',
             'payment_method' => 'required',
             'paid' => 'required',
             'products' => 'required',
+        ], [
+            'customer_id.numeric' => 'Please Add Customer.',
         ]);
 
         if ($validator->passes()) {
@@ -187,8 +189,11 @@ class SaleController extends Controller
                     $extraItem->save();
                 } else {
                     // If stock is sufficient - -
-                    $items->sub_total = ($product['unit_price'] * $product['quantity']) - $product['product_discount'];
-                    $items->total_purchase_cost = $items2->cost * $product['quantity'];
+                    $productTotal = ($product['unit_price'] * $product['quantity']) - $product['product_discount'];
+                    $total_purchase_cost = $items2->cost * $product['quantity'];
+                    $items->sub_total = $productTotal;
+                    $items->total_purchase_cost = $total_purchase_cost;
+                    $items->total_profit = $productTotal - $total_purchase_cost;
                     $items2->stock -= $product['quantity'];
                     $items2->total_sold += $product['quantity'];
                     $items->save();

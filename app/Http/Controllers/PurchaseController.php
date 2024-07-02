@@ -22,12 +22,8 @@ class PurchaseController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->sub_total - $request->total_payable);
-        // $supplier = Supplier::findOrFail($request->supplier_id);
-        // $supplier->total_receivable = $supplier->total_receivable + $request->sub_total;
-        // $supplier->total_payable = $supplier->total_payable + $request->total_payable;
-        // dd($supplier->wallet_balance - ($request->sub_total - $request->total_payable));
-        // $supplier->wallet_balance = $supplier->wallet_balance - ($request->sub_total - $request->total_payable);
+        // $transaction = Transaction::where('supplier_id', $request->supplier_id)->first();
+        // dd($transaction);
 
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
@@ -112,31 +108,23 @@ class PurchaseController extends Controller
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
                 // get Transaction Model
-                $transaction = Transaction::where('supplier_id', $request->supplier_id)->first();
-                // Transaction table CRUD
-                if ($transaction) {
-                    // Update existing transaction
-                    $transaction->date =   $purchaseDate;
-                    $transaction->payment_type = 'pay';
-                    $transaction->particulars = 'Purchase#' . $purchaseId;
-                    $transaction->credit = $transaction->credit + $request->grand_total;
-                    $transaction->debit = $transaction->debit + $request->total_payable;
-                    $transaction->balance = $transaction->balance + ($request->grand_total - $request->total_payable);
-                    $transaction->payment_method = $request->payment_method;
-                    $transaction->save();
+                $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();
+                $transaction = new Transaction;
+                $transaction->date =   $purchaseDate;
+                $transaction->payment_type = 'pay';
+                $transaction->particulars = 'Purchase#' . $purchaseId;
+                $transaction->supplier_id = $request->supplier_id;
+                $transaction->payment_method = $request->payment_method;
+                if ($lastTransaction) {
+                    $transaction->credit = $lastTransaction->credit + $request->sub_total;
+                    $transaction->debit = $lastTransaction->debit + $request->total_payable;
+                    $transaction->balance = $lastTransaction->balance + ($request->sub_total - $request->total_payable);
                 } else {
-                    // Create new transaction
-                    $transaction = new Transaction;
-                    $transaction->date =   $purchaseDate;
-                    $transaction->payment_type = 'pay';
-                    $transaction->particulars = 'Purchase#' . $purchaseId;
-                    $transaction->supplier_id = $request->supplier_id;
-                    $transaction->credit = $request->grand_total;
+                    $transaction->credit = $request->sub_total;
                     $transaction->debit = $request->total_payable;
-                    $transaction->balance = $request->grand_total - $request->total_payable;
-                    $transaction->payment_method = $request->payment_method;
-                    $transaction->save();
+                    $transaction->balance = $request->sub_total - $request->total_payable;
                 }
+                $transaction->save();
 
                 // Supplier Crud
                 $supplier = Supplier::findOrFail($request->supplier_id);
