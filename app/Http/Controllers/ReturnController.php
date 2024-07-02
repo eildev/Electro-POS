@@ -30,9 +30,9 @@ class ReturnController extends Controller
         $sales->load('product');
         // dd($sales);
         return response()->json([
-                    'status' => '200',
-                    'sale_items' => $sales,
-                ]);
+            'status' => '200',
+            'sale_items' => $sales
+        ]);
     }
 
     public function store(Request $request)
@@ -42,34 +42,65 @@ class ReturnController extends Controller
         //     'customerId' => 'required',
         //     'returnedProducts' => 'required',
         // ]);
-        // if ($validator->passes()) {
-        $productCost = 0;
-        $returnProducts = $request->returnedProducts;
-        $totalQty = 0;
-        $productTotal = 0;
-        $totalDiscount = 0;
-        foreach ($returnProducts as $returnProduct) {
-            $items = SaleItem::findOrFail($returnProduct['id']);
-            $product = Product::findOrFail($items->product_id);
-            $productCost += $product->cost;
-            $totalQty += $items->qty;
-            $productTotal += $product->price;
-            $totalDiscount += $returnProduct['discount'];
+        if ($validator->passes()) {
+
+            // "sale_id" => "15"
+            // "customer_id" => "1"
+            // "return_date" => "01-Jul-2024"
+            // "formattedReturnDate" => "2024-07-01 00:00:00"
+            // "refund_amount" => "480"
+            // "note" => null
+            // "products" => array:2 [
+            //     0 => array:4 [
+            //     "product_id" => "29"
+            //     "quantity" => "1"
+            //     "unit_price" => "120.00"
+            //     "total_price" => "120.00"
+            //     ]
+            //     1 => array:4 [
+            //     "product_id" => "30"
+            //     "quantity" => "3"
+            //     "unit_price" => "120.00"
+            //     "total_price" => "360"
+            //     ]
+            // ]
+
+            $returns = new Returns;
+
+            $returns->return_invoice_number = rand(123456, 99999);;
+            $returns->sale_id = $request->sale_id;
+            $returns->customer_id = $request->customer_id;
+            $returns->return_date = $request->formattedReturnDate;
+            $returns->refund_amount = $request->refund_amount;
+            $returns->return_reason = $request->note;
+            $returns->status = 1;
+            $returns->processed_by = Auth::user()->id;
+
+
+
+        foreach ($products as $returnItems) {
+            $returns = new ReturnItem;
+            $returnItems->product_id = $request->product_id;
+            $returnItems->quantity = $request->quantity;
+            $returnItems->return_price = $request->unit_price;
+            $returnItems->total_price = $request->total_price;
+            $returnItems->return_profit = '';
+            // $returnItems->return_reason = $request->note;
         }
 
-        if ($totalQty > 0) {
-            $productTotalWithoutDiscount = $productTotal - $totalDiscount;
-            $sale = Sale::findOrFail($request->saleId);
-            $sale->quantity = $sale->quantity - $totalQty;
-            $sale->total = $sale->total - $productTotal;
-            $sale->actual_discount = $sale->actual_discount - $totalDiscount;
-            $sale->change_amount = $sale->change_amount - $productTotalWithoutDiscount;
-            $sale->receivable = $request->grandTotal;
-            $sale->final_receivable = $request->grandTotal;
-            $sale->due = $request->grandTotal - $sale->paid;
-            $sale->total_purchase_cost = $productCost;
-            $sale->profit = $productTotalWithoutDiscount - $productCost;
-        }
+        // if ($totalQty > 0) {
+        //     $productTotalWithoutDiscount = $productTotal - $totalDiscount;
+        //     $sale = Sale::findOrFail($request->saleId);
+        //     $sale->quantity = $sale->quantity - $totalQty;
+        //     $sale->total = $sale->total - $productTotal;
+        //     $sale->actual_discount = $sale->actual_discount - $totalDiscount;
+        //     $sale->change_amount = $sale->change_amount - $productTotalWithoutDiscount;
+        //     $sale->receivable = $request->grandTotal;
+        //     $sale->final_receivable = $request->grandTotal;
+        //     $sale->due = $request->grandTotal - $sale->paid;
+        //     $sale->total_purchase_cost = $productCost;
+        //     $sale->profit = $productTotalWithoutDiscount - $productCost;
+        // }
 
         // $sale->paid = $sale->paid - $request->change_amount;
         // $sale->due =  $sale->due + $request->change_amount;
@@ -182,83 +213,93 @@ class ReturnController extends Controller
         //     $transaction->save();
         // }
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'successfully Replace Products',
-        ]);
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => 'successfully Replace Products',
+        // ]);
         // } else {
         //     return response()->json([
         //         'status' => '500',
         //         'error' => $validator->messages(),
         //     ]);
-        // }
+        }
     }
-    public function storeReturnItem(Request $request)
+
+    public function findReturnedProducts($id)
     {
-        // dd($request->all());
-        $productCost = 0;
-        $productAll = $request->products;
-        foreach ($productAll as $product) {
-            $items = Product::findOrFail($product['product_id']);
-            $productCost += $items->cost;
-        }
-        $saleItem = SaleItem::where('sale_id', $request->sale_id)->where('product_id', $request->id)->latest()->first();
+        $product = Product::findOrFail($id);
 
-        $return = Returns::where('sale_id', $request->sale_id)->first();
-
-        if ($return) {
-            // Record exists, update it
-            $return->customer_id = $request->customer_id;
-            $return->total = $request->total_amount;
-            $return->discount_amount = $request->actual_discount;
-            $return->grand_total = $request->change_amount;
-            $return->created_at = Carbon::now();
-        } else {
-            // Record does not exist, create a new one
-            $return = new Returns;
-            $return->sale_id = $request->sale_id;
-            $return->customer_id = $request->customer_id;
-            $return->total = $request->total_amount;
-            $return->discount_amount = $request->actual_discount;
-            $return->grand_total = $request->change_amount;
-            $return->created_at = Carbon::now();
-        }
-
-        $return->save();
-
-        $returnItems = new ReturnItem;
-        $returnItems->return_id = 0;
-        // $returnItems->sale_item_id = $product['product_id'];
-        $returnItems->product_id = $request->id;
-        $returnItems->quantity = $saleItem->qty;
-        $returnItems->unit_price = $saleItem->rate; // Access 'unit_price' as an array key
-        $returnItems->discount_amount = $saleItem->discount;
-        $returnItems->total = $saleItem->sub_total;
-        $returnItems->save();
-
-        $saleItem->delete();
-
-        return response()->JSON([
+        return response()->json([
             'status' => 200,
-            'message' => 'Successfully returned product',
+            'product' => $product
         ]);
     }
-    public function returnProductsList()
-    {
-        $returns = Returns::get();
-        return view('pos.return.return-view', compact('returns'));
-    }
-    public function returnProductsDelete($id)
-    {
-        $return = Returns::findOrFail($id);
-        $return->delete();
-        return back()->with('message', "Return successfully Deleted");
-    }
-    public function returnProductsInvoice($id)
-    {
-        $return = Returns::findOrFail($id);
-        return view('pos.return.return-invoice', compact('return'));
-    }
+    // public function storeReturnItem(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $productCost = 0;
+    //     $productAll = $request->products;
+    //     foreach ($productAll as $product) {
+    //         $items = Product::findOrFail($product['product_id']);
+    //         $productCost += $items->cost;
+    //     }
+    //     $saleItem = SaleItem::where('sale_id', $request->sale_id)->where('product_id', $request->id)->latest()->first();
+
+    //     $return = Returns::where('sale_id', $request->sale_id)->first();
+
+    //     if ($return) {
+    //         // Record exists, update it
+    //         $return->customer_id = $request->customer_id;
+    //         $return->total = $request->total_amount;
+    //         $return->discount_amount = $request->actual_discount;
+    //         $return->grand_total = $request->change_amount;
+    //         $return->created_at = Carbon::now();
+    //     } else {
+    //         // Record does not exist, create a new one
+    //         $return = new Returns;
+    //         $return->sale_id = $request->sale_id;
+    //         $return->customer_id = $request->customer_id;
+    //         $return->total = $request->total_amount;
+    //         $return->discount_amount = $request->actual_discount;
+    //         $return->grand_total = $request->change_amount;
+    //         $return->created_at = Carbon::now();
+    //     }
+
+    //     $return->save();
+
+    //     $returnItems = new ReturnItem;
+    //     $returnItems->return_id = 0;
+    //     // $returnItems->sale_item_id = $product['product_id'];
+    //     $returnItems->product_id = $request->id;
+    //     $returnItems->quantity = $saleItem->qty;
+    //     $returnItems->unit_price = $saleItem->rate; // Access 'unit_price' as an array key
+    //     $returnItems->discount_amount = $saleItem->discount;
+    //     $returnItems->total = $saleItem->sub_total;
+    //     $returnItems->save();
+
+    //     $saleItem->delete();
+
+    //     return response()->JSON([
+    //         'status' => 200,
+    //         'message' => 'Successfully returned product',
+    //     ]);
+    // }
+    // public function returnProductsList()
+    // {
+    //     $returns = Returns::get();
+    //     return view('pos.return.return-view', compact('returns'));
+    // }
+    // public function returnProductsDelete($id)
+    // {
+    //     $return = Returns::findOrFail($id);
+    //     $return->delete();
+    //     return back()->with('message', "Return successfully Deleted");
+    // }
+    // public function returnProductsInvoice($id)
+    // {
+    //     $return = Returns::findOrFail($id);
+    //     return view('pos.return.return-invoice', compact('return'));
+    // }
 }
 
 
