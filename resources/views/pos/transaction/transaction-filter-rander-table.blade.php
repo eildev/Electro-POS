@@ -4,7 +4,7 @@
             <h6 class="card-title text-info ">Transaction History </h6>
             <div class="table-responsive">
                 <table id="example" class="table">
-                    <thead class="action ">
+                    <thead class="action">
                         <tr>
                             <th>SN</th>
                             <th>Details</th>

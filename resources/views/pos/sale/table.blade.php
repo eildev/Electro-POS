@@ -89,7 +89,7 @@
                                 data-bs-target="#paymentModal" data-id="{{ $data->id }}"><i
                                     class="fa-solid fa-credit-card me-2"></i> Payment</a>
                         @endif --}}
-                        @if (Auth::user()->can('	pos-manage.delete'))
+                        @if (Auth::user()->can('pos-manage.delete'))
                             <a class="dropdown-item" id="delete" href="{{ route('sale.destroy', $data->id) }}"><i
                                     class="fa-solid fa-trash-can me-2"></i>Delete</a>
                         @endif

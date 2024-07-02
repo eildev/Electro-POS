@@ -83,4 +83,8 @@ class ViaSaleController extends Controller
         $viaSale = ViaSale::findOrFail($id);
         return view('pos.via_sale.invoice', compact('viaSale'));
     }
+    public function ViaSaleProductDelete($id){
+        $viaSale = ViaSale::findOrFail($id)->delete();
+        return response()->json(['message' => 'Via Sale deleted successfully.']);
+    }
 }
