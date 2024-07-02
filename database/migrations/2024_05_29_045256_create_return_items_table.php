@@ -16,11 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('return_id');
             $table->unsignedBigInteger('product_id');
             $table->integer('quantity');
-            $table->integer('return_price');
-            $table->integer('product_total');
+            $table->decimal('return_price');
+            $table->decimal('product_total');
+            $table->decimal('return_profit')->nullable();
 
             $table->foreign('return_id')->references('id')->on('returns')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
     }

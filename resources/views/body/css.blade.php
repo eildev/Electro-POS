@@ -82,10 +82,13 @@
     .dt-search {
         float: right;
     }
-    .btn svg{
+
+    .btn svg,
+    .my_nav:hover {
         background: transparent !important;
     }
-    .page-breadcrumb .breadcrumb{
+
+    .page-breadcrumb .breadcrumb {
         padding: 12px;
     }
 </style>

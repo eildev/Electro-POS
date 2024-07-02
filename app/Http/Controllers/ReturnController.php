@@ -37,33 +37,17 @@ class ReturnController extends Controller
 
     public function store(Request $request)
     {
-        dd($request->all());
-        // $validator = Validator::make($request->all(), [
-        //     'customerId' => 'required',
-        //     'returnedProducts' => 'required',
-        // ]);
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'sale_id' => 'required',
+            'customer_id' => 'required',
+            'formattedReturnDate' => 'required',
+            'refund_amount' => 'required',
+        ]);
         if ($validator->passes()) {
 
-            // "sale_id" => "15"
-            // "customer_id" => "1"
-            // "return_date" => "01-Jul-2024"
-            // "formattedReturnDate" => "2024-07-01 00:00:00"
-            // "refund_amount" => "480"
-            // "note" => null
-            // "products" => array:2 [
-            //     0 => array:4 [
-            //     "product_id" => "29"
-            //     "quantity" => "1"
-            //     "unit_price" => "120.00"
-            //     "total_price" => "120.00"
-            //     ]
-            //     1 => array:4 [
-            //     "product_id" => "30"
-            //     "quantity" => "3"
-            //     "unit_price" => "120.00"
-            //     "total_price" => "360"
-            //     ]
-            // ]
+            // $saleItem = SaleItem::Where('sale_id', $request->sale_id)->get();
+            // dd($saleItems);
 
             $returns = new Returns;
 
@@ -72,168 +56,59 @@ class ReturnController extends Controller
             $returns->customer_id = $request->customer_id;
             $returns->return_date = $request->formattedReturnDate;
             $returns->refund_amount = $request->refund_amount;
-            $returns->return_reason = $request->note;
+            $returns->return_reason = $request->note ?? '';
+            $returns->total_return_profit = 0;
             $returns->status = 1;
             $returns->processed_by = Auth::user()->id;
+            // $returns->save();
+
+
+            foreach ($request->products as $returnData) {
+                // dd($returnData['product_id']);
+                $returnItems = new ReturnItem;
+                $returnItems->return_id = $returns->id;
+                $returnItems->product_id = (Integer)$returnData['product_id'];
+                $returnItems->quantity = (Integer)$returnData['quantity'];
+                $returnItems->return_price = (Integer)$returnData['return_price'];
+                $returnItems->product_total = (Integer)$returnData['total_price'];
+
+                $saleItem = SaleItem::findOrFail($returnData['product_id']);
+                $old_subtotal = $saleItem->sub_total;
+                $old_quantity = $saleItem->qty;
+                $avg_selling_price = $old_subtotal / $old_quantity;
+                $actual_total_return_price = $avg_selling_price * $returnData['quantity'];
+                $return_profit = $actual_total_return_price - $returnData['total_price'];
+                // dd($return_profit);
+                $returnItems->return_profit = $return_profit;
+                // $returnItems->return_reason = $request->note;
+                $returnItems->save();
+            }
 
 
 
-        foreach ($products as $returnItems) {
-            $returns = new ReturnItem;
-            $returnItems->product_id = $request->product_id;
-            $returnItems->quantity = $request->quantity;
-            $returnItems->return_price = $request->unit_price;
-            $returnItems->total_price = $request->total_price;
-            $returnItems->return_profit = '';
-            // $returnItems->return_reason = $request->note;
-        }
-
-        // if ($totalQty > 0) {
-        //     $productTotalWithoutDiscount = $productTotal - $totalDiscount;
-        //     $sale = Sale::findOrFail($request->saleId);
-        //     $sale->quantity = $sale->quantity - $totalQty;
-        //     $sale->total = $sale->total - $productTotal;
-        //     $sale->actual_discount = $sale->actual_discount - $totalDiscount;
-        //     $sale->change_amount = $sale->change_amount - $productTotalWithoutDiscount;
-        //     $sale->receivable = $request->grandTotal;
-        //     $sale->final_receivable = $request->grandTotal;
-        //     $sale->due = $request->grandTotal - $sale->paid;
-        //     $sale->total_purchase_cost = $productCost;
-        //     $sale->profit = $productTotalWithoutDiscount - $productCost;
-        // }
-
-        // $sale->paid = $sale->paid - $request->change_amount;
-        // $sale->due =  $sale->due + $request->change_amount;
-        // $sale->profit = $productCost - $request->change_amount;
-        // $sale->quantity = $request->quantity;
-        // if ($sale->total > $request->total_amount) {
-        //     $sale->total = $request->total_amount;
-        // } else {
-        //     $sale->total = $sale->total - $request->total_amount;
-        // }
-        // $sale->discount = $request->discount;
-        // if ($sale->change_amount > $request->total) {
-        //     $sale->change_amount = $request->total;
-        // } else {
-        //     $sale->change_amount = $request->total;
-        // }
-        // $sale->actual_discount = $request->actual_discount;
-        // $sale->tax = $request->tax;
-        // $sale->receivable = $request->change_amount;
-        // // $sale->paid = $request->paid;
-        // $sale->due = $request->due;
-        // if ($request->due < 0) {
-        //     $sale->paid = $request->paid + $request->due;
-        // } else {
-        //     $sale->paid = $request->paid;
-        // }
-        // // $sale->returned = $request->due;
-        // $sale->final_receivable = $request->change_amount;
-        // $sale->payment_method = $request->payment_method;
-        // $sale->profit = $request->change_amount - $productCost;
-        // // dd($productCost);
-        // $sale->total_purchase_cost = $productCost;
-        // $sale->note = $request->note;
-        // $sale->created_at = Carbon::now();
-        // $sale->save();
-
-        // // dd($return->id);
-
-        // $products = $request->products;
-        // foreach ($products as $product) {
-        //     $items = Product::findOrFail($product['product_id']);
-        //     $saleItem = new SaleItem;
-        //     $saleItem->sale_id = $request->sale_id;
-        //     $saleItem->product_id = $product['product_id'];
-        //     $saleItem->qty = $product['quantity'];
-        //     $saleItem->rate = $product['unit_price']; // Access 'unit_price' as an array key
-        //     $saleItem->discount = $product['discount'];
-        //     $saleItem->sub_total = $product['total_price'];
-        //     $saleItem->total_purchase_cost = $items->cost;
-        //     $saleItem->save();
-
-
-        //     $items->stock = $items->stock + $product['quantity'];
-        //     $items->total_sold = $items->total_sold - $product['quantity'];
-        //     $items->save();
-        // }
-
-
-        // $customer = Customer::findOrFail($request->customer_id);
-        // $customer->total_receivable = $customer->total_receivable + $request->change_amount;
-        // $customer->total_payable = $customer->total_payable + $request->paid;
-        // $customer->wallet_balance = $customer->wallet_balance + ($request->change_amount - $request->paid);
-        // $customer->save();
-
-        // // actual Payment
-        // $actualPayment = new ActualPayment;
-        // $actualPayment->branch_id =  Auth::user()->branch_id;
-        // $actualPayment->payment_type =  'receive';
-        // $actualPayment->payment_method =  $request->payment_method;
-        // $actualPayment->customer_id = $request->customer_id;
-        // $actualPayment->amount = $request->paid;
-        // $actualPayment->date = $request->sale_date;
-        // $actualPayment->save();
-
-
-        // // accountTransaction table
-        // $accountTransaction = new AccountTransaction;
-        // $accountTransaction->branch_id =  Auth::user()->branch_id;
-        // $accountTransaction->purpose =  'Withdraw';
-        // $accountTransaction->account_id =  $request->payment_method;
-        // $accountTransaction->credit = $request->paid;
-        // $oldBalance = AccountTransaction::latest()->first();
-        // $accountTransaction->balance = $oldBalance->balance - $request->paid;
-        // $accountTransaction->save();
-
-
-        // $transaction = Transaction::where('customer_id', $request->customer_id)->first();
-
-        // if ($transaction) {
-        //     // Update existing transaction
-        //     $transaction->date =  $request->sale_date;
-        //     $transaction->payment_type = 'receive';
-        //     $transaction->particulars = 'Sale#' . $request->sale_id;
-        //     $transaction->credit = $transaction->credit + $request->change_amount;
-        //     $transaction->debit = $transaction->debit + $request->paid;
-        //     $transaction->balance = $transaction->balance + ($request->change_amount - $request->paid);
-        //     $transaction->payment_method = $request->payment_method;
-        //     $transaction->save();
-        // } else {
-        //     // Create new transaction
-        //     $transaction = new Transaction;
-        //     $transaction->date =  $request->sale_date;
-        //     $transaction->payment_type = 'receive';
-        //     $transaction->particulars = 'Sale#' . $request->sale_id;
-        //     $transaction->customer_id = $request->customer_id;
-        //     $transaction->credit = $request->change_amount;
-        //     $transaction->debit = $request->paid;
-        //     $transaction->balance = $request->change_amount - $request->paid;
-        //     $transaction->payment_method = $request->payment_method;
-        //     $transaction->save();
-        // }
-
-        // return response()->json([
-        //     'status' => 200,
-        //     'message' => 'successfully Replace Products',
-        // ]);
-        // } else {
-        //     return response()->json([
-        //         'status' => '500',
-        //         'error' => $validator->messages(),
-        //     ]);
+            return response()->json([
+                'status' => '200',
+                'message' => 'Peoduct Return successful',
+            ]);
+        }else {
+            return response()->json([
+                'status' => '500',
+                'error' => $validator->messages(),
+            ]);
         }
     }
 
-    public function findReturnedProducts($id)
-    {
-        $product = Product::findOrFail($id);
+    // public function findReturnedProducts($id)
+    // {
+    //     $product = Product::findOrFail($id);
 
-        return response()->json([
-            'status' => 200,
-            'product' => $product
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => 200,
+    //         'product' => $product
+    //     ]);
+    // }
+
+
     // public function storeReturnItem(Request $request)
     // {
     //     // dd($request->all());
@@ -284,11 +159,11 @@ class ReturnController extends Controller
     //         'message' => 'Successfully returned product',
     //     ]);
     // }
-    // public function returnProductsList()
-    // {
-    //     $returns = Returns::get();
-    //     return view('pos.return.return-view', compact('returns'));
-    // }
+    public function returnProductsList()
+    {
+        $returns = Returns::get();
+        return view('pos.return.return-view', compact('returns'));
+    }
     // public function returnProductsDelete($id)
     // {
     //     $return = Returns::findOrFail($id);

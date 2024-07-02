@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 // use Validator;
 use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\alert;
+
 class BankController extends Controller
 {
     private $bankrepo;
@@ -67,8 +69,12 @@ class BankController extends Controller
         $banks = $this->bankrepo->getAllBank();
         $banks->load('accountTransaction');
 
-        // dd($banks);
+        // Add latest transaction to each bank
+        foreach ($banks as $bank) {
+            $bank->latest_transaction = $bank->accountTransaction()->latest()->first();
+        }
 
+        // dd($banks);
         return response()->json([
             "status" => 200,
             "data" => $banks
@@ -135,5 +141,41 @@ class BankController extends Controller
             'status' => 200,
             'message' => 'Bank Deleted Successfully',
         ]);
+    }
+    //Bank balance Add
+    public function BankBalaneAdd(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'update_balance' => 'required',
+        ]);
+
+        if ($validator->passes()) {
+            $bank = Bank::findOrFail($id);
+            // dd($bank->update_balance);
+            $bank->opening_balance = $bank->opening_balance + $request->update_balance;
+            $bank->update_balance =  $request->update_balance;
+            $bank->purpose = $request->purpose;
+            $bank->save();
+
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->purpose =  'Add Bank Balance';
+            $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->note =  $request->note;
+            $accountTransaction->credit = $request->update_balance;
+            $oldBalance = AccountTransaction::where('account_id', $id)->latest('created_at')->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->update_balance;
+            $accountTransaction->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Add Money Successfully',
+            ]);
+        } else {
+            return response()->json([
+                'status' => '500',
+                'error' => $validator->messages()
+            ]);
+        }
     }
 }

@@ -165,7 +165,7 @@ class SaleController extends Controller
                     $items->total_purchase_cost = $items2->cost * $items->qty;
                     // Adjust the remaining quantity and create extra item
                     $extraQuantity = $product['quantity'] - $items2->stock;
-                    $items2->stock = 0;
+                    $items2->stock = $items2->stock - $product['quantity'];
                     $items2->total_sold += $items->qty;
 
                     if ($items->qty > 0) {

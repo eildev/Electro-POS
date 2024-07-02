@@ -551,7 +551,7 @@
                     let row = $(this);
                     // Get values from the current row's elements
 
-                    let product_id = $(this).attr('product-id');;
+                    let product_id =  parseInt($(this).attr('product-id'));
                     let quantity = row.find('input[name="quantity[]"]').val();
                     let return_price = row.find('input[name="return_price[]"]').val();
 
@@ -574,7 +574,6 @@
                     // for purchase table
                     sale_id,
                     customer_id,
-                    return_date,
                     formattedReturnDate,
                     refund_amount,
                     note,
@@ -596,54 +595,10 @@
                     success: function(res) {
                         if (res.status == 200) {
                             toastr.success(res.message);
-                            let id = res.saleId;
-                            // window.location.href = '/sale/print/' + id;
-                            var printFrame = $('#printFrame')[0];
-
-                            if (checkPrintType == 'a4' || checkPrintType == 'a5') {
-                                var printContentUrl = '/sale/invoice/' + id;
-                                $('#printFrame').attr('src', printContentUrl);
-
-                                printFrame.onload = function() {
-                                    printFrame.contentWindow.focus();
-                                    printFrame.contentWindow.print();
-                                    // Redirect after printing
-                                    printFrame.contentWindow.onafterprint = function() {
-                                        window.location.href = "/sale";
-                                    };
-                                };
-                            } else {
-                                var printContentUrl = '/sale/print/' + id;
-                                $('#printFrame').attr('src', printContentUrl);
-
-                                printFrame.onload = function() {
-                                    printFrame.contentWindow.focus();
-                                    printFrame.contentWindow.print();
-                                    // Redirect after printing
-                                    printFrame.contentWindow.onafterprint = function() {
-                                        window.location.href = "/sale";
-                                    };
-                                };
-                            }
-
-                            $(window).off('beforeunload');
-                        } else {
+                            window.location.href = '/return/products/list';
+                        }else {
                             // console.log(res);
-                            if (res.error.customer_id) {
-                                showError('.select-customer', res.error.customer_id);
-                            }
-                            if (res.error.sale_date) {
-                                showError('.purchase_date', res.error.sale_date);
-                            }
-                            if (res.error.payment_method) {
-                                showError('.payment_method', res.error.payment_method);
-                            }
-                            if (res.error.paid) {
-                                showError('.total_payable', res.error.paid);
-                            }
-                            if (res.error.products) {
-                                toastr.warning("Please Select a Product to sell");
-                            }
+                            toastr.warning("Something Went Wrong");
                         }
                     }
                 });

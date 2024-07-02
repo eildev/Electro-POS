@@ -1,7 +1,6 @@
 @extends('master')
 @section('title','| Transaction Invoice')
 @section('admin')
-
 <div class="row" bis_skin_checked="1">
     <div class="col-md-2">
 
@@ -85,26 +84,30 @@
                 <table class="table table-bordered table-plist my-3">
                     <tbody><tr class="bg-primary">
                         <th>Date</th>
-                        <th>Previous Due</th>
+                        {{-- <th>Previous Due</th> --}}
                         <th>Paid</th>
-                        <th>Due/Wallet</th>
+                        <th>Total Due</th>
                     </tr>
                     </tbody><tbody>
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($transaction->date)->format('d F Y') }}</td>
-                            <td>
-                                @if(isset($transaction['customer']['total_payable']))
-                                    {{ $transaction['customer']['total_payable'] }}
-                                @elseif(isset($transaction['supplier']['total_payable']))
-                                    {{ $transaction['supplier']['total_payable'] }}
+                            {{-- <td>
+                                @if($transaction->credit != null && $transaction['customer']['wallet_balance'])
+                                    {{ $transaction->credit - $transaction['customer']['wallet_balance'] }}
+                                @elseif($transaction->debit != null && $transaction['supplier']['wallet_balance'])
+                                    {{$transaction->debit - $transaction['supplier']['wallet_balance'] }}
                                 @endif
-                            </td>
-                            <td>{{ $transaction->debit }}</td>
+                            </td> --}}
+                            <td>@if( $transaction->credit != null)
+                                {{ $transaction->credit }}</td>
+                                @elseif( $transaction->debit != null)
+                                {{ $transaction->debit }}</td>
+                                @endif
                             <td>
-                                @if(isset($transaction['customer']['total_payable']))
-                                    {{ $transaction->debit - $transaction['customer']['total_payable'] }}
+                                @if(isset($transaction['customer']['wallet_balance']))
+                                    {{ $transaction['customer']['wallet_balance'] }}
                                 @elseif(isset($transaction['supplier']['wallet_balance']))
-                                    {{ $transaction->debit - $transaction['supplier']['total_payable'] }}
+                                    {{  $transaction['supplier']['wallet_balance'] }}
                                 @endif
                             </td>
                         </tr>

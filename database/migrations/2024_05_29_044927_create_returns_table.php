@@ -17,8 +17,9 @@ return new class extends Migration
             $table->integer('sale_id');
             $table->integer('customer_id');
             $table->dateTime('return_date');
-            $table->integer('refund_amount');
-            $table->string('return_reason');
+            $table->decimal('refund_amount');
+            $table->string('return_reason')->nullable();
+            $table->decimal('total_return_profit')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->integer('processed_by');
 

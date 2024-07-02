@@ -8,6 +8,8 @@
         </ol>
     </nav>
 
+    {{-- @dd($returns); --}}
+
     <div class="row">
         <div class="col-md-12   grid-margin stretch-card filter_box">
             <div class="card">
@@ -118,9 +120,11 @@
                                     <th>Customer</th>
                                     <th>Items</th>
                                     <th>Return Date</th>
-                                    <th>Discount</th>
-                                    <th>Total</th>
-                                    <th class="id">Action</th>
+                                    <th>Refund Amount</th>
+                                    <th>Return Reason</th>
+                                    <th>Return Profit</th>
+                                    <th>Process By</th>
+
                                 </tr>
                             </thead>
                             <tbody id="showData">
