@@ -9,7 +9,7 @@
                             <th>SN</th>
                             <th>Details</th>
                             <th>Transaction Date & Time</th>
-                            <th>Amount</th>
+                            <th>Transaction Amount</th>
                             <th>Transaction Type</th>
                             <th>Trans. Method</th>
                             <th>Note</th>
@@ -38,7 +38,13 @@
                                     <td>{{ $formatted_date  ?? ''}} <Span style="color:brown">:</Span>
                                         {{ $formatted_time ?? '' }}</td>
 
-                                    <td>{{ $trans->debit }}</td>
+                                    <td>
+                                        @if ($trans->payment_type == 'pay')
+                                        {{ $trans->debit }}
+                                        @elseif($trans->payment_type == 'receive')
+                                        {{ $trans->credit }}
+                                        @endif
+                                    </td>
                                     <td>
                                         @if ($trans->payment_type == 'pay')
                                             <span>Cash Payment</span>
