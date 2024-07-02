@@ -176,7 +176,8 @@
                 <div class="modal-body">
                     <form id="addBalaceForm" class="addBalaceForm row">
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Balance Amount <span class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Balance Amount <span
+                                    class="text-danger">*</span></label>
                             <input id="defaultconfig" type="number" class="form-control add_amount"
                                 name="update_balance" type="text" onkeyup="errorRemove(this);"
                                 onblur="errorRemove(this);">
@@ -184,16 +185,16 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Purpose</label>
-                               <select class="form-control" name="purpose" id="">
+                            <select class="form-control" name="purpose" id="">
                                 <option value="investment">Investment</option>
                                 <option value="loan">loan</option>
                                 <option value="borrow">Borrow</option>
                                 <option value="others">Others</option>
-                               </select>
+                            </select>
                         </div>
                         <div class="mb-3 col-md-12">
                             <label for="name" class="form-label">Note</label>
-                                <textarea class="form-control" name="note" id="" cols="30" rows="5"></textarea>
+                            <textarea class="form-control" name="note" id="" cols="30" rows="5"></textarea>
                         </div>
                 </div>
                 <div class="modal-footer">
@@ -269,7 +270,7 @@
                         if (banks.length > 0) {
                             $.each(banks, function(index, bank) {
                                 // Calculate the sum of account_transaction balances
-                                console.log(bank);
+                                // console.log(bank);
                                 const tr = document.createElement('tr');
                                 tr.innerHTML = `
                                     <td>${index + 1}</td>
@@ -282,22 +283,22 @@
                                     <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
                                         <div class="dropdown">
-                                    <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Manage
-                                    </button>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <a href="#" class="dropdown-item"  class="btn btn-sm btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
-                                                            <i class="fas fa-money-bill"></i>
-                                    Add balance</a>
-                                    <a href="#" class="dropdown-item" class=" btn btn-sm btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    Edit</a>
-                                    <a href="#"  class="dropdown-item bank_delete" data-id=${bank.id}>
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    Delete</a>
-                                    </div>
-                                    </div>
+                                            <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Manage
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <a href="#" class="dropdown-item  open_balance_modal" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+                                                                        <i class="fas fa-money-bill"></i>
+                                                Add balance</a>
+                                                <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                Edit</a>
+                                                <a href="#"  class="dropdown-item bank_delete" data-id=${bank.id}>
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                Delete</a>
+                                            </div>
+                                        </div>
                                     </td>
                                 `;
                                 $('.showData').append(tr);
@@ -449,9 +450,10 @@
 
 
             // add id in bank modal
-            $(document).on('click', '.bank_money_add', function(e) {
+            $(document).on('click', '.open_balance_modal', function(e) {
                 e.preventDefault();
                 let id = this.getAttribute('data-id');
+                // alert(id);
                 $('.add_balance').val(id);
 
             })
