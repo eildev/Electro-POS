@@ -323,6 +323,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/barcode/find/{id}', 'findProductWithBarcode')->name('product.barcode.find');
         Route::get('/sale/product/find/{id}', 'saleProductFind')->name('sale.product.find');
         Route::get('/product/view/sale', 'saleViewProduct');
+
         Route::post('/via/product/add', 'saleViaProductAdd');
     });
     // Transaction related route(n)
@@ -490,6 +491,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/via-sale/get/{id}', 'viaSaleGet')->name('via.sale.get');
         Route::post('/via-sale/payment/{id}', 'viaSalePayment')->name('via.sale.payment');
         Route::get('/via-sale/invoice/{id}', 'viaSaleInvoice')->name('via.sale.invoice');
+        Route::get('/via/sale/delete/{id}', 'ViaSaleProductDelete')->name('via.sale.delete');
     });
 });
 
