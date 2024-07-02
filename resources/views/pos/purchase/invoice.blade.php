@@ -124,7 +124,8 @@
                                             <tr>
                                                 <td class="text-bold-800">Previous Due</td>
                                                 <td class="text-bold-800 text-end">
-                                                    ৳{{ number_format($purchase->paid - $purchase->sub_total, 2) }}</td>
+                                                    ৳{{ number_format($purchase->grand_total - $purchase->sub_total, 2) }}
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td class="text-bold-800">Grand Total</td>

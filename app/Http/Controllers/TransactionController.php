@@ -93,7 +93,7 @@ class TransactionController extends Controller
         $accountTransaction->created_at = Carbon::now();
         $accountTransaction->save();
         $notification = [
-            'message' => 'Transaction Payment Successfull',
+            'message' => 'Transaction Payment Successful',
             'alert-type' => 'info'
         ];
         return redirect()->back()->with($notification);
