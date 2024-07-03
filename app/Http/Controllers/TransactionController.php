@@ -54,7 +54,7 @@ class TransactionController extends Controller
                 // dd($request->account_id);
                 $currentBalance = $supplier->wallet_balance;
                 $currentBalance = $currentBalance ?? 0;
-                $newBalance = floatval($currentBalance) - floatval($request->amount);
+                $newBalance = floatval($currentBalance) + floatval($request->amount);
                 $supplier->wallet_balance = $newBalance;
                 $newPayble = $supplier->total_payable ?? 0;
                 $updatePaybele = floatval($newPayble) + floatval($request->amount);

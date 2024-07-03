@@ -222,8 +222,8 @@
                                         <td>${supplier.name ?? ""}</td>
                                         <td>${supplier.phone ?? ""}</td>
                                         <td>
-                                            <span style="color: ${supplier.total_receivable - supplier.total_payable > 0 ? 'red' : ''};">
-                                                ${supplier.total_receivable - supplier.total_payable > 0 ? supplier.total_receivable - supplier.total_payable : 0}
+                                            <span style="color: ${supplier.wallet_balance < 0 ? 'red' : ''};">
+                                                ${supplier.wallet_balance < 0  ? (-supplier.wallet_balance) : 0}
                                             </span>
                                         </td>
                                         <td>
