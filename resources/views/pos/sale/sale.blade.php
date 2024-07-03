@@ -667,7 +667,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -909,15 +909,17 @@
                         const grand_total = parseFloat($('.grand_total').val());
                         // const grandTotal = $('.grandTotal').val();
                         const customerDue = parseFloat(customer.wallet_balance);
-                        // console.log(customerDue);
+                        // console.log(customer.wallet_balance);
 
                         if (customerDue > 0) {
-                            $('.previous_due').val(customerDue);
-                            let amount = grand_total + customerDue;
-                            $('.grandTotal').val(amount);
-                        } else {
+                            // console.log(`customerDue > 0 : ${customer.wallet_balance}`);
                             $('.grandTotal').val(grand_total);
                             $('.previous_due').val(0);
+                        } else {
+                            // console.log(customer.wallet_balance);
+                            $('.previous_due').val(-customerDue);
+                            let amount = grand_total + (-customerDue);
+                            $('.grandTotal').val(amount);
                         }
                     }
                 })

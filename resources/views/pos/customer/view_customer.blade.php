@@ -37,10 +37,12 @@
                                             <td>{{ $customer->phone ?? '' }}</td>
                                             <td>{{ $customer['branch']['name'] ?? '' }}</td>
                                             <td>
-                                                @if ($customer->wallet_balance > 0)
-                                                    <span class="text-danger">৳ {{ $customer->wallet_balance ?? 0 }}</span>
+                                                {{-- @dd($customer->wallet_balance) --}}
+                                                @if ($customer->wallet_balance < 0)
+                                                    <span class="text-danger">৳
+                                                        {{ -$customer->wallet_balance ?? 0 }}</span>
                                                 @else
-                                                    <span>৳ 0</span>
+                                                    <span>৳ {{ $customer->wallet_balance ?? 0 }}</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -48,13 +50,13 @@
                                                     <span>
                                                         {{ $customer->wallet_balance ?? 0 }}
                                                         <br>
-                                                        আপনি কাস্টমার <br> থেকে পাবেন।
+                                                        আপনার থেকে <br> কাস্টমার পাবেন।
                                                     </span>
                                                 @elseif ($customer->wallet_balance < 0)
                                                     <span>
-                                                        {{ $customer->wallet_balance ?? 0 }}
+                                                        {{ -$customer->wallet_balance ?? 0 }}
                                                         <br>
-                                                        আপনার থেকে <br> কাস্টমার পাবেন।
+                                                        আপনি কাস্টমার <br> থেকে পাবেন।
                                                     </span>
                                                 @else
                                                     <span>

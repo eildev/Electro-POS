@@ -74,7 +74,14 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        // $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+        // $lastTransaction = Transaction::where('customer_id', $request->customer_id)->latest()->first();
+        // if ($lastTransaction) {
+        //     dd('exist' . $lastTransaction);
+        // } else {
+        //     dd('not exist');
+        // }
+
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|numeric',
             'sale_date' => 'required',
@@ -201,11 +208,12 @@ class SaleController extends Controller
 
                 $items2->save();
             }
+
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->total;
             $customer->total_payable = $customer->total_payable + $request->paid;
-            $customer->wallet_balance = $customer->wallet_balance + ($request->total - $request->paid);
+            $customer->wallet_balance = $customer->wallet_balance - ($request->total - $request->paid);
             $customer->save();
 
             // actual Payment
@@ -231,31 +239,25 @@ class SaleController extends Controller
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
 
-            $transaction = Transaction::where('customer_id', $request->customer_id)->first();
-
-            if ($transaction) {
+            $lastTransaction = Transaction::where('customer_id', $request->customer_id)->latest()->first();
+            $transaction = new Transaction;
+            $transaction->date =  $request->sale_date;
+            $transaction->payment_type = 'receive';
+            $transaction->particulars = 'Sale#' . $saleId;
+            $transaction->customer_id = $request->customer_id;
+            $transaction->payment_method = $request->payment_method;
+            if ($lastTransaction) {
                 // Update existing transaction
-                $transaction->date =  $request->sale_date;
-                $transaction->payment_type = 'receive';
-                $transaction->particulars = 'Sale#' . $saleId;
                 $transaction->credit = $transaction->credit + $request->change_amount;
                 $transaction->debit = $transaction->debit + $request->paid;
-                $transaction->balance = $transaction->balance + ($request->change_amount - $request->paid);
-                $transaction->payment_method = $request->payment_method;
-                $transaction->save();
+                $transaction->balance = $lastTransaction->balance + ($request->change_amount - $request->paid);
             } else {
                 // Create new transaction
-                $transaction = new Transaction;
-                $transaction->date =  $request->sale_date;
-                $transaction->payment_type = 'receive';
-                $transaction->particulars = 'Sale#' . $saleId;
-                $transaction->customer_id = $request->customer_id;
                 $transaction->credit = $request->change_amount;
                 $transaction->debit = $request->paid;
                 $transaction->balance = $request->change_amount - $request->paid;
-                $transaction->payment_method = $request->payment_method;
-                $transaction->save();
             }
+            $transaction->save();
 
             return response()->json([
                 'status' => 200,
