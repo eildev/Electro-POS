@@ -362,21 +362,20 @@
 
             // show Product function
             function showAddProduct(product) {
-
                 $('.showData').append(
                     `<tr class="data_row${product.id}" product-id="${product.id}">
                         <td>
                             ${product.product.name}
                         </td>
                         <td>
-                            <input type="number" product-id="${product.id}" class="form-control unit_price product_price${product.id}" id="product_price" name="unit_price[]" readonly value="${product.rate ?? 0}" />
+                            <input type="number" product-id="${product.id}" class="form-control return_price product_price${product.id}" old_price="${product.rate ?? 0}" id="product_price" name="return_price[]" value="${product.rate ?? 0}" />
                         </td>
                         <td>
-                            <input type="number" product-id="${product.id}" maxLength="${product.qty}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="1" />
+                            <input type="number" product-id="${product.id}" maxLength="${product.qty}" old_quantity="${product.qty ?? 0}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="1" />
                         </td>
 
 
-                        <td><input type="number" class="form-control subTotal border-0 productTotal${product.id}" name="total_price[]" id="productTotal" readonly value="${product.rate ?? 0}" /></td>
+                        <td><input type="number" class="form-control subTotal border-0 productTotal${product.id}" old_subtotal="${product.sub_total ?? 0}" name="total_price[]" id="productTotal" readonly value="${product.rate ?? 0}" /></td>
 
                         <td style="padding-top: 20px;">
                             <a href="#" class="btn btn-sm btn-danger btn-icon purchase_delete" style="font-size: 8px; height: 25px; width: 25px;" data-id=${product.id}>
@@ -388,7 +387,7 @@
 
             }
 
-            // // Function to calculate the subtotal for each product
+            // Function to calculate the subtotal for each product
             $(document).on('keyup', '.quantity', function() {
                 let productId = $(this).attr('product-id');
                 let unitPrice = parseFloat($(`.product_price${productId}`).val());
@@ -400,17 +399,21 @@
                     $(this).val(max_quantity);
                     let subTotal = unitPrice * max_quantity;
                     $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
                 } else if (quantity < 1) {
                     toastr.warning('Quantity should not less than 1');
                     $(this).val(1);
                     let subTotal = unitPrice * 1;
                     $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
                 } else {
                     let subTotal = unitPrice * quantity;
                     $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
                 }
 
             });
+
             $(document).on('click', '.quantity', function() {
                 let productId = $(this).attr('product-id');
                 let unitPrice = parseFloat($(`.product_price${productId}`).val());
@@ -436,10 +439,57 @@
                 }
             });
 
+            $(document).on('keyup', '.return_price', function() {
+                let productId = $(this).attr('product-id');
+                let return_price = parseFloat($(this).val());
+                let quantity = parseInt($(`.productQuantity${productId}`).val());
+
+                let old_subtotal = parseInt($(`.productTotal${productId}`).attr('old_subtotal'));
+                let old_quantity = parseInt($(`.productQuantity${productId}`).attr('old_quantity'));
+                let max_return_price = parseInt(old_subtotal) / parseInt(old_quantity);
+
+                if (max_return_price < return_price) {
+
+                    toastr.warning('Return Price should not exceed selling price. Your Selling Price is' + max_return_price);
+                    $(this).val(max_return_price);
+
+                    let subTotal = max_return_price * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+
+                }else{
+                    let subTotal = return_price * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                }
+            });
+            $(document).on('click', '.return_price', function() {
+                let productId = $(this).attr('product-id');
+                let return_price = parseFloat($(this).val());
+                let quantity = parseInt($(`.productQuantity${productId}`).val());
+
+                let old_subtotal = parseInt($(`.productTotal${productId}`).attr('old_subtotal'));
+                let old_quantity = parseInt($(`.productQuantity${productId}`).attr('old_quantity'));
+                let max_return_price = parseInt(old_subtotal) / parseInt(old_quantity);
+
+                if (max_return_price < return_price) {
+
+                    toastr.warning('Return Price should not exceed selling price. Your Selling Price is' + max_return_price);
+                    $(this).val(max_return_price);
+
+                    let subTotal = max_return_price * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+
+                }else{
+                    let subTotal = return_price * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                }
+            });
 
             // Select product
             $(document).on('change', '.product_select', function() {
-                // alert('Select product');
                 let id = $(this).val();
 
                 if ($(`.data_row${id}`).length === 0 && id) {
@@ -449,8 +499,6 @@
                         dataType: 'JSON',
                         success: function(res) {
                             const product = res.sale_items;
-                            // console.log(product);
-                            // const promotion = res.promotion;
                             showAddProduct(product);
                             calculateProductTotal();
                             // updateGrandTotal();
@@ -503,9 +551,9 @@
                     let row = $(this);
                     // Get values from the current row's elements
 
-                    let product_id = $(this).attr('product-id');;
+                    let product_id =  parseInt($(this).attr('product-id'));
                     let quantity = row.find('input[name="quantity[]"]').val();
-                    let unit_price = row.find('input[name="unit_price[]"]').val();
+                    let return_price = row.find('input[name="return_price[]"]').val();
 
                     let total_price = row.find('input[name="total_price[]"]').val();
                     // console.log(productDiscount);
@@ -513,7 +561,7 @@
                     let product = {
                         product_id,
                         quantity,
-                        unit_price,
+                        return_price,
                         total_price
                     };
 
@@ -526,7 +574,6 @@
                     // for purchase table
                     sale_id,
                     customer_id,
-                    return_date,
                     formattedReturnDate,
                     refund_amount,
                     note,
@@ -548,54 +595,10 @@
                     success: function(res) {
                         if (res.status == 200) {
                             toastr.success(res.message);
-                            let id = res.saleId;
-                            // window.location.href = '/sale/print/' + id;
-                            var printFrame = $('#printFrame')[0];
-
-                            if (checkPrintType == 'a4' || checkPrintType == 'a5') {
-                                var printContentUrl = '/sale/invoice/' + id;
-                                $('#printFrame').attr('src', printContentUrl);
-
-                                printFrame.onload = function() {
-                                    printFrame.contentWindow.focus();
-                                    printFrame.contentWindow.print();
-                                    // Redirect after printing
-                                    printFrame.contentWindow.onafterprint = function() {
-                                        window.location.href = "/sale";
-                                    };
-                                };
-                            } else {
-                                var printContentUrl = '/sale/print/' + id;
-                                $('#printFrame').attr('src', printContentUrl);
-
-                                printFrame.onload = function() {
-                                    printFrame.contentWindow.focus();
-                                    printFrame.contentWindow.print();
-                                    // Redirect after printing
-                                    printFrame.contentWindow.onafterprint = function() {
-                                        window.location.href = "/sale";
-                                    };
-                                };
-                            }
-
-                            $(window).off('beforeunload');
-                        } else {
+                            window.location.href = '/return/products/list';
+                        }else {
                             // console.log(res);
-                            if (res.error.customer_id) {
-                                showError('.select-customer', res.error.customer_id);
-                            }
-                            if (res.error.sale_date) {
-                                showError('.purchase_date', res.error.sale_date);
-                            }
-                            if (res.error.payment_method) {
-                                showError('.payment_method', res.error.payment_method);
-                            }
-                            if (res.error.paid) {
-                                showError('.total_payable', res.error.paid);
-                            }
-                            if (res.error.products) {
-                                toastr.warning("Please Select a Product to sell");
-                            }
+                            toastr.warning("Something Went Wrong");
                         }
                     }
                 });

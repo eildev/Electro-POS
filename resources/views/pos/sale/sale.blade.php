@@ -400,12 +400,12 @@
             }
         });
 
-        //  jquery redy function 
+        //  jquery redy function
         $(document).ready(function() {
             // Barcode Focused
             $('.barcode_input').focus();
 
-            // showError Function 
+            // showError Function
             function showError(name, message) {
                 $(name).css('border-color', 'red');
                 $(name).focus();
