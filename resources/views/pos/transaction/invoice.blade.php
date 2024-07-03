@@ -112,8 +112,6 @@
                             </td>
                         </tr>
                     </tbody>
-
-
                 </table>
         </div>
         <button class="btn btn-secondary btn-block" onclick="window.print();">
