@@ -30,16 +30,14 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $data->name ?? '' }}</td>
-                                            <td>
-                                                {{-- @foreach($data->permissions as $permission)
-                                                      <span class="badge rounded-pill bg-danger"> {{ $permission->name ??  '' }}</span>
-                                                @endforeach --}}
-                                                @foreach(array_chunk($data->permissions->toArray(), 12) as $chunk)
-                                                @foreach($chunk as $permission)
+                                            <td class="permissions-container">
+                                                {{-- @foreach(array_chunk($data->permissions->toArray(), 12) as $chunk) --}}
+                                                <div class="chunk">
+                                                @foreach($data->permissions as $permission)
                                                     <span class="badge rounded-pill bg-danger"> {{ $permission['name'] ??  '' }}</span>
                                                 @endforeach
-                                                <br>
-                                            @endforeach
+                                            </div>
+                                                 {{-- @endforeach --}}
                                             </td>
                                             <td>
                             @if(Auth::user()->can('role-and-permission-check-role-permission.edit'))
@@ -74,4 +72,20 @@
             </div>
         </div>
     </div>
+    <style>
+        .permissions-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chunk {
+    width: 100%; /* or specify another width if needed */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.chunk .badge {
+    margin: 3px; /* add margin between badges for better spacing */
+}
+    </style>
 @endsection
