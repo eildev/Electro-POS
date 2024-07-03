@@ -57,6 +57,7 @@ class ReturnController extends Controller
             $returns->return_date = $request->formattedReturnDate;
             $returns->refund_amount = $request->refund_amount;
             $returns->return_reason = $request->note ?? '';
+
             $returns->total_return_profit = 0;
             $returns->status = 1;
             $returns->processed_by = Auth::user()->id;
