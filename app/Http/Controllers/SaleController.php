@@ -74,14 +74,6 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
-        // $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-        // $lastTransaction = Transaction::where('customer_id', $request->customer_id)->latest()->first();
-        // if ($lastTransaction) {
-        //     dd('exist' . $lastTransaction);
-        // } else {
-        //     dd('not exist');
-        // }
-
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|numeric',
             'sale_date' => 'required',
@@ -174,7 +166,7 @@ class SaleController extends Controller
                     $items->total_purchase_cost = $items2->cost * $items->qty;
                     // Adjust the remaining quantity and create extra item
                     $extraQuantity = $product['quantity'] - $items2->stock;
-                    $items2->stock = $items2->stock - $product['quantity'];
+                    $items2->stock = 0;
                     $items2->total_sold += $items->qty;
 
                     if ($items->qty > 0) {
@@ -189,7 +181,7 @@ class SaleController extends Controller
                     $extraItem->qty = $extraQuantity;
                     $extraItem->wa_status = $product['wa_status'];
                     $extraItem->wa_duration = $product['wa_duration'];
-                    $extraItem->discount = 0; // Apply discount only once to the first item
+                    $extraItem->discount = $product['product_discount']; // Apply discount only once to the first item
                     $extraItem->sub_total = $product['unit_price'] * $extraQuantity;
                     $extraItem->total_purchase_cost = $items2->cost * $extraQuantity;
                     $extraItem->sell_type = 'via sell';
