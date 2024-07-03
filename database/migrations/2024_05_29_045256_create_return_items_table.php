@@ -13,24 +13,14 @@ return new class extends Migration
     {
         Schema::create('return_items', function (Blueprint $table) {
             $table->id();
-            $table->integer('return_id');
-            $table->integer('sale_item_id');
-            $table->integer('product_id');
-            $table->integer('quantity');
-            $table->integer('unit_price');
-            $table->integer('discount_amount');
-            $table->integer('total');
-
             $table->unsignedBigInteger('return_id');
             $table->unsignedBigInteger('product_id');
             $table->integer('quantity');
-            $table->decimal('refund_amount', 10, 2)->nullable();
-            $table->unsignedBigInteger('new_product_id')->nullable();
-            $table->decimal('additional_payment', 10, 2)->nullable();
-            $table->foreign('return_id')->references('id')->on('returns');
-            $table->foreign('product_id')->references('id')->on('products');
-            $table->foreign('new_product_id')->references('id')->on('products');
+            $table->decimal('return_price');
+            $table->decimal('product_total');
+            $table->decimal('return_profit')->nullable();
 
+            $table->foreign('return_id')->references('id')->on('returns')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -48,9 +48,10 @@
                             <label for="password" class="form-label">Customer</label>
                             <div class="d-flex g-3">
                                 <select class="js-example-basic-single form-select select-customer" data-width="100%"
-                                    onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                    onclick="errorRemove(this);">
 
                                 </select>
+                                <span class="text-danger select-customer_error"></span>
                                 <button class="btn btn-primary ms-2" data-bs-toggle="modal"
                                     data-bs-target="#customerModal">Add</button>
                             </div>
@@ -399,12 +400,12 @@
             }
         });
 
-        //  jquery redy function 
+        //  jquery redy function
         $(document).ready(function() {
             // Barcode Focused
             $('.barcode_input').focus();
 
-            // showError Function 
+            // showError Function
             function showError(name, message) {
                 $(name).css('border-color', 'red');
                 $(name).focus();
@@ -473,6 +474,8 @@
                             let quantity = products.stock;
                             // console.log(quantity);
                             showAddProduct(products, quantity);
+                            updateGrandTotal();
+                            calculateCustomerDue();
                             toastr.success(res.message);
                             $(window).on('beforeunload', function() {
                                 return 'Are you sure you want to leave? because You Add a Via Sale Product?';
@@ -664,7 +667,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>

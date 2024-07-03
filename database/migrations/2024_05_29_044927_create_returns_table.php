@@ -13,20 +13,16 @@ return new class extends Migration
     {
         Schema::create('returns', function (Blueprint $table) {
             $table->id();
+            $table->string('return_invoice_number');
             $table->integer('sale_id');
             $table->integer('customer_id');
-            $table->unsignedBigInteger('invoice_id');
             $table->dateTime('return_date');
-            $table->string('return_reason');
-            $table->unsignedBigInteger('processed_by');
-
-            $table->integer('total');
-            $table->integer('grand_total');
+            $table->decimal('refund_amount');
+            $table->string('return_reason')->nullable();
+            $table->decimal('total_return_profit')->nullable();
             $table->tinyInteger('status')->default(0);
+            $table->integer('processed_by');
 
-
-            $table->foreign('invoice_id')->references('id')->on('sales');
-            $table->foreign('processed_by')->nullable()->references('sale_by')->on('sales');
             $table->timestamps();
         });
     }
