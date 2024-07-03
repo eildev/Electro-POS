@@ -72,7 +72,7 @@
                                             add
                                             a image
                                             please add a 35mm (width) x 45mm (height) size image.</span></p>
-                                    <input type="file" class="employeeImage" name="image" id="myDropify" />
+                                    <input type="file" data-default-file="{{$employees->pic ? asset('uploads/employee/' . $employees->pic) : '' }}" class="employeeImage" name="image" id="myDropify" />
                                 </div>
                             </div>
                         </div>
