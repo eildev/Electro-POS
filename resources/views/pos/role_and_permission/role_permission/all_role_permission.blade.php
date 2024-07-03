@@ -74,18 +74,18 @@
     </div>
     <style>
         .permissions-container {
-    display: flex;
-    flex-wrap: wrap;
-}
+            display: flex;
+            flex-wrap: wrap;
+        }
 
-.chunk {
-    width: 100%; /* or specify another width if needed */
-    display: flex;
-    flex-wrap: wrap;
-}
+        .chunk {
+            width: 100%; /* or specify another width if needed */
+            display: flex;
+            flex-wrap: wrap;
+        }
 
-.chunk .badge {
-    margin: 3px; /* add margin between badges for better spacing */
-}
+        .chunk .badge {
+            margin: 3px; /* add margin between badges for better spacing */
+        }
     </style>
 @endsection
