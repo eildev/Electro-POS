@@ -38,7 +38,7 @@ class ReturnController extends Controller
     public function store(Request $request)
     {
         // $customer = Customer::findOrFail($request->customer_id);
-        // dd($customer);
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             'sale_id' => 'required',
             'customer_id' => 'required',

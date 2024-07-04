@@ -6,12 +6,79 @@
         $sale_items = App\Models\SaleItem::where('sale_id', $sale->id)->get();
 
     @endphp
-
-    <style>
-
-    </style>
     <div class="row ">
-        <div class="col-md-12 stretch-card">
+        <div class="col-lg-4 grid-margin stretch-card mb-3">
+            <div class="card">
+                <div class="card-body px-4 py-2">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="card-title">Basic Details</h6>
+                            <div class="row my-0 py-0">
+                                <label for="exampleInputUsername2" class="col-6 col-form-label">Order Id :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ $sale->invoice_number ?? 00 }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputUsername2" class="col-6 col-form-label">Customer Name :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ $sale->customer->name ?? '' }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-6 col-form-label">Product Price :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ number_format($sale->total, 2) ?? 0 }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputUsername2" class="col-6 col-form-label">Discount :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->actual_discount, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputEmail2" class="col-6 col-form-label">Previous Due :</label>
+                                <div class="col-6 text-end">
+                                    @php
+                                        $total = $sale->total - $sale->actual_discount;
+                                        $previousDue = $sale->receivable - $total;
+                                    @endphp
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($previousDue, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputEmail2" class="col-6 col-form-label">Total Receivable :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->receivable, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-6 col-form-label">Total Paid :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->paid, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-6 col-form-label">Due :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ $sale->due > 0 ? $sale->due : 0 }}</b></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 grid-margin stretch-card mb-3">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title text-info">Add Return Product</h6>
@@ -19,20 +86,16 @@
                     <div class="row">
                         <!-- Col -->
                         <div class="mb-3 col-md-6">
-
                             <label for="" class="form-label">Product <span class="text-danger">*</span></label>
-
                             <div class="d-flex g-3">
-
                                 <select class="js-example-basic-single form-select product_select" data-width="100%">
-
                                     @if ($sale_items->count() > 0)
                                         <option selected disabled>Select Returned Product</option>
                                         @foreach ($sale_items as $product)
                                             <option value="{{ $product->id }}"
                                                 {{ old('product_id') == $product->id ? 'selected' : '' }}>
                                                 {{ $product->product->name }}
-                                                ({{ $product->qty}})
+                                                ({{ $product->qty }})
                                             </option>
                                         @endforeach
                                     @else
@@ -41,7 +104,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="col-sm-6">
                             <div class="mb-3 form-valid-groups">
                                 <label class="form-label">Date<span class="text-danger">*</span></label>
@@ -52,24 +114,28 @@
                                         class="form-control bg-transparent border-primary return_date" value=""
                                         placeholder="Select date" data-input>
                                 </div>
-                                {{-- <input type="date"  class="form-control" placeholder="Enter Date"> --}}
                             </div>
-                        </div><!-- Col -->
+                        </div>
                         <div class="col-sm-6">
                             <div class="mb-3">
                                 <label class="form-label">Note</label>
                                 <textarea name="note" class="form-control return_purpose" value="{{ old('note') }}"
                                     placeholder="Write About Damages" rows="4" cols="50"></textarea>
                             </div>
-                        </div><!-- Col -->
-                    </div><!-- Row -->
-                    <div>
-                        <input type="submit" id="submit_btn" class="btn btn-primary submit" value="Save" disabled>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label">Adjus Due</label>
+                            <select class="form-select adjust_due">
+                                <option selected disabled>Please Select Adjust Due</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-12 mb-1 grid-margin stretch-card">
+        <div class="col-md-9 mb-1 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body px-4 py-2">
                     <div class="mb-3">
@@ -111,13 +177,30 @@
                     </div>
 
                     <div class="my-3">
-                        <button class="btn btn-primary return_btn"><i class="fa-solid fa-money-check-dollar"></i>
-                            Make Invoice</button>
+                        <button class="btn btn-primary return_btn">
+                            Return <i class="fa-solid fa-arrow-turn-down"
+                                style="transform: rotate(90deg); font-size: 10px;"></i></button>
                     </div>
                 </div>
             </div>
         </div>
-
+        {{-- <div class="col-md-3 mb-1 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body px-4 py-2">
+                    <div class="mb-3">
+                        <h6 class="card-title">Adjust Due</h6>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Customer Due</td>
+                                <td> {{ number_format($previousDue, 2) ?? 0 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div> --}}
     </div>
 
     <script>
@@ -268,6 +351,8 @@
                 let customer_id = '{{ $customer->id }}';
                 let return_date = $('.return_date').val();
                 let formattedReturnDate = moment(return_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
+                let adjustDue = $('.adjust_due').val();
+                // console.log(adjustDue);
 
                 let refund_amount = parseFloat($('.all_product_total').text());
                 let note = $('.return_purpose').val();
@@ -303,7 +388,8 @@
                     formattedReturnDate,
                     refund_amount,
                     note,
-                    sale_items
+                    sale_items,
+                    adjustDue
                 }
 
                 $.ajaxSetup({
