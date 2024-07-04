@@ -74,6 +74,7 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|numeric',
             'sale_date' => 'required',

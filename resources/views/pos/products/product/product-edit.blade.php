@@ -157,14 +157,16 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h6 class="card-title">Product Image</h6>
-                                        <div style="height:150px;position:relative">
+                                        {{-- <div style="height:150px;position:relative">
                                             <button class="btn btn-info edit_upload_img"
                                                 style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%)">Browse</button>
                                             <img class="img-fluid showEditImage"
                                                 src="{{ $product->image ? asset('uploads/images/' . $product->image) : asset('dummy/image.jpg') }}"
                                                 style="height:100%; object-fit:cover">
-                                        </div>
-                                        <input hidden type="file" class="edit_image" name="image" />
+                                        </div> --}}
+                                        <input type="file" class="productImage"
+                                            data-default-file="{{ $product->image ? asset('uploads/images/' . $product->image) : asset('dummy/image.jpg') }}"
+                                            name="image" id="myDropify" />
                                     </div>
                                 </div>
                             </div>
@@ -203,20 +205,20 @@
 
 
             // image onload when category edit
-            const edit_upload_img = document.querySelector('.edit_upload_img');
-            const edit_image = document.querySelector('.edit_image');
-            edit_upload_img.addEventListener('click', function(e) {
-                e.preventDefault();
-                edit_image.click();
+            // const edit_upload_img = document.querySelector('.edit_upload_img');
+            // const edit_image = document.querySelector('.edit_image');
+            // edit_upload_img.addEventListener('click', function(e) {
+            //     e.preventDefault();
+            //     edit_image.click();
 
-                edit_image.addEventListener('change', function(e) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.querySelector('.showEditImage').src = e.target.result;
-                    }
-                    reader.readAsDataURL(this.files[0]);
-                });
-            });
+            //     edit_image.addEventListener('change', function(e) {
+            //         var reader = new FileReader();
+            //         reader.onload = function(e) {
+            //             document.querySelector('.showEditImage').src = e.target.result;
+            //         }
+            //         reader.readAsDataURL(this.files[0]);
+            //     });
+            // });
 
             // when select category
             const category = document.querySelector('#category_name');
