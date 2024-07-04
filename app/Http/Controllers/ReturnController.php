@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountTransaction;
 use App\Models\ActualPayment;
+use App\Models\Bank;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ReturnItem;
@@ -37,8 +38,7 @@ class ReturnController extends Controller
 
     public function store(Request $request)
     {
-        // $customer = Customer::findOrFail($request->customer_id);
-        dd($request->all());
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'sale_id' => 'required',
             'customer_id' => 'required',
@@ -72,7 +72,7 @@ class ReturnController extends Controller
 
 
             $returns = new Returns;
-            $returns->return_invoice_number = rand(123456, 99999);;
+            $returns->return_invoice_number = rand(123456, 99999);
             $returns->sale_id = $request->sale_id;
             $returns->customer_id = $request->customer_id;
             $returns->return_date = $request->formattedReturnDate;
@@ -122,11 +122,52 @@ class ReturnController extends Controller
             $sales->returned = $request->refund_amount;
             $sales->profit = $sales->profit - $total_return_profit;
             $sales->save();
-            // dd($sales);
+
+
+            $customer = Customer::findOrFail($request->customer_id);
+            $customerDue = -$customer->wallet_balance;
+            $bank = Bank::where('name', "=", "Cash")->first();
+            $lastTransaction = AccountTransaction::where('account_id', $bank->id)->latest('created_at')->first();
+            $accountTransaction =  new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->reference_id = $returns->id;
+            $accountTransaction->purpose =  'Return';
+            $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->created_at = Carbon::now();
+            if ($request->adjustDue == 'yes') {
+                if ($customerDue > $request->refund_amount) {
+                    $dueBalance = $customerDue - $request->refund_amount;
+                    $customer->wallet_balance = $customer->wallet_balance + $dueBalance;
+                    $customer->save();
+
+                    $accountTransaction->credit = $request->refund_amount;
+                    $accountTransaction->balance = $lastTransaction->balance + $request->refund_amount;
+                    $accountTransaction->save();
+                } else {
+                    $returnBalance = $request->refund_amount - $customerDue;
+                    $customer->wallet_balance = 0;
+                    $customer->save();
+
+                    $cal1 = $lastTransaction->balance + $customerDue;
+                    $cal2 = $cal1 - $returnBalance;
+                    $cal3 = $lastTransaction->balance - $cal2;
+                    if ($cal3 > 0) {
+                        $accountTransaction->debit = $cal3;
+                    } else {
+                        $accountTransaction->credit = -$cal3;
+                    }
+                    $accountTransaction->balance = $cal2;
+                    $accountTransaction->save();
+                }
+            } else {
+                $accountTransaction->debit = $request->refund_amount;
+                $accountTransaction->balance = $lastTransaction->balance - $request->refund_amount;
+                $accountTransaction->save();
+            }
 
             return response()->json([
                 'status' => '200',
-                'message' => 'Peoduct Return successful',
+                'message' => 'Product Return successful',
             ]);
         } else {
             return response()->json([
