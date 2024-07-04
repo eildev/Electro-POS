@@ -21,13 +21,13 @@
 
         <li class="nav-item">
             <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" style="background: "
-                role="tab" aria-controls="profile" aria-selected="false">Add Transaction</a>
+                role="tab" aria-controls="profile" aria-selected="false">Balance Transfer</a>
         </li>
 
         @if (Auth::user()->can('transaction.history'))
             <li class="nav-item">
                 <a class="nav-link " id="home-tab" data-bs-toggle="tab" href="#home" role="tab" aria-controls="home"
-                    aria-selected="true">Transaction History</a>
+                    aria-selected="true">Balance History</a>
             </li>
         @endif
     </ul>
@@ -88,7 +88,6 @@
                                         width: 100% !important;
                                     }
                                 </style>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-11 mb-2"> <!-- Left Section -->
@@ -129,7 +128,7 @@
                                 @csrf
                                 <div class="row">
                                     <!-- Col -->
-                                    <div class="col-sm-12">
+                                    {{-- <div class="col-sm-12">
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Personal/Direct Transaction</label>
                                             <select class="form-select"data-width="100%" name="dirrect_transaction"
@@ -139,13 +138,13 @@
 
                                             </select>
                                         </div>
-                                    </div><!-- Col -->
+                                    </div><!-- Col --> --}}
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Transaction Date<span
                                                     class="text-danger">*</span></label>
                                             <div class="input-group flatpickr" id="flatpickr-date">
-                                                <input type="text" name="date" class="form-control"
+                                                <input type="text" id="datepicker" name="date" class="form-control"
                                                     placeholder="Select date" data-input>
                                                 <span class="input-group-text input-group-addon" data-toggle><i
                                                         data-feather="calendar"></i></span>
@@ -161,6 +160,7 @@
                                                 <option selected disabled value="">Select Account Type</option>
                                                 <option value="supplier">Supplier</option>
                                                 <option value="customer">Customer</option>
+                                                <option id="otherId" value="other">Other</option>
                                             </select>
                                         </div>
                                     </div><!-- Col -->
@@ -168,36 +168,55 @@
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Transaction Type <span
                                                     class="text-danger">*</span></label>
-                                            <select class="form-select bank_id" data-width="100%" name="transaction_type"
-                                                id="transaction_type" aria-invalid="false">
-                                                <option selected="" disabled value="">Select Type</option>
-                                                <option value="receive">Cash Receive</option>
-                                                <option value="pay">Cash Payment</option>
+                                            <select class="form-select  bank_id" data-width="100%" name="transaction_type" style="background: transparent"
+                                                id="transaction_type" aria-invalid="false"  disabled>
+                                            <option selected="" disabled value="">Select Type</option>
+                                            <option value="receive">Cash Receive</option>
+                                            <option value="pay">Cash Payment</option>
                                             </select>
                                         </div>
                                     </div><!-- Col -->
 
+                                    <div class="col-sm-6 d-none" id="investment-col" >
+                                        <div class="mb-3 form-valid-groups">
+                                            <label class="form-label">Investment <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select" data-width="100%" name="type"
+                                                id="" aria-invalid="false">
+                                            <option selected="" disabled value="">Select Type</option>
+                                            <option value="investment">Investment</option>
+                                            <option value="loan">Loan</option>
+                                            <option value="borrow">Borrow</option>
+                                            </select>
+                                        </div>
+                                    </div><!-- Col -->
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Account ID<span class="text-danger">*</span></label>
-                                            <select class="form-select select-account-id" data-width="100%"
+                                            <label class="form-label">Account Name<span class="text-danger">*</span></label>
+                                            <select class="form-select js-example-basic-single select-account-id" data-width="100%"
                                                 name="account_id" id="account_id" aria-invalid="false">
                                                 <option selected disabled value="">Select Account ID</option>
                                             </select>
                                         </div>
                                     </div><!-- Col -->
+                                    <div class="col-sm-6 d-none" id="investment-col2">
+                                        <div class="mb-3 form-valid-groups">
+                                            <label class="form-label">Add New Investor</label><br>
+                                            <a class="btn btn-primary ms-2" data-bs-toggle="modal"data-bs-target="#investorModal">Add</a>
+                                        </div>
+                                    </div><!-- Col -->
+
                                     <div>
                                         <h5 id="account-details"></h5>
                                         <h5 id="due_invoice_count"></h5>
                                         <h5 id="total_invoice_due"></h5>
                                         <h5 id="personal_balance"></h5>
                                         <h5 id="total_due"></h5>
-
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Amount<span class="text-danger">*</span></label>
-                                            <input type="number" name="amount" value="{{ old('amount') }}"
+                                            <input type="number" name="amount" value="{{ old('amount')}}"
                                                 class="form-control" placeholder="Enter Amount">
                                         </div>
                                     </div>
@@ -213,7 +232,6 @@
                                             </select>
                                         </div>
                                     </div>
-
                                     <div class="col-sm-12">
                                         <div class="mb-3">
                                             <label class="form-label">Note</label>
@@ -239,6 +257,40 @@
             </div>
         </div>
     </div>
+    <!-- Investor Modal -->
+    <div class="modal fade" id="investorModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Investor Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="investorForm row">
+                        <div class="mb-3 col-md-6">
+                           <label class="form-label">  Investor Name <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfigs" class="form-control investor_name" maxlength="255" name="name"
+                                type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger investor_name_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Phone Number<span
+                                class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control phone investor_phone" maxlength="39" name="phone"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                                <span class="text-danger investor_phone_error"></span>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary save_new_investor">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
         document.getElementById("account_type").addEventListener("change", function() {
             var accountType = this.value;
@@ -248,11 +300,39 @@
                 @foreach ($supplier as $supply)
                     options += '<option  value="{{ $supply->id }}">{{ $supply->name }} </option>';
                 @endforeach
-
+                let transactionTypeElement = document.getElementById('transaction_type');
+                transactionTypeElement.setAttribute('disabled',true);
+                //
+                var investmentCol = document.getElementById('investment-col');
+                investmentCol.classList.add('d-none');
+                var investmentCol2 = document.getElementById('investment-col2');
+                investmentCol2.classList.add('d-none');
+                //
             } else if (accountType === "customer") {
                 @foreach ($customer as $customers)
                     options += '<option value="{{ $customers->id }}">{{ $customers->name }}</option>';
                 @endforeach
+                //
+                let transactionTypeElement = document.getElementById('transaction_type');
+                transactionTypeElement.setAttribute('disabled',true);
+                //
+                var investmentCol = document.getElementById('investment-col');
+                investmentCol.classList.add('d-none');
+                var investmentCol2 = document.getElementById('investment-col2');
+                investmentCol2.classList.add('d-none');
+                //
+            }else if (accountType === "other") {
+                viewInvestor()
+                //
+                let transactionTypeElement = document.getElementById('transaction_type');
+                transactionTypeElement.removeAttribute('disabled');
+                transactionTypeElement.style.backgroundColor = 'transparent !important';
+                //
+                var investmentCol = document.getElementById('investment-col');
+                investmentCol.classList.remove('d-none');
+                var investmentCol2 = document.getElementById('investment-col2');
+                investmentCol2.classList.remove('d-none');
+
             }
             document.getElementById("account_id").innerHTML = options;
         });
@@ -345,6 +425,9 @@
                     amount: {
                         required: true,
                     },
+                    type: {
+                        required: true,
+                    },
                 },
                 messages: {
                     account_type: {
@@ -363,6 +446,9 @@
                         required: 'Select Payment Method',
                     },
                     amount: {
+                        required: 'Enter Amount',
+                    },
+                    type: {
                         required: 'Enter Amount',
                     },
                 },
@@ -390,7 +476,6 @@
 
         });
 
-
         ///
         document.getElementById('account_type').addEventListener('change', function() {
             var accountType = this.value;
@@ -402,7 +487,88 @@
                 transactionType.value = 'pay';
             }
         });
+
+        //Add Investor
+        function showError(name, message) {
+                $(name).css('border-color', 'red');
+                $(name).focus();
+                $(`${name}_error`).show().text(message);
+        }
+        function errorRemove(element) {
+            tag = element.tagName.toLowerCase();
+            if (element.value != '') {
+                // console.log('ok');
+                if (tag == 'select') {
+                    $(element).closest('.mb-3').find('.text-danger').hide();
+                } else {
+                    $(element).siblings('span').hide();
+                    $(element).css('border-color', 'green');
+                }
+            }
+        }
+        function viewInvestor() {
+                $.ajax({
+                    url: '/get/investor',
+                    method: 'GET',
+                    success: function(res) {
+                        const investor = res.allData;
+                        // console.log(investor);
+                        const selectAccountId = $('.select-account-id');
+                        selectAccountId.empty();
+                        if (investor.length > 0) {
+                            $.each(investor, function(index, investors) {
+                                $('.select-account-id').append(
+                                    `<option value="${investors.id}">${investors.name}</option>`
+                                );
+                            })
+                        } else {
+                            $('.select-customer').html(`
+                            <option selected disable>Please add Investor</option>`)
+                        }
+                    }
+                })
+            }
+
+
+        const saveInvestor = document.querySelector('.save_new_investor');
+            saveInvestor.addEventListener('click', function(e) {
+                e.preventDefault();
+                let formData = new FormData($('.investorForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '/add/investor',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            // console.log(res);
+                            $('#investorModal').modal('hide');
+                            $('.investorForm')[0].reset();
+                            viewInvestor()
+                            toastr.success(res.message);
+                        } else {
+                            // console.log(res);
+                            if (res.error.name) {
+                                showError('.investor_name', res.error.name);
+                            }
+                            if (res.error.phone) {
+                                showError('.investor_phone', res.error.phone);
+                            }
+                        }
+                    }
+                });
+            })
+            flatpickr("#datepicker", {
+            maxDate: "today"
+        });
     </script>
+
     <style>
         @media print {
 
