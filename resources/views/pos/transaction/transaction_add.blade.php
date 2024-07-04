@@ -170,9 +170,9 @@
                                                     class="text-danger">*</span></label>
                                             <select class="form-select bank_id" data-width="100%" name="transaction_type"
                                                 id="transaction_type" aria-invalid="false">
-                                                <option selected="" disabled value="">Select Type</option>
-                                                <option value="receive">Cash Receive</option>
-                                                <option value="pay">Cash Payment</option>
+                                            <option selected="" disabled value="">Select Type</option>
+                                            <option value="receive">Cash Receive</option>
+                                            <option value="pay">Cash Payment</option>
                                             </select>
                                         </div>
                                     </div><!-- Col -->
@@ -192,7 +192,6 @@
                                         <h5 id="total_invoice_due"></h5>
                                         <h5 id="personal_balance"></h5>
                                         <h5 id="total_due"></h5>
-
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
