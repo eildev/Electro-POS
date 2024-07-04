@@ -37,7 +37,8 @@ class ReturnController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        // $customer = Customer::findOrFail($request->customer_id);
+        dd($request->all());
         $validator = Validator::make($request->all(), [
             'sale_id' => 'required',
             'customer_id' => 'required',
@@ -90,10 +91,10 @@ class ReturnController extends Controller
                 // dd($sale_item['product_id']);
                 $returnItems = new ReturnItem;
                 $returnItems->return_id = $returns->id;
-                $returnItems->product_id = (Integer)$sale_item['product_id'];
-                $returnItems->quantity = (Integer)$sale_item['quantity'];
-                $returnItems->return_price = (Integer)$sale_item['return_price'];
-                $returnItems->product_total = (Integer)$sale_item['total_price'];
+                $returnItems->product_id = (int)$sale_item['product_id'];
+                $returnItems->quantity = (int)$sale_item['quantity'];
+                $returnItems->return_price = (int)$sale_item['return_price'];
+                $returnItems->product_total = (int)$sale_item['total_price'];
 
                 $saleItem = SaleItem::findOrFail($sale_item['product_id']);
                 $old_subtotal = $saleItem->sub_total;
@@ -120,13 +121,14 @@ class ReturnController extends Controller
             $sales = Sale::findOrFail($request->sale_id);
             $sales->returned = $request->refund_amount;
             $sales->profit = $sales->profit - $total_return_profit;
+            $sales->save();
             // dd($sales);
 
             return response()->json([
                 'status' => '200',
                 'message' => 'Peoduct Return successful',
             ]);
-        }else {
+        } else {
             return response()->json([
                 'status' => '500',
                 'error' => $validator->messages(),
@@ -138,5 +140,4 @@ class ReturnController extends Controller
         $returns = Returns::get();
         return view('pos.return.return-view', compact('returns'));
     }
-
 }
