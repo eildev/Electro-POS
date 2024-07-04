@@ -84,9 +84,11 @@ class ProfileController extends Controller
         $user->address =  $request->address;
 
         $previousImagePath = public_path('uploads/profile/') . $user->photo;
+        if ($user->photo) {
         if (file_exists($previousImagePath)) {
             unlink($previousImagePath);
         }
+         }
         if ($request->image) {
             $imageName = rand() . '.' . $request->image->extension();
             $request->image->move(public_path('uploads/profile/'), $imageName);

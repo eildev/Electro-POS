@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\Purchase;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+
 class TransactionController extends Controller
 {
     public function TransactionAdd()
@@ -43,78 +44,76 @@ class TransactionController extends Controller
     } // End function
     public function TransactionStore(Request $request)
     {
+        // dd($request->payment_method);
         if ($request->account_type == 'supplier') {
             //Here change
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
             if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
-            //Here change End
-            $supplier = Supplier::findOrFail($request->account_id);
-            // dd($request->account_id);
-            $currentBalance = $supplier->wallet_balance;
-            $currentBalance = $currentBalance ?? 0;
-            $newBalance = floatval($currentBalance) - floatval($request->amount);
-            $supplier->wallet_balance = $newBalance ;
-            $newPayble = $supplier->total_payable ?? 0;
-            $updatePaybele = floatval($newPayble) + floatval($request->amount);
-            // dd($tracBalance->balance);
-            $supplier->total_payable = $updatePaybele;
-            $tracBalance = Transaction::where('supplier_id', $supplier->id)->latest()->first();
-            if ($tracBalance !== null) {
-                $debitBalance = floatval($tracBalance->balance);
-                $updateTraBalance = ($debitBalance ?? 0) + floatval($request->amount);
+                //Here change End
+                $supplier = Supplier::findOrFail($request->account_id);
+                // dd($request->account_id);
+                $currentBalance = $supplier->wallet_balance;
+                $currentBalance = $currentBalance ?? 0;
+                $newBalance = floatval($currentBalance) + floatval($request->amount);
+                $supplier->wallet_balance = $newBalance;
+                $newPayble = $supplier->total_payable ?? 0;
+                $updatePaybele = floatval($newPayble) + floatval($request->amount);
+                // dd($tracBalance->balance);
+                $supplier->total_payable = $updatePaybele;
+                $tracBalance = Transaction::where('supplier_id', $supplier->id)->latest()->first();
+                if ($tracBalance !== null) {
+                    $debitBalance = floatval($tracBalance->balance);
+                    $updateTraBalance = ($debitBalance ?? 0) + floatval($request->amount);
+                } else {
+                    $updateTraBalance = floatval($request->amount); // Set to default value or handle
+                }
+                // dd($updateTraBalance);
+
+                $transaction = Transaction::create([
+                    'date' => $request->date,
+                    'payment_type' => $request->transaction_type,
+                    'debit' => $request->amount,
+                    'payment_method' => $request->payment_method,
+                    'balance' => $updateTraBalance,
+                    'note' => $request->note,
+                    'supplier_id' => $request->account_id
+                ]);
+
+                $supplier->update([
+                    'wallet_balance' => $newBalance,
+                    'total_payable' => $updatePaybele
+                ]);
+                //account Transaction Crud
+                $accountTransaction = new AccountTransaction;
+                $accountTransaction->branch_id =  Auth::user()->branch_id;
+                $accountTransaction->reference_id = $transaction->id;
+                $accountTransaction->purpose =  'Transactions';
+                $accountTransaction->account_id =  $request->payment_method;
+                $accountTransaction->debit = $request->amount;
+                $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+                $accountTransaction->balance = $oldBalance->balance - $request->amount;
+                $accountTransaction->created_at = Carbon::now();
+                $accountTransaction->save();
+                $notification = [
+                    'message' => 'Transaction Payment Successful',
+                    'alert-type' => 'info'
+                ];
+                return redirect()->back()->with($notification);
             } else {
-                $updateTraBalance = floatval($request->amount); // Set to default value or handle
+                $notification = [
+                    'warning' => 'Your account Balance is low Please Select Another account',
+                    'alert-type' => 'warning'
+                ];
+                return redirect()->back()->with($notification);
             }
-            // dd($updateTraBalance);
-
-            $transaction = Transaction::create([
-                'date' => $request->date,
-                'payment_type' => $request->transaction_type,
-                'debit' => $request->amount,
-                'payment_method' => $request->payment_method,
-                'balance' => $updateTraBalance,
-                'note' => $request->note,
-                'supplier_id' => $request->account_id
-            ]);
-
-            $supplier->update([
-                'wallet_balance' => $newBalance,
-                'total_payable' => $updatePaybele
-            ]);
-            //account Transaction Crud
-        $accountTransaction = new AccountTransaction;
-        $accountTransaction->branch_id =  Auth::user()->branch_id;
-        $accountTransaction->reference_id = $transaction->id;
-        $accountTransaction->purpose =  'Transactions';
-        $accountTransaction->account_id =  $request->payment_method;
-        $accountTransaction->debit = $request->amount;
-        $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-        $accountTransaction->balance = $oldBalance->balance - $request->amount;
-        $accountTransaction->created_at = Carbon::now();
-        $accountTransaction->save();
-        $notification = [
-            'message' => 'Transaction Payment Successful',
-            'alert-type' => 'info'
-        ];
-        return redirect()->back()->with($notification);
-    } else {
-        $notification = [
-            'warning' => 'Your account Balance is low Please Select Another account',
-            'alert-type' => 'warning'
-        ];
-        return redirect()->back()->with($notification);
-    }
-    //End
+            //End
         } else if ($request->account_type == 'customer') {
             //Here change
-            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
-            //Here change End
             $customer = Customer::findOrFail($request->account_id);
             $currentBalance = $customer->wallet_balance;
-            $newBalance = $currentBalance - $request->amount;
+            $newBalance = $currentBalance + $request->amount;
             $tracsBalance = Transaction::where('customer_id', $customer->id)->latest()->first();
-            $transBalance = $tracsBalance->balance?? 0;
+            $transBalance = $tracsBalance->balance ?? 0;
             $newTrasBalance = $transBalance + $request->amount;
             $transaction = Transaction::create([
                 'date' => $request->date,
@@ -126,29 +125,22 @@ class TransactionController extends Controller
                 'customer_id' => $request->account_id
             ]);
             $customer->update(['wallet_balance' => $newBalance]);
-             //account Transaction Crud
-             $accountTransaction = new AccountTransaction;
-             $accountTransaction->branch_id =  Auth::user()->branch_id;
-             $accountTransaction->reference_id = $transaction->id;
-             $accountTransaction->purpose =  'Transactions';
-             $accountTransaction->account_id =  $request->payment_method;
-             $accountTransaction->credit = $request->amount;
-             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-             $accountTransaction->balance = $oldBalance->balance + $request->amount;
-             $accountTransaction->created_at = Carbon::now();
-             $accountTransaction->save();
-             $notification = [
-                 'message' => 'Transaction Payment Successfull',
-                 'alert-type' => 'info'
-             ];
-             return redirect()->back()->with($notification);
-         } else {
-             $notification = [
-                 'warning' => 'Your account Balance is low Please Select Another account',
-                 'alert-type' => 'warning'
-             ];
-             return redirect()->back()->with($notification);
-         }
+            //account Transaction Crud
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->reference_id = $transaction->id;
+            $accountTransaction->purpose =  'Transactions';
+            $accountTransaction->account_id =  $request->payment_method;
+            $accountTransaction->credit = $request->amount;
+            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
+            $accountTransaction->balance = $oldBalance->balance + $request->amount;
+            $accountTransaction->created_at = Carbon::now();
+            $accountTransaction->save();
+            $notification = [
+                'message' => 'Transaction Payment Successfull',
+                'alert-type' => 'info'
+            ];
+            return redirect()->back()->with($notification);
         }
     } //
     public function TransactionDelete($id)
@@ -187,6 +179,4 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
         return view('pos.transaction.invoice', compact('transaction'));
     }
-
-
 }

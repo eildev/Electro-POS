@@ -18,7 +18,6 @@
                             <p class="show_branch_email">{{ $branch->email ?? '' }}</p>
                             <p class="show_branch_phone">{{ $branch->phone ?? '' }}</p>
 
-
                         </div>
                         <div class="col-lg-3 pe-0 text-end">
                             <p class="mt-1 mb-1 show_supplier_name"><b>{{ $viaSale->supplier_name ?? '' }}</b></p>

@@ -203,7 +203,7 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Transaction Account</label>
+                                            <label class="form-label">Transaction Account <span class="text-danger">*</span></label>
                                             <select class="form-select "data-width="100%" name="payment_method"
                                                 aria-invalid="false">
                                                 <option selected="" disabled value="">Select Account</option>
@@ -339,6 +339,12 @@
                     balance: {
                         required: true,
                     },
+                    payment_method: {
+                        required: true,
+                    },
+                    amount: {
+                        required: true,
+                    },
                 },
                 messages: {
                     account_type: {
@@ -352,6 +358,12 @@
                     },
                     balance: {
                         required: 'Enter Transaction Balance',
+                    },
+                    payment_method: {
+                        required: 'Select Payment Method',
+                    },
+                    amount: {
+                        required: 'Enter Amount',
                     },
                 },
                 errorElement: 'span',

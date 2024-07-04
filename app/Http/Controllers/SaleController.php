@@ -167,7 +167,7 @@ class SaleController extends Controller
                     $items->total_purchase_cost = $items2->cost * $items->qty;
                     // Adjust the remaining quantity and create extra item
                     $extraQuantity = $product['quantity'] - $items2->stock;
-                    $items2->stock = $items2->stock - $product['quantity'];
+                    $items2->stock = 0;
                     $items2->total_sold += $items->qty;
 
                     if ($items->qty > 0) {
@@ -182,7 +182,7 @@ class SaleController extends Controller
                     $extraItem->qty = $extraQuantity;
                     $extraItem->wa_status = $product['wa_status'];
                     $extraItem->wa_duration = $product['wa_duration'];
-                    $extraItem->discount = 0; // Apply discount only once to the first item
+                    $extraItem->discount = $product['product_discount']; // Apply discount only once to the first item
                     $extraItem->sub_total = $product['unit_price'] * $extraQuantity;
                     $extraItem->total_purchase_cost = $items2->cost * $extraQuantity;
                     $extraItem->sell_type = 'via sell';
@@ -201,11 +201,12 @@ class SaleController extends Controller
 
                 $items2->save();
             }
+
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->total;
             $customer->total_payable = $customer->total_payable + $request->paid;
-            $customer->wallet_balance = $customer->wallet_balance + ($request->total - $request->paid);
+            $customer->wallet_balance = $customer->wallet_balance - ($request->total - $request->paid);
             $customer->save();
 
             // actual Payment
@@ -231,31 +232,25 @@ class SaleController extends Controller
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
 
-            $transaction = Transaction::where('customer_id', $request->customer_id)->first();
-
-            if ($transaction) {
+            $lastTransaction = Transaction::where('customer_id', $request->customer_id)->latest()->first();
+            $transaction = new Transaction;
+            $transaction->date =  $request->sale_date;
+            $transaction->payment_type = 'receive';
+            $transaction->particulars = 'Sale#' . $saleId;
+            $transaction->customer_id = $request->customer_id;
+            $transaction->payment_method = $request->payment_method;
+            if ($lastTransaction) {
                 // Update existing transaction
-                $transaction->date =  $request->sale_date;
-                $transaction->payment_type = 'receive';
-                $transaction->particulars = 'Sale#' . $saleId;
                 $transaction->credit = $transaction->credit + $request->change_amount;
                 $transaction->debit = $transaction->debit + $request->paid;
-                $transaction->balance = $transaction->balance + ($request->change_amount - $request->paid);
-                $transaction->payment_method = $request->payment_method;
-                $transaction->save();
+                $transaction->balance = $lastTransaction->balance + ($request->change_amount - $request->paid);
             } else {
                 // Create new transaction
-                $transaction = new Transaction;
-                $transaction->date =  $request->sale_date;
-                $transaction->payment_type = 'receive';
-                $transaction->particulars = 'Sale#' . $saleId;
-                $transaction->customer_id = $request->customer_id;
                 $transaction->credit = $request->change_amount;
                 $transaction->debit = $request->paid;
                 $transaction->balance = $request->change_amount - $request->paid;
-                $transaction->payment_method = $request->payment_method;
-                $transaction->save();
             }
+            $transaction->save();
 
             return response()->json([
                 'status' => 200,
