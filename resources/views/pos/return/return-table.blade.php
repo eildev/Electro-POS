@@ -13,7 +13,7 @@
             </td>
             <td>
                 <ul>
-                    @dd($data->returnItem)
+                    {{-- @dd($data->returnItem) --}}
                     @foreach ($data->returnItem as $item)
                         <li>{{ $item->product->name ?? '' }}
                         </li>
