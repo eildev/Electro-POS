@@ -287,6 +287,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/transaction/filter/rander', 'TransactionFilterView')->name('transaction.filter.view');
         ////////Invoice///////////
         Route::get('/transaction/invoice/receipt/{id}', 'TransactionInvoiceReceipt')->name('transaction.invoice.receipt');
+        ////////Investment Route ////
+        Route::post('/add/investor', 'InvestmentStore');
+        Route::get('/get/investor', 'GetInvestor');
+
     });
     // pos setting related route
     Route::controller(PosSettingsController::class)->group(function () {
