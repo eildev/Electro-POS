@@ -88,7 +88,6 @@
                                         width: 100% !important;
                                     }
                                 </style>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-11 mb-2"> <!-- Left Section -->
