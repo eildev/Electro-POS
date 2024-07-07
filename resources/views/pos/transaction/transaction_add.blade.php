@@ -297,99 +297,82 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        document.getElementById("account_type").addEventListener("change", function() {
-            var accountType = this.value;
-            var options = '<option selected disabled value="">Select Account ID</option>';
-
-            if (accountType === "supplier") {
-                @foreach ($supplier as $supply)
-                    options += '<option  value="{{ $supply->id }}">{{ $supply->name }} </option>';
-                @endforeach
-                let transactionTypeElement = document.getElementById('transaction_type');
-                transactionTypeElement.setAttribute('disabled', true);
-                //
-                var investmentCol = document.getElementById('investment-col');
-                investmentCol.classList.add('d-none');
-                var investmentCol2 = document.getElementById('investment-col2');
-                investmentCol2.classList.add('d-none');
-                //
-            } else if (accountType === "customer") {
-                @foreach ($customer as $customers)
-                    options += '<option value="{{ $customers->id }}">{{ $customers->name }}</option>';
-                @endforeach
-                //
-                let transactionTypeElement = document.getElementById('transaction_type');
-                transactionTypeElement.setAttribute('disabled', true);
-                //
-                var investmentCol = document.getElementById('investment-col');
-                investmentCol.classList.add('d-none');
-                var investmentCol2 = document.getElementById('investment-col2');
-                investmentCol2.classList.add('d-none');
-                //
-            } else if (accountType === "other") {
-                viewInvestor()
-                //
-                let transactionTypeElement = document.getElementById('transaction_type');
-                transactionTypeElement.removeAttribute('disabled');
-                transactionTypeElement.style.backgroundColor = 'transparent !important';
-                //
-                var investmentCol = document.getElementById('investment-col');
-                investmentCol.classList.remove('d-none');
-                var investmentCol2 = document.getElementById('investment-col2');
-                investmentCol2.classList.remove('d-none');
-
-            }
-            document.getElementById("account_id").innerHTML = options;
-        });
-        //
-        // document.getElementById("account_id").addEventListener("change", function() {
-        //    var accountId = this.value;
-        //     $('#supplier-info').slideDown();
-        //   //  $('#customer-info').hide();
-        //   if (!accountId) {
-        //     $('#supplier-info').hide();;
-        // }
-        //  });
-
-        var account_id = document.querySelector('.select-account-id');
-        account_id.addEventListener('change', function() {
-            // alert('ok');
-            let accountId = this.value;
-            let account_type = document.querySelector('#account_type').value;
-            // console.log(id);
-            $.ajax({
-                url: '/getDataForAccountId',
-                method: 'GET',
-                data: {
-                    id: accountId,
-                    account_type
-                },
-                success: function(data) {
-                    // console.log(data);
-                    $('#account-details').text('Name: ' + data.info.name);
-                    $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
-                    // $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
-                    // $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
-                    if (data.info.wallet_balance > 0) {
-                        $('#total_due').text('Total Due: 0');
-                    } else {
-                        $('#total_due').text(`Total Due:  ${-(data.info.wallet_balance)}`);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Error handling
-                    console.error('Request failed:', error);
-                }
-            });
-        });
-
         $(document).ready(function() {
+            document.getElementById("account_type").addEventListener("change", function() {
+                var accountType = this.value;
+                var options = '<option selected disabled value="">Select Account ID</option>';
 
-            // future date is disabled 
-            flatpickr("#datepicker", {
-                dateFormat: "Y-m-d",
-                maxDate: "today",
+                if (accountType === "supplier") {
+                    @foreach ($supplier as $supply)
+                        options += '<option  value="{{ $supply->id }}">{{ $supply->name }} </option>';
+                    @endforeach
+                    let transactionTypeElement = document.getElementById('transaction_type');
+                    transactionTypeElement.setAttribute('disabled', true);
+                    //
+                    var investmentCol = document.getElementById('investment-col');
+                    investmentCol.classList.add('d-none');
+                    var investmentCol2 = document.getElementById('investment-col2');
+                    investmentCol2.classList.add('d-none');
+                    //
+                } else if (accountType === "customer") {
+                    @foreach ($customer as $customers)
+                        options += '<option value="{{ $customers->id }}">{{ $customers->name }}</option>';
+                    @endforeach
+                    //
+                    let transactionTypeElement = document.getElementById('transaction_type');
+                    transactionTypeElement.setAttribute('disabled', true);
+                    //
+                    var investmentCol = document.getElementById('investment-col');
+                    investmentCol.classList.add('d-none');
+                    var investmentCol2 = document.getElementById('investment-col2');
+                    investmentCol2.classList.add('d-none');
+                    //
+                } else if (accountType === "other") {
+                    viewInvestor();
+                    //
+                    let transactionTypeElement = document.getElementById('transaction_type');
+                    transactionTypeElement.removeAttribute('disabled');
+                    transactionTypeElement.style.backgroundColor = 'transparent !important';
+                    //
+                    var investmentCol = document.getElementById('investment-col');
+                    investmentCol.classList.remove('d-none');
+                    var investmentCol2 = document.getElementById('investment-col2');
+                    investmentCol2.classList.remove('d-none');
+
+                }
+                document.getElementById("account_id").innerHTML = options;
             });
+            //
+
+
+            $(document).on('change', '.select-account-id', function() {
+                let accountId = this.value;
+                let account_type = document.querySelector('#account_type').value;
+                $.ajax({
+                    url: '/getDataForAccountId',
+                    method: 'GET',
+                    data: {
+                        id: accountId,
+                        account_type
+                    },
+                    success: function(data) {
+                        // console.log(data);
+                        $('#account-details').text('Name: ' + data.info.name);
+                        $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
+                        // $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
+                        // $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
+                        if (data.info.wallet_balance > 0) {
+                            $('#total_due').text('Total Due: 0');
+                        } else {
+                            $('#total_due').text(`Total Due:  ${-(data.info.wallet_balance)}`);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Error handling
+                        console.error('Request failed:', error);
+                    }
+                });
+            })
 
             document.querySelector('#transactionfilter').addEventListener('click', function(e) {
                 e.preventDefault();
