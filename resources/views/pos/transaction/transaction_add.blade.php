@@ -359,12 +359,10 @@
                         // console.log(data);
                         $('#account-details').text('Name: ' + data.info.name);
                         $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
-                        // $('#total_invoice_due').text('Total Invoice Due: '+ data.info.opening_receivable);
-                        // $('#personal_balance').text('Personal Balance: '+ data.info.wallet_balance);
                         if (data.info.wallet_balance > 0) {
-                            $('#total_due').text('Total Due: 0');
+                            $('#total_due').text(`Total Due:  ${data.info.wallet_balance}`);
                         } else {
-                            $('#total_due').text(`Total Due:  ${-(data.info.wallet_balance)}`);
+                            $('#total_due').text('Total Due: 0');
                         }
                     },
                     error: function(xhr, status, error) {

@@ -29,11 +29,9 @@ class CustomerController extends Controller
         $customer->phone = $request->phone;
         $customer->email = $request->email;
         $customer->address = $request->address;
-        // $customer->opening_receivable = $request->wallet_balance ?? 0;
         $customer->opening_payable = $request->wallet_balance ?? 0;
-        $customer->wallet_balance = $customer->wallet_balance - $request->wallet_balance ?? 0;
+        $customer->wallet_balance = $request->wallet_balance ?? 0;
         $customer->total_receivable = $request->wallet_balance ?? 0;
-        // $customer->total_payable = $request->wallet_balance ?? 0;
         $customer->created_at = Carbon::now();
         $customer->save();
         $notification = array(

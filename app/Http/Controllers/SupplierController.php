@@ -34,7 +34,7 @@ class SupplierController extends Controller
             $supplier->opening_receivable = 0;
             $opening_receivable = $request->opening_receivable ?? 0;
             $supplier->total_receivable = $opening_receivable;
-            $supplier->wallet_balance = $supplier->wallet_balance - $opening_receivable;
+            $supplier->wallet_balance = $opening_receivable;
             $supplier->opening_payable = $opening_receivable;
             $supplier->total_payable = 0;
             $supplier->save();
@@ -86,10 +86,6 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->phone = $request->phone;
             $supplier->address = $request->address;
-            // $supplier->opening_receivable = $request->opening_receivable;
-            // $supplier->opening_payable = $request->opening_payable;
-            // $supplier->total_receivable = $supplier->total_receivable + $request->opening_receivable;
-            // $supplier->total_payable = $supplier->total_payable + $request->opening_payable;
             $supplier->save();
             return response()->json([
                 'status' => 200,

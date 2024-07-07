@@ -428,7 +428,7 @@
                         if (supplier.wallet_balance > 0) {
                             $('.previous_due').text(supplier.wallet_balance);
                         } else {
-                            $('.previous_due').text(-(supplier.wallet_balance));
+                            $('.previous_due').text(0);
                         }
                     }
                 });

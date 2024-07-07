@@ -22,9 +22,8 @@ class PurchaseController extends Controller
     }
     public function store(Request $request)
     {
-        // $transaction = Transaction::where('supplier_id', $request->supplier_id)->first();
-        // dd($transaction);
 
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
             'date' => 'required',
@@ -107,6 +106,8 @@ class PurchaseController extends Controller
                 $accountTransaction->balance = $oldBalance->balance - $request->total_payable;
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
+
+
                 // get Transaction Model
                 $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();
                 $transaction = new Transaction;
@@ -116,8 +117,8 @@ class PurchaseController extends Controller
                 $transaction->supplier_id = $request->supplier_id;
                 $transaction->payment_method = $request->payment_method;
                 if ($lastTransaction) {
-                    $transaction->credit = $lastTransaction->credit + $request->sub_total;
                     $transaction->debit = $lastTransaction->debit + $request->total_payable;
+                    $transaction->credit = $lastTransaction->credit + $request->sub_total;
                     $transaction->balance = $lastTransaction->balance + ($request->sub_total - $request->total_payable);
                 } else {
                     $transaction->credit = $request->sub_total;
@@ -130,7 +131,7 @@ class PurchaseController extends Controller
                 $supplier = Supplier::findOrFail($request->supplier_id);
                 $supplier->total_receivable = $supplier->total_receivable + $request->sub_total;
                 $supplier->total_payable = $supplier->total_payable + $request->total_payable;
-                $supplier->wallet_balance = $supplier->wallet_balance - ($request->sub_total - $request->total_payable);
+                $supplier->wallet_balance = $supplier->wallet_balance + ($request->sub_total - $request->total_payable);
                 $supplier->save();
 
 
