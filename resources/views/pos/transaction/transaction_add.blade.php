@@ -385,7 +385,7 @@
 
         $(document).ready(function() {
 
-            // future date is disabled 
+            // future date is disabled
             flatpickr("#datepicker", {
                 dateFormat: "Y-m-d",
                 maxDate: "today",
