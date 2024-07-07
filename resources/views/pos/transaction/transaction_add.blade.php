@@ -18,7 +18,6 @@
     <link rel="stylesheet" type="text/css" media="print">
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-
         <li class="nav-item">
             <a class="nav-link active" id="profile-tab" data-bs-toggle="tab" href="#profile" style="background: "
                 role="tab" aria-controls="profile" aria-selected="false">Balance Transfer</a>
@@ -30,8 +29,88 @@
                     aria-selected="true">Balance History</a>
             </li>
         @endif
+        <li class="nav-item">
+            <a class="nav-link " id="investor-tab" data-bs-toggle="tab" href="#investor" role="tab" aria-controls="investor"
+                aria-selected="true">Investor History</a>
+        </li>
     </ul>
     <div class="tab-content border border-print border-top-0 p-3" id="myTabContent">
+        <div class="tab-pane fade" id="investor" role="tabpanel" aria-labelledby="investor-tab">
+            <div class="row">
+                {{-- ////list// --}}
+                <div>
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-title text-info ">Investor History</h6>
+                                <div class="table-responsive">
+                                    <table id="example" class="table">
+                                        <thead class="action">
+                                            <tr>
+                                                <th>SN</th>
+                                                <th>Name</th>
+                                                <th>Transaction Date & Time</th>
+                                                <th>Phone</th>
+                                                <th>Transaction Type</th>
+                                                <th>Debit</th>
+                                                <th>Crdit</th>
+                                                <th>Balance</th>
+                                                <th class="actions">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="showData">
+                                            @if ($investors->count() > 0)
+                                                @foreach ($investors as $key => $investor)
+                                                    <tr>
+                                                        <td>{{ $key + 1 }}</td>
+                                                        <td>{{ $investor->name ?? '' }}</td>
+                                                        @php
+                                                        $dacTimeZone = new DateTimeZone('Asia/Dhaka');
+                                                        $created_at = optional($investor->created_at)->setTimezone($dacTimeZone);
+                                                        $formatted_date = optional($investor->created_at)->format('d F Y') ?? '-';
+                                                        $formatted_time = $created_at ? $created_at->format('h:i A') : '-';
+                                                        @endphp
+
+                                                        <td>{{ $formatted_date  ?? '-'}} <Span style="color:brown">:</Span>
+                                                            {{ $formatted_time ?? '' }}</td>
+                                                        <td>{{ $investor->phone ?? '-' }}</td>
+                                                        <td>{{ $investor->type ?? '-' }}</td>
+                                                        <td>{{ $investor->debit ?? '-' }}</td>
+                                                        <td>{{ $investor->credit ?? '-' }}</td>
+                                                        <td>{{ $investor->balance ?? '-' }}</td>
+                                                        <td class="actions">
+                                                            <a href="{{route('investor.invoice',$investor->id)}}"
+                                                                class="btn btn-sm btn-primary " title="Print">
+                                                                <i class="fa fa-print"></i><span style="padding-left: 5px">Receipt</span>
+                                                            </a>
+
+                                                            <a href=" id="delete"
+                                                                class="btn btn-sm btn-danger " title="Delete">
+                                                                Delete
+                                                            </a>
+
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="12">
+                                                        <div class="text-center text-warning mb-2">Data Not Found</div>
+
+                                                    </td>
+                                                </tr>
+
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
         <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div class="row">
                 <div class="col-md-12  grid-margin stretch-card filter_table">
@@ -127,18 +206,6 @@
                             <form id="myValidForm" action="{{ route('transaction.store') }}" method="post">
                                 @csrf
                                 <div class="row">
-                                    <!-- Col -->
-                                    {{-- <div class="col-sm-12">
-                                        <div class="mb-3 form-valid-groups">
-                                            <label class="form-label">Personal/Direct Transaction</label>
-                                            <select class="form-select"data-width="100%" name="dirrect_transaction"
-                                                aria-invalid="false">
-                                                <option value="no">No</option>
-                                                <option value="yes">Yes</option>
-
-                                            </select>
-                                        </div>
-                                    </div><!-- Col --> --}}
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
                                             <label class="form-label">Transaction Date<span

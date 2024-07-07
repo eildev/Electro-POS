@@ -167,7 +167,7 @@ class TransactionController extends Controller
                     'debit' =>  $oldDebit,
                     'balance' => $newBalance,
                 ]);
-                // account transaction 
+                // account transaction
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $investor->id;
@@ -289,5 +289,9 @@ class TransactionController extends Controller
             'message' => 'Successfully save',
             'allData' => $data
         ]);
+    }
+    public function InvestorInvoice($id){
+        $investors = Investor::findOrFail($id);
+        return view('pos.investor.investor-invoice', compact('investors'));
     }
 }

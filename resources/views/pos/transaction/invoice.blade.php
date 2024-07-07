@@ -18,9 +18,11 @@
                 <address>
                     F/5
                     <br>
-                    Phone : <strong>-------</strong>
+                    Phone : <strong>{{ $phone ?? '-' }}</strong>
                     <br>
-                    Email : <strong>eilbangladesh@gmail.com</strong>
+                    Email : <strong>{{ $email ?? '-' }}</strong>
+                    <br>
+                    Address : <strong>{{$address ?? 'Banasree' }}</strong>
                 </address>
             </div>
             <table class="table payment-invoice-header mt-2">

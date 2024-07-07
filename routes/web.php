@@ -290,18 +290,19 @@ Route::middleware('auth')->group(function () {
         ////////Investment Route ////
         Route::post('/add/investor', 'InvestmentStore');
         Route::get('/get/investor', 'GetInvestor');
+        Route::get('/get/invoice/{id}', 'InvestorInvoice')->name('investor.invoice');
 
     });
     // pos setting related route
     Route::controller(PosSettingsController::class)->group(function () {
         Route::get('/pos/settings/add', 'PosSettingsAdd')->name('pos.settings.add');
-        // Route::get('/pos/settings/add', 'PosSettingsAdd')->name('pos.settings.add');
         Route::post('/pos/settings/store', 'PosSettingsStore')->name('pos.settings.store');
         Route::get('/pos/settings/view', 'PosSettingsView')->name('pos.settings.view');
         Route::get('/pos/settings/edit/{id}', 'PosSettingsEdit')->name('pos.settings.edit');
         Route::post('/pos/settings/update/{id}', 'PosSettingsUpdate')->name('pos.settings.update');
         Route::get('/pos/settings/delete/{id}', 'PosSettingsDelete')->name('pos.settings.delete');
         Route::post('/pos/switch_mode', 'switch_mode')->name('switch_mode');
+        Route::get('/invoice/settings', 'PosSettingsInvoice')->name('invoice.settings');
     });
     // sale related routes
     Route::controller(SaleController::class)->group(function () {

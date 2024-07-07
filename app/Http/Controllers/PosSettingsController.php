@@ -162,6 +162,8 @@ class PosSettingsController extends Controller
         ];
         return redirect()->back()->with($notification);
     }//
-
+    public function PosSettingsInvoice(){
+        return view('pos.pos_settings.invoice1');
+    }
 
 }
