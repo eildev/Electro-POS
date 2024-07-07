@@ -5,7 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
-class ProductCategorySeeder extends Seeder
+
+class CategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,19 +15,19 @@ class ProductCategorySeeder extends Seeder
     {
         $productCategorys = [
             [
-            'id' => 1,
-            'name' => 'Clothing',
-            'slug' => 'clothing',
+                'id' => 1,
+                'name' => 'Clothing',
+                'slug' => 'clothing',
             ],
             [
-            'id' => 2,
-            'name' => 'Electronics',
-            'slug' => 'electronics',
+                'id' => 2,
+                'name' => 'Electronics',
+                'slug' => 'electronics',
             ],
             [
-            'id' => 3,
-            'name' => 'Food',
-            'slug' => 'food',
+                'id' => 3,
+                'name' => 'Food',
+                'slug' => 'food',
             ],
         ];
 

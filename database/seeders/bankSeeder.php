@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Bank;
+
 class BankSeeder extends Seeder
 {
     /**
@@ -14,15 +15,15 @@ class BankSeeder extends Seeder
     {
         $banks = [
             [
-            'id' => 1,
-            'name' => 'Cash',
-            'branch_name' => 'Dhaka',
-            'manager_name' => 'No Name',
-            'phone_number' => '0111113333',
-            'account' => '343535',
-            'email' => 'demo@gmail.com',
-            'opening_balance' => '100000',
-            'purpose' => 'Cash',
+                'id' => 1,
+                'name' => 'Cash',
+                'branch_name' => 'Dhaka',
+                'manager_name' => 'No Name',
+                'phone_number' => '0111113333',
+                'account' => '343535',
+                'email' => 'demo@gmail.com',
+                'opening_balance' => '00',
+                'purpose' => 'Cash',
             ],
             [
                 'id' => 2,
@@ -32,7 +33,7 @@ class BankSeeder extends Seeder
                 'phone_number' => '0111113333',
                 'account' => '343535',
                 'email' => 'demo@gmail.com',
-                'opening_balance' => '100000',
+                'opening_balance' => '00',
                 'purpose' => 'bKash',
             ],
             [
@@ -43,7 +44,7 @@ class BankSeeder extends Seeder
                 'phone_number' => '0111113333',
                 'account' => '343535',
                 'email' => 'demo@gmail.com',
-                'opening_balance' => '100000',
+                'opening_balance' => '00',
                 'purpose' => 'Nagad',
             ],
             [
@@ -54,7 +55,7 @@ class BankSeeder extends Seeder
                 'phone_number' => '0111113333',
                 'account' => '343535',
                 'email' => 'demo@gmail.com',
-                'opening_balance' => '100000',
+                'opening_balance' => '00',
                 'purpose' => 'rocket',
             ],
         ];
