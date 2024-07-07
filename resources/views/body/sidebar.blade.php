@@ -576,15 +576,37 @@
                     </div>
                 </li>
             @endif
-            @if (Auth::user()->can('settings.menu'))
-                <li class="nav-item">
-                    <a href="{{ route('pos.settings.add') }}"
-                        class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
-                        <i class="ms-2 ms-2 link-icon" data-feather="settings"></i>
-                        <span class="link-title">Settings</span>
-                    </a>
-                </li>
-            @endif
+              <!---Admin Manage--->
+              @if (Auth::user()->can('settings.menu'))
+              <li class="nav-item">
+                  <a class="nav-link {{ request()->routeIs('setting*') ? '' : 'collapsed' }}"
+                      data-bs-toggle="collapse" href="#setting-manage" role="button" aria-expanded="false"
+                      aria-controls="emails">
+                      <i class="ms-2 ms-2 link-icon" data-feather="settings"></i>
+                      <span class="link-title">Setting Manage</span>
+                      <i class="link-arrow" data-feather="chevron-down"></i>
+                  </a>
+                  <div class="collapse {{ request()->routeIs('setting*') ? 'show' : '' }}" id="setting-manage">
+                      <ul class="nav sub-menu">
+                          <li class="nav-item">
+                            <a href="{{ route('pos.settings.add') }}"
+                                class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
+                                <span class="link-title">Settings</span>
+                            </a>
+                        </li>
+
+                          <li class="nav-item">
+                            <a href="{{ route('invoice.settings')}}"
+                                class="nav-link {{ request()->routeIs('invoice.settings') ? 'nav_active' : '' }}">
+                                <span class="link-title">Invoice</span>
+                            </a>
+                        </li>
+
+                      </ul>
+                  </div>
+              </li>
+          @endif
+
             @if (Auth::user()->can('branch.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('branch.view') ? 'nav_active' : '' }}"

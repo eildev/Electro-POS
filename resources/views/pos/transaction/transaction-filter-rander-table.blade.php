@@ -22,11 +22,13 @@
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
                                     @if ($trans->customer_id != null)
-                                        <td> Customer <br> Name: {{ $trans['customer']['name'] ?? '' }} <br> Phone:
-                                            {{ $trans['customer']['phone'] ?? '' }}</td>
+                                        <td> Customer <br> Name: {{ $trans['customer']['name'] ?? '-' }} <br> Phone:
+                                            {{ $trans['customer']['phone'] ?? '-' }}</td>
                                     @elseif ($trans->supplier_id != null)
-                                        <td>Supplier <br> Name: {{ $trans['supplier']['name'] ?? '' }} <br> Phone:
-                                            {{ $trans['supplier']['phone'] ?? '' }}</td>
+                                        <td>Supplier <br> Name: {{ $trans['supplier']['name'] ?? '-' }} <br> Phone:
+                                            {{ $trans['supplier']['phone'] ?? '-' }}</td>
+                                            @else
+                                            <td></td>
                                     @endif
                                     @php
                                     $dacTimeZone = new DateTimeZone('Asia/Dhaka');
@@ -35,14 +37,14 @@
                                     $formatted_time = $created_at ? $created_at->format('h:i A') : '';
                                     @endphp
 
-                                    <td>{{ $formatted_date  ?? ''}} <Span style="color:brown">:</Span>
-                                        {{ $formatted_time ?? '' }}</td>
+                                    <td>{{ $formatted_date  ?? '-'}} <Span style="color:brown">:</Span>
+                                        {{ $formatted_time ?? '-' }}</td>
 
                                     <td>
                                         @if ($trans->payment_type == 'pay')
-                                        {{ $trans->debit }}
+                                        {{ $trans->debit ?? '-' }}
                                         @elseif($trans->payment_type == 'receive')
-                                        {{ $trans->credit }}
+                                        {{ $trans->credit  ?? '-'}}
                                         @endif
                                     </td>
                                     <td>
