@@ -27,7 +27,7 @@
                                     <th>Name</th>
                                     <th>Phone</th>
                                     <th>Due</th>
-                                    <th>Return</th>
+                                    <th>Balance</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -222,14 +222,14 @@
                                         <td>${supplier.name ?? ""}</td>
                                         <td>${supplier.phone ?? ""}</td>
                                         <td>
-                                            <span style="color: ${supplier.wallet_balance < 0 ? 'red' : ''};">
-                                                ${supplier.wallet_balance < 0  ? (-supplier.wallet_balance) : 0}
+                                            <span style="color: ${supplier.wallet_balance > 0 ? 'red' : ''};">
+                                                ${supplier.wallet_balance > 0  ? (supplier.wallet_balance) : 0}
                                             </span>
                                         </td>
                                         <td>
                                             <span>
-                                                ${supplier.wallet_balance > 0 ? `${supplier.wallet_balance} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
-                                                ${supplier.wallet_balance < 0 ? ` ${-(supplier.wallet_balance)} <br/> সাপ্লায়ার আপানার <br/> থেকে পাবেন` : ''}
+                                                ${supplier.wallet_balance > 0 ? `সাপ্লায়ার আপানার <br/> থেকে পাবেন <br/> ${supplier.wallet_balance}` : ''}
+                                                ${supplier.wallet_balance < 0 ? ` ${-(supplier.wallet_balance)} <br/> আপনি সাপ্লায়ার <br/> থেকে পাবেন` : ''}
                                                 ${supplier.wallet_balance == 0 ? `${supplier.wallet_balance}` : ''}
                                             </span>
                                         </td>

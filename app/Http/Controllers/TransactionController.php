@@ -57,7 +57,7 @@ class TransactionController extends Controller
                 // dd($request->account_id);
                 $currentBalance = $supplier->wallet_balance;
                 $currentBalance = $currentBalance ?? 0;
-                $newBalance = floatval($currentBalance) + floatval($request->amount);
+                $newBalance = floatval($currentBalance) - floatval($request->amount);
                 $supplier->wallet_balance = $newBalance;
                 $newPayble = $supplier->total_payable ?? 0;
                 $updatePaybele = floatval($newPayble) + floatval($request->amount);
@@ -66,7 +66,7 @@ class TransactionController extends Controller
                 $tracBalance = Transaction::where('supplier_id', $supplier->id)->latest()->first();
                 if ($tracBalance !== null) {
                     $debitBalance = floatval($tracBalance->balance);
-                    $updateTraBalance = ($debitBalance ?? 0) + floatval($request->amount);
+                    $updateTraBalance = ($debitBalance ?? 0) - floatval($request->amount);
                 } else {
                     $updateTraBalance = floatval($request->amount); // Set to default value or handle
                 }
@@ -110,10 +110,16 @@ class TransactionController extends Controller
             }
             //End
         } else if ($request->account_type == 'customer') {
-            //Here change
+            //Customer Table Update
             $customer = Customer::findOrFail($request->account_id);
-            $currentBalance = $customer->wallet_balance;
-            $newBalance = $currentBalance + $request->amount;
+            $newBalance = $customer->wallet_balance - $request->amount;
+            $newPayable = $customer->total_payable + $request->amount;
+            $customer->update([
+                'wallet_balance' => $newBalance,
+                'total_payable' => $newPayable
+            ]);
+
+            // transaction crud Update 
             $tracsBalance = Transaction::where('customer_id', $customer->id)->latest()->first();
             $transBalance = $tracsBalance->balance ?? 0;
             $newTrasBalance = $transBalance + $request->amount;
@@ -126,7 +132,7 @@ class TransactionController extends Controller
                 'balance' => $newTrasBalance,
                 'customer_id' => $request->account_id
             ]);
-            $customer->update(['wallet_balance' => $newBalance]);
+
             //account Transaction Crud
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;

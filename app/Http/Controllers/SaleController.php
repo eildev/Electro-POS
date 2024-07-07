@@ -74,7 +74,8 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+        // dd($request->paid);
+
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|numeric',
             'sale_date' => 'required',
@@ -206,7 +207,7 @@ class SaleController extends Controller
             $customer = Customer::findOrFail($request->customer_id);
             $customer->total_receivable = $customer->total_receivable + $request->total;
             $customer->total_payable = $customer->total_payable + $request->paid;
-            $customer->wallet_balance = $customer->wallet_balance - ($request->total - $request->paid);
+            $customer->wallet_balance = $customer->wallet_balance + ($request->total - $request->paid);
             $customer->save();
 
             // actual Payment
@@ -227,7 +228,6 @@ class SaleController extends Controller
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-            // dd($oldBalance->balance);
             $accountTransaction->balance = $oldBalance->balance + $request->paid;
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
@@ -241,14 +241,14 @@ class SaleController extends Controller
             $transaction->payment_method = $request->payment_method;
             if ($lastTransaction) {
                 // Update existing transaction
-                $transaction->credit = $transaction->credit + $request->change_amount;
+                $transaction->credit = $transaction->credit + $request->total;
                 $transaction->debit = $transaction->debit + $request->paid;
-                $transaction->balance = $lastTransaction->balance + ($request->change_amount - $request->paid);
+                $transaction->balance = $lastTransaction->balance - ($request->total - $request->paid);
             } else {
                 // Create new transaction
-                $transaction->credit = $request->change_amount;
+                $transaction->credit = $request->total;
                 $transaction->debit = $request->paid;
-                $transaction->balance = $request->change_amount - $request->paid;
+                $transaction->balance = $request->total - $request->paid;
             }
             $transaction->save();
 
@@ -301,7 +301,9 @@ class SaleController extends Controller
     }
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+
+
+
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
             'products' => 'required',

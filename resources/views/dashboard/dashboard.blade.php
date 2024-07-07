@@ -368,7 +368,10 @@
                 @php
                     $mysales = App\Models\Sale::whereDate('created_at', Carbon::now())->get();
                     $mypurchase = App\Models\Purchase::whereDate('created_at', Carbon::now())->get();
+                    // dd($mypurchase);
                     $myexpenses = App\Models\Expense::whereDate('created_at', Carbon::now())->get();
+                    $customer = App\Models\Customer::whereDate('created_at', Carbon::now())->get();
+                    $supplier = App\Models\Supplier::whereDate('created_at', Carbon::now())->get();
                 @endphp
                 <div class="col-md-3  col-xl-3 col-6  grid-margin stretch-card">
                     <div class="card" style="">
@@ -380,11 +383,11 @@
                                 <div class="col-md-8 col-12 p-0">
                                     <p>Total Sales : {{ $mysales->sum('final_receivable') }}</p>
                                     <p>Paid : {{ $mysales->sum('paid') }}</p>
-                                    <p>Due: {{ $mysales->sum('due') }}</p>
+                                    <p>Due: {{ $customer->sum('wallet_balance') }}</p>
                                     <p>----------------------------------</p>
                                     <p>Total Purchase : {{ $mypurchase->sum('grand_total') }}</p>
                                     <p>Paid : {{ $mypurchase->sum('paid') }}</p>
-                                    <p>Due : {{ $mypurchase->sum('due') }}</p>
+                                    <p>Due : {{ $supplier->sum('wallet_balance') }}</p>
                                     <p>----------------------------------</p>
                                     <p>Total Expenses : {{ $myexpenses->sum('amount') }}</p>
                                 </div>

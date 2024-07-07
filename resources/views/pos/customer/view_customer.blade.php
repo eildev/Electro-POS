@@ -38,11 +38,11 @@
                                             <td>{{ $customer['branch']['name'] ?? '' }}</td>
                                             <td>
                                                 {{-- @dd($customer->wallet_balance) --}}
-                                                @if ($customer->wallet_balance < 0)
+                                                @if ($customer->wallet_balance > 0)
                                                     <span class="text-danger">৳
-                                                        {{ -$customer->wallet_balance ?? 0 }}</span>
+                                                        {{ $customer->wallet_balance ?? 0 }}</span>
                                                 @else
-                                                    <span>৳ {{ $customer->wallet_balance ?? 0 }}</span>
+                                                    <span>৳ 0</span>
                                                 @endif
                                             </td>
                                             <td>
@@ -50,13 +50,13 @@
                                                     <span>
                                                         {{ $customer->wallet_balance ?? 0 }}
                                                         <br>
-                                                        আপনার থেকে <br> কাস্টমার পাবেন।
+                                                        আপনি কাস্টমার <br> থেকে পাবেন।
                                                     </span>
                                                 @elseif ($customer->wallet_balance < 0)
                                                     <span>
                                                         {{ -$customer->wallet_balance ?? 0 }}
                                                         <br>
-                                                        আপনি কাস্টমার <br> থেকে পাবেন।
+                                                        আপনার থেকে <br> কাস্টমার পাবেন।
                                                     </span>
                                                 @else
                                                     <span>
