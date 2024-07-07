@@ -26,10 +26,10 @@ class DatabaseSeeder extends Seeder
             RoleHasPermission::class,
             ModelHasRolesSeeder::class,
             BankSeeder::class,
+            CategorySeeder::class,
             SizeSeeder::class,
             UnitSeeder::class,
             ExpenseCategorySeeder::class,
-            ProductCategorySeeder::class,
         ]);
     }
 }
