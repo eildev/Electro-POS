@@ -18,18 +18,18 @@ class DatabaseSeeder extends Seeder
         // 'email' => 'test@example.com',
         // ]);
         $this->call([
-            branchSeed::class,
-            userSeed::class,
-            settingSeed::class,
+            BranchSeed::class,
+            UserSeed::class,
+            SettingSeed::class,
             PermissionSeeder::class,
             RoleSeeder::class,
             RoleHasPermission::class,
             ModelHasRolesSeeder::class,
-            bankSeeder::class,
-            sizeSeeder::class,
-            unitSeeder::class,
+            BankSeeder::class,
+            SizeSeeder::class,
+            UnitSeeder::class,
             ExpenseCategorySeeder::class,
-            productCategorySeeder::class,
+            ProductCategorySeeder::class,
         ]);
     }
 }
