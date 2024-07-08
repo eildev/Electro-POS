@@ -598,9 +598,22 @@
                           <li class="nav-item">
                             <a href="{{ route('invoice.settings')}}"
                                 class="nav-link {{ request()->routeIs('invoice.settings') ? 'nav_active' : '' }}">
-                                <span class="link-title">Invoice</span>
+                                <span class="link-title">Invoice-1</span>
                             </a>
-                        </li>
+                          </li>
+
+                          <li class="nav-item">
+                            <a href="{{ route('invoice2.settings')}}"
+                                class="nav-link {{ request()->routeIs('invoice2.settings') ? 'nav_active' : '' }}">
+                                <span class="link-title">Invoice-2</span>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a href="{{ route('invoice3.settings')}}"
+                                class="nav-link {{ request()->routeIs('invoice3.settings') ? 'nav_active' : '' }}">
+                                <span class="link-title">Invoice-3</span>
+                            </a>
+                          </li>
 
                       </ul>
                   </div>

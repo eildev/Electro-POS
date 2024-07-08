@@ -165,5 +165,11 @@ class PosSettingsController extends Controller
     public function PosSettingsInvoice(){
         return view('pos.pos_settings.invoice1');
     }
+    public function PosSettingsInvoice2(){
+        return view('pos.pos_settings.invoice2');
+    }
+    public function PosSettingsInvoice3(){
+        return view('pos.pos_settings.invoice3');
+    }
 
 }

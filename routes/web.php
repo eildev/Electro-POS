@@ -303,6 +303,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pos/settings/delete/{id}', 'PosSettingsDelete')->name('pos.settings.delete');
         Route::post('/pos/switch_mode', 'switch_mode')->name('switch_mode');
         Route::get('/invoice/settings', 'PosSettingsInvoice')->name('invoice.settings');
+        Route::get('/invoice2/settings', 'PosSettingsInvoice2')->name('invoice2.settings');
+        Route::get('/invoice3/settings', 'PosSettingsInvoice3')->name('invoice3.settings');
     });
     // sale related routes
     Route::controller(SaleController::class)->group(function () {
