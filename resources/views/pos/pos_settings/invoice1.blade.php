@@ -6,13 +6,36 @@
 <div class="card">
 <div class="card-body">
 <div class="container-fluid d-flex justify-content-between">
-  <div class="col-lg-3 ps-0">
-    <a href="#" class="noble-ui-logo d-block mt-3">Noble<span>UI</span></a>
+  <div class="col-lg-3 ps-0 " >
+   <span>
+    @if (!empty($invoice_logo_type))
+    @if ($invoice_logo_type == 'Name')
+        <a href="#" class="noble-ui-logo logo-light d-block mt-3">{{ $siteTitle }}</a>
+    @elseif($invoice_logo_type == 'Logo')
+        @if (!empty($logo))
+            <img class="margin_left_m_14" height="90" width="150" src="{{ url($logo) }}"
+                alt="logo">
+        @else
+            <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
+        @endif
+    @elseif($invoice_logo_type == 'Both')
+        @if (!empty($logo))
+            <img class="margin_left_m_14" height="90" width="150"
+                src="{{ url($logo) }}" alt="logo">
+        @endif
+        <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
+    @endif
+@else
+   </span>
+    <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
+@endif
+
     <p class="mt-1 mb-1"><b>NobleUI Themes</b></p>
     <p>108,<br> Great Russell St,<br>London, WC1B 3NA.</p>
     <h5 class="mt-5 mb-2 text-muted">Invoice to :</h5>
     <p>Joseph E Carr,<br> 102, 102  Crown Street,<br> London, W3 3PR.</p>
   </div>
+
   <div class="col-lg-3 pe-0">
     <h4 class="fw-bolder text-uppercase text-end mt-4 mb-2">invoice</h4>
     <h6 class="text-end mb-5 pb-4"># INV-002308</h6>
@@ -21,17 +44,19 @@
     <h6 class="mb-0 mt-3 text-end fw-normal mb-2"><span class="text-muted">Invoice Date :</span> 25rd Jan 2022</h6>
     <h6 class="text-end fw-normal"><span class="text-muted">Due Date :</span> 12th Jul 2022</h6>
   </div>
+
 </div>
+
 <div class="container-fluid mt-5 d-flex justify-content-center w-100">
   <div class="table-responsive w-100">
       <table class="table table-bordered">
-        <thead class="bg-color">
+        <thead class="bg-color text-color">
           <tr>
-              <th>#</th>
-              <th>Description</th>
-              <th class="text-end">Quantity</th>
-              <th class="text-end">Unit cost</th>
-              <th class="text-end">Total</th>
+              <th class="text-color">#</th>
+              <th class="text-color">Description</th>
+              <th class="text-end text-color">Quantity</th>
+              <th class="text-end text-color">Unit cost</th>
+              <th class="text-end text-color">Total</th>
             </tr>
         </thead>
         <tbody>
@@ -72,7 +97,7 @@
     <div class="col-md-6 ms-auto">
         <div class="table-responsive">
           <table class="table">
-              <tbody>
+              <tbody class="bg-colors">
                 <tr>
                   <td>Sub Total</td>
                   <td class="text-end">$ 14,900.00</td>
@@ -89,7 +114,7 @@
                   <td>Payment Made</td>
                   <td class="text-danger text-end">(-) $ 4,688.00</td>
                 </tr>
-                <tr class="bg-light">
+                <tr class="">
                   <td class="text-bold-800">Balance Due</td>
                   <td class="text-bold-800 text-end">$ 12,000.00</td>
                 </tr>
@@ -113,14 +138,21 @@ $mode = App\models\PosSetting::all()->first();
 <style>
     @if($mode->dark_mode == 2)
     .bg-color{
+    }
+    .text-color{
 
     }
-@else
-
+    @else
     .bg-color{
         background-color: rgba(121, 169, 197, .92)
     }
-@endif
+    .text-color{
+       color: #ffffff!important;
+    }
+    .bg-colors{
+        background-color: rgba(193, 193, 193, 0.607)
+    }
+    @endif
 </style>
 @endsection
 
