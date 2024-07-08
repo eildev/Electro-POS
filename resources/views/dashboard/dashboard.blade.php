@@ -29,6 +29,9 @@
                 margin-bottom: 4px
             }
 
+            .table {
+                border-bottom-width: 0 !important;
+            }
         }
     </style>
     @php
@@ -104,59 +107,86 @@
                     $dueCollection = App\Models\Transaction::where('particulars', 'SaleDue')
                         ->whereDate('created_at', Carbon::now())
                         ->get();
+                    $otherCollection = App\Models\Transaction::where('particulars', 'OthersReceive')
+                        ->whereDate('created_at', Carbon::now())
+                        ->get();
                     $todayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::now())->get();
                     $yesterdayBalance = App\Models\AccountTransaction::whereDate(
                         'created_at',
                         Carbon::yesterday(),
                     )->get();
-
+                    $todayEmployeeSalary = App\Models\EmployeeSalary::whereDate('created_at', Carbon::now())->get();
+                    $todayReturnAmount = App\Models\Returns::whereDate('created_at', Carbon::now())->get();
                 @endphp
                 {{-- ///////Today Summary ////// --}}
                 <div class="col-md-6 col-xl-6 col-6  grid-margin stretch-card">
                     <div class="card" style="">
                         <div class="card-body">
                             <h6 class="card-title">Today Summary</h6>
-                            <table class="table border-none">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Summary</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Due</th>
+                                        <th colspan="2">Incomming</th>
+                                        <th colspan="2">Outgoing</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Purpose</th>
+                                        <th>TK</th>
+                                        <th>Purpose</th>
+                                        <th>TK</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Sales</td>
-                                        <td>{{ $todaySales->sum('total') }}</td>
-                                        <td>{{ $todaySales->sum('paid') }}</td>
-                                        <td>{{ $todaySales->sum('due') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Purchase</td>
-                                        <td>{{ $todayPurchase->sum('sub_total') }}</td>
-                                        <td>{{ $todayPurchase->sum('paid') }}</td>
-                                        <td>{{ $todayPurchase->sum('due') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Exapnse</td>
-                                        <td>{{ $todayExpanse->sum('sub_total') }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Balance</td>
-                                        <td>{{ $todayBalance->sum('balance') }}</td>
+                                        <td>Previous Day Balance</td>
                                         <td>{{ $yesterdayBalance->sum('balance') }}</td>
-                                        <td>{{ $dueCollection->sum('balance') }}</td>
+                                        <td>Purchase</td>
+                                        <td>{{ $todayPurchase->sum('paid') }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Profit</td>
-                                        <td>{{ $todaySales->sum('profit') }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
+                                        <td>Paid Sales</td>
+                                        <td>{{ $todaySales->sum('paid') }}</td>
+                                        <td>Expanse</td>
+                                        <td>{{ $todayExpanse->sum('amount') }}</td>
                                     </tr>
+                                    <tr>
+                                        <td>Due Collection</td>
+                                        <td>{{ $dueCollection->sum('credit') }}</td>
+                                        <td>Salary</td>
+                                        <td>{{ $todayEmployeeSalary->sum('creadit') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Other Balance</td>
+                                        <td>{{ $otherCollection->sum('credit') }}</td>
+                                        <td>Return</td>
+                                        <td>{{ $todayReturnAmount->sum('refund_amount') }}</td>
+                                    </tr>
+                                    @php
+                                        $totalIngoing =
+                                            $yesterdayBalance->sum('balance') +
+                                            $todaySales->sum('paid') +
+                                            $dueCollection->sum('credit') +
+                                            $otherCollection->sum('credit');
+                                        $totalOutgoing =
+                                            $todayPurchase->sum('paid') +
+                                            $todayExpanse->sum('amount') +
+                                            $todayEmployeeSalary->sum('creadit') +
+                                            $todayReturnAmount->sum('refund_amount');
+                                    @endphp
+                                    <tr>
+                                        <td>Total</td>
+                                        <td>{{ $totalIngoing }}</td>
+                                        <td>Total</td>
+                                        <td>{{ $totalOutgoing }}</td>
+                                    </tr>
+
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3">Total Balance</th>
+                                        <th>{{ $totalIngoing - $totalOutgoing }}</th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
