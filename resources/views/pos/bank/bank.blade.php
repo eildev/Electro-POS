@@ -287,10 +287,10 @@
                                                 Manage
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <a href="#" class="dropdown-item"  class="btn btn-sm btn-info btn-icon bank_money_add" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+                                                <a href="#" class="dropdown-item add_money_modal_open" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
                                                                         <i class="fas fa-money-bill"></i>
                                                 Add balance</a>
-                                                <a href="#" class="dropdown-item" class=" btn btn-sm btn-primary btn-icon bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+                                                <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 Edit</a>
                                                 <a href="#"  class="dropdown-item bank_delete" data-id=${bank.id}>
@@ -449,17 +449,17 @@
 
 
             // add id in bank modal
-            $(document).on('click', '.bank_money_add', function(e) {
+            $(document).on('click', '.add_money_modal_open', function(e) {
                 e.preventDefault();
                 let id = this.getAttribute('data-id');
                 $('.add_balance').val(id);
-
             })
 
             //Add
             $('.add_balance').click(function(e) {
                 e.preventDefault();
                 let id = $(this).val();
+                // console.log(id);
                 let formData = new FormData($('#addBalaceForm')[0]);
                 $.ajaxSetup({
                     headers: {

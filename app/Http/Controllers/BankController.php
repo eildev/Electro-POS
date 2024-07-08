@@ -164,7 +164,11 @@ class BankController extends Controller
             $accountTransaction->note =  $request->note;
             $accountTransaction->credit = $request->update_balance;
             $oldBalance = AccountTransaction::where('account_id', $id)->latest('created_at')->first();
-            $accountTransaction->balance = $oldBalance->balance + $request->update_balance;
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance + $request->update_balance;
+            } else {
+                $accountTransaction->balance = $request->update_balance;
+            }
             $accountTransaction->save();
 
             return response()->json([
