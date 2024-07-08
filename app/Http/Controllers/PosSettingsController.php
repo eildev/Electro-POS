@@ -146,12 +146,12 @@ class PosSettingsController extends Controller
             'invoice_logo_type' => $request->input('invoice_logo_type'),
             'invoice_type' => $request->input('invoice_type'),
             'barcode_type' => $request->input('barcode_type'),
-            'dark_mode' => $mdVal, // Checkbox value can be checked directly
-            'discount' => $discount, // Checkbox value can be checked directly
-            'via_sale' => $via_sale, // Checkbox value can be checked directly
-            'tax' => $tax, // Checkbox value can be checked directly
-            'barcode' => $barcode, // Checkbox value can be checked directly
-            'selling_price_edit' => $selling_price_edit, // Checkbox value can be checked directly
+            'dark_mode' => $mdVal, // Checkbox value can be checked directly!
+            'discount' => $discount, // checked directly
+            'via_sale' => $via_sale, // checked directly
+            'tax' => $tax, //checked directly
+            'barcode' => $barcode, // checked directly
+            'selling_price_edit' => $selling_price_edit, // checked directly
             'low_stock' => $request->input('low_stock'),
         ];
         PosSetting::updateOrCreate(['id' => $settingId],$values);

@@ -84,10 +84,10 @@
                                                                 <i class="fa fa-print"></i><span style="padding-left: 5px">Receipt</span>
                                                             </a>
 
-                                                            <a href=" id="delete"
+                                                            {{-- <a href=" id="delete"
                                                                 class="btn btn-sm btn-danger " title="Delete">
                                                                 Delete
-                                                            </a>
+                                                            </a> --}}
 
                                                         </td>
                                                     </tr>
@@ -211,8 +211,8 @@
                                             <label class="form-label">Transaction Date<span
                                                     class="text-danger">*</span></label>
                                             <div class="input-group flatpickr" id="flatpickr-date">
-                                                <input type="date" id="datepicker" name="date" class="form-control"
-                                                    placeholder="Select date">
+                                                <input type="date" id="datepicker" name="date" class="form-control active"
+                                                    placeholder="Select date" >
                                                 <span class="input-group-text input-group-addon" data-toggle><i
                                                         data-feather="calendar"></i></span>
                                             </div>
@@ -278,11 +278,11 @@
                                     </div><!-- Col -->
 
                                     <div>
-                                        <h5 id="account-details"></h5>
-                                        <h5 id="due_invoice_count"></h5>
-                                        <h5 id="total_invoice_due"></h5>
-                                        <h5 id="personal_balance"></h5>
-                                        <h5 id="total_due"></h5>
+                                        <h5 style="display: none;" class="account-info" id="account-details"></h5>
+                                        <h5 style="display: none;" class="account-info" id="due_invoice_count"></h5>
+                                        <h5 style="display: none;" class="account-info" id="total_invoice_due"></h5>
+                                        <h5 style="display: none;" class="account-info" id="personal_balance"></h5>
+                                        <h5 style="display: none;" class="account-info" id="total_due"></h5>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="mb-3 form-valid-groups">
@@ -405,16 +405,19 @@
                     investmentCol.classList.remove('d-none');
                     var investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.remove('d-none');
-
+                    hideFunction()
                 }
                 document.getElementById("account_id").innerHTML = options;
             });
             //
-
-
+            //called it if accountType == Other
+            function hideFunction(){
+                $('.account-info').hide();
+            }
             $(document).on('change', '.select-account-id', function() {
                 let accountId = this.value;
                 let account_type = document.querySelector('#account_type').value;
+                $('.account-info').hide();
                 $.ajax({
                     url: '/getDataForAccountId',
                     method: 'GET',
@@ -423,7 +426,7 @@
                         account_type
                     },
                     success: function(data) {
-                        // console.log(data);
+
                         $('#account-details').text('Name: ' + data.info.name);
                         $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
                         if (data.info.wallet_balance > 0) {
@@ -431,6 +434,7 @@
                         } else {
                             $('#total_due').text('Total Due: 0');
                         }
+                        $('.account-info').show();
                     },
                     error: function(xhr, status, error) {
                         // Error handling
@@ -589,7 +593,6 @@
                 }
             })
         }
-
 
         const saveInvestor = document.querySelector('.save_new_investor');
         saveInvestor.addEventListener('click', function(e) {
