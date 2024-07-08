@@ -456,17 +456,17 @@
 
             })
 
-            //Add Balance
+            //Add
             $('.add_balance').click(function(e) {
                 e.preventDefault();
                 let id = $(this).val();
-                // console.log(id);
                 let formData = new FormData($('#addBalaceForm')[0]);
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+
                 $.ajax({
                     url: `/add/bank/balance/${id}`,
                     type: 'POST',
