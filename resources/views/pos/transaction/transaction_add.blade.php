@@ -211,8 +211,8 @@
                                             <label class="form-label">Transaction Date<span
                                                     class="text-danger">*</span></label>
                                             <div class="input-group flatpickr" id="flatpickr-date">
-                                                <input type="text" id="datepicker" name="date" class="form-control"
-                                                    placeholder="Select date" data-input>
+                                                <input type="date" id="datepicker" name="date" class="form-control"
+                                                    placeholder="Select date">
                                                 <span class="input-group-text input-group-addon" data-toggle><i
                                                         data-feather="calendar"></i></span>
                                             </div>
@@ -625,6 +625,11 @@
                 }
             });
         })
+        flatpickr("#datepicker", {
+        maxDate: "today",
+        disable: [
+        ]
+});
     </script>
 
     <style>

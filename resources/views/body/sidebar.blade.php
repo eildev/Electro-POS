@@ -614,6 +614,12 @@
                                 <span class="link-title">Invoice-3</span>
                             </a>
                           </li>
+                          <li class="nav-item">
+                            <a href="{{ route('invoice4.settings')}}"
+                                class="nav-link {{ request()->routeIs('invoice4.settings') ? 'nav_active' : '' }}">
+                                <span class="link-title">Invoice-4</span>
+                            </a>
+                          </li>
 
                       </ul>
                   </div>
