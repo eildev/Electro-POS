@@ -155,7 +155,7 @@ class BankController extends Controller
             $bank->opening_balance = $bank->opening_balance + $request->update_balance;
             $bank->update_balance =  $request->update_balance;
             $bank->purpose = $request->purpose;
-            $bank->save();
+            $bank->update();
 
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
