@@ -31,8 +31,27 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="text-center text-150">
-                            <i class="fa fa-book fa-2x text-success-m2 mr-1"></i>
-                            <span class="text-default-d3">Bootdey.com</span>
+                            @if (!empty($invoice_logo_type))
+                            @if ($invoice_logo_type == 'Name')
+                                <a href="#" class="noble-ui-logo logo-light d-block mt-3">{{ $siteTitle }}</a>
+                            @elseif($invoice_logo_type == 'Logo')
+                                @if (!empty($logo))
+                                    <img class="margin_left_m_14" height="90" width="150" src="{{ url($logo) }}"
+                                        alt="logo">
+                                @else
+                                    <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
+                                @endif
+                            @elseif($invoice_logo_type == 'Both')
+                                @if (!empty($logo))
+                                    <img class="margin_left_m_14" height="90" width="150"
+                                        src="{{ url($logo) }}" alt="logo">
+                                @endif
+                                <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
+                            @endif
+                        @else
+                      </span>
+                            <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
+                        @endif
                         </div>
                     </div>
                 </div>
@@ -201,7 +220,7 @@ $mode = App\models\PosSetting::all()->first();
 <style>
 
  body{
-    margin-top:20px;
+    margin-top:10px;
     color: #484b51;
 }
 
@@ -276,7 +295,7 @@ hr {
     background-color: rgba(121,169,197,.92)
 }
 .bgc-default-l4, .bgc-h-default-l4:hover {
-    background-color: #f3f8fa!important;
+    background-color: #f3f8fa;
 }
 .page-header .page-tools {
     -ms-flex-item-align: end;
@@ -318,9 +337,18 @@ hr {
     vertical-align: bottom!important;
 }
  @if($mode->dark_mode == 2)
+
  .container{
     background-color: #0C1427;
+    color: #fff;
     }
+    .bgc-default-tp1 {
+    background-color:#6868683f
+}
+.bgc-default-l4, .bgc-h-default-l4:hover {
+    background-color: #6868683f;
+    color: #fff
+}
     @else
     .container{
     background-color: #fff;

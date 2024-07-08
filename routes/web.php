@@ -303,6 +303,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/invoice/settings', 'PosSettingsInvoice')->name('invoice.settings');
         Route::get('/invoice2/settings', 'PosSettingsInvoice2')->name('invoice2.settings');
         Route::get('/invoice3/settings', 'PosSettingsInvoice3')->name('invoice3.settings');
+        Route::get('/invoice4/settings', 'PosSettingsInvoice4')->name('invoice4.settings');
     });
     // sale related routes
     Route::controller(SaleController::class)->group(function () {

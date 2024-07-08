@@ -120,7 +120,7 @@ class TransactionController extends Controller
                 'total_payable' => $newPayable
             ]);
 
-            // transaction crud Update 
+            // transaction crud Update
             $tracsBalance = Transaction::where('customer_id', $customer->id)->latest()->first();
             $transBalance = $tracsBalance->balance ?? 0;
             $newTrasBalance = $transBalance + $request->amount;
