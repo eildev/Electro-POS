@@ -270,7 +270,6 @@
                         if (banks.length > 0) {
                             $.each(banks, function(index, bank) {
                                 // Calculate the sum of account_transaction balances
-                                console.log(bank);
                                 const tr = document.createElement('tr');
                                 tr.innerHTML = `
                                     <td>${index + 1}</td>
@@ -469,7 +468,7 @@
                     }
                 });
                 $.ajax({
-                    url: `/bank/balane/add/${id}`,
+                    url: `/add/bank/balance/${id}`,
                     type: 'POST',
                     data: formData,
                     processData: false,
