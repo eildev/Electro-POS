@@ -172,8 +172,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/bank/edit/{id}', 'edit')->name('bank.edit');
         Route::post('/bank/update/{id}', 'update')->name('bank.update');
         Route::get('/bank/destroy/{id}', 'destroy')->name('bank.destroy');
-        Route::post('/bank/balane/add/{id}', 'BankBalaneAdd')->name('bank.balance.add');
-
+        Route::post('/add/bank/balance/{id}', 'BankBalanceAdd');
     });
 
     // Supplier related route
@@ -291,7 +290,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/add/investor', 'InvestmentStore');
         Route::get('/get/investor', 'GetInvestor');
         Route::get('/get/invoice/{id}', 'InvestorInvoice')->name('investor.invoice');
-
     });
     // pos setting related route
     Route::controller(PosSettingsController::class)->group(function () {

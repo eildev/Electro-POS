@@ -143,7 +143,7 @@ class BankController extends Controller
         ]);
     }
     //Bank balance Add
-    public function BankBalaneAdd(Request $request, $id)
+    public function BankBalanceAdd(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'update_balance' => 'required',
