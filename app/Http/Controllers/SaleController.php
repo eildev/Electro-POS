@@ -228,7 +228,11 @@ class SaleController extends Controller
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->paid;
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-            $accountTransaction->balance = $oldBalance->balance + $request->paid;
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance + $request->paid;
+            } else {
+                $accountTransaction->balance = $request->paid;
+            }
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
 

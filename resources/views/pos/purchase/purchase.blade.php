@@ -51,9 +51,14 @@
                             <div class="mb-3 col-md-6">
                                 @php
                                     $category = App\Models\Category::where('slug', 'via-sell')->first();
-                                    $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                        ->orderBy('stock', 'asc')
-                                        ->get();
+                                    $products = collect();
+                                    if ($category) {
+                                        $products = App\Models\Product::where('category_id', '!=', $category->id)
+                                            ->orderBy('stock', 'asc')
+                                            ->get();
+                                    } else {
+                                        $products = App\Models\Product::orderBy('stock', 'asc')->get();
+                                    }
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
                                 <select class="js-example-basic-single form-select product_select" data-width="100%"
@@ -61,17 +66,17 @@
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }}
-                                                ({{ $product->stock }}
-                                                {{ $product->unit->name }})
-                                            </option>
+                                            <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
+                                                {{ $product->unit->name }})</option>
                                         @endforeach
                                     @else
-                                        <option selected disabled>Please Add Product</option>
+                                        <option selected disabled>
+                                            Please Add Product</option>
                                     @endif
                                 </select>
                                 <span class="text-danger product_select_error"></span>
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label" for="formFile">Invoice File/Picture upload</label>
                                 <input class="form-control document_file" name="document" type="file" id="formFile"
@@ -136,25 +141,6 @@
                                                 <div class="col-md-8">
                                                     <input type="number" class="form-control discount_amount"
                                                         name="discount_amount" value="0.00" />
-                                                    {{-- @php
-                                                    $promotions = App\Models\Promotion::get();
-                                                @endphp
-                                                <select class="js-example-basic-single form-select promotion_id"
-                                                    data-width="100%" onclick="errorRemove(this);"
-                                                    onblur="errorRemove(this);">
-                                                    @if ($promotions->count() > 0)
-                                                        <option selected disabled>Select Discount</option>
-                                                        @foreach ($promotions as $promotion)
-                                                            <option value="{{ $promotion->id }}">
-                                                                {{ $promotion->promotion_name }}
-                                                                ({{ $promotion->discount_value }} /
-                                                                {{ $promotion->discount_type }})
-                                                            </option>
-                                                        @endforeach
-                                                    @else
-                                                        <option selected disabled>Please Add Product</option>
-                                                    @endif
-                                                </select> --}}
                                                 </div>
                                             </div>
                                             <div class="row align-items-center">
@@ -338,7 +324,7 @@
                                             </option>
                                         @endforeach
                                     @else
-                                        <option selected disabled>Please Add Transaction</option>
+                                        <option selected disabled>Please Add Tax</option>
                                     @endif
                                 </select>
                             </div>
