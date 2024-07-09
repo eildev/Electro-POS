@@ -50,7 +50,7 @@
                                     <input type="number" name="additional_conditions"
                                         class="form-control field_required additional_conditions"
                                         placeholder="Enter Addional Condition">
-                                </div>
+                               </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3 form-valid-groups logic_field">
