@@ -74,6 +74,7 @@ class TransactionController extends Controller
                 $transaction = Transaction::create([
                     'date' => $request->date,
                     'payment_type' => 'pay',
+                    'particulars' => 'PurchaseDue',
                     'debit' => $request->amount,
                     'payment_method' => $request->payment_method,
                     'balance' => $updateTraBalance,
@@ -89,7 +90,7 @@ class TransactionController extends Controller
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $transaction->id;
-                $accountTransaction->purpose =  'Transactions';
+                $accountTransaction->purpose =  'PurchaseDue';
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->debit = $request->amount;
                 $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -126,6 +127,7 @@ class TransactionController extends Controller
             $transaction = Transaction::create([
                 'date' => $request->date,
                 'payment_type' => 'receive',
+                'particulars' => 'SaleDue',
                 'credit' => $request->amount,
                 'payment_method' => $request->payment_method,
                 'note' => $request->note,
@@ -137,7 +139,7 @@ class TransactionController extends Controller
             $accountTransaction = new AccountTransaction;
             $accountTransaction->branch_id =  Auth::user()->branch_id;
             $accountTransaction->reference_id = $transaction->id;
-            $accountTransaction->purpose =  'Transactions';
+            $accountTransaction->purpose =  'SaleDue';
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->amount;
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -145,7 +147,7 @@ class TransactionController extends Controller
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
             $notification = [
-                'message' => 'Transaction Payment Successfull',
+                'message' => 'Transaction Payment Successful',
                 'alert-type' => 'info'
             ];
             return redirect()->back()->with($notification);
@@ -158,6 +160,7 @@ class TransactionController extends Controller
                 $transaction = Transaction::create([
                     'date' => $request->date,
                     'payment_type' => $request->transaction_type,
+                    'particulars' => 'OthersPayment',
                     'debit' => $request->amount,
                     'payment_method' => $request->payment_method,
                     'note' => $request->note,
@@ -177,7 +180,7 @@ class TransactionController extends Controller
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $investor->id;
-                $accountTransaction->purpose =  'Others';
+                $accountTransaction->purpose =  'OthersPayment';
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->debit = $request->amount;
                 $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -189,6 +192,7 @@ class TransactionController extends Controller
                 $transaction = Transaction::create([
                     'date' => $request->date,
                     'payment_type' => $request->transaction_type,
+                    'particulars' => 'OthersReceive',
                     'credit' => $request->amount,
                     'payment_method' => $request->payment_method,
                     'note' => $request->note,
@@ -209,7 +213,7 @@ class TransactionController extends Controller
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $investor->id;
-                $accountTransaction->purpose =  'Others';
+                $accountTransaction->purpose =  'OthersReceive';
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->credit = $request->amount;
                 $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
@@ -296,7 +300,8 @@ class TransactionController extends Controller
             'allData' => $data
         ]);
     }
-    public function InvestorInvoice($id){
+    public function InvestorInvoice($id)
+    {
         $investors = Investor::findOrFail($id);
         return view('pos.investor.investor-invoice', compact('investors'));
     }

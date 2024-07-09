@@ -22,7 +22,6 @@ class PurchaseController extends Controller
     }
     public function store(Request $request)
     {
-
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'supplier_id' => 'required',
@@ -143,7 +142,7 @@ class PurchaseController extends Controller
             } else {
                 return response()->json([
                     'status' => 400,
-                    'message' => 'Not Enough Balance in Account. Please choose Another Account or Deposit Account Balance',
+                    'message' => 'Not Enough Balance in this Account. Please choose Another Account or Deposit Account Balance.',
                 ]);
             }
         } else {

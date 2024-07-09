@@ -29,9 +29,6 @@
                 margin-bottom: 4px
             }
 
-            .table {
-                border-bottom-width: 0 !important;
-            }
         }
     </style>
     @php
@@ -40,213 +37,220 @@
         $sales = App\Models\Sale::all();
         $purchase = App\Models\Purchase::all();
         $expanse = App\Models\Expense::all();
-        $banks = App\Models\Bank::all();
-        $bankLabels = [];
-        $grandTotal = 0;
-        foreach ($banks as $bank) {
-            $transaction = App\Models\AccountTransaction::where('account_id', $bank->id)
-                ->where('balance', '>', 0)
-                ->latest()
-                ->first();
-            if ($transaction) {
-                $bankData = [
-                    'name' => $bank->name,
-                    'amount' => number_format($transaction->balance, 2), // Accessing the balance attribute
-                ];
-                array_push($bankLabels, $bankData);
-                $grandTotal += $transaction->balance;
-            }
-        }
-
-        // dd($grandTotal);
-
+        $balance = App\Models\AccountTransaction::all();
     @endphp
-
+    {{-- /////// ToTal Summary ////// --}}
     <div class="row">
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
-                {{-- /////// ToTal Summary ////// --}}
-                <div class="col-md-6 col-xl-6 col-6 new-margin grid-margin stretch-card">
+                <h3 class="mb-3">Total Summary</h3>
+                <div class="col-md-4 col-xl-4 col-6 new-margin grid-margin stretch-card">
                     <div class="card" style="">
                         <div class="card-body">
-                            <h6 class="card-title">Total Summary</h6>
-                            <table class="table border-none">
-                                <thead>
-                                    <tr>
-                                        <th>Summary</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Due</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Sales</td>
-                                        <td>{{ $sales->sum('total') }}</td>
-                                        <td>{{ $sales->sum('paid') }}</td>
-                                        <td>{{ $sales->sum('due') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Purchase</td>
-                                        <td>{{ $purchase->sum('sub_total') }}</td>
-                                        <td>{{ $purchase->sum('paid') }}</td>
-                                        <td>{{ $purchase->sum('due') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Exapnse</td>
-                                        <td>{{ $expanse->sum('sub_total') }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Balance</td>
-                                        <td>{{ $grandTotal }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Profit</td>
-                                        <td>{{ $sales->sum('profit') }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="row">
+                                <div class="col-md-4 col-5 p-0 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard1@300x-100.jpg" height="50" width="50"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div class="">
+                                        <h5 class="responsive-text mar-1">{{ $sales->sum('total') }}
+                                            <span>({{ $sales->count() }})</span>
+                                        </h5>
+                                        <h5>{{ $sales->sum('paid') }}</h5>
+                                        <p>{{ $sales->sum('due') }}</p>
+                                        <h6 class="text-1 mb-0">Invoice</h6>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {{-- /////// End Total Summary ////// --}}
-
-
-                @php
-                    // --------------------///// Today summary Calculation ////----------------------------//
-                    $todaySales = App\Models\Sale::whereDate('created_at', Carbon::now())->get();
-                    $todayPurchase = App\Models\Purchase::whereDate('created_at', Carbon::now())->get();
-                    $todayExpanse = App\Models\Expense::whereDate('created_at', Carbon::now())->get();
-                    $dueCollection = App\Models\Transaction::where('particulars', 'SaleDue')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
-                    $otherCollection = App\Models\Transaction::where('particulars', 'OthersReceive')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
-                    $otherPaid = App\Models\Transaction::where('particulars', 'OthersPayment')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
-                    $parchaseDuePay = App\Models\Transaction::where('particulars', 'PurchaseDue')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
-                    $adjustDueCollection = App\Models\Transaction::where('particulars', 'Adjust Due Collection')
-                        ->where('payment_type', 'receive')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
-                    $todayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::now())
-                        ->latest()
-                        ->first();
-                    $yesterdayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())
-                        ->latest()
-                        ->first();
-                    $addBalance = App\Models\AccountTransaction::where('purpose', 'Add Bank Balance')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
-                    $todayEmployeeSalary = App\Models\EmployeeSalary::whereDate('created_at', Carbon::now())->get();
-                    $todayReturnAmount = App\Models\Returns::whereDate('created_at', Carbon::now())->get();
-                @endphp
-                {{-- ///////Today Summary ////// --}}
-                <div class="col-md-6 col-xl-6 col-6  grid-margin stretch-card">
+                <div class="col-md-4  col-xl-4 col-6  grid-margin stretch-card">
                     <div class="card" style="">
                         <div class="card-body">
-                            <h6 class="card-title">Today Summary</h6>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Incomming</th>
-                                        <th colspan="2">Outgoing</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ $yesterdayBalance->balance ?? 0 }}</td>
-                                        <td>Salary</td>
-                                        <td class="text-end">{{ $todayEmployeeSalary->sum('creadit') }}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Paid Sales</td>
-                                        <td class="text-end">{{ $todaySales->sum('paid') }}</td>
-                                        <td>Purchase</td>
-                                        <td class="text-end">{{ $todayPurchase->sum('paid') }}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Due Collection</td>
-                                        <td class="text-end">{{ $dueCollection->sum('credit') }}</td>
-                                        <td>Due Paid</td>
-                                        <td class="text-end">{{ $parchaseDuePay->sum('debit') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Other Deposit</td>
-                                        <td class="text-end">{{ $otherCollection->sum('credit') }}</td>
-                                        <td>Other Withdraw</td>
-                                        <td class="text-end">{{ $otherPaid->sum('debit') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Adjust Due Collcetion</td>
-                                        <td class="text-end">{{ $adjustDueCollection->sum('credit') }}</td>
-                                        <td>Return</td>
-                                        <td class="text-end">{{ $todayReturnAmount->sum('refund_amount') }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Add Balance</td>
-                                        <td class="text-end">{{ $addBalance->sum('credit') }}</td>
-                                        <td>Expanse</td>
-                                        <td class="text-end">{{ $todayExpanse->sum('amount') }}</td>
-                                    </tr>
-                                    @php
-                                        $totalIngoing =
-                                            $yesterdayBalance->balance ??
-                                            0 +
-                                                $todaySales->sum('paid') +
-                                                $dueCollection->sum('credit') +
-                                                $otherCollection->sum('credit') +
-                                                $addBalance->sum('credit') +
-                                                $adjustDueCollection->sum('credit');
-                                        $totalOutgoing =
-                                            $todayPurchase->sum('paid') +
-                                            $todayExpanse->sum('amount') +
-                                            $todayEmployeeSalary->sum('creadit') +
-                                            $todayReturnAmount->sum('refund_amount') +
-                                            $parchaseDuePay->sum('debit') +
-                                            $otherPaid->sum('debit');
-                                    @endphp
-                                    <tr>
-                                        <td>Total</td>
-                                        <td>{{ $totalIngoing }}</td>
-                                        <td>Total</td>
-                                        <td>{{ $totalOutgoing }}</td>
-                                    </tr>
-
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3">Total Balance</th>
-                                        <th>{{ $totalIngoing - $totalOutgoing }}</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                            <div class="row">
+                                <div class=" col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard5@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $purchase->sum('sub_total') }}
+                                            <span>({{ $purchase->count() }})</span>
+                                        </h4>
+                                        <h5>{{ $purchase->sum('paid') }}</h5>
+                                        <h6 class="text-1 mb-0">Purchase</h6>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {{-- ///////End Today Summary ////// --}}
+                <div class="col-md-3 col-xl-4 col-6 grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard3@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $expanse->sum('amount') }}</h4>
+                                        <h6 class="text-1 mb-0">Expanse</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xl-3 col-6 new-margin grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard4@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $sales->sum('profit') }}</h4>
+                                        <h6 class="text-1 mb-0">Profit</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+    {{-- /////// End Total Summary ////// --}}
+
+    @php
+        // --------------------///// Today summary Calculation ////----------------------------//
+
+        $todaySales = App\Models\Sale::whereDate('created_at', Carbon::now())->get();
+        $todayPurchase = App\Models\Purchase::whereDate('created_at', Carbon::now())->get();
+        $todayExpanse = App\Models\Expense::whereDate('created_at', Carbon::now())->get();
+
+        $todayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::now())->get();
+        $yesterdayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())->get();
+    @endphp
+    {{-- ///////Today Summary ////// --}}
+    <div class="row">
+        <div class="col-12 col-xl-12 stretch-card">
+            <div class="row flex-grow-1">
+                <h3 class="mb-3">Today Summary</h3>
+                <div class="col-md-3  col-xl-3 col-6  grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class=" col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard1@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $todaySales->sum('total') }}
+                                            <span>({{ $todaySales->count() }})</span>
+                                        </h4>
+                                        <h5>{{ $todaySales->sum('paid') }}</h5>
+                                        <h6 class="text-1 mb-0">Invoice</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3  col-xl-3 col-6  grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class=" col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard 2@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $todayPurchase->sum('sub_total') }}
+                                            <span>({{ $todayPurchase->count() }})</span>
+                                        </h4>
+                                        <h5>{{ $todayPurchase->sum('paid') }}</h5>
+                                        <h6 class="text-1 mb-0">Purchase</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xl-3 col-6 grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard3@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $todayExpanse->sum('amount') }}</h4>
+                                        <h6 class="text-1 mb-0">Expanse</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-xl-3 col-6  grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-5 d-flex align-items-center">
+                                    <img src="uploads/dashboard/Artboard5@300x-100.jpg" height="60px" width="60px"
+                                        alt="Image" style="border-radius:5px">
+                                </div>
+                                <div class="col-md-8 col-7 d-flex align-items-center">
+                                    <div>
+                                        <h4 class="responsive-text mar-1">{{ $todayBalance->sum('balance') }}</h4>
+                                        <h6 class="text-1 mb-0">Balance</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- <div class="col-md-3  col-xl-3 col-6  grid-margin stretch-card">
+                    <div class="card" style="">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8 col-12 p-0">
+                                    <p>Total Sales : {{ $mysales->sum('final_receivable') }}</p>
+                                    <p>Paid : {{ $mysales->sum('paid') }}</p>
+                                    <p>Due: {{ $mysales->sum('due') }}</p>
+                                    <p>----------------------------------</p>
+                                    <p>Total Purchase : {{ $mypurchase->sum('grand_total') }}</p>
+                                    <p>Paid : {{ $mypurchase->sum('paid') }}</p>
+                                    <p>Due : {{ $mypurchase->sum('due') }}</p>
+                                    <p>----------------------------------</p>
+                                    <p>Total Expenses : {{ $myexpenses->sum('amount') }}</p>
+                                    <p>Total Balance : {{ $totalAccountBalance->sum('balance') }}</p>
+                                    <p>Yesterday Balance : {{ $yesterdayTotalAccountBalance->sum('balance') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> --}}
+            </div>
+        </div>
+    </div>
+    {{-- ///////End Today Summary ////// --}}
+
 
     {{-- //////Revenew Chart Start /////// --}}
     <div class="row">
@@ -267,6 +271,7 @@
             }
         @endphp
         <div class="col-xl-6 grid-margin stretch-card">
+
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title">Daily Profit</h6>
@@ -274,15 +279,27 @@
                 </div>
             </div>
         </div>
+        @php
+            // Fetching the latest 5 bank records
+            $banks = App\Models\Bank::take(5)->get();
 
+            // Array to store total transaction amounts for each bank
+            $totalTransactionAmounts = [];
+
+            // Loop through each bank to calculate total transaction amount
+            foreach ($banks as $bank) {
+                $totalTransactionAmount = App\Models\AccountTransaction::where('account_id', $bank->id)
+                    ->where('balance', '>', 0)
+                    ->sum('balance');
+                // array_push(floatval($totalTransactionAmounts), floatval($totalTransactionAmount));
+                array_push($totalTransactionAmounts, floatval($totalTransactionAmount));
+            }
+        @endphp
         <div class="col-xl-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title">Banking Details</h6>
                     <div id="apexPie1"></div>
-                    <div id="totalAmount" style="text-align: center; margin-top: 20px;">
-                        <h5>Total: {{ number_format($grandTotal, 2) }}</h5>
-                    </div>
                 </div>
             </div>
         </div>
@@ -435,13 +452,13 @@
                     enabled: false
                 },
                 series: [
-                    @foreach ($bankLabels as $element)
-                        {{ $element['amount'] }},
+                    @foreach ($totalTransactionAmounts as $element)
+                        {{ $element }},
                     @endforeach
                 ],
                 labels: [
-                    @foreach ($bankLabels as $label)
-                        {{ $label['name'] }},
+                    @foreach ($banks as $bank)
+                        '{{ $bank->name }}',
                     @endforeach
                 ],
             };
