@@ -215,7 +215,6 @@
             }
         @endphp
         <div class="col-xl-6 grid-margin stretch-card">
-
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title">Daily Profit</h6>
