@@ -426,19 +426,14 @@
                             type: 'GET',
                             success: function(data) {
                                 if (data.status == 200) {
-                                    Swal.fire({
-                                        title: "Deleted!",
-                                        text: "Your file has been deleted.",
-                                        icon: "success"
-                                    });
+                                    toastr.success(data.message);
                                     bankView();
                                 } else {
                                     Swal.fire({
-                                        position: "top-end",
-                                        icon: "warning",
-                                        title: "Deleted Unsuccessful!",
-                                        showConfirmButton: false,
-                                        timer: 1500
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: data.message,
+                                        footer: '<a href="#">Why do I have this issue?</a>'
                                     });
                                 }
                             }
