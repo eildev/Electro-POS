@@ -135,12 +135,20 @@ class BankController extends Controller
     }
     public function destroy($id)
     {
+        $cash = Bank::where('name', "=", "Cash")->first();
         $bank = Bank::findOrFail($id);
-        $bank->delete();
-        return response()->json([
-            'status' => 200,
-            'message' => 'Bank Deleted Successfully',
-        ]);
+        if ($bank->id == $cash->id) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'You Do Not Delete This Bank Account',
+            ]);
+        } else {
+            $bank->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Bank Deleted Successfully',
+            ]);
+        }
     }
     //Bank balance Add
     public function BankBalanceAdd(Request $request, $id)

@@ -66,7 +66,7 @@
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
                 {{-- /////// ToTal Summary ////// --}}
-                <div class="col-md-6 col-xl-6 col-6 new-margin grid-margin stretch-card">
+                <div class="col-md-12 col-xl-6 col-12 new-margin grid-margin stretch-card">
                     <div class="card" style="">
                         <div class="card-body">
                             <h6 class="card-title">Total Summary</h6>
@@ -152,7 +152,7 @@
                     $todayReturnAmount = App\Models\Returns::whereDate('created_at', Carbon::now())->get();
                 @endphp
                 {{-- ///////Today Summary ////// --}}
-                <div class="col-md-6 col-xl-6 col-6  grid-margin stretch-card">
+                <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
                     <div class="card" style="">
                         <div class="card-body">
                             <h6 class="card-title">Today Summary</h6>
@@ -227,16 +227,16 @@
                                     @endphp
                                     <tr>
                                         <td>Total</td>
-                                        <td>{{ $totalIngoing }}</td>
+                                        <td class="text-end">{{ $totalIngoing }}</td>
                                         <td>Total</td>
-                                        <td>{{ $totalOutgoing }}</td>
+                                        <td class="text-end">{{ $totalOutgoing }}</td>
                                     </tr>
 
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th colspan="3">Total Balance</th>
-                                        <th>{{ $totalIngoing - $totalOutgoing }}</th>
+                                        <th class="text-end">{{ $totalIngoing - $totalOutgoing }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
