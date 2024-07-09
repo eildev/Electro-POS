@@ -135,10 +135,6 @@
                     $parchaseDuePay = App\Models\Transaction::where('particulars', 'PurchaseDue')
                         ->whereDate('created_at', Carbon::now())
                         ->get();
-                    $adjustDueCollection = App\Models\Transaction::where('particulars', 'Adjust Due Collection')
-                        ->where('payment_type', 'receive')
-                        ->whereDate('created_at', Carbon::now())
-                        ->get();
                     $todayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::now())
                         ->latest()
                         ->first();
@@ -150,6 +146,13 @@
                         ->get();
                     $todayEmployeeSalary = App\Models\EmployeeSalary::whereDate('created_at', Carbon::now())->get();
                     $todayReturnAmount = App\Models\Returns::whereDate('created_at', Carbon::now())->get();
+                    $adjustDueCollectionDB = App\Models\Transaction::where('particulars', 'Adjust Due Collection')
+                        ->where('payment_type', 'pay')
+                        ->whereDate('created_at', Carbon::now())
+                        ->get();
+                    $adjustDueCollection =
+                        $todayReturnAmount->sum('refund_amount') - $adjustDueCollectionDB->sum('debit');
+                    // dd($todayReturnAmount->sum('refund_amount'));
                 @endphp
                 {{-- ///////Today Summary ////// --}}
                 <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
@@ -174,7 +177,7 @@
                                         <td>Previous Day Balance</td>
                                         <td class="text-end">{{ $yesterdayBalance->balance ?? 0 }}</td>
                                         <td>Salary</td>
-                                        <td class="text-end">{{ $todayEmployeeSalary->sum('creadit') }}</td>
+                                        <td class="text-end">{{ $todayEmployeeSalary->sum('debit') }}</td>
 
                                     </tr>
                                     <tr>
@@ -198,7 +201,9 @@
                                     </tr>
                                     <tr>
                                         <td>Adjust Due Collcetion</td>
-                                        <td class="text-end">{{ $adjustDueCollection->sum('credit') }}</td>
+                                        <td class="text-end">
+                                            {{ $adjustDueCollection }}
+                                        </td>
                                         <td>Return</td>
                                         <td class="text-end">{{ $todayReturnAmount->sum('refund_amount') }}</td>
                                     </tr>
@@ -216,11 +221,11 @@
                                                 $dueCollection->sum('credit') +
                                                 $otherCollection->sum('credit') +
                                                 $addBalance->sum('credit') +
-                                                $adjustDueCollection->sum('credit');
+                                                $adjustDueCollection;
                                         $totalOutgoing =
                                             $todayPurchase->sum('paid') +
                                             $todayExpanse->sum('amount') +
-                                            $todayEmployeeSalary->sum('creadit') +
+                                            $todayEmployeeSalary->sum('debit') +
                                             $todayReturnAmount->sum('refund_amount') +
                                             $parchaseDuePay->sum('debit') +
                                             $otherPaid->sum('debit');
