@@ -660,12 +660,12 @@
             $('.tax').change(function() {
                 let grandTotal = parseFloat($('.grand_total').val());
                 let value = parseFloat($(this).val());
-                // alert(value);
+                let previousDue = parseFloat($('.previous_due').text());
 
                 let taxTotal = ((grandTotal * value) / 100);
-                taxTotal = (taxTotal + grandTotal).toFixed(2);
-                $('.grandTotal').val(taxTotal);
-                $('.final_due').text(taxTotal);
+                taxTotal = (taxTotal + grandTotal);
+                let totalAmount = taxTotal + previousDue;
+                $('.grandTotal').val(totalAmount);
             })
 
 

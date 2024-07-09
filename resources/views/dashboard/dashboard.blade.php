@@ -40,7 +40,26 @@
         $sales = App\Models\Sale::all();
         $purchase = App\Models\Purchase::all();
         $expanse = App\Models\Expense::all();
-        $balance = App\Models\AccountTransaction::latest()->first();
+        $banks = App\Models\Bank::all();
+        $bankLabels = [];
+        $grandTotal = 0;
+        foreach ($banks as $bank) {
+            $transaction = App\Models\AccountTransaction::where('account_id', $bank->id)
+                ->where('balance', '>', 0)
+                ->latest()
+                ->first();
+            if ($transaction) {
+                $bankData = [
+                    'name' => $bank->name,
+                    'amount' => number_format($transaction->balance, 2), // Accessing the balance attribute
+                ];
+                array_push($bankLabels, $bankData);
+                $grandTotal += $transaction->balance;
+            }
+        }
+
+        // dd($grandTotal);
+
     @endphp
 
     <div class="row">
@@ -81,7 +100,7 @@
                                     </tr>
                                     <tr>
                                         <td>Balance</td>
-                                        <td>{{ $balance->balance }}</td>
+                                        <td>{{ $grandTotal }}</td>
                                         <td>00</td>
                                         <td>00</td>
                                     </tr>
@@ -108,6 +127,9 @@
                         ->whereDate('created_at', Carbon::now())
                         ->get();
                     $otherCollection = App\Models\Transaction::where('particulars', 'OthersReceive')
+                        ->whereDate('created_at', Carbon::now())
+                        ->get();
+                    $otherPaid = App\Models\Transaction::where('particulars', 'OthersPayment')
                         ->whereDate('created_at', Carbon::now())
                         ->get();
                     $parchaseDuePay = App\Models\Transaction::where('particulars', 'PurchaseDue')
@@ -147,47 +169,65 @@
                                 <tbody>
                                     <tr>
                                         <td>Previous Day Balance</td>
-                                        <td>{{ $yesterdayBalance->balance }}</td>
-                                        <td>Purchase</td>
-                                        <td>{{ $todayPurchase->sum('paid') }}</td>
+                                        <td>{{ $yesterdayBalance->balance ?? 0 }}</td>
+                                        <td></td>
+                                        <td></td>
+
                                     </tr>
                                     <tr>
                                         <td>Paid Sales</td>
                                         <td>{{ $todaySales->sum('paid') }}</td>
-                                        <td>Expanse</td>
-                                        <td>{{ $todayExpanse->sum('amount') }}</td>
+                                        <td>Purchase</td>
+                                        <td>{{ $todayPurchase->sum('paid') }}</td>
+
                                     </tr>
                                     <tr>
                                         <td>Due Collection</td>
                                         <td>{{ $dueCollection->sum('credit') }}</td>
-                                        <td>Salary</td>
-                                        <td>{{ $todayEmployeeSalary->sum('creadit') }}</td>
+                                        <td>Due Paid</td>
+                                        <td>{{ $parchaseDuePay->sum('debit') }}</td>
+
                                     </tr>
                                     <tr>
-                                        <td>Other Balance</td>
+                                        <td>Other Deposit</td>
                                         <td>{{ $otherCollection->sum('credit') }}</td>
-                                        <td>Return</td>
-                                        <td>{{ $todayReturnAmount->sum('refund_amount') }}</td>
+                                        <td>Other Withdraw</td>
+                                        <td>{{ $otherPaid->sum('debit') }}</td>
+
                                     </tr>
                                     <tr>
                                         <td>Add Balance</td>
                                         <td>{{ $addBalance->sum('credit') }}</td>
-                                        <td>Due Paid</td>
-                                        <td>{{ $parchaseDuePay->sum('debit') }}</td>
+                                        <td>Return</td>
+                                        <td>{{ $todayReturnAmount->sum('refund_amount') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Expanse</td>
+                                        <td>{{ $todayExpanse->sum('amount') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Salary</td>
+                                        <td>{{ $todayEmployeeSalary->sum('creadit') }}</td>
                                     </tr>
                                     @php
                                         $totalIngoing =
-                                            $yesterdayBalance->balance +
-                                            $todaySales->sum('paid') +
-                                            $dueCollection->sum('credit') +
-                                            $otherCollection->sum('credit') +
-                                            $addBalance->sum('credit');
+                                            $yesterdayBalance->balance ??
+                                            0 +
+                                                $todaySales->sum('paid') +
+                                                $dueCollection->sum('credit') +
+                                                $otherCollection->sum('credit') +
+                                                $addBalance->sum('credit');
                                         $totalOutgoing =
                                             $todayPurchase->sum('paid') +
                                             $todayExpanse->sum('amount') +
                                             $todayEmployeeSalary->sum('creadit') +
                                             $todayReturnAmount->sum('refund_amount') +
-                                            $parchaseDuePay->sum('debit');
+                                            $parchaseDuePay->sum('debit') +
+                                            $otherPaid->sum('debit');
                                     @endphp
                                     <tr>
                                         <td>Total</td>
@@ -238,29 +278,7 @@
                 </div>
             </div>
         </div>
-        @php
-            // Fetching the latest 5 bank records
-            $banks = App\Models\Bank::get();
 
-            // Array to store bank names with their total transaction amounts
-            $bankLabels = [];
-
-            // Variable to store the sum of all transaction amounts
-            $grandTotal = 0;
-
-            // Loop through each bank to calculate total transaction amount
-            foreach ($banks as $bank) {
-                $totalTransactionAmount = App\Models\AccountTransaction::where('account_id', $bank->id)
-                    ->where('balance', '>', 0)
-                    ->sum('balance');
-                $bankData = [
-                    'name' => $bank->name,
-                    'amount' => number_format($totalTransactionAmount, 2),
-                ];
-                array_push($bankLabels, $bankData);
-                $grandTotal += $totalTransactionAmount;
-            }
-        @endphp
         <div class="col-xl-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -427,7 +445,7 @@
                 ],
                 labels: [
                     @foreach ($bankLabels as $label)
-                        "{{ $label['name'] }}",
+                        {{ $label['name'] }},
                     @endforeach
                 ],
             };

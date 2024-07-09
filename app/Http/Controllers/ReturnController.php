@@ -125,7 +125,7 @@ class ReturnController extends Controller
 
 
             $customer = Customer::findOrFail($request->customer_id);
-            $customerDue = -$customer->wallet_balance;
+            $customerDue = $customer->wallet_balance;
             $bank = Bank::where('name', "=", "Cash")->first();
             $lastTransaction = AccountTransaction::where('account_id', $bank->id)->latest('created_at')->first();
             $accountTransaction =  new AccountTransaction;
@@ -137,7 +137,7 @@ class ReturnController extends Controller
             if ($request->adjustDue == 'yes') {
                 if ($customerDue > $request->refund_amount) {
                     $dueBalance = $customerDue - $request->refund_amount;
-                    $customer->wallet_balance = $customer->wallet_balance + $dueBalance;
+                    $customer->wallet_balance = $customer->wallet_balance - $dueBalance;
                     $customer->save();
 
                     $accountTransaction->credit = $request->refund_amount;
