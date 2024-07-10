@@ -33,7 +33,7 @@
                                 <div class="mb-3 form-valid-groups">
                                     <label class="form-label">Promotion Type<span class="text-danger">*</span></label>
                                     <select class="form-select js-example-basic-single promotion_type" name="promotion_type"
-                                        aria-invalid="false" onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                        aria-invalid="false">
                                         <option selected="" disabled="">Select Promotion Type</option>
                                         <option value="wholesale">Wholesale</option>
                                         <option value="products">Products</option>
@@ -50,7 +50,7 @@
                                     <input type="number" name="additional_conditions"
                                         class="form-control field_required additional_conditions"
                                         placeholder="Enter Addional Condition">
-                                </div>
+                               </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3 form-valid-groups logic_field">

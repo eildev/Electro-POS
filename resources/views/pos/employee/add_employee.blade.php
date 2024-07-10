@@ -101,9 +101,13 @@
                 email: {
                     required : true,
                 },
-                address:{
+                address: {
                     required : true,
                 },
+                salary: {
+                    required : true,
+                },
+
             },
             messages :{
                 full_name: {
@@ -116,8 +120,12 @@
                     required : 'Please Enter Employee Email',
                 },
                 address: {
-                    required : 'Please Enter  Address',
+                    required : 'Enter Address',
                 },
+                salary: {
+                    required : 'Enter Salary Amount',
+                },
+
             },
             errorElement : 'span',
             errorPlacement: function (error,element) {
