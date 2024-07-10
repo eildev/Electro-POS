@@ -68,7 +68,7 @@ class ReportController extends Controller
 
         $expense = Expense::whereDate('expense_date', $todayDate)->get();
         $expenseAmount = $expense->sum('amount');
-        $salary = EmployeeSalary::whereDate('date', $todayDate)->get();
+        $salary = EmployeeSalary::whereDate('created_at', $todayDate)->get();
         $totalSalary = $salary->sum('debit');
         $totalSalaryDue = $salary->sum('balance');
         return view('pos.report.today.today', compact('todayInvoiceAmount', 'totalSales', 'today_grand_total', 'todayExpenseAmount', 'totalSalary', 'expense', 'todayTotalSaleAmount', 'todayTotalSaleDue', 'todayTotalSaleQty', 'purchases', 'todayTotalPurchaseDue', 'todayTotalPurchaseQty', 'todayTotalPurchaseAmount', 'salary'));
