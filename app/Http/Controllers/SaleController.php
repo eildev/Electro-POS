@@ -92,8 +92,8 @@ class SaleController extends Controller
             $productAll = $request->products;
             foreach ($productAll as $product) {
                 $items = Product::findOrFail($product['product_id']);
-                // dd($items->stock);
-                $productCost += $items->cost;
+                $total = $items->cost * $product['quantity'];
+                $productCost += $total;
             }
             // Sale Table CRUD
             $sale = new Sale;

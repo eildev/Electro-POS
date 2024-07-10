@@ -223,13 +223,12 @@
                                     </tr>
                                     @php
                                         $totalIngoing =
-                                            $yesterdayBalance ??
-                                            0 +
-                                                $todaySales->sum('paid') +
-                                                $dueCollection->sum('credit') +
-                                                $otherCollection->sum('credit') +
-                                                $addBalance->sum('credit') +
-                                                $adjustDueCollection;
+                                            $yesterdayBalance +
+                                            $todaySales->sum('paid') +
+                                            $dueCollection->sum('credit') +
+                                            $otherCollection->sum('credit') +
+                                            $addBalance->sum('credit') +
+                                            $adjustDueCollection;
                                         $totalOutgoing =
                                             $todayPurchase->sum('paid') +
                                             $todayExpanse->sum('amount') +
