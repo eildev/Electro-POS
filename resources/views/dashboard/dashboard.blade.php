@@ -276,6 +276,9 @@
                 $salesProfitByDay[$date] = $dailyProfit;
                 $purchaseByDay[$date] = $dailyPurchase;
             }
+
+            // dd($purchaseByDay);
+
         @endphp
         <div class="col-xl-6 grid-margin stretch-card">
             <div class="card">
@@ -412,6 +415,7 @@
 
 
             // pie chart 
+            var bankLabels = @json($bankLabels);
             var options = {
                 chart: {
                     height: 300,
@@ -428,7 +432,9 @@
                 tooltip: {
                     theme: 'dark'
                 },
-                colors: [colors.primary, colors.warning, colors.danger, colors.info, colors.success],
+                colors: [colors.primary, colors.warning, colors.danger, colors.success, colors.info, colors
+                    .secondary, colors.dark
+                ],
                 legend: {
                     show: true,
                     position: "top",
@@ -445,16 +451,12 @@
                 dataLabels: {
                     enabled: false
                 },
-                series: [
-                    @foreach ($bankLabels as $element)
-                        {{ $element['amount'] }},
-                    @endforeach
-                ],
-                labels: [
-                    @foreach ($bankLabels as $label)
-                        {{ $label['name'] }},
-                    @endforeach
-                ],
+                series: bankLabels.map(function(label) {
+                    return parseFloat(label.amount.replace(/,/g, '')); // Convert amount string to float
+                }),
+                labels: bankLabels.map(function(label) {
+                    return label.name;
+                })
             };
 
             var chart = new ApexCharts(document.querySelector("#apexPie1"), options);
