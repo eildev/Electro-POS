@@ -697,7 +697,6 @@
                             showError('.payment_method',
                                 'please Select Another Payment Method');
                         } else {
-                            console.log(res.error);
                             if (res.error.payment_method == null) {
                                 $('#paymentModal').modal('hide');
                                 if (res.error.supplier_id) {
