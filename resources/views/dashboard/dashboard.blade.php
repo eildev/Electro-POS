@@ -244,7 +244,6 @@
                                         <td>Total</td>
                                         <td class="text-end">{{ $totalOutgoing }}</td>
                                     </tr>
-
                                 </tbody>
                                 <tfoot>
                                     <tr>
