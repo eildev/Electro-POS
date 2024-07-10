@@ -138,9 +138,17 @@
                     $todayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::now())
                         ->latest()
                         ->first();
-                    $yesterdayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())
-                        ->latest()
-                        ->first();
+                    $yesterdayBalance = 0;
+                    foreach ($banks as $bank) {
+                        $transaction = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())
+                            ->where('account_id', $bank->id)
+                            ->where('balance', '>', 0)
+                            ->latest()
+                            ->first();
+                        if ($transaction) {
+                            $yesterdayBalance += $transaction->balance;
+                        }
+                    }
                     $addBalance = App\Models\AccountTransaction::where('purpose', 'Add Bank Balance')
                         ->whereDate('created_at', Carbon::now())
                         ->get();
@@ -175,7 +183,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ $yesterdayBalance->balance ?? 0 }}</td>
+                                        <td class="text-end">{{ $yesterdayBalance ?? 0 }}</td>
                                         <td>Salary</td>
                                         <td class="text-end">{{ $todayEmployeeSalary->sum('debit') }}</td>
 
@@ -215,7 +223,7 @@
                                     </tr>
                                     @php
                                         $totalIngoing =
-                                            $yesterdayBalance->balance ??
+                                            $yesterdayBalance ??
                                             0 +
                                                 $todaySales->sum('paid') +
                                                 $dueCollection->sum('credit') +
