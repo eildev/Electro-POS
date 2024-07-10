@@ -101,6 +101,9 @@
                 email: {
                     required : true,
                 },
+                salary: {
+                    required : true,
+                },
                 address:{
                     required : true,
                 },
@@ -117,6 +120,10 @@
                 },
                 address: {
                     required : 'Please Enter  Address',
+                },
+
+                salary: {
+                    required : 'Enter Salary Amount',
                 },
             },
             errorElement : 'span',
