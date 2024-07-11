@@ -33,7 +33,7 @@ class PurchaseController extends Controller
         if ($validator->passes()) {
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
             // dd($oldBalance);
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->total_payable) {
+            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->total_payable ?? 0) {
                 $totalQty = 0;
                 $totalAmount = 0;
                 // Assuming all arrays have the same length
@@ -56,8 +56,8 @@ class PurchaseController extends Controller
                 $purchase->sub_total = $request->sub_total;
                 $purchase->tax = $request->tax;
                 $purchase->grand_total = $request->grand_total;
-                $purchase->paid = $request->total_payable;
-                $purchase->due = $request->grand_total - $request->total_payable;
+                $purchase->paid = $request->total_payable ?? 0;
+                $purchase->due = $request->grand_total - $request->total_payable ?? 0;
                 $purchase->carrying_cost = $request->carrying_cost;
                 $purchase->payment_method = $request->payment_method;
                 $purchase->note = $request->note;
@@ -90,7 +90,7 @@ class PurchaseController extends Controller
                 $actualPayment->payment_type =  'pay';
                 $actualPayment->payment_method =  $request->payment_method;
                 $actualPayment->supplier_id = $request->supplier_id;
-                $actualPayment->amount = $request->total_payable;
+                $actualPayment->amount = $request->total_payable ?? 0;
                 $actualPayment->date =  $purchaseDate;
                 $actualPayment->save();
 
@@ -100,8 +100,8 @@ class PurchaseController extends Controller
                 $accountTransaction->purpose =  'Purchase';
                 $accountTransaction->reference_id = $purchaseId;
                 $accountTransaction->account_id =  $request->payment_method;
-                $accountTransaction->debit = $request->total_payable;
-                $accountTransaction->balance = $oldBalance->balance - $request->total_payable;
+                $accountTransaction->debit = $request->total_payable ?? 0;
+                $accountTransaction->balance = $oldBalance->balance - $request->total_payable ?? 0;
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
 
@@ -115,21 +115,21 @@ class PurchaseController extends Controller
                 $transaction->supplier_id = $request->supplier_id;
                 $transaction->payment_method = $request->payment_method;
                 if ($lastTransaction) {
-                    $transaction->debit = $lastTransaction->debit + $request->total_payable;
+                    $transaction->debit = $lastTransaction->debit + $request->total_payable ?? 0;
                     $transaction->credit = $lastTransaction->credit + $request->sub_total;
-                    $transaction->balance = $lastTransaction->balance + ($request->sub_total - $request->total_payable);
+                    $transaction->balance = $lastTransaction->balance + ($request->sub_total - $request->total_payable ?? 0);
                 } else {
                     $transaction->credit = $request->sub_total;
-                    $transaction->debit = $request->total_payable;
-                    $transaction->balance = $request->sub_total - $request->total_payable;
+                    $transaction->debit = $request->total_payable ?? 0;
+                    $transaction->balance = $request->sub_total - $request->total_payable ?? 0;
                 }
                 $transaction->save();
 
                 // Supplier Crud
                 $supplier = Supplier::findOrFail($request->supplier_id);
                 $supplier->total_receivable = $supplier->total_receivable + $request->sub_total;
-                $supplier->total_payable = $supplier->total_payable + $request->total_payable;
-                $supplier->wallet_balance = $supplier->wallet_balance + ($request->sub_total - $request->total_payable);
+                $supplier->total_payable = $supplier->total_payable + $request->total_payable ?? 0;
+                $supplier->wallet_balance = $supplier->wallet_balance + ($request->sub_total - $request->total_payable ?? 0);
                 $supplier->save();
 
 
@@ -281,7 +281,7 @@ class PurchaseController extends Controller
                 $accountTransaction->account_id =  $request->transaction_account;
                 $accountTransaction->debit = $request->amount;
                 $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
-                $accountTransaction->balance = $oldBalance->balance - $request->total_payable;
+                $accountTransaction->balance = $oldBalance->balance - $request->total_payable ?? 0;
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
 

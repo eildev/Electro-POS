@@ -209,7 +209,7 @@ class TransactionController extends Controller
                     'balance' => $newBalance,
                 ]);
 
-                //
+                // account Transaction 
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $investor->id;
