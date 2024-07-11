@@ -138,9 +138,17 @@
                     $todayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::now())
                         ->latest()
                         ->first();
-                    $yesterdayBalance = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())
-                        ->latest()
-                        ->first();
+                    $yesterdayBalance = 0;
+                    foreach ($banks as $bank) {
+                        $transaction = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())
+                            ->where('account_id', $bank->id)
+                            ->where('balance', '>', 0)
+                            ->latest()
+                            ->first();
+                        if ($transaction) {
+                            $yesterdayBalance += $transaction->balance;
+                        }
+                    }
                     $addBalance = App\Models\AccountTransaction::where('purpose', 'Add Bank Balance')
                         ->whereDate('created_at', Carbon::now())
                         ->get();
@@ -175,7 +183,7 @@
                                 <tbody>
                                     <tr>
                                         <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ $yesterdayBalance->balance ?? 0 }}</td>
+                                        <td class="text-end">{{ $yesterdayBalance ?? 0 }}</td>
                                         <td>Salary</td>
                                         <td class="text-end">{{ $todayEmployeeSalary->sum('debit') }}</td>
 
@@ -215,13 +223,12 @@
                                     </tr>
                                     @php
                                         $totalIngoing =
-                                            $yesterdayBalance->balance ??
-                                            0 +
-                                                $todaySales->sum('paid') +
-                                                $dueCollection->sum('credit') +
-                                                $otherCollection->sum('credit') +
-                                                $addBalance->sum('credit') +
-                                                $adjustDueCollection;
+                                            $yesterdayBalance +
+                                            $todaySales->sum('paid') +
+                                            $dueCollection->sum('credit') +
+                                            $otherCollection->sum('credit') +
+                                            $addBalance->sum('credit') +
+                                            $adjustDueCollection;
                                         $totalOutgoing =
                                             $todayPurchase->sum('paid') +
                                             $todayExpanse->sum('amount') +
@@ -236,7 +243,6 @@
                                         <td>Total</td>
                                         <td class="text-end">{{ $totalOutgoing }}</td>
                                     </tr>
-
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -270,6 +276,9 @@
                 $salesProfitByDay[$date] = $dailyProfit;
                 $purchaseByDay[$date] = $dailyPurchase;
             }
+
+            // dd($purchaseByDay);
+
         @endphp
         <div class="col-xl-6 grid-margin stretch-card">
             <div class="card">
@@ -406,6 +415,7 @@
 
 
             // pie chart 
+            var bankLabels = @json($bankLabels);
             var options = {
                 chart: {
                     height: 300,
@@ -422,7 +432,9 @@
                 tooltip: {
                     theme: 'dark'
                 },
-                colors: [colors.primary, colors.warning, colors.danger, colors.info, colors.success],
+                colors: [colors.primary, colors.warning, colors.danger, colors.success, colors.info, colors
+                    .secondary, colors.dark
+                ],
                 legend: {
                     show: true,
                     position: "top",
@@ -439,16 +451,12 @@
                 dataLabels: {
                     enabled: false
                 },
-                series: [
-                    @foreach ($bankLabels as $element)
-                        {{ $element['amount'] }},
-                    @endforeach
-                ],
-                labels: [
-                    @foreach ($bankLabels as $label)
-                        {{ $label['name'] }},
-                    @endforeach
-                ],
+                series: bankLabels.map(function(label) {
+                    return parseFloat(label.amount.replace(/,/g, '')); // Convert amount string to float
+                }),
+                labels: bankLabels.map(function(label) {
+                    return label.name;
+                })
             };
 
             var chart = new ApexCharts(document.querySelector("#apexPie1"), options);

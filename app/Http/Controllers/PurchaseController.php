@@ -101,7 +101,6 @@ class PurchaseController extends Controller
                 $accountTransaction->reference_id = $purchaseId;
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->debit = $request->total_payable;
-                $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
                 $accountTransaction->balance = $oldBalance->balance - $request->total_payable;
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
