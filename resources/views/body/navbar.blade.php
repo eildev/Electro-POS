@@ -306,7 +306,7 @@
                         <div class="mb-3">
                             <img class="wd-80 ht-80 rounded-circle"
                                 src="{{ $user->photo ? asset('uploads/profile/' . $user->photo) : asset('assets/images/default-user.svg') }}"
-                                alt="">
+                                alt="Profile">
                         </div>
                         <div class="text-center">
                             <p class="tx-16 fw-bolder">{{ Auth::user()->name }}</p>
