@@ -8,7 +8,6 @@
             .responsive-text {
                 font-size: 1rem;
                 /* Adjust as needed for medium screens */
-
             }
 
             .grid-margin {
@@ -58,7 +57,8 @@
             }
         }
 
-        // dd($grandTotal);
+        $totalCustomerDue = $sales->sum('change_amount') - $sales->sum('paid');
+        $totalSupplierDue = $sales->sum('change_amount') - $sales->sum('paid');
 
     @endphp
 
@@ -74,41 +74,44 @@
                                 <thead>
                                     <tr>
                                         <th>Summary</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Due</th>
+                                        <th class="text-end">Total</th>
+                                        <th class="text-end">Paid</th>
+                                        <th class="text-end">Due</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Sales</td>
-                                        <td>{{ $sales->sum('total') }}</td>
-                                        <td>{{ $sales->sum('paid') }}</td>
-                                        <td>{{ $sales->sum('due') }}</td>
+                                        <td class="text-end">{{ number_format($sales->sum('change_amount'), 2) }}</td>
+                                        <td class="text-end">{{ number_format($sales->sum('paid'), 2) }}</td>
+                                        <td class="text-end">
+                                            {{ number_format($totalCustomerDue > 0 ? $totalCustomerDue : 0, 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Purchase</td>
-                                        <td>{{ $purchase->sum('sub_total') }}</td>
-                                        <td>{{ $purchase->sum('paid') }}</td>
-                                        <td>{{ $purchase->sum('due') }}</td>
+                                        <td class="text-end">{{ number_format($purchase->sum('sub_total'), 2) }}</td>
+                                        <td class="text-end">{{ number_format($purchase->sum('paid'), 2) }}</td>
+                                        <td class="text-end">
+                                            {{ number_format($totalSupplierDue > 0 ? $totalSupplierDue : 0, 2) }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Exapnse</td>
-                                        <td>{{ $expanse->sum('sub_total') }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
+                                        <td class="text-end">{{ number_format($expanse->sum('sub_total'), 2) }}</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">0.00</td>
                                     </tr>
                                     <tr>
                                         <td>Balance</td>
-                                        <td>{{ $grandTotal }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
+                                        <td class="text-end">{{ number_format($grandTotal, 2) }}</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">0.00</td>
                                     </tr>
                                     <tr>
                                         <td>Profit</td>
-                                        <td>{{ $sales->sum('profit') }}</td>
-                                        <td>00</td>
-                                        <td>00</td>
+                                        <td class="text-end">{{ number_format($sales->sum('profit'), 2) }}</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">0.00</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -183,43 +186,45 @@
                                 <tbody>
                                     <tr>
                                         <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ $yesterdayBalance ?? 0 }}</td>
+                                        <td class="text-end">{{ number_format($yesterdayBalance, 2) }}</td>
                                         <td>Salary</td>
-                                        <td class="text-end">{{ $todayEmployeeSalary->sum('debit') }}</td>
+                                        <td class="text-end">{{ number_format($todayEmployeeSalary->sum('debit'), 2) }}
+                                        </td>
 
                                     </tr>
                                     <tr>
                                         <td>Paid Sales</td>
-                                        <td class="text-end">{{ $todaySales->sum('paid') }}</td>
+                                        <td class="text-end">{{ number_format($todaySales->sum('paid'), 2) }}</td>
                                         <td>Purchase</td>
-                                        <td class="text-end">{{ $todayPurchase->sum('paid') }}</td>
+                                        <td class="text-end">{{ number_format($todayPurchase->sum('paid'), 2) }}</td>
 
                                     </tr>
                                     <tr>
                                         <td>Due Collection</td>
-                                        <td class="text-end">{{ $dueCollection->sum('credit') }}</td>
+                                        <td class="text-end">{{ number_format($dueCollection->sum('credit'), 2) }}</td>
                                         <td>Due Paid</td>
-                                        <td class="text-end">{{ $parchaseDuePay->sum('debit') }}</td>
+                                        <td class="text-end">{{ number_format($parchaseDuePay->sum('debit'), 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Other Deposit</td>
-                                        <td class="text-end">{{ $otherCollection->sum('credit') }}</td>
+                                        <td class="text-end">{{ number_format($otherCollection->sum('credit'), 2) }}</td>
                                         <td>Other Withdraw</td>
-                                        <td class="text-end">{{ $otherPaid->sum('debit') }}</td>
+                                        <td class="text-end">{{ number_format($otherPaid->sum('debit'), 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Adjust Due Collcetion</td>
                                         <td class="text-end">
-                                            {{ $adjustDueCollection }}
+                                            {{ number_format($adjustDueCollection, 2) }}
                                         </td>
                                         <td>Return</td>
-                                        <td class="text-end">{{ $todayReturnAmount->sum('refund_amount') }}</td>
+                                        <td class="text-end">
+                                            {{ number_format($todayReturnAmount->sum('refund_amount'), 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Add Balance</td>
-                                        <td class="text-end">{{ $addBalance->sum('credit') }}</td>
+                                        <td class="text-end">{{ number_format($addBalance->sum('credit'), 2) }}</td>
                                         <td>Expanse</td>
-                                        <td class="text-end">{{ $todayExpanse->sum('amount') }}</td>
+                                        <td class="text-end">{{ number_format($todayExpanse->sum('amount'), 2) }}</td>
                                     </tr>
                                     @php
                                         $totalIngoing =
@@ -239,15 +244,15 @@
                                     @endphp
                                     <tr>
                                         <td>Total</td>
-                                        <td class="text-end">{{ $totalIngoing }}</td>
+                                        <td class="text-end">{{ number_format($totalIngoing, 2) }}</td>
                                         <td>Total</td>
-                                        <td class="text-end">{{ $totalOutgoing }}</td>
+                                        <td class="text-end">{{ number_format($totalOutgoing, 2) }}</td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th colspan="3">Total Balance</th>
-                                        <th class="text-end">{{ $totalIngoing - $totalOutgoing }}</th>
+                                        <th class="text-end">{{ number_format($totalIngoing - $totalOutgoing, 2) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>

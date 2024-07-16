@@ -27,7 +27,7 @@
                                     <th>Phone Number</th>
                                     <th>Account</th>
                                     <th>Opening Balance</th>
-                                    <th>Balance</th>
+                                    <th>Total Balance</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

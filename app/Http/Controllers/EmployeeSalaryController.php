@@ -28,7 +28,7 @@ class EmployeeSalaryController extends Controller
     public function EmployeeSalaryStore(Request $request)
     {
         $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-        if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
+        if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
 
             $requestMonth = Carbon::createFromFormat('Y-m-d', $request->date)->format('m');
             $requestYear = Carbon::createFromFormat('Y-m-d', $request->date)->format('Y');
@@ -159,7 +159,7 @@ class EmployeeSalaryController extends Controller
     {
         // dd($request->all());
         $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-        if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
+        if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
 
             $employeeSalary = EmployeeSalary::findOrFail($id);
             $requiestDebit = $employeeSalary->debit = $employeeSalary->debit + $request->debit;
@@ -217,7 +217,7 @@ class EmployeeSalaryController extends Controller
     public function EmployeeSalaryAdvancedStore(Request $request)
     {
         $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-        if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
+        if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
 
             $requestMonth = Carbon::createFromFormat('Y-m-d', $request->date)->format('m');
             $requestYear = Carbon::createFromFormat('Y-m-d', $request->date)->format('Y');
@@ -314,7 +314,7 @@ class EmployeeSalaryController extends Controller
     public function EmployeeSalaryAdvancedUpdate(Request $request, $id)
     {
         $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-        if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
+        if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->debit) {
 
             $employeeSalary = EmployeeSalary::findOrFail($id);
             $requiestDebit = $employeeSalary->debit = $employeeSalary->debit + $request->debit;

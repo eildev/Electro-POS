@@ -33,7 +33,7 @@ class PurchaseController extends Controller
         if ($validator->passes()) {
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
             // dd($oldBalance);
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->total_payable ?? 0) {
+            if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->total_payable ?? 0) {
                 $totalQty = 0;
                 $totalAmount = 0;
                 // Assuming all arrays have the same length
@@ -261,7 +261,7 @@ class PurchaseController extends Controller
         });
         if ($validator->passes()) {
             $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
+            if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
                 $purchase = Purchase::findOrFail($id);
                 $purchase->paid = $purchase->paid - $request->amount;
                 $purchase->due = $purchase->due - $request->amount;
