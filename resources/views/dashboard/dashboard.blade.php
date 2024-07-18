@@ -144,15 +144,24 @@
                     $yesterdayBalance = 0;
                     $lastDate = App\Models\AccountTransaction::latest()->first();
                     if ($lastDate) {
-                        foreach ($banks as $bank) {
-                            $transaction = App\Models\AccountTransaction::whereDate('created_at', $lastDate->created_at)
-                                ->where('account_id', $bank->id)
-                                ->where('balance', '>', 0)
-                                ->latest()
-                                ->first();
+                        $lastTransactionDate = $lastDate->created_at->toDateString();
+                        $currentDate = Carbon::now()->toDateString();
 
-                            if ($transaction) {
-                                $yesterdayBalance += $transaction->balance;
+                        // Check if the last transaction date is today
+                        if ($lastTransactionDate != $currentDate) {
+                            foreach ($banks as $bank) {
+                                $transaction = App\Models\AccountTransaction::whereDate(
+                                    'created_at',
+                                    $lastTransactionDate,
+                                )
+                                    ->where('account_id', $bank->id)
+                                    ->where('balance', '>', 0)
+                                    ->latest()
+                                    ->first();
+
+                                if ($transaction) {
+                                    $yesterdayBalance += $transaction->balance;
+                                }
                             }
                         }
                     }
