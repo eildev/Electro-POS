@@ -21,5 +21,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(Bank::class, 'payment_method', 'id');
     } //
+    public function investor()
+    {
+        return $this->belongsTo(Investor::class, 'others_id', 'id');
+    } //
 
 }

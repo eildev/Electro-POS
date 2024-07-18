@@ -366,8 +366,8 @@
     <script>
         $(document).ready(function() {
             document.getElementById("account_type").addEventListener("change", function() {
-                var accountType = this.value;
-                var options = '<option selected disabled value="">Select Account ID</option>';
+                let accountType = this.value;
+                let options = '<option selected disabled value="">Select Account ID</option>';
 
                 if (accountType === "supplier") {
                     @foreach ($supplier as $supply)
@@ -376,9 +376,9 @@
                     let transactionTypeElement = document.getElementById('transaction_type');
                     transactionTypeElement.setAttribute('disabled', true);
                     //
-                    var investmentCol = document.getElementById('investment-col');
+                    let investmentCol = document.getElementById('investment-col');
                     investmentCol.classList.add('d-none');
-                    var investmentCol2 = document.getElementById('investment-col2');
+                    let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.add('d-none');
                     //
                 } else if (accountType === "customer") {
@@ -389,9 +389,9 @@
                     let transactionTypeElement = document.getElementById('transaction_type');
                     transactionTypeElement.setAttribute('disabled', true);
                     //
-                    var investmentCol = document.getElementById('investment-col');
+                    let investmentCol = document.getElementById('investment-col');
                     investmentCol.classList.add('d-none');
-                    var investmentCol2 = document.getElementById('investment-col2');
+                    let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.add('d-none');
                     //
                 } else if (accountType === "other") {
@@ -401,23 +401,24 @@
                     transactionTypeElement.removeAttribute('disabled');
                     transactionTypeElement.style.backgroundColor = 'transparent !important';
                     //
-                    var investmentCol = document.getElementById('investment-col');
+                    let investmentCol = document.getElementById('investment-col');
                     investmentCol.classList.remove('d-none');
-                    var investmentCol2 = document.getElementById('investment-col2');
+                    let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.remove('d-none');
-                    hideFunction()
+                    // hideFunction()
                 }
                 document.getElementById("account_id").innerHTML = options;
             });
             //
             //called it if accountType == Other
-            function hideFunction(){
-                $('.account-info').hide();
-            }
+            // function hideFunction(){
+            //     $('.account-info').hide();
+            // }
             $(document).on('change', '.select-account-id', function() {
                 let accountId = this.value;
+                console.log(accountId);
                 let account_type = document.querySelector('#account_type').value;
-                $('.account-info').hide();
+                // $('.account-info').hide();
                 $.ajax({
                     url: '/getDataForAccountId',
                     method: 'GET',
@@ -426,6 +427,7 @@
                         account_type
                     },
                     success: function(data) {
+
                         $('#account-details').text('Name: ' + data.info.name);
                         $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
                         if (data.info.wallet_balance > 0) {
@@ -579,6 +581,8 @@
                     // console.log(investor);
                     const selectAccountId = $('.select-account-id');
                     selectAccountId.empty();
+                    //This Line Added
+                    $('.select-account-id').append('<option selected disabled value="">Select Account ID</option>');
                     if (investor.length > 0) {
                         $.each(investor, function(index, investors) {
                             $('.select-account-id').append(

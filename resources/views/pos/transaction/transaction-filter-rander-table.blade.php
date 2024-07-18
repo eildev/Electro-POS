@@ -26,14 +26,14 @@
                                             {{ $trans['customer']['phone'] ?? '-' }}</td>
                                     @elseif ($trans->supplier_id != null)
                                         <td>Supplier <br> Name: {{ $trans['supplier']['name'] ?? '-' }} <br> Phone:
-                                            {{ $trans['supplier']['phone'] ?? '-' }}</td>
+                                            {{ $trans['supplier']['phone '] ?? '-' }}</td>
+                                <!---Add This Line---->
+                                    @elseif ($trans->others_id != null)
+                                        <td>Others <br> Name: {{ $trans['investor']['name'] ?? '-' }} <br> Phone:
+                                            {{ $trans['investor']['phone'] ?? '-' }}</td>
                                             @else
                                             <td></td>
-                                    @elseif ($trans->supplier_id != null)
-                                        <td>Supplier <br> Name: {{ $trans['supplier']['name'] ?? '-' }} <br> Phone:
-                                            {{ $trans['supplier']['phone'] ?? '-' }}</td>
-                                            @else
-                                            <td></td>
+                                <!---Add This Line----->
                                     @endif
                                     @php
                                     $dacTimeZone = new DateTimeZone('Asia/Dhaka');
