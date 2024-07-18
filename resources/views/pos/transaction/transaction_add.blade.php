@@ -426,7 +426,6 @@
                         account_type
                     },
                     success: function(data) {
-
                         $('#account-details').text('Name: ' + data.info.name);
                         $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
                         if (data.info.wallet_balance > 0) {

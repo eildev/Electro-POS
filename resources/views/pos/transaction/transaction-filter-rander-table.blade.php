@@ -29,6 +29,11 @@
                                             {{ $trans['supplier']['phone'] ?? '-' }}</td>
                                             @else
                                             <td></td>
+                                    @elseif ($trans->supplier_id != null)
+                                        <td>Supplier <br> Name: {{ $trans['supplier']['name'] ?? '-' }} <br> Phone:
+                                            {{ $trans['supplier']['phone'] ?? '-' }}</td>
+                                            @else
+                                            <td></td>
                                     @endif
                                     @php
                                     $dacTimeZone = new DateTimeZone('Asia/Dhaka');
