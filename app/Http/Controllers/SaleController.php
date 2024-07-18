@@ -281,7 +281,12 @@ class SaleController extends Controller
 
     public function view()
     {
-        $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        if(Auth::user()->id == 1){
+            $sales = Sale::all();
+        }else{
+            $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+        // $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
         return view('pos.sale.view', compact('sales'));
     }
     // public function viewAll()
@@ -682,7 +687,11 @@ class SaleController extends Controller
     }
     public function saleViewProduct()
     {
-        $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        if(Auth::user()->id == 1){
+            $products = Product::all();
+        }else{
+            $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return response()->json([
             'status' => '200',
             'products' => $products
