@@ -19,8 +19,13 @@
                     @endforeach
                 </ul>
             </td>
+            <td>{{ $data->quantity ?? 0 }}</td>
             <td>{{ $data->sale_date ?? 0 }}</td>
+            <td>৳ {{ $data->total ?? 0 }}</td>
             <td>৳ {{ $data->actual_discount ?? 0 }}</td>
+            <td>৳
+                {{ $data->receivable - $data->change_amount ?? 0 }}
+            </td>
             <td>
                 ৳ {{ $data->receivable ?? 0 }}
             </td>

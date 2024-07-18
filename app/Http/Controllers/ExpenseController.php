@@ -48,7 +48,7 @@ class ExpenseController extends Controller
             'bank_account_id' => 'required',
         ]);
         $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
-        if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
+        if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
 
             $expense = new Expense;
             $expense->branch_id =  Auth::user()->branch_id;
@@ -110,7 +110,7 @@ class ExpenseController extends Controller
     public function ExpenseUpdate(Request $request, $id)
     {
         $oldBalance = AccountTransaction::where('account_id', $request->bank_account_id)->latest('created_at')->first();
-        if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
+        if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
             $expense = Expense::findOrFail($id);
             $expense->branch_id =  Auth::user()->branch_id;
             $expense->expense_date =  $request->expense_date;

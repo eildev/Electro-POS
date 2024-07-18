@@ -711,7 +711,7 @@ class SaleController extends Controller
         if ($validator->passes()) {
             $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
             // dd($oldBalance->balance >= $request->via_paid);
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->via_paid) {
+            if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->via_paid) {
 
                 $maxBarcode = Product::where('branch_id', Auth::user()->branch_id)
                     ->max('barcode');

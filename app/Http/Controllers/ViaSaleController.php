@@ -39,7 +39,7 @@ class ViaSaleController extends Controller
         if ($validator->passes()) {
             $oldBalance = AccountTransaction::where('account_id', $request->transaction_account)->latest('created_at')->first();
             // dd($oldBalance->balance >= $request->amount);
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
+            if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
                 $viaSale = ViaSale::findOrFail($id);
                 $viaSale->paid = $viaSale->paid + $request->amount;
                 $viaSale->due = $viaSale->due - $request->amount;
@@ -83,7 +83,8 @@ class ViaSaleController extends Controller
         $viaSale = ViaSale::findOrFail($id);
         return view('pos.via_sale.invoice', compact('viaSale'));
     }
-    public function ViaSaleProductDelete($id){
+    public function ViaSaleProductDelete($id)
+    {
         $viaSale = ViaSale::findOrFail($id)->delete();
         return response()->json(['message' => 'Via Sale deleted successfully.']);
     }

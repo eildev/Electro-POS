@@ -47,11 +47,11 @@ class TransactionController extends Controller
     } // End function
     public function TransactionStore(Request $request)
     {
-        // dd($request->payment_method);
+        // dd($request->account_type);
         if ($request->account_type == 'supplier') {
             //Here change
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-            if ($oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
+            if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
                 //Here change End
                 $supplier = Supplier::findOrFail($request->account_id);
                 // dd($request->account_id);
@@ -143,7 +143,11 @@ class TransactionController extends Controller
             $accountTransaction->account_id =  $request->payment_method;
             $accountTransaction->credit = $request->amount;
             $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-            $accountTransaction->balance = $oldBalance->balance + $request->amount;
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance + $request->amount;
+            } else {
+                $accountTransaction->balance = $request->amount;
+            }
             $accountTransaction->created_at = Carbon::now();
             $accountTransaction->save();
             $notification = [
@@ -152,41 +156,56 @@ class TransactionController extends Controller
             ];
             return redirect()->back()->with($notification);
         } else if ($request->account_type == 'other') {
+            // dd($request->transaction_type);
             $tracsBalances = Transaction::where('others_id', $request->account_id)->latest()->first();
             $currentBalance = $tracsBalances->balance ?? 0;
+            $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
             if ($request->transaction_type == 'pay') {
-                $payBalance = $currentBalance - $request->amount;
-                // dd($currentBalance - $request->amount);
-                $transaction = Transaction::create([
-                    'date' => $request->date,
-                    'payment_type' => $request->transaction_type,
-                    'particulars' => 'OthersPayment',
-                    'debit' => $request->amount,
-                    'payment_method' => $request->payment_method,
-                    'note' => $request->note,
-                    'balance' => $payBalance,
-                    'others_id' => $request->account_id,
-                ]);
-                $investor = Investor::findOrFail($request->account_id);
-                $currentBalance = $investor->balance;
-                $newBalance = $currentBalance  - $request->amount;
-                $oldDebit = $investor->debit  + $request->amount;
-                $investor->update([
-                    'type' => $request->type,
-                    'debit' =>  $oldDebit,
-                    'balance' => $newBalance,
-                ]);
-                // account transaction
-                $accountTransaction = new AccountTransaction;
-                $accountTransaction->branch_id =  Auth::user()->branch_id;
-                $accountTransaction->reference_id = $investor->id;
-                $accountTransaction->purpose =  'OthersPayment';
-                $accountTransaction->account_id =  $request->payment_method;
-                $accountTransaction->debit = $request->amount;
-                $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-                $accountTransaction->balance = $oldBalance->balance - $request->amount;
-                $accountTransaction->created_at = Carbon::now();
-                $accountTransaction->save();
+                if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->amount) {
+                    $payBalance = $currentBalance - $request->amount;
+                    // dd($currentBalance - $request->amount);
+                    $transaction = Transaction::create([
+                        'date' => $request->date,
+                        'payment_type' => $request->transaction_type,
+                        'particulars' => 'OthersPayment',
+                        'debit' => $request->amount,
+                        'payment_method' => $request->payment_method,
+                        'note' => $request->note,
+                        'balance' => $payBalance,
+                        'others_id' => $request->account_id,
+                    ]);
+                    $investor = Investor::findOrFail($request->account_id);
+                    $currentBalance = $investor->balance;
+                    $newBalance = $currentBalance  - $request->amount;
+                    $oldDebit = $investor->debit  + $request->amount;
+                    $investor->update([
+                        'type' => $request->type,
+                        'debit' =>  $oldDebit,
+                        'balance' => $newBalance,
+                    ]);
+                    // account transaction
+                    $accountTransaction = new AccountTransaction;
+                    $accountTransaction->branch_id =  Auth::user()->branch_id;
+                    $accountTransaction->reference_id = $investor->id;
+                    $accountTransaction->purpose =  'OthersPayment';
+                    $accountTransaction->account_id =  $request->payment_method;
+                    $accountTransaction->debit = $request->amount;
+                    $accountTransaction->balance = $oldBalance->balance - $request->amount;
+                    $accountTransaction->created_at = Carbon::now();
+                    $accountTransaction->save();
+
+                    $notification = [
+                        'message' => 'Transaction Others Successful',
+                        'alert-type' => 'info'
+                    ];
+                    return redirect()->back()->with($notification);
+                } else {
+                    $notification = [
+                        'warning' => 'Your account Balance is low Please Select Another account',
+                        'alert-type' => 'warning'
+                    ];
+                    return redirect()->back()->with($notification);
+                }
             } else if ($request->transaction_type == 'receive') {
                 $receiveBalance = $currentBalance + $request->amount;
                 $transaction = Transaction::create([
@@ -209,7 +228,7 @@ class TransactionController extends Controller
                     'balance' => $newBalance,
                 ]);
 
-                //
+                // account Transaction 
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $investor->id;
@@ -217,18 +236,20 @@ class TransactionController extends Controller
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->credit = $request->amount;
                 $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();
-                $accountTransaction->balance = $oldBalance->balance + $request->amount;
+                if ($oldBalance) {
+                    $accountTransaction->balance = $oldBalance->balance + $request->amount;
+                } else {
+                    $accountTransaction->balance = $request->amount;
+                }
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
+
+                $notification = [
+                    'message' => 'Transaction Others Successful',
+                    'alert-type' => 'info'
+                ];
+                return redirect()->back()->with($notification);
             }
-
-            // $tracsBalances->update(['balance' => $newBalance]);
-
-            $notification = [
-                'message' => 'Transaction Others Successfull',
-                'alert-type' => 'info'
-            ];
-            return redirect()->back()->with($notification);
         }
     } //
     public function TransactionDelete($id)

@@ -116,8 +116,11 @@
                                     <th>Invoice <br>Number</th>
                                     <th>Customer</th>
                                     <th>Items</th>
+                                    <th>Quantity</th>
                                     <th>Date</th>
+                                    <th>Total</th>
                                     <th>Discount</th>
+                                    <th>Previous Due</th>
                                     <th>Receivable</th>
                                     <th>Paid</th>
                                     <th>Product <br> Returned</th>
