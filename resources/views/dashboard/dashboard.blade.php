@@ -142,8 +142,9 @@
                         ->latest()
                         ->first();
                     $yesterdayBalance = 0;
+                    $lastDate = App\Models\AccountTransaction::latest()->first();
                     foreach ($banks as $bank) {
-                        $transaction = App\Models\AccountTransaction::whereDate('created_at', Carbon::yesterday())
+                        $transaction = App\Models\AccountTransaction::whereDate('created_at', $lastDate->created_at)
                             ->where('account_id', $bank->id)
                             ->where('balance', '>', 0)
                             ->latest()

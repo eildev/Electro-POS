@@ -116,13 +116,27 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                                <label class="form-label">Note</label>
-                                <textarea name="note" class="form-control return_purpose" value="{{ old('note') }}"
-                                    placeholder="Write About Damages" rows="4" cols="50"></textarea>
+                        <div class="mb-3 col-md-6">
+                            @php
+                                $payments = App\Models\Bank::get();
+                            @endphp
+                            <label for="" class="form-label">Payment Method <span
+                                    class="text-danger">*</span></label>
+                            <div class="d-flex g-3">
+                                <select class="js-example-basic-single payment_method" data-width="100%">
+                                    @if ($payments->count() > 0)
+                                        @foreach ($payments as $payemnt)
+                                            <option value="{{ $payemnt->id }}">
+                                                {{ $payemnt->name }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option selected disabled>Please Add Payment Method</option>
+                                    @endif
+                                </select>
                             </div>
                         </div>
+
                         <div class="col-sm-6">
                             <label class="form-label">Adjus Due</label>
                             <select class="form-select adjust_due">
@@ -130,6 +144,13 @@
                                 <option value="yes">Yes</option>
                                 <option value="no">No</option>
                             </select>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Return Reason</label>
+                                <textarea name="note" class="form-control return_purpose" value="{{ old('note') }}"
+                                    placeholder="Write About Return" rows="4" cols="50"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -335,6 +356,7 @@
                 let return_date = $('.return_date').val();
                 let formattedReturnDate = moment(return_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
                 let adjustDue = $('.adjust_due').val();
+                let paymentMethod = $('.payment_method').val();
                 // console.log(adjustDue);
 
                 let refund_amount = parseFloat($('.all_product_total').text());
@@ -372,7 +394,8 @@
                     refund_amount,
                     note,
                     sale_items,
-                    adjustDue
+                    adjustDue,
+                    paymentMethod
                 }
 
                 $.ajaxSetup({
