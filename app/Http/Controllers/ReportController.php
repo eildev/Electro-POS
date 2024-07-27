@@ -43,12 +43,12 @@ class ReportController extends Controller
         $todayPurchaseItems = PurchaseItem::whereDate('created_at', $todayDate);
         $purchases = Purchase::whereDate('created_at', $todayDate)->get();
         $todayPurchaseItemsToday = $todayPurchaseItems->sum('quantity');
-        $todayPurchaseToday = Purchase::whereDate('purchse_date', $todayDate)->get();
+        $todayPurchaseToday = Purchase::whereDate('purchase_date', $todayDate)->get();
         // dd($todayPurchaseToday);
         $today_grand_total = $todayPurchaseToday->sum('grand_total');
-        $todayTotalPurchaseAmount = Purchase::whereDate('purchse_date', $todayDate)->sum('grand_total');
-        $todayTotalPurchaseQty = Purchase::whereDate('purchse_date', $todayDate)->sum('total_quantity');
-        $todayTotalPurchaseDue = Purchase::whereDate('purchse_date', $todayDate)->sum('due');
+        $todayTotalPurchaseAmount = Purchase::whereDate('purchase_date', $todayDate)->sum('grand_total');
+        $todayTotalPurchaseQty = Purchase::whereDate('purchase_date', $todayDate)->sum('total_quantity');
+        $todayTotalPurchaseDue = Purchase::whereDate('purchase_date', $todayDate)->sum('due');
 
         //Today invoice product
         $todayInvoiceProductItems = Sale::whereDate('sale_date', $todayDate);
@@ -190,11 +190,11 @@ class ReportController extends Controller
 
             ->when($request->startDatePurches && $request->endDatePurches, function ($query) use ($request) {
                 $query->whereHas('Purchas', function ($query) use ($request) {
-                    return $query->whereBetween('purchse_date', [$request->startDatePurches, $request->endDatePurches]);
+                    return $query->whereBetween('purchase_date', [$request->startDatePurches, $request->endDatePurches]);
                 });
             })
             // ->when($request->startDate && $request->endDate, function ($query) use ($request) {
-            //     return $query->whereBetween('purchse_date', [$request->startDate, $request->endDate]);
+            //     return $query->whereBetween('purchase_date', [$request->startDate, $request->endDate]);
             // })
             ->get();
         return view('pos.report.purchase.purchase-filter-table', compact('purchaseItem'))->render();
@@ -414,7 +414,7 @@ class ReportController extends Controller
             $endOfMonth = now()->subMonths($i)->endOfMonth()->toDateString();
 
             // Calculate the totals for the month
-            $totalPurchaseCost = Purchase::whereBetween('purchse_date', [$startOfMonth, $endOfMonth])
+            $totalPurchaseCost = Purchase::whereBetween('purchase_date', [$startOfMonth, $endOfMonth])
                 ->sum('grand_total');
             $totalSale = Sale::whereBetween('sale_date', [$startOfMonth, $endOfMonth])
                 ->sum('receivable');

@@ -28,6 +28,7 @@ use App\Http\Controllers\CustomeMailControler;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\CompanyBalanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ViaSaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,9 +47,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', function () {
-    return view('dashboard.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

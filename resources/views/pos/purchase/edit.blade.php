@@ -45,7 +45,7 @@
 
                                 <div class="input-group flatpickr" id="flatpickr-date">
                                     <input type="text" name="date" class="form-control purchase_date"
-                                        placeholder="Select date" data-input value="{{ $purchase->purchse_date }}">
+                                        placeholder="Select date" data-input value="{{ $purchase->purchase_date }}">
                                     <span class="input-group-text input-group-addon" data-toggle><i
                                             data-feather="calendar"></i></span>
                                 </div>
@@ -137,7 +137,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <input type="number" class="form-control discount_amount"
-                                                    name="discount_amount" value="0.00" />
+                                                        name="discount_amount" value="0.00" />
                                                     {{-- @php
                                                     $promotions = App\Models\Promotion::get();
                                                 @endphp
@@ -704,8 +704,8 @@
             //     event.preventDefault();
             //     // alert('ok');
             //     let supplier_id = $('.select-supplier').val();
-            //     let purchse_date = $('.purchase_date').val();
-            //     let formattedPurchaseDate = moment(purchse_date, 'DD-MMM-YYYY').format(
+            //     let purchase_date = $('.purchase_date').val();
+            //     let formattedPurchaseDate = moment(purchase_date, 'DD-MMM-YYYY').format(
             //         'YYYY-MM-DD HH:mm:ss');
             //     let total_quantity = totalQuantity;
             //     let total_amount = parseFloat($('.total').val());
@@ -748,7 +748,7 @@
             //     // let allData = {
             //     //     // for purchase table
             //     //     supplier_id,
-            //     //     purchse_date: formattedPurchaseDate,
+            //     //     purchase_date: formattedPurchaseDate,
             //     //     total_quantity,
             //     //     total_amount,
             //     //     discount,

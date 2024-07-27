@@ -48,7 +48,7 @@ class PurchaseController extends Controller
                 $purchase = new Purchase;
                 $purchase->branch_id = Auth::user()->branch_id;
                 $purchase->supplier_id = $request->supplier_id;
-                $purchase->purchse_date =  $purchaseDate;
+                $purchase->purchase_date =  $purchaseDate;
                 $purchase->total_quantity =  $totalQty;
                 $purchase->total_amount =  $totalAmount;
                 $purchase->invoice = $request->invoice;

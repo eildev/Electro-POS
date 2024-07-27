@@ -28,7 +28,7 @@
                             <p class="text-end mb-1 mt-5">Total </p>
                             <h4 class="text-end fw-normal">৳ {{ $purchase->grand_total ?? 00.0 }}</h4>
                             <h6 class="mb-0 mt-2 text-end fw-normal"><span class="text-muted show_purchase_date">Invoice
-                                    Date :</span> {{ $purchase->purchse_date ?? '' }}</h6>
+                                    Date :</span> {{ $purchase->purchase_date ?? '' }}</h6>
                         </div>
                     </div>
                     <div class="container-fluid mt-5 d-flex justify-content-center w-100">

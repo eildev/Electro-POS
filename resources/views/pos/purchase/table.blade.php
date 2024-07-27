@@ -4,7 +4,7 @@
             <td class="id">{{ $index + 1 }}</td>
             <td>{{ $data->id ?? 0 }}</td>
             <td>{{ $data->supplier->name ?? '' }}</td>
-            <td>{{ $data->purchse_date ?? 0 }}</td>
+            <td>{{ $data->purchase_date ?? 0 }}</td>
             <td>
                 <ul>
                     @foreach ($data->purchaseItem as $items)
