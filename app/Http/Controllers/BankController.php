@@ -8,10 +8,10 @@ use App\Models\Transaction;
 use App\Repositories\RepositoryInterfaces\BankInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-// use Validator;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
-use function Laravel\Prompts\alert;
+
 
 class BankController extends Controller
 {
@@ -27,15 +27,23 @@ class BankController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|max:99',
-            'opening_balance' => 'required',
-        ]);
+        try {
+            // Validate the incoming request
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|max:99',
+                'opening_balance' => 'required',
+            ]);
 
-        if ($validator->passes()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => '500',
+                    'error' => $validator->messages()
+                ]);
+            }
+
+            // If validation passes, proceed with saving the bank details
             $bank = new Bank;
-            $bank->name =  $request->name;
+            $bank->name = $request->name;
             $bank->branch_name = $request->branch_name;
             $bank->manager_name = $request->manager_name;
             $bank->phone_number = $request->phone_number;
@@ -44,25 +52,28 @@ class BankController extends Controller
             $bank->opening_balance = $request->opening_balance;
             $bank->save();
 
+            // Save the account transaction
             $accountTransaction = new AccountTransaction;
-            $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Bank';
-            $accountTransaction->account_id =  $bank->id;
+            $accountTransaction->branch_id = Auth::user()->branch_id;
+            $accountTransaction->purpose = 'Bank';
+            $accountTransaction->account_id = $bank->id;
             $accountTransaction->credit = $request->opening_balance;
             $accountTransaction->balance = $accountTransaction->balance + $request->opening_balance;
             $accountTransaction->save();
 
             return response()->json([
                 'status' => 200,
-                'message' => 'Bank Save Successfully',
+                'message' => 'Bank Saved Successfully',
             ]);
-        } else {
-            return response()->json([
-                'status' => '500',
-                'error' => $validator->messages()
-            ]);
+        } catch (\Exception $e) {
+            // Log the error message
+            Log::error('Error to saving bank details: ' . $e->getMessage());
+
+            // Return the errors.500 view for internal server errors
+            return response()->view('errors.500', [], 500);
         }
     }
+
     public function view()
     {
         // $banks = Bank::get();
