@@ -144,7 +144,7 @@ class DamageController extends Controller
             $product_qty->save();
 
             //Update
-            $existingTransaction  =AccountTransaction::where('reference_id',$id)->firstOrFail();
+            $existingTransaction  = AccountTransaction::where('reference_id',$id)->firstOrFail();
             $oldProductPrice = $existingTransaction->debit;
             $product_price = $product_qty->price * $request->pc;
             $priceDifference = $product_price - $oldProductPrice;
@@ -161,7 +161,6 @@ class DamageController extends Controller
             }
             $existingTransaction->created_at = Carbon::now();
             $existingTransaction->save();
-
         }
         $notification = array(
             'message' => 'Damage Update Successfully',
