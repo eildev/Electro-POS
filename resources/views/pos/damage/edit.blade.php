@@ -20,7 +20,7 @@
                                     $products = App\Models\Product::get();
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product <span class="text-danger">*</span></label>
-                                <select class="js-example-basic-single form-select" name="product_id"
+                                {{-- <select class="js-example-basic-single form-select" name="product_id"
                                     data-width="100%"  onchange="show_quantity(this)">
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Damaged Product</option>
@@ -31,7 +31,8 @@
                                     @else
                                         <option selected disabled>Please Add Product</option>
                                     @endif
-                                </select>
+                                </select> --}}
+                                <input type="text" class="form-control" value="{{$damage_info->product->name}}" readonly>
                                 <span class="text-danger product_select_error"></span>
                             </div>
                             <div class="col-sm-6">
