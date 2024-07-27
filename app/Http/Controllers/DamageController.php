@@ -7,10 +7,12 @@ use App\Repositories\RepositoryInterfaces\DamageInterface;
 use Illuminate\Support\Str;
 use App\Models\Damage;
 use App\Models\Product;
-
+use App\Models\AccountTransaction;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 // use Validator;
 use Illuminate\Support\Facades\Validator;
+use League\CommonMark\Reference\Reference;
 
 class DamageController extends Controller
 {
@@ -56,6 +58,24 @@ class DamageController extends Controller
             $damage->save();
             $product_qty->stock = $product_qty->stock - $request->pc;
             $product_qty->save();
+
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id = Auth::user()->branch_id;
+            $accountTransaction->reference_id = $damage->id;
+            $accountTransaction->purpose = 'Damage';
+            // $accountTransaction->account_id = '';
+            // Calculate product price
+            $product_price = $product_qty->price * $request->pc;
+            $accountTransaction->debit = $product_price; // $request->Amount
+            // Get the latest balance
+            $oldBalance = AccountTransaction::latest('created_at')->first();
+            if ($oldBalance) {
+                $accountTransaction->balance = $oldBalance->balance - $product_price;
+            } else {
+                $accountTransaction->balance = -$product_price; // assuming initial balance is 0
+            }
+            $accountTransaction->created_at = Carbon::now();
+            $accountTransaction->save();
         }
         $notification = array(
             'message' => 'Damage Add Successfully',
@@ -120,10 +140,27 @@ class DamageController extends Controller
             $damage->date = $formattedDate;
             $damage->note = $request->note;
             $damage->update();
-
-
             $product_qty->stock = $product_qty->stock - $request->pc;
             $product_qty->save();
+
+            //Update
+            $existingTransaction  = AccountTransaction::where('reference_id',$id)->firstOrFail();
+            $oldProductPrice = $existingTransaction->debit;
+            $product_price = $product_qty->price * $request->pc;
+            $priceDifference = $product_price - $oldProductPrice;
+            $existingTransaction->branch_id = Auth::user()->branch_id;
+            $existingTransaction->purpose = 'Damage';
+            $existingTransaction->debit = $product_price;
+            // $accountTransaction->account_id = '';
+            // Get the latest balance
+            $oldBalance = AccountTransaction::latest('created_at')->first();
+            if ($oldBalance) {
+                $existingTransaction->balance = $oldBalance->balance - $priceDifference;
+            } else {
+                $existingTransaction->balance = -$priceDifference;
+            }
+            $existingTransaction->created_at = Carbon::now();
+            $existingTransaction->save();
         }
         $notification = array(
             'message' => 'Damage Update Successfully',
