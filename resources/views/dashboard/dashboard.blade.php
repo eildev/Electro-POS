@@ -66,7 +66,7 @@
                                     </tr>
                                     <tr>
                                         <td>Paid Sales</td>
-                                        <td class="text-end">{{ number_format($todaySales->sum('paid'), 2) }}</td>
+                                        <td class="text-end">{{ number_format($todaySales, 2) }}</td>
                                         <td>Purchase</td>
                                         <td class="text-end">{{ number_format($todayPurchase->sum('paid'), 2) }}</td>
 
@@ -100,7 +100,7 @@
                                     </tr>
                                     <tr>
                                         <td>Via Sale</td>
-                                        <td class="text-end"></td>
+                                        <td class="text-end">{{ number_format($viaSale->sum('sub_total'), 2) }}</td>
                                         <td>Via Purchase</td>
                                         <td class="text-end">{{ number_format($viaPayment->sum('debit'), 2) }}</td>
                                     </tr>
