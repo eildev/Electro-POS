@@ -18,11 +18,19 @@ class TransactionController extends Controller
 {
     public function TransactionAdd()
     {
-        $paymentMethod = Bank::all();
-        $supplier = Supplier::latest()->get();
-        $customer = Customer::latest()->get();
-        $investors = Investor::latest()->get();
-        $transaction = Transaction::latest()->get();
+        if(Auth::user()->id == 1){
+            $supplier = Supplier::latest()->get();
+            $customer = Customer::latest()->get();
+            $paymentMethod = Bank::all();
+            $investors = Investor::latest()->get();
+            $transaction = Transaction::latest()->get();
+        }else{
+            $supplier = Supplier::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $customer = Customer::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $paymentMethod = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $investors = Investor::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $transaction = Transaction::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return view('pos.transaction.transaction_add', compact('paymentMethod', 'supplier', 'customer', 'transaction', 'investors'));
     } //
     // public function TransactionView(){
@@ -80,6 +88,7 @@ class TransactionController extends Controller
                 }
                 // dd($updateTraBalance);
                 $transaction = Transaction::create([
+                    'branch_id' =>Auth::user()->branch_id,
                     'date' => $request->date,
                     'payment_type' => 'pay',
                     'particulars' => 'PurchaseDue',
@@ -133,6 +142,7 @@ class TransactionController extends Controller
             $transBalance = $tracsBalance->balance ?? 0;
             $newTrasBalance = $transBalance + $request->amount;
             $transaction = Transaction::create([
+                'branch_id' => Auth::user()->branch_id,
                 'date' => $request->date,
                 'payment_type' => 'receive',
                 'particulars' => 'SaleDue',
@@ -173,6 +183,7 @@ class TransactionController extends Controller
                     $payBalance = $currentBalance - $request->amount;
                     // dd($currentBalance - $request->amount);
                     $transaction = Transaction::create([
+                        'branch_id' => Auth::user()->branch_id,
                         'date' => $request->date,
                         'payment_type' => $request->transaction_type,
                         'particulars' => 'OthersPayment',
@@ -217,6 +228,7 @@ class TransactionController extends Controller
             } else if ($request->transaction_type == 'receive') {
                 $receiveBalance = $currentBalance + $request->amount;
                 $transaction = Transaction::create([
+                    'branch_id' =>Auth::user()->branch_id,
                     'date' => $request->date,
                     'payment_type' => $request->transaction_type,
                     'particulars' => 'OthersReceive',
@@ -302,9 +314,9 @@ class TransactionController extends Controller
             'name' => 'required',
             'phone' => 'required',
         ]);
-
         if ($validator->passes()) {
             $investor = new Investor;
+            $investor->branch_id = Auth::user()->branch_id;
             $investor->name = $request->name;
             $investor->phone = $request->phone;
             $investor->created_at = Carbon::now();
@@ -322,7 +334,11 @@ class TransactionController extends Controller
     }
     public function GetInvestor()
     {
-        $data = Investor::latest()->get();
+        if(Auth::user()->id == 1){
+            $data = Investor::latest()->get();
+        }else{
+            $data = Investor::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return response()->json([
             'status' => 200,
             'message' => 'Successfully save',

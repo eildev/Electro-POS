@@ -20,8 +20,13 @@ class EmployeeSalaryController extends Controller
         //     $query->select('employee_id')->from('employee_salaries')->whereYear('date', Carbon::now()->format('Y'))
         //     ->whereMonth('date', Carbon::now()->format('m'));;
         // })->get();
-        $employees = Employee::latest()->get();
-        $bank = Bank::latest()->get();
+        if(Auth::user()->id == 1){
+            $employees = Employee::latest()->get();
+            $bank = Bank::latest()->get();
+        }else{
+            $employees = Employee::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         $branch = Branch::latest()->get();
         return view('pos.employee_salary.add_employee_salary', compact('employees', 'branch', 'bank'));
     } //
@@ -144,14 +149,23 @@ class EmployeeSalaryController extends Controller
     //
     public function EmployeeSalaryView()
     {
-        $employeSalary = EmployeeSalary::all();
+        if(Auth::user()->id == 1){
+            $employeSalary = EmployeeSalary::all();
+        }else{
+            $employeSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return view('pos.employee_salary.view_employee_salary', compact('employeSalary'));
     } //
     public function EmployeeSalaryEdit($id)
     {
         $employeeSalary = EmployeeSalary::findOrFail($id);
-        $employees = Employee::latest()->get();
-        $bank = Bank::latest()->get();
+        if(Auth::user()->id == 1){
+            $employees = Employee::latest()->get();
+            $bank = Bank::latest()->get();
+        }else{
+            $employees = Employee::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         $branch = Branch::latest()->get();
         return view('pos.employee_salary.edit_employee_salary', compact('employeeSalary', 'employees', 'branch', 'bank'));
     } //Employee Salary Edit
@@ -208,8 +222,13 @@ class EmployeeSalaryController extends Controller
 
     public function EmployeeSalaryAdvancedAdd()
     {
-        $employees = Employee::latest()->get();
-        $bank = Bank::latest()->get();
+        if(Auth::user()->id == 1){
+            $employees = Employee::all();
+            $bank = Bank::latest()->get();
+        }else{
+            $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $employees = Employee::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         $branch = Branch::latest()->get();
         return view('pos.employee_salary.advanced_employee_salary_add', compact('employees', 'branch', 'bank'));
     } //End
@@ -300,14 +319,23 @@ class EmployeeSalaryController extends Controller
     }
     public function EmployeeSalaryAdvancedView()
     {
-        $employeSalary = EmployeeSalary::all();
+        if(Auth::user()->id == 1){
+            $employeSalary = EmployeeSalary::all();
+        }else{
+            $employeSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return view('pos.employee_salary.view_advanced_employee_salary', compact('employeSalary'));
     } //
     public function EmployeeSalaryAdvancedEdit($id)
     {
         $employeeSalary = EmployeeSalary::findOrFail($id);
-        $employees = Employee::latest()->get();
-        $bank = Bank::latest()->get();
+        if(Auth::user()->id == 1){
+            $employees = Employee::latest()->get();
+            $bank = Bank::latest()->get();
+        }else{
+            $employees = Employee::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         $branch = Branch::latest()->get();
         return view('pos.employee_salary.edit_advanced_employee_salary', compact('employeeSalary', 'employees', 'branch', 'bank'));
     }
