@@ -10,6 +10,7 @@ use App\Models\Purchase;
 use App\Models\Returns;
 use App\Models\Sale;
 use App\Models\Transaction;
+use App\Models\ViaSale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,9 @@ class DashboardController extends Controller
     {
         // today summary 
         $banks = Bank::all();
-        $todaySales = Sale::whereDate('created_at', Carbon::now())->get();
+        $viaSale = ViaSale::whereDate('created_at', Carbon::now())->get();
+        $todaySalesData = Sale::whereDate('created_at', Carbon::now())->get();
+        $todaySales = $todaySalesData->sum('paid') - $viaSale->sum('sub_total');
 
         $todayPurchase = Purchase::whereDate('created_at', Carbon::now())->get();
         $todayExpanse = Expense::whereDate('created_at', Carbon::now())->get();
@@ -83,11 +86,12 @@ class DashboardController extends Controller
 
         $totalIngoing =
             $previousDayBalance +
-            $todaySales->sum('paid') +
+            $todaySales +
             $dueCollection->sum('credit') +
             $otherCollection->sum('credit') +
             $addBalance->sum('credit') +
-            $adjustDueCollection;
+            $adjustDueCollection +
+            $viaSale->sum('sub_total');
         $totalOutgoing =
             $todayPurchase->sum('paid') +
             $todayExpanse->sum('amount') +
@@ -189,7 +193,8 @@ class DashboardController extends Controller
             'bankLabels',
             'salesByMonth',
             'profitsByMonth',
-            'purchasesByMonth'
+            'purchasesByMonth',
+            'viaSale',
         ));
     }
 }

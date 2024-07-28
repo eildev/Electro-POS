@@ -20,6 +20,7 @@ use App\Models\Sms;
 use App\Models\Damage;
 use Illuminate\Http\Request;
 use App\Models\AccountTransaction;
+use App\Models\ViaSale;
 use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
@@ -406,6 +407,58 @@ class ReportController extends Controller
 
     public function monthlyReport()
     {
+        $dailyReports = [];
+
+        for ($i = 0; $i < 30; $i++) { // Loop for the last 30 days
+            // Calculate the start and end dates for the day
+            $date = now()->subDays($i)->toDateString();
+
+            // Calculate the totals for the day
+            $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
+            $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
+            $totalSale = Sale::whereDate('sale_date', $date)->sum('paid');
+            $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
+            $totalExpense = Expense::whereDate('expense_date', $date)->sum('amount');
+            $totalSalary = EmployeeSalary::whereDate('date', $date)->sum('debit');
+            $dueCollection = Transaction::where('particulars', 'SaleDue')
+                ->whereDate('created_at', $date)
+                ->sum('credit');
+            $otherCollection = Transaction::where('particulars', 'OthersReceive')
+                ->whereDate('created_at', $date)
+                ->sum('credit');
+            $adjustDueCollection = Transaction::where('particulars', 'Adjust Due Collection')
+                ->where('payment_type', 'pay')
+                ->whereDate('created_at',  $date)
+                ->sum('credit');
+            $addBalance = AccountTransaction::where('purpose', 'Add Bank Balance')
+                ->whereDate('created_at',  $date)
+                ->sum('credit');
+            $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+
+            $dayName = now()->subDays($i)->format('d F Y');
+
+            // Store the report data in the array
+            $dailyReports[now()->subDays($i)->format('Y-m-d')] = [
+                'date' => $dayName,
+                'totalPurchaseCost' => $totalPurchaseCost,
+                'totalSale' => $totalSale,
+                'totalProfit' => $totalProfit,
+                'totalExpense' => $totalExpense,
+                'totalSalary' => $totalSalary,
+                'dueCollection' => $dueCollection,
+                'otherCollection' => $otherCollection,
+                'adjustDueCollection' => $adjustDueCollection,
+                'addBalance' => $addBalance,
+                'viaSale' => $viaSale,
+                'finalProfit' => $finalProfit
+            ];
+        }
+
+        // Pass the daily reports array to the view
+        return view('pos.report.monthly.monthly', compact('dailyReports'));
+    }
+    public function yearlyReport()
+    {
         $monthlyReports = [];
 
         for ($i = 0; $i < 12; $i++) {
@@ -437,11 +490,12 @@ class ReportController extends Controller
                 'totalProfit' => $totalProfit,
                 'totalExpense' => $totalExpense,
                 'totalSalary' => $totalSalary,
+                'totalSalary' => $totalSalary,
                 'finalProfit' => $finalProfit
             ];
         }
 
         // Pass the monthly reports array to the view
-        return view('pos.report.monthly.monthly', compact('monthlyReports'));
+        return view('pos.report.yearly.yearly', compact('monthlyReports'));
     }
 }

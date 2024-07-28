@@ -442,6 +442,11 @@
                                     class="nav-link {{ request()->routeIs('report.monthly') ? 'nav_active' : '' }}">Monthly
                                     Report</a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('report.yearly') }}"
+                                    class="nav-link {{ request()->routeIs('report.yearly') ? 'nav_active' : '' }}">Yearly
+                                    Report</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
