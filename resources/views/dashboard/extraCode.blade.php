@@ -263,7 +263,7 @@
                 $date = now()->subDays($i)->toDateString();
                 $dailySales = App\Models\Sale::whereDate('sale_date', $date)->sum('receivable');
                 $dailyProfit = App\Models\Sale::whereDate('sale_date', $date)->sum('profit');
-                $dailyPurchase = App\Models\Purchase::whereDate('purchse_date', $date)->sum('grand_total');
+                $dailyPurchase = App\Models\Purchase::whereDate('purchase_date', $date)->sum('grand_total');
 
                 $salesByDay[$date] = $dailySales;
                 $salesProfitByDay[$date] = $dailyProfit;
@@ -481,7 +481,7 @@
 
             $monthlySales = App\Models\Sale::whereBetween('sale_date', [$monthStart, $monthEnd])->sum('receivable');
             $monthlyProfit = App\Models\Sale::whereBetween('sale_date', [$monthStart, $monthEnd])->sum('profit');
-            $monthlyPurchase = App\Models\Purchase::whereBetween('purchse_date', [$monthStart, $monthEnd])->sum(
+            $monthlyPurchase = App\Models\Purchase::whereBetween('purchase_date', [$monthStart, $monthEnd])->sum(
                 'grand_total',
             );
 

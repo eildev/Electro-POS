@@ -124,12 +124,32 @@ class SaleController extends Controller
             $sale->profit = $totalSell - $productCost;
             $sale->note = $request->note;
             $sale->created_at = Carbon::now();
-            $sale->save();
+            // $sale->save();
 
             $saleId = $sale->id;
-            $products = $request->products;
-            $sellTypeViaSell = false;
+            $selectedItems = $request->products;
 
+            $category = Category::where('name', 'Via Sell')->first();
+            // First pass to check if any product stock is 0
+            foreach ($selectedItems as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                if ($product->category_id == $category->id) {
+                    $saleItem = new SaleItem;
+                    $saleItem->sale_id = $saleId;
+                    $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+                    $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                    $saleItem->qty = $item['quantity'];
+                    $saleItem->wa_status = $item['wa_status'];
+                    $saleItem->wa_duration = $item['wa_duration'];
+                    $saleItem->discount = $item['product_discount'];
+                    dd('via sale');
+                } else if ($product->stock > $item['quantity']) {
+                    dd('normal sell');
+                } else {
+                    dd('Others Sale');
+                }
+            }
+            dd($items);
             // First pass to check if any product stock is 0
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
@@ -143,7 +163,6 @@ class SaleController extends Controller
             foreach ($products as $product) {
                 $items2 = Product::findOrFail($product['product_id']);
                 $items = new SaleItem;
-                // dd($items);
                 $items->sale_id = $saleId;
                 $items->product_id = $product['product_id']; // Access 'product_id' as an array key
                 $items->rate = $product['unit_price']; // Access 'unit_price' as an array key
@@ -281,9 +300,9 @@ class SaleController extends Controller
 
     public function view()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $sales = Sale::all();
-        }else{
+        } else {
             $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         // $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
@@ -687,9 +706,9 @@ class SaleController extends Controller
     }
     public function saleViewProduct()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $products = Product::all();
-        }else{
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         return response()->json([

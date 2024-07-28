@@ -49,30 +49,30 @@
                                 <span class="text-danger purchase_date_error"></span>
                             </div>
                             <div class="mb-3 col-md-6">
-                        @php
-                            $category = App\Models\Category::where('slug', 'via-sell')->first();
-                            $products = collect();
-                            if ($category) {
-                                if (Auth::user()->id == 1) {
-                            $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                                        ->orderBy('stock', 'asc')
-                                                        ->get();
-                                } else {
-                            $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                                        ->where('branch_id', Auth::user()->branch_id)
-                                                        ->orderBy('stock', 'asc')
-                                                        ->get();
-                                }
-                            } else {
-                                if (Auth::user()->id == 1) {
-                                $products = App\Models\Product::orderBy('stock', 'asc')->get();
-                                } else {
-                                $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
-                                                            ->orderBy('stock', 'asc')
-                                                            ->get();
-                                }
-                            }
-                        @endphp
+                                @php
+                                    $category = App\Models\Category::where('slug', 'via-sell')->first();
+                                    $products = collect();
+                                    if ($category) {
+                                        if (Auth::user()->id == 1) {
+                                            $products = App\Models\Product::where('category_id', '!=', $category->id)
+                                                ->orderBy('stock', 'asc')
+                                                ->get();
+                                        } else {
+                                            $products = App\Models\Product::where('category_id', '!=', $category->id)
+                                                ->where('branch_id', Auth::user()->branch_id)
+                                                ->orderBy('stock', 'asc')
+                                                ->get();
+                                        }
+                                    } else {
+                                        if (Auth::user()->id == 1) {
+                                            $products = App\Models\Product::orderBy('stock', 'asc')->get();
+                                        } else {
+                                            $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
+                                                ->orderBy('stock', 'asc')
+                                                ->get();
+                                        }
+                                    }
+                                @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
                                 <select class="js-example-basic-single form-select product_select" data-width="100%"
                                     onclick="errorRemove(this);">
@@ -529,7 +529,6 @@
                                         </td>
                                         <td>
                                             <input type="number" product-id="${product.id}" class="form-control quantity" name="quantity[]" min="1" value="" />
-
                                             <div class="validation-message text-danger" style="display: none;">Please enter a quantity of at least 1.</div>
                                         </td>
                                         <td>
