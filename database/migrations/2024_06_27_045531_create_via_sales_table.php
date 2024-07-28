@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('via_sales', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('branch_id')->unsigned();
+            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->date('invoice_date')->nullable();
             $table->bigInteger('invoice_number')->nullable();
             $table->string('supplier_name')->nullable();

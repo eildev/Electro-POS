@@ -70,8 +70,6 @@ class ReturnController extends Controller
                 // $saleItem = SaleItem::Where('sale_id', $request->sale_id)->get();
                 // dd($saleItems);
 
-
-
                 $returns = new Returns;
                 $returns->return_invoice_number = rand(123456, 99999);
                 $returns->sale_id = $request->sale_id;
@@ -124,11 +122,11 @@ class ReturnController extends Controller
                 $sales->profit = $sales->profit - $total_return_profit;
                 $sales->save();
 
-                // customer crud 
+                // customer crud
                 $customer = Customer::findOrFail($request->customer_id);
                 $customerDue = $customer->wallet_balance;
 
-                // account Transaction Crud 
+                // account Transaction Crud
                 // $bank = Bank::where('name', "=", "Cash")->first();
                 $lastTransaction = AccountTransaction::where('account_id', $request->paymentMethod)->latest('created_at')->first();
                 $accountTransaction =  new AccountTransaction;
@@ -138,7 +136,7 @@ class ReturnController extends Controller
                 $accountTransaction->account_id =  $request->paymentMethod;
                 $accountTransaction->created_at = Carbon::now();
 
-                // transaction CRUD 
+                // transaction CRUD
                 $lastTransactionData = Transaction::latest('created_at')->first();
                 $transaction = new Transaction;
                 $transaction->date = $request->formattedReturnDate;

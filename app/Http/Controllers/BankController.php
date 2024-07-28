@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
-
-
 class BankController extends Controller
 {
     private $bankrepo;
@@ -22,7 +20,6 @@ class BankController extends Controller
     }
     public function index()
     {
-
         return view('pos.bank.bank');
     }
     public function store(Request $request)
@@ -43,6 +40,7 @@ class BankController extends Controller
 
             // If validation passes, proceed with saving the bank details
             $bank = new Bank;
+            $bank->branch_id = Auth::user()->branch_id;
             $bank->name = $request->name;
             $bank->branch_name = $request->branch_name;
             $bank->manager_name = $request->manager_name;
@@ -77,7 +75,12 @@ class BankController extends Controller
     public function view()
     {
         // $banks = Bank::get();
-        $banks = $this->bankrepo->getAllBank();
+        if(Auth::user()->id == 1){
+            $banks = $this->bankrepo->getAllBank();
+        }else{
+            $banks = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         $banks->load('accountTransaction');
 
         // Add latest transaction to each bank

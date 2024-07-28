@@ -97,9 +97,14 @@ class ReportController extends Controller
     // customer due report function
     public function customerDue()
     {
-        $customer = Customer::where('branch_id', Auth::user()->branch_id)
+        if(Auth::user()->id == 1){
+            $customer = Customer::where('wallet_balance', '>', 0)
+            ->get();
+        }else{
+            $customer = Customer::where('branch_id', Auth::user()->branch_id)
             ->where('wallet_balance', '>', 0)
             ->get();
+        }
         return view('pos.report.customer.customer_due', compact('customer'));
     }
     function damageReportPrint(Request $request)
@@ -126,58 +131,76 @@ class ReportController extends Controller
     // customer due filter function
     public function customerDueFilter(Request $request)
     {
-        $customer = Customer::where('id', $request->customerId)->get();
-        // return response()->json([
-        //     'status' => 200,
-        //     'customer' => $customer,
-        // ]);
-        // dd($customer);
+        if(Auth::user()->id == 1){
+            $customer = Customer::where('id', $request->customerId)->get();
+        }else{
+            $customer = Customer::where('branch_id', Auth::user()->branch_id)->where('id', $request->customerId)->get();
+        }
         return view("pos.report.customer.table", compact('customer'))->render();
     }
     // supplier due report function
     public function supplierDueReport()
     {
-        $customer = Supplier::where('branch_id', Auth::user()->branch_id)
+        if(Auth::user()->id == 1){
+            $customer = Supplier::where('wallet_balance', '>', 0)
+            ->get();
+        }else{
+            $customer = Supplier::where('branch_id', Auth::user()->branch_id)
             ->where('wallet_balance', '>', 0)
             ->get();
+        }
         return view('pos.report.supplier.supplier_due', compact('customer'));
     }
     // supplier due filter function
     public function supplierDueFilter(Request $request)
     {
-        $customer = Supplier::where('id', $request->customerId)->get();
-        // return response()->json([
-        //     'status' => 200,
-        //     'customer' => $customer,
-        // ]);
-        // dd($customer);
+        if(Auth::user()->id == 1){
+            $customer = Supplier::where('id', $request->customerId)->get();
+            }else{
+                $customer = Supplier::where('branch_id', Auth::user()->branch_id)
+                ->where('id', $request->customerId)->get();
+            }
         return view("pos.report.customer.table", compact('customer'))->render();
     }
     // low stock report function
     public function lowStockReport()
     {
-        $products = Product::where('branch_id', Auth::user()->branch_id)
+        if(Auth::user()->id == 1){
+            $products = Product::where('stock', '<=', 10)
+            ->get();
+        }else{
+            $products = Product::where('branch_id', Auth::user()->branch_id)
             ->where('stock', '<=', 10)
             ->get();
-        // dd($products);
+        }
         return view('pos.report.products.low_stock', compact('products'));
     }
     // Top Products  function
     public function topProducts()
     {
-        $products = Product::where('branch_id', Auth::user()->branch_id)
+        if(Auth::user()->id == 1){
+            $products = Product::orderBy('total_sold', 'desc')
+            ->take(20)
+            ->get();
+           }else{
+            $products = Product::where('branch_id', Auth::user()->branch_id)
             ->orderBy('total_sold', 'desc')
             ->take(20)
             ->get();
-        // dd($products);
+           }
         return view('pos.report.products.top_products', compact('products'));
     }
-
 
     // purchase Report function
     public function purchaseReport()
     {
-        $purchaseItem = PurchaseItem::all();
+        if(Auth::user()->id == 1){
+            $purchaseItem = PurchaseItem::all();
+        }else{
+            $purchaseItem = PurchaseItem::whereHas('purchas', function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            })->get();
+        }
         return view('pos.report.purchase.purchase', compact('purchaseItem'));
     }
 
@@ -205,19 +228,16 @@ class ReportController extends Controller
         return view('pos.report.purchase.purchase_invoice', compact('purchase'));
         return view('pos.report.purchase.purchase');
     }
-    // public function purchaseReport()
-    // {
-    //     return view('pos.report.purchase.purchase');
-    // }
-
-
 
     //damage reports starting
 
     public function damageReport()
     {
+        if(Auth::user()->id == 1){
         $damageItem = Damage::all();
-        // @dd($damageItem);
+        }else{
+        $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->get();
+        }
         return view('pos.report.damages.damage', compact('damageItem'));
     }
 
@@ -236,11 +256,6 @@ class ReportController extends Controller
             ->get();
         return view('pos.report.damages.damage-filter-table', compact('damageItem'))->render();
     } //
-
-    //damage reports endpoint
-
-
-
 
     // customer Ledger report function
     public function customerLedger()
@@ -303,7 +318,11 @@ class ReportController extends Controller
     //stock Report function
     public function stockReport()
     {
-        $products = Product::where('branch_id', Auth::user()->branch_id)->get();
+        if(Auth::user()->id == 1){
+            $products = Product::all();
+        }else{
+            $products = Product::where('branch_id', Auth::user()->branch_id)->get();
+        }
         return view('pos.report.products.stock', compact('products'));
     } //
 
@@ -329,7 +348,11 @@ class ReportController extends Controller
     //////////////////Rexpense Report MEthod //////////////
     public function ExpenseReport()
     {
+        if(Auth::user()->id == 1){
         $expense = Expense::latest()->get();
+        }else{
+            $expense = Expense::where('branch_id', Auth::user()->branch_id)->get();
+        }
         return view('pos.report.expense.expense', compact('expense'));
     } //
     public function ExpenseReportFilter(Request $request)
@@ -343,7 +366,11 @@ class ReportController extends Controller
     //////////////////Employee Salary Report MEthod //////////////
     public function EmployeeSalaryReport()
     {
-        $employeeSalary = EmployeeSalary::all();
+        if(Auth::user()->id == 1){
+            $employeeSalary = EmployeeSalary::all();
+            }else{
+            $employeeSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->get();
+            }
         return view('pos.report.employee_salary.employee_salary', compact('employeeSalary'));
     } //
     public function EmployeeSalaryReportFilter(Request $request)
@@ -360,7 +387,12 @@ class ReportController extends Controller
     ////////Product Info Report /////
     public function ProductInfoReport()
     {
-        $productInfo = Product::all();
+        if(Auth::user()->id == 1){
+            $productInfo = Product::all();
+        }else{
+            $productInfo = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         return view('pos.report.products.product_info_report', compact('productInfo'));
     } //
     // public function ProductSubCategoryShow($categoryId){
@@ -440,7 +472,6 @@ class ReportController extends Controller
                 'finalProfit' => $finalProfit
             ];
         }
-
         // Pass the monthly reports array to the view
         return view('pos.report.monthly.monthly', compact('monthlyReports'));
     }
