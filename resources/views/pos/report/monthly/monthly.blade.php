@@ -30,16 +30,14 @@
                                 @endphp
                                 @foreach ($dailyReports as $report)
                                     <tr>
-                                        <td>{{ $key }}</td>
-                                        @php
-                                            $key++;
-                                        @endphp
+                                        <td>{{ $key++ }}</td>
                                         <td>{{ $report['date'] }}</td>
                                         <td>{{ number_format($report['totalIngoing'], 2) }}</td>
                                         <td>{{ number_format($report['totalOutgoing'], 2) }}</td>
                                         <td>{{ number_format($report['totalBalance'], 2) }}</td>
                                         <td>
-                                            <button type="button" class="btn btn-primary view_details">
+                                            <button type="button" value="{{ $report['date'] }}"
+                                                class="btn btn-primary view_details">
                                                 View Details
                                             </button>
                                         </td>
@@ -56,7 +54,17 @@
 
     <script>
         $(document).ready(function() {
-
+            $(document).on('click', '.view_details', function(e) {
+                e.preventDefault();
+                let date = $(this).val();
+                $.ajax({
+                    url: '/monthly/report/view/' + date,
+                    method: 'GET',
+                    success: function(res) {
+                        console.log(res);
+                    }
+                })
+            })
         });
     </script>
 @endsection

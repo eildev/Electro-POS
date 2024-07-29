@@ -467,28 +467,24 @@ class ReportController extends Controller
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
             $previousDayBalance = 0;
-            $lastTransaction = AccountTransaction::latest()->first();
-            if ($lastTransaction) {
-                // Get the last transaction date before today
-                $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $date)
-                    ->latest('created_at')
-                    ->first();
+            $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $date)
+                ->latest('created_at')
+                ->first();
+            if ($lastTransactionDate) {
+                $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
 
-                if ($lastTransactionDate) {
-                    $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+                foreach ($banks as $bank) {
+                    $transaction = AccountTransaction::where('account_id', $bank->id)
+                        ->whereDate('created_at', $lastTransactionDate)
+                        ->latest('created_at')
+                        ->first();
 
-                    foreach ($banks as $bank) {
-                        $transaction = AccountTransaction::where('account_id', $bank->id)
-                            ->whereDate('created_at', $lastTransactionDate)
-                            ->latest('created_at')
-                            ->first();
-
-                        if ($transaction) {
-                            $previousDayBalance += $transaction->balance;
-                        }
+                    if ($transaction) {
+                        $previousDayBalance += $transaction->balance;
                     }
                 }
             }
+
             $totalIngoing =
                 $previousDayBalance +
                 $totalSale +
@@ -532,7 +528,6 @@ class ReportController extends Controller
 
 
             $dayName = now()->subDays($i)->format('d F Y');
-
             // Store the report data in the array
             $dailyReports[now()->subDays($i)->format('Y-m-d')] = [
                 'date' => $dayName,
@@ -565,6 +560,10 @@ class ReportController extends Controller
 
         // Pass the daily reports array to the view
         return view('pos.report.monthly.monthly', compact('dailyReports'));
+    }
+
+    public function monthlyReportView($date)
+    {
     }
     public function yearlyReport()
     {

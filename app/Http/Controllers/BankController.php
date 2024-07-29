@@ -75,9 +75,9 @@ class BankController extends Controller
     public function view()
     {
         // $banks = Bank::get();
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $banks = $this->bankrepo->getAllBank();
-        }else{
+        } else {
             $banks = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
@@ -149,20 +149,12 @@ class BankController extends Controller
     }
     public function destroy($id)
     {
-        $cash = Bank::where('name', "=", "Cash")->first();
         $bank = Bank::findOrFail($id);
-        if ($bank->id == $cash->id) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'You Do Not Delete This Bank Account',
-            ]);
-        } else {
-            $bank->delete();
-            return response()->json([
-                'status' => 200,
-                'message' => 'Bank Deleted Successfully',
-            ]);
-        }
+        $bank->delete();
+        return response()->json([
+            'status' => 200,
+            'message' => 'Bank Deleted Successfully',
+        ]);
     }
     //Bank balance Add
     public function BankBalanceAdd(Request $request, $id)

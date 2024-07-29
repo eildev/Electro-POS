@@ -407,6 +407,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/sms/report/filter', 'SmsReportFilter')->name('sms.report.filter');
             // MONNTHLY Report
             Route::get('/monthly/report', 'monthlyReport')->name('report.monthly');
+            Route::get('/monthly/report/view/{date}', 'monthlyReportView')->name('report.monthly.view');
             Route::get('/yearly/report', 'yearlyReport')->name('report.yearly');
             Route::get('/daily/balance', 'dailyBalance')->name('daily.balance');
         });

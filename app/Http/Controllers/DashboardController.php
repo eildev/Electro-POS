@@ -42,28 +42,22 @@ class DashboardController extends Controller
             ->latest()
             ->first();
         $previousDayBalance = 0;
-        $lastTransaction = AccountTransaction::latest()->first();
-        if ($lastTransaction) {
-            $currentDate = Carbon::now()->toDateString();
+        $currentDate = Carbon::now()->toDateString();
+        // Get the last transaction date before today
+        $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $currentDate)
+            ->latest('created_at')
+            ->first();
+        if ($lastTransactionDate) {
+            $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
 
-            // Get the last transaction date before today
-            $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $currentDate)
-                ->latest('created_at')
-                ->first();
+            foreach ($banks as $bank) {
+                $transaction = AccountTransaction::where('account_id', $bank->id)
+                    ->whereDate('created_at', $lastTransactionDate)
+                    ->latest('created_at')
+                    ->first();
 
-
-            if ($lastTransactionDate) {
-                $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
-
-                foreach ($banks as $bank) {
-                    $transaction = AccountTransaction::where('account_id', $bank->id)
-                        ->whereDate('created_at', $lastTransactionDate)
-                        ->latest('created_at')
-                        ->first();
-
-                    if ($transaction) {
-                        $previousDayBalance += $transaction->balance;
-                    }
+                if ($transaction) {
+                    $previousDayBalance += $transaction->balance;
                 }
             }
         }
