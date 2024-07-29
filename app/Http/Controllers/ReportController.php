@@ -446,7 +446,8 @@ class ReportController extends Controller
             $date = now()->subDays($i)->toDateString();
 
             // Calculate the totals for the day
-            $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
+            if(Auth::user()->id == 1){
+                $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
             $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
             $totalSale = Sale::whereDate('sale_date', $date)->sum('paid');
             $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
@@ -466,6 +467,38 @@ class ReportController extends Controller
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
             $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+            }else{
+                $totalPurchaseCost = Purchase::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('purchase_date', $date)->sum('paid');
+                $viaSale = ViaSale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('created_at', $date)->sum('sub_total');
+                $totalSale = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $date)->sum('paid');
+                $totalProfit = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $date)->sum('profit');
+                $totalExpense = Expense::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('expense_date', $date)->sum('amount');
+                $totalSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('date', $date)->sum('debit');
+                $dueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'SaleDue')
+                    ->whereDate('created_at', $date)
+                    ->sum('credit');
+                $otherCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'OthersReceive')
+                    ->whereDate('created_at', $date)
+                    ->sum('credit');
+                $adjustDueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'Adjust Due Collection')
+                    ->where('payment_type', 'pay')
+                    ->whereDate('created_at',  $date)
+                    ->sum('credit');
+                $addBalance = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                ->where('purpose', 'Add Bank Balance')
+                    ->whereDate('created_at',  $date)
+                    ->sum('credit');
+                $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+            }
 
             $dayName = now()->subDays($i)->format('d F Y');
 
@@ -499,6 +532,7 @@ class ReportController extends Controller
             $endOfMonth = now()->subMonths($i)->endOfMonth()->toDateString();
 
             // Calculate the totals for the month
+            if(Auth::user()->id == 1){
             $totalPurchaseCost = Purchase::whereBetween('purchase_date', [$startOfMonth, $endOfMonth])
                 ->sum('grand_total');
             $totalSale = Sale::whereBetween('sale_date', [$startOfMonth, $endOfMonth])
@@ -510,6 +544,23 @@ class ReportController extends Controller
             $totalSalary = EmployeeSalary::whereBetween('date', [$startOfMonth, $endOfMonth])
                 ->sum('debit');
             $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+            }else{
+                $totalPurchaseCost = Purchase::whereBetween('purchase_date', [$startOfMonth, $endOfMonth])
+                ->sum('grand_total');
+            $totalSale = Sale::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('sale_date', [$startOfMonth, $endOfMonth])
+                ->sum('receivable');
+            $totalProfit = Sale::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('sale_date', [$startOfMonth, $endOfMonth])
+                ->sum('profit');
+            $totalExpense = Expense::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('expense_date', [$startOfMonth, $endOfMonth])
+                ->sum('amount');
+            $totalSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('date', [$startOfMonth, $endOfMonth])
+                ->sum('debit');
+            $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+              }
 
             $monthName = now()->subMonths($i)->format('F Y');
 

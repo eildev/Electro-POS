@@ -87,7 +87,7 @@ class SaleController extends Controller
         ]);
 
         if ($validator->passes()) {
-            // product Cost
+            // product Cost//
             $productCost = 0;
             $productAll = $request->products;
             foreach ($productAll as $product) {
