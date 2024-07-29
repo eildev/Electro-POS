@@ -72,6 +72,7 @@ class ReturnController extends Controller
 
                 $returns = new Returns;
                 $returns->return_invoice_number = rand(123456, 99999);
+                $returns->branch_id = Auth::user()->branch_id;
                 $returns->sale_id = $request->sale_id;
                 $returns->customer_id = $request->customer_id;
                 $returns->return_date = $request->formattedReturnDate;
@@ -142,6 +143,7 @@ class ReturnController extends Controller
                 $transaction->date = $request->formattedReturnDate;
                 $transaction->particulars = 'Adjust Due Collection';
                 $transaction->others_id = $returns->id;
+                $transaction->branch_id = Auth::user()->branch_id;
                 $transaction->payment_method = $request->paymentMethod;
                 $transaction->created_at = Carbon::now();
                 if ($request->adjustDue == 'yes') {
@@ -149,24 +151,21 @@ class ReturnController extends Controller
                         $dueBalance = $customerDue - $request->refund_amount;
                         $customer->wallet_balance = $customer->wallet_balance - $dueBalance;
 
-
                         $accountTransaction->credit = $request->refund_amount;
                         $accountTransaction->balance = $lastTransaction->balance + $request->refund_amount;
 
-
                         $transaction->payment_type = 'receive';
                         $transaction->credit = $request->refund_amount;
+
                         $transaction->balance = $lastTransactionData->balance + $request->refund_amount;
                     } else {
                         $returnBalance = $request->refund_amount - $customerDue;
                         $customer->wallet_balance = 0;
 
-
                         $cal1 = $lastTransaction->balance + $customerDue;
                         $cal2 = $cal1 - $request->refund_amount;
                         $accountTransaction->debit = $returnBalance;
                         $accountTransaction->balance = $cal2;
-
 
                         $calculation = $lastTransactionData->balance + $customerDue;
                         $calculation2 = $calculation - $request->refund_amount;
@@ -177,8 +176,6 @@ class ReturnController extends Controller
                 } else {
                     $accountTransaction->debit = $request->refund_amount;
                     $accountTransaction->balance = $lastTransaction->balance - $request->refund_amount;
-
-
                     $transaction->payment_type = 'pay';
                     $transaction->debit = $request->refund_amount;
                     $transaction->balance = $lastTransactionData->balance - $request->refund_amount;
@@ -206,7 +203,12 @@ class ReturnController extends Controller
     }
     public function returnProductsList()
     {
-        $returns = Returns::get();
+        if(Auth::user()->id == 1){
+            $returns = Returns::get();
+        }else{
+            $returns = Returns::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         return view('pos.return.return-view', compact('returns'));
     }
 }

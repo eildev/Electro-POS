@@ -87,7 +87,7 @@ class SaleController extends Controller
         ]);
 
         if ($validator->passes()) {
-            // product Cost
+            // product Cost//
             $productCost = 0;
             $productAll = $request->products;
             foreach ($productAll as $product) {
@@ -182,7 +182,7 @@ class SaleController extends Controller
                         $saleItem->sell_type = 'normal sell';
                     }
 
-                    // Extra quantity 
+                    // Extra quantity
                     $extraItem = new SaleItem;
                     $extraItem->sale_id = $saleId;
                     $extraItem->product_id = $item['product_id']; // Access 'product_id' as an array key
@@ -205,7 +205,7 @@ class SaleController extends Controller
                 }
 
 
-                // product quantity update 
+                // product quantity update
                 if ($product->stock > 0 && $product->stock >= $item['quantity']) {
                     $product->stock -= $item['quantity'];
                 } else {
@@ -216,7 +216,7 @@ class SaleController extends Controller
             }
 
 
-            // via sale 
+            // via sale
             $viaSaleItems = SaleItem::where('sale_id', $saleId)->Where('sell_type', 'via sell')->get();
             $viaSales = ViaSale::where('invoice_number', $request->invoice_number)->first();
             // dd($viaSaleItems->count());
@@ -225,6 +225,7 @@ class SaleController extends Controller
                 if ($viaSales == null) {
                     $viaSale = new ViaSale;
                     $viaSale->invoice_date = Carbon::now();
+                    $viaSale->branch_id =  Auth::user()->branch_id;
                     $viaSale->invoice_number = $request->invoice_number;
                     $viaSale->supplier_name = 'Direct Sales';
                     $viaSale->product_id = $viaItem->product_id;
@@ -294,6 +295,7 @@ class SaleController extends Controller
                 $transaction->debit = $request->paid;
                 $transaction->balance = $request->total - $request->paid;
             }
+            $transaction->branch_id =  Auth::user()->branch_id;
             $transaction->save();
 
             return response()->json([
@@ -457,6 +459,7 @@ class SaleController extends Controller
             if ($transaction) {
                 // Update existing transaction
                 $transaction->date =  $request->sale_date;
+                $transaction->branch_id =  Auth::user()->branch_id;
                 $transaction->payment_type = 'receive';
                 $transaction->particulars = 'Sale#' . $sale->id;
                 $transaction->credit = $transaction->credit + $request->change_amount;
@@ -468,6 +471,7 @@ class SaleController extends Controller
                 // Create new transaction
                 $transaction = new Transaction;
                 $transaction->date =  $request->sale_date;
+                $transaction->branch_id =  Auth::user()->branch_id;
                 $transaction->payment_type = 'receive';
                 $transaction->particulars = 'Sale#' . $sale->id;
                 $transaction->customer_id = $request->customer_id;
@@ -573,6 +577,7 @@ class SaleController extends Controller
             $accountTransaction->save();
 
             $transaction = new Transaction;
+            $transaction->branch_id =  Auth::user()->branch_id;
             $transaction->date = $request->payment_date;
             $transaction->payment_type = 'receive';
             $transaction->particulars = 'Sale#' . $id;
@@ -812,6 +817,7 @@ class SaleController extends Controller
 
                 $viaSale = new ViaSale;
                 $viaSale->invoice_date = Carbon::now();
+                $viaSale->branch_id =  Auth::user()->branch_id;
                 $viaSale->invoice_number = $request->invoice_number;
                 $viaSale->supplier_name = $request->via_supplier_name;
                 $viaSale->product_id = $product->id;
@@ -831,8 +837,6 @@ class SaleController extends Controller
                     $viaSale->status  = 1;
                 }
                 $viaSale->save();
-
-
                 // account Transaction crud
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
