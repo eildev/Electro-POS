@@ -56,7 +56,7 @@
             <li class="nav-item">
                 <a href="{{ route('dashboard') }}"
                     class="nav-link {{ request()->routeIs('dashboard') ? 'nav_active' : '' }}">
-                    <i class="ms-2 ms-2 link-icon" data-feather="home"></i>
+                    <i class="ms-2 link-icon" data-feather="home"></i>
                     <span class="link-title">Dashboard</span>
                 </a>
             </li>
@@ -64,7 +64,7 @@
             @if (Auth::user()->can('pos.menu'))
                 <li class="nav-item">
                     <a href="{{ route('sale') }}" class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
-                        <i class="ms-2 ms-2 link-icon" data-feather="shopping-cart"></i>
+                        <i class="ms-2 link-icon" data-feather="shopping-cart"></i>
                         <span class="link-title">POS</span>
                     </a>
                 </li>
@@ -73,7 +73,7 @@
                 <li class="nav-item">
                     <a href="{{ route('sale.view') }}"
                         class="nav-link {{ request()->routeIs('sale.view') ? 'nav_active' : '' }}">
-                        <i class="ms-2 ms-2 link-icon" data-feather="shopping-bag"></i>
+                        <i class="ms-2 link-icon" data-feather="shopping-bag"></i>
                         <span class="link-title">POS Manage</span>
                     </a>
                 </li>
@@ -153,7 +153,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('supplier') ? 'nav_active' : '' }}"
                         href="{{ route('supplier') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 fa-solid fa-handshake link-icon"></i>
+                        <i class="ms-2 fa-solid fa-cart-arrow-down link-icon"></i>
                         <span class="link-title">Supplier</span>
                     </a>
                 </li>
@@ -190,7 +190,7 @@
             <li class="nav-item">
                 <a href="{{ route('via.sale') }}"
                     class="nav-link {{ request()->routeIs('via.sale') ? 'nav_active' : '' }}">
-                    <i class="ms-2 fa-solid fa-tag link-icon"></i>
+                    <i class="ms-2 link-icon" data-feather="columns"></i>
                     <span class="link-title">Via Sale</span>
                 </a>
             </li>
@@ -216,7 +216,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('damage') ? 'nav_active' : '' }}"
                         href="{{ route('damage') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 ms-2 link-icon" data-feather="book"></i>
+                        <i class="ms-2 link-icon" data-feather="book"></i>
                         <span class="link-title">Damage</span>
                     </a>
                 </li>
@@ -226,7 +226,7 @@
                 <li class="nav-item">
                     <a href="{{ route('return.products.list') }}"
                         class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}">
-                        <i class="ms-2 fa-solid fa-building-columns link-icon"></i>
+                        <i class="ms-2 link-icon" data-feather="corner-down-right"></i>
                         <span class="link-title">All
                             return</span>
                     </a>
@@ -264,7 +264,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('customer.view') ? 'nav_active' : '' }}"
                         href="{{ route('customer.view') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 ms-2 link-icon" data-feather="users"></i>
+                        <i class="ms-2 link-icon" data-feather="users"></i>
                         <span class="link-title">Customer</span>
                     </a>
                 </li>
@@ -536,7 +536,7 @@
                     <a class="nav-link {{ request()->routeIs('setting*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#setting-manage" role="button" aria-expanded="false"
                         aria-controls="emails">
-                        <i class="ms-2 ms-2 link-icon" data-feather="settings"></i>
+                        <i class="ms-2 link-icon" data-feather="settings"></i>
                         <span class="link-title">Setting Manage</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -582,7 +582,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('branch.view') ? 'nav_active' : '' }}"
                         href="{{ route('branch.view') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 ms-2 link-icon" data-feather="sliders"></i>
+                        <i class="ms-2 link-icon" data-feather="sliders"></i>
                         <span class="link-title">Branches</span>
                     </a>
                 </li>

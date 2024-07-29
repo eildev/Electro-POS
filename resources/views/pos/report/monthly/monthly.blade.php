@@ -16,24 +16,15 @@
                         <table id="example" class="table">
                             <thead>
                                 <tr>
-                                    <th class="id">#</th>
+                                    <th>#</th>
                                     <th>Date</th>
-                                    <th>Purchase</th>
-                                    <th>Sale</th>
-                                    <th>Profit</th>
-                                    <th>Expanse</th>
-                                    <th>Salary</th>
-                                    <th>Due Collection</th>
-                                    <th>Other Collection</th>
-                                    <th>Adjust Due Collection</th>
-                                    <th>Add Balance</th>
-                                    <th>Via Sale</th>
-                                    <th>Net Profit</th>
-                                    {{-- <th class="id">Action</th> --}}
+                                    <th>Total Incoming</th>
+                                    <th>Total Outgoing</th>
+                                    <th>Balance</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
-                            {{-- @dd($monthlyReports) --}}
-                            <tbody id="showData">
+                            <tbody>
                                 @php
                                     $key = 1;
                                 @endphp
@@ -44,17 +35,14 @@
                                             $key++;
                                         @endphp
                                         <td>{{ $report['date'] }}</td>
-                                        <td> {{ number_format($report['totalPurchaseCost'], 2) }}</td>
-                                        <td> {{ number_format($report['totalSale'], 2) }}</td>
-                                        <td> {{ number_format($report['totalProfit'], 2) }}</td>
-                                        <td> {{ number_format($report['totalExpense'], 2) }}</td>
-                                        <td> {{ number_format($report['totalSalary'], 2) }}</td>
-                                        <td> {{ number_format($report['dueCollection'], 2) }}</td>
-                                        <td> {{ number_format($report['otherCollection'], 2) }}</td>
-                                        <td> {{ number_format($report['adjustDueCollection'], 2) }}</td>
-                                        <td> {{ number_format($report['addBalance'], 2) }}</td>
-                                        <td> {{ number_format($report['viaSale'], 2) }}</td>
-                                        <td> {{ number_format($report['finalProfit'], 2) }}</td>
+                                        <td>{{ number_format($report['totalIngoing'], 2) }}</td>
+                                        <td>{{ number_format($report['totalOutgoing'], 2) }}</td>
+                                        <td>{{ number_format($report['totalBalance'], 2) }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary view_details">
+                                                View Details
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -64,4 +52,11 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        $(document).ready(function() {
+
+        });
+    </script>
 @endsection

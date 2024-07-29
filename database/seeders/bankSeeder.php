@@ -16,6 +16,7 @@ class BankSeeder extends Seeder
         $banks = [
             [
                 'id' => 1,
+                'branch_id' => 1,
                 'name' => 'Cash',
                 'branch_name' => 'Dhaka',
                 'manager_name' => 'No Name',
@@ -27,7 +28,8 @@ class BankSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'name' => 'bKash',
+                'branch_id' => 1,
+                'name' => 'BKash',
                 'branch_name' => 'Dhaka',
                 'manager_name' => 'No Name',
                 'phone_number' => '0111113333',
@@ -38,6 +40,7 @@ class BankSeeder extends Seeder
             ],
             [
                 'id' => 3,
+                'branch_id' => 1,
                 'name' => 'Nagad',
                 'branch_name' => 'Dhaka',
                 'manager_name' => 'No Name',
@@ -49,6 +52,7 @@ class BankSeeder extends Seeder
             ],
             [
                 'id' => 4,
+                'branch_id' => 1,
                 'name' => 'Rocket',
                 'branch_name' => 'Dhaka',
                 'manager_name' => 'No Name',

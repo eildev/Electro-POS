@@ -20,7 +20,10 @@ use App\Models\Sms;
 use App\Models\Damage;
 use Illuminate\Http\Request;
 use App\Models\AccountTransaction;
+use App\Models\Bank;
+use App\Models\Returns;
 use App\Models\ViaSale;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
@@ -98,13 +101,13 @@ class ReportController extends Controller
     // customer due report function
     public function customerDue()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $customer = Customer::where('wallet_balance', '>', 0)
-            ->get();
-        }else{
+                ->get();
+        } else {
             $customer = Customer::where('branch_id', Auth::user()->branch_id)
-            ->where('wallet_balance', '>', 0)
-            ->get();
+                ->where('wallet_balance', '>', 0)
+                ->get();
         }
         return view('pos.report.customer.customer_due', compact('customer'));
     }
@@ -132,9 +135,9 @@ class ReportController extends Controller
     // customer due filter function
     public function customerDueFilter(Request $request)
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $customer = Customer::where('id', $request->customerId)->get();
-        }else{
+        } else {
             $customer = Customer::where('branch_id', Auth::user()->branch_id)->where('id', $request->customerId)->get();
         }
         return view("pos.report.customer.table", compact('customer'))->render();
@@ -142,62 +145,62 @@ class ReportController extends Controller
     // supplier due report function
     public function supplierDueReport()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $customer = Supplier::where('wallet_balance', '>', 0)
-            ->get();
-        }else{
+                ->get();
+        } else {
             $customer = Supplier::where('branch_id', Auth::user()->branch_id)
-            ->where('wallet_balance', '>', 0)
-            ->get();
+                ->where('wallet_balance', '>', 0)
+                ->get();
         }
         return view('pos.report.supplier.supplier_due', compact('customer'));
     }
     // supplier due filter function
     public function supplierDueFilter(Request $request)
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $customer = Supplier::where('id', $request->customerId)->get();
-            }else{
-                $customer = Supplier::where('branch_id', Auth::user()->branch_id)
+        } else {
+            $customer = Supplier::where('branch_id', Auth::user()->branch_id)
                 ->where('id', $request->customerId)->get();
-            }
+        }
         return view("pos.report.customer.table", compact('customer'))->render();
     }
     // low stock report function
     public function lowStockReport()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $products = Product::where('stock', '<=', 10)
-            ->get();
-        }else{
+                ->get();
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)
-            ->where('stock', '<=', 10)
-            ->get();
+                ->where('stock', '<=', 10)
+                ->get();
         }
         return view('pos.report.products.low_stock', compact('products'));
     }
     // Top Products  function
     public function topProducts()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $products = Product::orderBy('total_sold', 'desc')
-            ->take(20)
-            ->get();
-           }else{
+                ->take(20)
+                ->get();
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)
-            ->orderBy('total_sold', 'desc')
-            ->take(20)
-            ->get();
-           }
+                ->orderBy('total_sold', 'desc')
+                ->take(20)
+                ->get();
+        }
         return view('pos.report.products.top_products', compact('products'));
     }
 
     // purchase Report function
     public function purchaseReport()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $purchaseItem = PurchaseItem::all();
-        }else{
+        } else {
             $purchaseItem = PurchaseItem::whereHas('purchas', function ($query) {
                 $query->where('branch_id', Auth::user()->branch_id);
             })->get();
@@ -234,10 +237,10 @@ class ReportController extends Controller
 
     public function damageReport()
     {
-        if(Auth::user()->id == 1){
-        $damageItem = Damage::all();
-        }else{
-        $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->get();
+        if (Auth::user()->id == 1) {
+            $damageItem = Damage::all();
+        } else {
+            $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->get();
         }
         return view('pos.report.damages.damage', compact('damageItem'));
     }
@@ -319,9 +322,9 @@ class ReportController extends Controller
     //stock Report function
     public function stockReport()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $products = Product::all();
-        }else{
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)->get();
         }
         return view('pos.report.products.stock', compact('products'));
@@ -349,9 +352,9 @@ class ReportController extends Controller
     //////////////////Rexpense Report MEthod //////////////
     public function ExpenseReport()
     {
-        if(Auth::user()->id == 1){
-        $expense = Expense::latest()->get();
-        }else{
+        if (Auth::user()->id == 1) {
+            $expense = Expense::latest()->get();
+        } else {
             $expense = Expense::where('branch_id', Auth::user()->branch_id)->get();
         }
         return view('pos.report.expense.expense', compact('expense'));
@@ -367,11 +370,11 @@ class ReportController extends Controller
     //////////////////Employee Salary Report MEthod //////////////
     public function EmployeeSalaryReport()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $employeeSalary = EmployeeSalary::all();
-            }else{
+        } else {
             $employeeSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->get();
-            }
+        }
         return view('pos.report.employee_salary.employee_salary', compact('employeeSalary'));
     } //
     public function EmployeeSalaryReportFilter(Request $request)
@@ -388,9 +391,9 @@ class ReportController extends Controller
     ////////Product Info Report /////
     public function ProductInfoReport()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $productInfo = Product::all();
-        }else{
+        } else {
             $productInfo = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
@@ -444,14 +447,12 @@ class ReportController extends Controller
         for ($i = 0; $i < 30; $i++) { // Loop for the last 30 days
             // Calculate the start and end dates for the day
             $date = now()->subDays($i)->toDateString();
-
+            $banks = Bank::all();
             // Calculate the totals for the day
-            $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
+            //   incoming value 
             $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
-            $totalSale = Sale::whereDate('sale_date', $date)->sum('paid');
-            $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
-            $totalExpense = Expense::whereDate('expense_date', $date)->sum('amount');
-            $totalSalary = EmployeeSalary::whereDate('date', $date)->sum('debit');
+            $totalSaleAmount = Sale::whereDate('sale_date', $date)->sum('paid');
+            $totalSale = $totalSaleAmount - $viaSale;
             $dueCollection = Transaction::where('particulars', 'SaleDue')
                 ->whereDate('created_at', $date)
                 ->sum('credit');
@@ -465,24 +466,100 @@ class ReportController extends Controller
             $addBalance = AccountTransaction::where('purpose', 'Add Bank Balance')
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
+            $previousDayBalance = 0;
+            $lastTransaction = AccountTransaction::latest()->first();
+            if ($lastTransaction) {
+                // Get the last transaction date before today
+                $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $date)
+                    ->latest('created_at')
+                    ->first();
+
+                if ($lastTransactionDate) {
+                    $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+
+                    foreach ($banks as $bank) {
+                        $transaction = AccountTransaction::where('account_id', $bank->id)
+                            ->whereDate('created_at', $lastTransactionDate)
+                            ->latest('created_at')
+                            ->first();
+
+                        if ($transaction) {
+                            $previousDayBalance += $transaction->balance;
+                        }
+                    }
+                }
+            }
+            $totalIngoing =
+                $previousDayBalance +
+                $totalSale +
+                $dueCollection +
+                $otherCollection +
+                $addBalance +
+                $adjustDueCollection +
+                $viaSale;
+
+
+            // outgoing Value 
+            $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
+            $totalExpense = Expense::whereDate('expense_date', $date)->sum('amount');
+            $totalSalary = EmployeeSalary::whereDate('date', $date)->sum('debit');
+            $purchaseDuePay = Transaction::where('particulars', 'PurchaseDue')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $otherPaid = Transaction::where('particulars', 'OthersPayment')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $viaPayment = AccountTransaction::where('purpose', 'Via Payment')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $return = Returns::whereDate('created_at', $date)->sum('refund_amount');
+            $todayReturnAmount = $return - $adjustDueCollection;
+
+            $totalOutgoing =
+                $totalPurchaseCost +
+                $totalExpense +
+                $totalSalary +
+                $todayReturnAmount +
+                $purchaseDuePay +
+                $otherPaid +
+                $viaPayment;
+
+
+            // profit Calculation 
+            $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
             $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+            $totalBalance = $totalIngoing - $totalOutgoing;
+
 
             $dayName = now()->subDays($i)->format('d F Y');
 
             // Store the report data in the array
             $dailyReports[now()->subDays($i)->format('Y-m-d')] = [
                 'date' => $dayName,
-                'totalPurchaseCost' => $totalPurchaseCost,
+                // incoming 
                 'totalSale' => $totalSale,
-                'totalProfit' => $totalProfit,
-                'totalExpense' => $totalExpense,
-                'totalSalary' => $totalSalary,
                 'dueCollection' => $dueCollection,
                 'otherCollection' => $otherCollection,
                 'adjustDueCollection' => $adjustDueCollection,
                 'addBalance' => $addBalance,
                 'viaSale' => $viaSale,
-                'finalProfit' => $finalProfit
+                'previousDayBalance' => $previousDayBalance,
+                'totalIngoing' => $totalIngoing,
+
+                // outgoing 
+                'totalPurchaseCost' => $totalPurchaseCost,
+                'totalExpense' => $totalExpense,
+                'totalSalary' => $totalSalary,
+                'purchaseDuePay' => $purchaseDuePay,
+                'todayReturnAmount' => $todayReturnAmount,
+                'viaPayment' => $viaPayment,
+                'otherPaid' => $otherPaid,
+                'totalOutgoing' => $totalOutgoing,
+
+                // profit 
+                'totalProfit' => $totalProfit,
+                'finalProfit' => $finalProfit,
+                'totalBalance' => $totalBalance,
             ];
         }
 
