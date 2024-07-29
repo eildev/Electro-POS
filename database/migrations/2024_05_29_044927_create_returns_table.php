@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('returns', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('branch_id')->unsigned();
+            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->string('return_invoice_number');
             $table->integer('sale_id');
             $table->integer('customer_id');

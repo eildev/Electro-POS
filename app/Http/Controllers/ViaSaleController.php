@@ -48,7 +48,6 @@ class ViaSaleController extends Controller
                 }
                 $viaSale->save();
 
-
                 // account Transaction crud
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
