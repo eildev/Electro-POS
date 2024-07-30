@@ -23,97 +23,97 @@ class DashboardController extends Controller
         $banks = Bank::all();
         $branches = Branch::all();
         foreach ($branches as $branch) {
-        $viaSale = ViaSale::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())->get();
-        $todaySalesData = Sale::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())->get();
-        $todaySales = $todaySalesData->sum('paid') - $viaSale->sum('sub_total');
+            $viaSale = ViaSale::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())->get();
+            $todaySalesData = Sale::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())->get();
+            $todaySales = $todaySalesData->sum('paid') - $viaSale->sum('sub_total');
 
-        $todayPurchase = Purchase::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())->get();
-        $todayExpanse = Expense::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())->get();
-        $dueCollection = Transaction::where('branch_id', $branch->id)
-        ->where('particulars', 'SaleDue')
-            ->whereDate('created_at', Carbon::now())
-            ->get();
-        $otherCollection = Transaction::where('branch_id', $branch->id)
-        ->where('particulars', 'OthersReceive')
-            ->whereDate('created_at', Carbon::now())
-            ->get();
-        $otherPaid = Transaction::where('branch_id', $branch->id)
-        ->where('particulars', 'OthersPayment')
-        ->whereDate('created_at', Carbon::now())
-        ->get();
-        $purchaseDuePay = Transaction::where('branch_id', $branch->id)
-        ->where('particulars', 'PurchaseDue')
-            ->whereDate('created_at', Carbon::now())
-            ->get();
-        $todayBalance = AccountTransaction::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())
-            ->latest()
-            ->first();
-        $previousDayBalance = 0;
-        $currentDate = Carbon::now()->toDateString();
-        // Get the last transaction date before today
-        $lastTransactionDate = AccountTransaction::where('branch_id', $branch->id)
-        ->whereDate('created_at', '<', $currentDate)
-            ->latest('created_at')
-            ->first();
-        if ($lastTransactionDate) {
-            $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+            $todayPurchase = Purchase::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())->get();
+            $todayExpanse = Expense::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())->get();
+            $dueCollection = Transaction::where('branch_id', $branch->id)
+                ->where('particulars', 'SaleDue')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $otherCollection = Transaction::where('branch_id', $branch->id)
+                ->where('particulars', 'OthersReceive')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $otherPaid = Transaction::where('branch_id', $branch->id)
+                ->where('particulars', 'OthersPayment')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $purchaseDuePay = Transaction::where('branch_id', $branch->id)
+                ->where('particulars', 'PurchaseDue')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $todayBalance = AccountTransaction::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())
+                ->latest()
+                ->first();
+            $previousDayBalance = 0;
+            $currentDate = Carbon::now()->toDateString();
+            // Get the last transaction date before today
+            $lastTransactionDate = AccountTransaction::where('branch_id', $branch->id)
+                ->whereDate('created_at', '<', $currentDate)
+                ->latest('created_at')
+                ->first();
+            if ($lastTransactionDate) {
+                $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
 
-            foreach ($banks as $bank) {
-                $transaction = AccountTransaction::where('branch_id', $branch->id)
-                ->where('account_id', $bank->id)
-                    ->whereDate('created_at', $lastTransactionDate)
-                    ->latest('created_at')
-                    ->first();
+                foreach ($banks as $bank) {
+                    $transaction = AccountTransaction::where('branch_id', $branch->id)
+                        ->where('account_id', $bank->id)
+                        ->whereDate('created_at', $lastTransactionDate)
+                        ->latest('created_at')
+                        ->first();
 
-                if ($transaction) {
-                    $previousDayBalance += $transaction->balance;
+                    if ($transaction) {
+                        $previousDayBalance += $transaction->balance;
+                    }
                 }
             }
+            $addBalance = AccountTransaction::where('branch_id', $branch->id)
+                ->where('purpose', 'Add Bank Balance')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())->get();
+
+            $return = Returns::where('branch_id', $branch->id)
+                ->whereDate('created_at', Carbon::now())->get();
+            $adjustDueCollectionDB = Transaction::where('branch_id', $branch->id)
+                ->where('particulars', 'Adjust Due Collection')
+                ->where('payment_type', 'pay')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $adjustDueCollection =
+                $return->sum('refund_amount') - $adjustDueCollectionDB->sum('debit');
+            $viaPayment = AccountTransaction::where('branch_id', $branch->id)
+                ->where('purpose', 'Via Payment')
+                ->whereDate('created_at', Carbon::now())
+                ->get();
+            $todayReturnAmount = $return->sum('refund_amount') - $adjustDueCollection;
+
+            $totalIngoing =
+                $previousDayBalance +
+                $todaySales +
+                $dueCollection->sum('credit') +
+                $otherCollection->sum('credit') +
+                $addBalance->sum('credit') +
+                $adjustDueCollection +
+                $viaSale->sum('sub_total');
+            $totalOutgoing =
+                $todayPurchase->sum('paid') +
+                $todayExpanse->sum('amount') +
+                $todayEmployeeSalary->sum('debit') +
+                $todayReturnAmount +
+                $purchaseDuePay->sum('debit') +
+                $otherPaid->sum('debit') +
+                $viaPayment->sum('debit');
         }
-        $addBalance = AccountTransaction::where('branch_id', $branch->id)
-        ->where('purpose', 'Add Bank Balance')
-            ->whereDate('created_at', Carbon::now())
-            ->get();
-        $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())->get();
-
-        $return = Returns::where('branch_id', $branch->id)
-        ->whereDate('created_at', Carbon::now())->get();
-        $adjustDueCollectionDB = Transaction::where('branch_id', $branch->id)
-        ->where('particulars', 'Adjust Due Collection')
-            ->where('payment_type', 'pay')
-            ->whereDate('created_at', Carbon::now())
-            ->get();
-        $adjustDueCollection =
-            $return->sum('refund_amount') - $adjustDueCollectionDB->sum('debit');
-        $viaPayment = AccountTransaction::where('branch_id', $branch->id)
-        ->where('purpose', 'Via Payment')
-            ->whereDate('created_at', Carbon::now())
-            ->get();
-        $todayReturnAmount = $return->sum('refund_amount') - $adjustDueCollection;
-
-        $totalIngoing =
-            $previousDayBalance +
-            $todaySales +
-            $dueCollection->sum('credit') +
-            $otherCollection->sum('credit') +
-            $addBalance->sum('credit') +
-            $adjustDueCollection +
-            $viaSale->sum('sub_total');
-        $totalOutgoing =
-            $todayPurchase->sum('paid') +
-            $todayExpanse->sum('amount') +
-            $todayEmployeeSalary->sum('debit') +
-            $todayReturnAmount +
-            $purchaseDuePay->sum('debit') +
-            $otherPaid->sum('debit') +
-            $viaPayment->sum('debit');
-    }
 
 
 
