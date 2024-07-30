@@ -84,7 +84,7 @@
                     <a class="nav-link {{ request()->routeIs('product*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false"
                         aria-controls="emails">
-                        <i class="link-icon" data-feather="mail"></i>
+                        <i class="ms-2 link-icon" data-feather="mail"></i>
                         <span class="link-title">Products</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -153,7 +153,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('supplier') ? 'nav_active' : '' }}"
                         href="{{ route('supplier') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 fa-solid fa-cart-arrow-down link-icon"></i>
+                        <i class="ms-2 fa-solid fa-handshake link-icon"></i>
                         <span class="link-title">Supplier</span>
                     </a>
                 </li>
@@ -163,7 +163,7 @@
                     <a class="nav-link {{ request()->routeIs('purchase*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#uiComponen" role="button" aria-expanded="false"
                         aria-controls="uiComponen">
-                        <i class="link-icon" data-feather="feather"></i>
+                        <i class="ms-2 fa-solid fa-cart-arrow-down link-icon"></i>
                         <span class="link-title">Purchase</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -273,7 +273,7 @@
                 <a class="nav-link {{ request()->routeIs('employee*') ? '' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#employee" role="button" aria-expanded="false"
                     aria-controls="emails">
-                    <i class="link-icon" data-feather="mail"></i>
+                    <i class="ms-2 link-icon" data-feather="mail"></i>
                     <span class="link-title">Employee</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
@@ -310,7 +310,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('crm*') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
                         href="#advancedUI" role="button" aria-expanded="false" aria-controls="advancedUI">
-                        <i class="link-icon" data-feather="anchor"></i>
+                        <i class="ms-2 link-icon" data-feather="anchor"></i>
                         <span class="link-title">CRM</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -347,7 +347,7 @@
                     <a class="nav-link {{ request()->routeIs('report*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#majid" role="button" aria-expanded="false"
                         aria-controls="forms">
-                        <i class="link-icon" data-feather="inbox"></i>
+                        <i class="ms-2 link-icon" data-feather="inbox"></i>
                         <span class="link-title">Reports</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -459,7 +459,7 @@
                     <a class="nav-link {{ request()->routeIs('role*') ? 'collapsed' : '' }}"
                         data-bs-toggle="collapse" href="#role_permission" role="button" aria-expanded="false"
                         aria-controls="role_permission">
-                        <i class="fa-solid fa-users-gear link-icon"></i>
+                        <i class="ms-2 fa-solid fa-users-gear link-icon"></i>
                         <span class="link-title">Role & Permission</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -506,7 +506,7 @@
                     <a class="nav-link {{ request()->routeIs('admin*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#admin-manage" role="button" aria-expanded="false"
                         aria-controls="emails">
-                        <i class="fa-solid fa-users-gear link-icon"></i>
+                        <i class="ms-2 fa-solid fa-users-gear link-icon"></i>
                         <span class="link-title">Admin Manage</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
