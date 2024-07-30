@@ -130,25 +130,26 @@ class SaleController extends Controller
             $selectedItems = $request->products;
 
             $category = Category::where('name', 'Via Sell')->first();
-
             foreach ($selectedItems as $item) {
                 $product = Product::findOrFail($item['product_id']);
                 $saleItem = null;
                 // dd($viaSales);
-                if ($product->category_id == $category->id) {
-                    // dd('hello');
-                    $saleItem = new SaleItem;
-                    $saleItem->sale_id = $saleId;
-                    $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
-                    $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
-                    $saleItem->qty = $item['quantity'];
-                    $saleItem->wa_status = $item['wa_status'];
-                    $saleItem->wa_duration = $item['wa_duration'];
-                    $saleItem->discount = $item['product_discount'];
-                    $saleItem->sub_total = $item['total_price'];
-                    $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
-                    $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
-                    $saleItem->sell_type = 'via sell';
+                if ($category) {
+                    if ($product->category_id == $category->id) {
+                        // dd('hello');
+                        $saleItem = new SaleItem;
+                        $saleItem->sale_id = $saleId;
+                        $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+                        $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                        $saleItem->qty = $item['quantity'];
+                        $saleItem->wa_status = $item['wa_status'];
+                        $saleItem->wa_duration = $item['wa_duration'];
+                        $saleItem->discount = $item['product_discount'];
+                        $saleItem->sub_total = $item['total_price'];
+                        $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
+                        $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
+                        $saleItem->sell_type = 'via sell';
+                    }
                 } else if ($product->stock > $item['quantity']) {
                     $saleItem = new SaleItem;
                     $saleItem->sale_id = $saleId;

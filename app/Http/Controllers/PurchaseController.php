@@ -109,6 +109,7 @@ class PurchaseController extends Controller
                 // get Transaction Model
                 $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();
                 $transaction = new Transaction;
+                $transaction->branch_id = Auth::user()->branch_id;
                 $transaction->date =   $purchaseDate;
                 $transaction->payment_type = 'pay';
                 $transaction->particulars = 'Purchase#' . $purchaseId;

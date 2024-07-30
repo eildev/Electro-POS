@@ -33,9 +33,9 @@ class ExpenseController extends Controller
     } //End Method
     public function ExpenseAdd()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $bank = Bank::latest()->get();
-        }else{
+        } else {
             $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         $expenseCategory = ExpenseCategory::latest()->get();
@@ -98,10 +98,10 @@ class ExpenseController extends Controller
     {
         $expenseCat = ExpenseCategory::latest()->get();
         $expenseCategory = ExpenseCategory::latest()->get();
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $bank = Bank::latest()->get();
             $expense = Expense::latest()->get();
-        }else{
+        } else {
             $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
             $expense = Expense::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
@@ -166,6 +166,16 @@ class ExpenseController extends Controller
                 unlink($previousImagePath);
             }
         }
+        $oldBalance = AccountTransaction::latest('created_at')->first();
+        $oldExpanse = AccountTransaction::where('reference_id', $id)->where('purpose', 'Expanse')->first();
+        $accountTransaction = new AccountTransaction;
+        $accountTransaction->purpose =  'Expanse Delete';
+        $accountTransaction->account_id =  $oldExpanse->account_id;
+        $accountTransaction->credit = $expense->amount;
+        $accountTransaction->balance = $oldBalance->balance + $expense->amount;
+        $accountTransaction->created_at = Carbon::now();
+        $accountTransaction->save();
+
         $expense->delete();
         $notification = [
             'message' => 'Expense Deleted Successfully',
