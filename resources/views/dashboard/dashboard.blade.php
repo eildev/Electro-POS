@@ -38,104 +38,10 @@
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
                 {{-- ///////Today Summary ////// --}}
-                @if(Auth::user()->id == 1)
-                @php
-                    $branches  = App\Models\Branch::all();
-                @endphp
-               @for ($i = 0; $i < count($branches); $i++)
-               @php
-                   $branch = $branches[$i];
-               @endphp
-
                 <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
                     <div class="card" style="">
                         <div class="card-body">
-                            <h6 class="card-title">{{ $branch->name }} - Today Summary</h6>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Incomming</th>
-                                        <th colspan="2">Outgoing</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ number_format($previousDayBalance, 2) }}</td>
-                                        <td>Salary</td>
-                                        <td class="text-end">{{ number_format($todayEmployeeSalary->sum('debit'), 2) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Paid Sales</td>
-                                        <td class="text-end">{{ number_format($todaySales, 2) }}</td>
-                                        <td>Purchase</td>
-                                        <td class="text-end">{{ number_format($todayPurchase->sum('paid'), 2) }}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Due Collection</td>
-                                        <td class="text-end">{{ number_format($dueCollection->sum('credit'), 2) }}</td>
-                                        <td>Due Paid</td>
-                                        <td class="text-end">{{ number_format($purchaseDuePay->sum('debit'), 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Other Deposit</td>
-                                        <td class="text-end">{{ number_format($otherCollection->sum('credit'), 2) }}</td>
-                                        <td>Other Withdraw</td>
-                                        <td class="text-end">{{ number_format($otherPaid->sum('debit'), 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Adjust Due Collcetion</td>
-                                        <td class="text-end">
-                                            {{ number_format($adjustDueCollection, 2) }}
-                                        </td>
-                                        <td>Return</td>
-                                        <td class="text-end">
-                                            {{ number_format($todayReturnAmount, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Add Balance</td>
-                                        <td class="text-end">{{ number_format($addBalance->sum('credit'), 2) }}</td>
-                                        <td>Expanse</td>
-                                        <td class="text-end">{{ number_format($todayExpanse->sum('amount'), 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Via Sale</td>
-                                        <td class="text-end">{{ number_format($viaSale->sum('sub_total'), 2) }}</td>
-                                        <td>Via Purchase</td>
-                                        <td class="text-end">{{ number_format($viaPayment->sum('debit'), 2) }}</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Total</td>
-                                        <td class="text-end">{{ number_format($totalIngoing, 2) }}</td>
-                                        <td>Total</td>
-                                        <td class="text-end">{{ number_format($totalOutgoing, 2) }}</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3">Total Balance</th>
-                                        <th class="text-end">{{ number_format($totalIngoing - $totalOutgoing, 2) }}</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                @endfor
-                @else
-                <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
-                    <div class="card" style="">
-                        <div class="card-body">
-                            <h6 class="card-title"> Today Summary</h6>
+                            <h6 class="card-title">Today Summary</h6>
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -216,7 +122,6 @@
                         </div>
                     </div>
                 </div>
-                @endif
                 {{-- ///////End Today Summary ////// --}}
                 {{-- /////// ToTal Summary ////// --}}
                 <div class="col-md-12 col-xl-6 col-12 new-margin grid-margin stretch-card">
