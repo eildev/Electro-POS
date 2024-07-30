@@ -532,6 +532,7 @@ class ReportController extends Controller
 
             // Calculate the totals for the day
             //   incoming value
+          if(Auth::user()->id == 1){
             $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
             $totalSaleAmount = Sale::whereDate('sale_date', $date)->sum('paid');
             $totalSale = $totalSaleAmount - $viaSale;
@@ -608,6 +609,99 @@ class ReportController extends Controller
             $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
             $totalBalance = $totalIngoing - $totalOutgoing;
 
+          }else{
+            $viaSale = ViaSale::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('created_at', $date)->sum('sub_total');
+            $totalSaleAmount = Sale::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('sale_date', $date)->sum('paid');
+            $totalSale = $totalSaleAmount - $viaSale;
+            $dueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+            ->where('particulars', 'SaleDue')
+                ->whereDate('created_at', $date)
+                ->sum('credit');
+            $otherCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+            ->where('particulars', 'OthersReceive')
+                ->whereDate('created_at', $date)
+                ->sum('credit');
+            $adjustDueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+            ->where('particulars', 'Adjust Due Collection')
+                ->where('payment_type', 'pay')
+                ->whereDate('created_at',  $date)
+                ->sum('credit');
+            $addBalance = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+            ->where('purpose', 'Add Bank Balance')
+                ->whereDate('created_at',  $date)
+                ->sum('credit');
+            $previousDayBalance = 0;
+            $lastTransactionDate = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('created_at', '<', $date)
+                ->latest('created_at')
+                ->first();
+            if ($lastTransactionDate) {
+                $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+
+                foreach ($banks as $bank) {
+                    $transaction = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('account_id', $bank->id)
+                        ->whereDate('created_at', $lastTransactionDate)
+                        ->latest('created_at')
+                        ->first();
+
+                    if ($transaction) {
+                        $previousDayBalance += $transaction->balance;
+                    }
+                }
+            }
+
+            $totalIngoing =
+                $previousDayBalance +
+                $totalSale +
+                $dueCollection +
+                $otherCollection +
+                $addBalance +
+                $adjustDueCollection +
+                $viaSale;
+
+
+            // outgoing Value
+            $totalPurchaseCost = Purchase::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('purchase_date', $date)->sum('paid');
+            $totalExpense = Expense::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('expense_date', $date)->sum('amount');
+            $totalSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('date', $date)->sum('debit');
+            $purchaseDuePay = Transaction::where('branch_id', Auth::user()->branch_id)
+            ->where('particulars', 'PurchaseDue')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $otherPaid = Transaction::where('branch_id', Auth::user()->branch_id)
+            ->where('particulars', 'OthersPayment')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $viaPayment = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+            ->where('purpose', 'Via Payment')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $return = Returns::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('created_at', $date)->sum('refund_amount');
+            $todayReturnAmount = $return - $adjustDueCollection;
+
+            $totalOutgoing =
+                $totalPurchaseCost +
+                $totalExpense +
+                $totalSalary +
+                $todayReturnAmount +
+                $purchaseDuePay +
+                $otherPaid +
+                $viaPayment;
+
+            // profit Calculation
+            $totalProfit = Sale::where('branch_id', Auth::user()->branch_id)
+            ->whereDate('sale_date', $date)->sum('profit');
+            $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+            $totalBalance = $totalIngoing - $totalOutgoing;
+
+          }
 
             $dayName = now()->subDays($i)->format('d F Y');
             // Store the report data in the array
