@@ -36,8 +36,9 @@
                                         <td>{{ number_format($report['totalOutgoing'], 2) }}</td>
                                         <td>{{ number_format($report['totalBalance'], 2) }}</td>
                                         <td>
-                                            <button type="button" value="{{ $report['date'] }}"
-                                                class="btn btn-primary view_details">
+                                            <button type="button" value="{{ $report['id'] }}"
+                                                class="btn btn-primary view_details" data-bs-toggle="modal"
+                                                data-bs-target="#details_modal">
                                                 View Details
                                             </button>
                                         </td>
@@ -52,19 +53,143 @@
     </div>
 
 
+    <!-- Details Modal -->
+    <div class="modal fade" id="details_modal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle"><span class="date"></span> Reports</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary print_btn">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $(document).ready(function() {
             $(document).on('click', '.view_details', function(e) {
                 e.preventDefault();
-                let date = $(this).val();
+                let id = $(this).val();
+                // alert(id);
                 $.ajax({
-                    url: '/monthly/report/view/' + date,
+                    url: '/report/monthly/view/' + id,
                     method: 'GET',
                     success: function(res) {
-                        console.log(res);
+                        const report = res.report;
+                        // console.log(report);
+                        $('.date').html(`${report.date}`);
+                        $('.modal-body').html(`
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Incomming</th>
+                                        <th colspan="2">Outgoing</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Purpose</th>
+                                        <th class="text-end">TK</th>
+                                        <th>Purpose</th>
+                                        <th class="text-end">TK</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Previous Day Balance</td>
+                                        <td class="text-end">${report.previousDayBalance.toFixed(2)}</td>
+                                        <td>Salary</td>
+                                        <td class="text-end">${report.totalSalary.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paid Sales</td>
+                                        <td class="text-end">${report.totalSale.toFixed(2)}</td>
+                                        <td>Purchase</td>
+                                        <td class="text-end">${report.totalPurchaseCost.toFixed(2)}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Due Collection</td>
+                                        <td class="text-end">${report.dueCollection.toFixed(2)}</td>
+                                        <td>Due Paid</td>
+                                        <td class="text-end">${report.purchaseDuePay.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Other Deposit</td>
+                                        <td class="text-end">${report.otherCollection}</td>
+                                        <td>Other Withdraw</td>
+                                        <td class="text-end">${report.otherPaid.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Adjust Due Collcetion</td>
+                                        <td class="text-end">${report.adjustDueCollection.toFixed(2)}</td>
+                                        <td>Return</td>
+                                        <td class="text-end">${report.todayReturnAmount.toFixed(2)}</td>
+                                            00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add Balance</td>
+                                        <td class="text-end">${report.addBalance.toFixed(2)}</td>
+                                        <td>Expanse</td>
+                                        <td class="text-end">${report.totalExpense.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Via Sale</td>
+                                        <td class="text-end">${report.viaSale.toFixed(2)}</td>
+                                        <td>Via Purchase</td>
+                                        <td class="text-end">${report.viaPayment.toFixed(2)}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total</td>
+                                        <td class="text-end">${report.totalIngoing.toFixed(2)}</td>
+                                        <td>Total</td>
+                                        <td class="text-end">${report.totalOutgoing.toFixed(2)}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3">Total Balance</th>
+                                        <td class="text-end">${report.totalBalance.toFixed(2)}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        `)
                     }
                 })
             })
+
+            $(document).on('click', '.print_btn', function(e) {
+                e.preventDefault();
+
+                // Get the modal content
+                let printContents = document.querySelector('.modal-content').innerHTML;
+
+                // Open a new window
+                let originalContents = document.body.innerHTML;
+                let printWindow = window.open('', '', 'height=600,width=800');
+
+                // Write the modal content to the new window
+                printWindow.document.write('<html><head><title>Print</title>');
+                printWindow.document.write(
+                    '<link rel="stylesheet" href="path/to/your/css/styles.css">'); // Add your CSS file here
+                printWindow.document.write('</head><body>');
+                printWindow.document.write(printContents);
+                printWindow.document.write('</body></html>');
+
+                $('.modal-footer').hide();
+
+                // Print the contents of the new window
+                printWindow.document.close();
+                printWindow.print();
+            });
         });
     </script>
 @endsection
