@@ -8,7 +8,6 @@ use App\Models\ExpenseCategory;
 use App\Models\AccountTransaction;
 use App\Models\Bank;
 use Carbon\Carbon;
-// use Validator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -133,16 +132,26 @@ class ExpenseController extends Controller
                 $request->image->move(public_path('uploads/expense/'), $imageName);
                 $expense->image = $imageName;
             }
-            $expense->save();
 
-            $accountTransaction = AccountTransaction::where('reference_id', $id)->first();
+
+            $oldExpanse = AccountTransaction::where('reference_id', $id)->where('purpose', 'Expanse')->first();
+            $accountTransaction = new AccountTransaction;
+            $accountTransaction->branch_id =  Auth::user()->branch_id;
+            $accountTransaction->reference_id = $expense->id;
             $accountTransaction->purpose =  'Expanse Update';
             $accountTransaction->account_id =  $request->bank_account_id;
-            $accountTransaction->debit = $request->amount;
-            $letBalance = $oldBalance->balance - $accountTransaction->debit;
-            $accountTransaction->balance = $letBalance + $request->amount;
-            $accountTransaction->updated_at = Carbon::now();
+            if ($expense->amount > $request->amount) {
+                $accountTransaction->credit = $expense->amount;
+                $accountTransaction->balance = $oldBalance->balance + $expense->amount;
+            } else {
+                $accountTransaction->debit = $expense->amount;
+                $accountTransaction->balance = $oldBalance->balance - $expense->amount;
+            }
+            $accountTransaction->created_at = Carbon::now();
+
+            $expense->save();
             $accountTransaction->save();
+            $oldExpanse->delete();
             $notification = [
                 'message' => 'Expense Updated Successfully',
                 'alert-type' => 'info'
@@ -167,8 +176,11 @@ class ExpenseController extends Controller
             }
         }
         $oldBalance = AccountTransaction::latest('created_at')->first();
-        $oldExpanse = AccountTransaction::where('reference_id', $id)->where('purpose', 'Expanse')->first();
+        $oldExpanse = AccountTransaction::where('reference_id', $id)->where('purpose', 'Expanse')->orWhere('purpose', 'Expanse Update')->first();
+        // dd($oldExpanse);
         $accountTransaction = new AccountTransaction;
+        $accountTransaction->reference_id = $expense->id;
+        $accountTransaction->branch_id =  Auth::user()->branch_id;
         $accountTransaction->purpose =  'Expanse Delete';
         $accountTransaction->account_id =  $oldExpanse->account_id;
         $accountTransaction->credit = $expense->amount;
@@ -177,6 +189,7 @@ class ExpenseController extends Controller
         $accountTransaction->save();
 
         $expense->delete();
+        $oldExpanse->delete();
         $notification = [
             'message' => 'Expense Deleted Successfully',
             'alert-type' => 'info'
