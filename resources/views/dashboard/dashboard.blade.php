@@ -155,7 +155,7 @@
                                     </tr>
                                     <tr>
                                         <td>Exapnse</td>
-                                        <td class="text-end">{{ number_format($expanse->sum('sub_total'), 2) }}</td>
+                                        <td class="text-end">{{ number_format($expanse->sum('amount'), 2) }}</td>
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>
                                     </tr>
