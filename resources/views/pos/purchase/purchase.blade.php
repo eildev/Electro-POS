@@ -250,7 +250,6 @@
             </div>
         </div>
 
-
         {{-- payement modal  --}}
         <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
             aria-hidden="true">
@@ -365,7 +364,6 @@
                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i>
                                 Purchase</button>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -380,7 +378,6 @@
             }
         }
         $(document).ready(function() {
-
             // show error
             function showError(name, message) {
                 $(name).css('border-color', 'red');
