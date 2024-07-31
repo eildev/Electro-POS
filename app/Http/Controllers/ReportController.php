@@ -576,7 +576,6 @@ class ReportController extends Controller
                 $adjustDueCollection +
                 $viaSale;
 
-
             // outgoing Value
             $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
             $totalExpense = Expense::whereDate('expense_date', $date)->sum('amount');
@@ -601,7 +600,6 @@ class ReportController extends Controller
                 $purchaseDuePay +
                 $otherPaid +
                 $viaPayment;
-
 
             // profit Calculation
             $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');

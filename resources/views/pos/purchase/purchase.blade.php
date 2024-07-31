@@ -299,13 +299,16 @@
                         </div>
                         {{-- <form id="signupForm" class="supplierForm row"> --}}
                         <div class="supplierForm row">
-
-
                             <div class="mb-3 col-md-6">
                                 <label for="name" class="form-label">Transaction Method <span
                                         class="text-danger">*</span></label>
                                 @php
+                                  if(Auth::user()->id == 1){
                                     $payments = App\Models\Bank::get();
+                                    }else{
+                                    $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+                                    }
+
                                 @endphp
                                 <select class="form-select payment_method" data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" name="payment_method">
@@ -367,9 +370,6 @@
                 </div>
             </div>
     </form>
-
-
-
 
     <script>
         // error remove

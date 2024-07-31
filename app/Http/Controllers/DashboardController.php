@@ -13,14 +13,14 @@ use App\Models\Transaction;
 use App\Models\ViaSale;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         // today summary
-        $banks = Bank::where('branch_id', Auth::user()->branch_id)->get();
+        $banks = Bank::all();
+
         $viaSale = ViaSale::whereDate('created_at', Carbon::now())->get();
         $todaySalesData = Sale::whereDate('created_at', Carbon::now())->get();
         $todaySales = $todaySalesData->sum('paid') - $viaSale->sum('sub_total');
@@ -96,8 +96,6 @@ class DashboardController extends Controller
             $otherPaid->sum('debit') +
             $viaPayment->sum('debit');
 
-
-
         // Total Summary
         $sales = Sale::all();
         $purchase = Purchase::all();
@@ -138,7 +136,6 @@ class DashboardController extends Controller
             $salesProfitByDay[$date] = $dailyProfit;
             $purchaseByDay[$date] = $dailyPurchase;
         }
-
 
         // monthly update chart
         $salesByMonth = [];
