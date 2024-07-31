@@ -251,6 +251,15 @@
                                 showError('.opening_balance', res.error.opening_balance);
                             }
                         }
+                    },
+                    error: function(xhr, status, error) {
+                        // Display the custom error page when a server error occurs
+                        if (xhr.status === 500) {
+                            $('body').html(xhr.responseText);
+                        } else {
+                            // Handle other errors
+                            toastr.error('An error occurred. Please try again.');
+                        }
                     }
                 });
             })

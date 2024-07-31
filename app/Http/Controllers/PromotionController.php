@@ -23,6 +23,7 @@ class PromotionController extends Controller
     {
         Promotion::insert([
             'promotion_name' => $request->promotion_name,
+            'branch_id' =>  Auth::user()->branch_id,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'discount_type' => $request->discount_type,
@@ -39,7 +40,12 @@ class PromotionController extends Controller
 
     public function PromotionView()
     {
-        $promotions = Promotion::all();
+        if(Auth::user()->id == 1){
+            $promotions = Promotion::all();
+        }else{
+            $promotions = Promotion::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         return view('pos.promotion.promotion_view', compact('promotions'));
     } //End Method
     public function PromotionEdit($id)
@@ -88,8 +94,15 @@ class PromotionController extends Controller
     ///////////////////////Start Promotion Details All Method ////////////////////////
     public function PromotionDetailsAdd()
     {
-        $product = Product::latest()->get();
-        $promotions = Promotion::latest()->get();
+        if(Auth::user()->id == 1){
+            $product = Product::latest()->get();
+            $promotions = Promotion::latest()->get();
+        }else{
+            $product = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $promotions = Promotion::where('branch_id', Auth::user()->branch_id)->latest()->get();
+
+        }
+
         return view('pos.promotion.promotion_details_add', compact('product', 'promotions'));
     } //
     public function PromotionDetailsStore(Request $request)
@@ -103,6 +116,7 @@ class PromotionController extends Controller
         if ($validator->passes()) {
             // dd($request->all());
             $promotionalDetails =  new PromotionDetails;
+            $promotionalDetails->branch_id =  Auth::user()->branch_id;
             $promotionalDetails->promotion_id = $request->promotion_id;
             $promotionalDetails->promotion_type = $request->promotion_type;
             $promotionalDetails->logic = $request->logic;
@@ -123,13 +137,23 @@ class PromotionController extends Controller
     } //End Method
     public function PromotionDetailsView()
     {
-        $promotion_details = PromotionDetails::all();
+        if(Auth::user()->id == 1){
+            $promotion_details = PromotionDetails::all();
+        }else{
+            $promotion_details = PromotionDetails::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         return view('pos.promotion.promotion_details_view', compact('promotion_details'));
     } //End Method
     public function PromotionDetailsEdit($id)
     {
         // $product = Product::latest()->get();
-        $promotions = Promotion::latest()->get();
+        if(Auth::user()->id == 1){
+            $promotions = Promotion::latest()->get();
+        }else{
+            $promotions = Promotion::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         $promotion_details = PromotionDetails::findOrFail($id);
         return view('pos.promotion.promotion_details_edit', compact('promotion_details', 'promotions'));
     } //End Method
@@ -160,17 +184,7 @@ class PromotionController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
-        // PromotionDetails::findOrFail($request->id)->update([
-        //     'promotion_id' => $request->promotion_id,
-        //     'Product_id' => $request->Product_id,
-        //     'additional_conditions' => $request->additional_conditions,
-        //     'updated_at' =>  Carbon::now(),
-        // ]);
-        // $notification = [
-        //     'message' => 'Promotion Details Updated Successfully',
-        //     'alert-type' => 'info'
-        // ];
-        // return redirect()->route('promotion.details.view')->with($notification);
+
     } //
     public function PromotionDetailsDelete($id)
     {

@@ -87,7 +87,7 @@ class SaleController extends Controller
         ]);
 
         if ($validator->passes()) {
-            // product Cost
+            // product Cost//
             $productCost = 0;
             $productAll = $request->products;
             foreach ($productAll as $product) {
@@ -127,84 +127,126 @@ class SaleController extends Controller
             $sale->save();
 
             $saleId = $sale->id;
-            $products = $request->products;
-            $sellTypeViaSell = false;
+            $selectedItems = $request->products;
 
-            // First pass to check if any product stock is 0
-            foreach ($products as $product) {
-                $items2 = Product::findOrFail($product['product_id']);
-                if ($items2->stock == 0) {
-                    $sellTypeViaSell = true;
-                    break;
-                }
-            }
-
-            //  dd($sellTypeViaSell);
-            foreach ($products as $product) {
-                $items2 = Product::findOrFail($product['product_id']);
-                $items = new SaleItem;
-                // dd($items);
-                $items->sale_id = $saleId;
-                $items->product_id = $product['product_id']; // Access 'product_id' as an array key
-                $items->rate = $product['unit_price']; // Access 'unit_price' as an array key
-                $items->qty = $product['quantity'];
-                $items->wa_status = $product['wa_status'];
-                $items->wa_duration = $product['wa_duration'];
-                $items->discount = $product['product_discount'];
-
-                // Determine sell_type
-
-                if ($sellTypeViaSell && $items2->category->name == 'Via Sell' && $items2->stock == 0) {
-                    //Only Change || to &&
-                    $items->sell_type = 'via sell';
+            $category = Category::where('name', 'Via Sell')->first();
+            foreach ($selectedItems as $item) {
+                $product = Product::findOrFail($item['product_id']);
+                $saleItem = null;
+                // dd($viaSales);
+                if ($category) {
+                    if ($product->category_id == $category->id) {
+                        // dd('hello');
+                        $saleItem = new SaleItem;
+                        $saleItem->sale_id = $saleId;
+                        $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+                        $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                        $saleItem->qty = $item['quantity'];
+                        $saleItem->wa_status = $item['wa_status'];
+                        $saleItem->wa_duration = $item['wa_duration'];
+                        $saleItem->discount = $item['product_discount'];
+                        $saleItem->sub_total = $item['total_price'];
+                        $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
+                        $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
+                        $saleItem->sell_type = 'via sell';
+                    }
+                } else if ($product->stock > $item['quantity']) {
+                    $saleItem = new SaleItem;
+                    $saleItem->sale_id = $saleId;
+                    $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+                    $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                    $saleItem->qty = $item['quantity'];
+                    $saleItem->wa_status = $item['wa_status'];
+                    $saleItem->wa_duration = $item['wa_duration'];
+                    $saleItem->discount = $item['product_discount'];
+                    $saleItem->sub_total = $item['total_price'];
+                    $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
+                    $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
+                    $saleItem->sell_type = 'normal sell';
                 } else {
-                    $items->sell_type = 'normal sell';
-                }
-                // Adjust stock for next iteration if applicable
-                if ($items2->stock < $product['quantity']) {
-                    // If stock is less than the quantity needed
-                    $items->qty = $items2->stock;
-                    $items->sub_total = ($product['unit_price'] * $items->qty) - ($product['product_discount'] * ($items->qty / $product['quantity']));
-                    $items->total_purchase_cost = $items2->cost * $items->qty;
-                    // Adjust the remaining quantity and create extra item
-                    $extraQuantity = $product['quantity'] - $items2->stock;
-                    $items2->stock = 0;
-                    $items2->total_sold += $items->qty;
-
-                    if ($items->qty > 0) {
-                        $items->save();
+                    $extraQuantity = $item['quantity'] - $product->stock;
+                    // dd($product->stock > 0);
+                    if ($product->stock > 0) {
+                        $saleItem = new SaleItem;
+                        $saleItem->sale_id = $saleId;
+                        $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+                        $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                        $saleItem->qty = $product->stock;
+                        $saleItem->wa_status = $item['wa_status'];
+                        $saleItem->wa_duration = $item['wa_duration'];
+                        $discount = $item['product_discount'] / 2;
+                        $saleItem->discount = $discount;
+                        $subTotal = ($item['unit_price'] * $product->stock) - $discount;
+                        $saleItem->sub_total = $subTotal;
+                        $saleItem->total_purchase_cost = $product->cost * $product->stock;
+                        $saleItem->total_profit = $subTotal - ($product->cost * $product->stock);
+                        $saleItem->sell_type = 'normal sell';
                     }
 
-                    // Create new SaleItem for extra products
+                    // Extra quantity
                     $extraItem = new SaleItem;
                     $extraItem->sale_id = $saleId;
-                    $extraItem->product_id = $product['product_id'];
-                    $extraItem->rate = $product['unit_price'];
+                    $extraItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+                    $extraItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
                     $extraItem->qty = $extraQuantity;
-                    $extraItem->wa_status = $product['wa_status'];
-                    $extraItem->wa_duration = $product['wa_duration'];
-                    $extraItem->discount = $product['product_discount']; // Apply discount only once to the first item
-                    $extraItem->sub_total = $product['unit_price'] * $extraQuantity;
-                    $extraItem->total_purchase_cost = $items2->cost * $extraQuantity;
+                    $extraItem->wa_status = $item['wa_status'];
+                    $extraItem->wa_duration = $item['wa_duration'];
+                    $discount = $item['product_discount'] / 2;
+                    $extraItem->discount = $discount;
+                    $subTotal2 = ($item['unit_price'] * $extraQuantity) - $discount;
+                    $extraItem->sub_total = $subTotal2;
+                    $extraItem->total_purchase_cost = $product->cost * $extraQuantity;
+                    $extraItem->total_profit = $subTotal2 - ($product->cost * $extraQuantity);
                     $extraItem->sell_type = 'via sell';
                     $extraItem->save();
-                } else {
-                    // If stock is sufficient - -
-                    $productTotal = ($product['unit_price'] * $product['quantity']) - $product['product_discount'];
-                    $total_purchase_cost = $items2->cost * $product['quantity'];
-                    $items->sub_total = $productTotal;
-                    $items->total_purchase_cost = $total_purchase_cost;
-                    $items->total_profit = $productTotal - $total_purchase_cost;
-                    $items2->stock -= $product['quantity'];
-                    $items2->total_sold += $product['quantity'];
-                    $items->save();
+                }
+                // dd($saleItem);
+                if ($saleItem) {
+                    $saleItem->save();
                 }
 
-                $items2->save();
+
+                // product quantity update
+                if ($product->stock > 0 && $product->stock >= $item['quantity']) {
+                    $product->stock -= $item['quantity'];
+                } else {
+                    $product->stock = 0;
+                }
+                $product->total_sold += $item['quantity'];
+                $product->save();
+            }
+
+
+            // via sale
+            $viaSaleItems = SaleItem::where('sale_id', $saleId)->Where('sell_type', 'via sell')->get();
+            $viaSales = ViaSale::where('invoice_number', $request->invoice_number)->first();
+            // dd($viaSaleItems->count());
+            foreach ($viaSaleItems as $viaItem) {
+                // dd($viaItem->total_purchase_cost / $viaItem->qty);
+                if ($viaSales == null) {
+                    $viaSale = new ViaSale;
+                    $viaSale->invoice_date = Carbon::now();
+                    $viaSale->branch_id =  Auth::user()->branch_id;
+                    $viaSale->invoice_number = $request->invoice_number;
+                    $viaSale->supplier_name = 'Direct Sales';
+                    $viaSale->product_id = $viaItem->product_id;
+                    $viaSale->product_name = $viaItem->product->name;
+                    $viaSale->quantity = $viaItem->qty;
+                    $costPrice = $viaItem->total_purchase_cost / $viaItem->qty;
+                    $viaSale->cost_price = $costPrice;
+                    $viaSale->sale_price = $viaItem->rate;
+                    $viaSale->sub_total = $viaItem->sub_total;
+                    $viaTotalPay = $costPrice * $viaItem->qty;
+                    $viaSale->paid = 0;
+                    $viaSale->due = $viaTotalPay;
+                    $viaSale->status  = 0;
+                    $viaSale->save();
+                }
             }
 
             // customer table CRUD
             $customer = Customer::findOrFail($request->customer_id);
+            // dd($request->total - $request->paid);
             $customer->total_receivable = $customer->total_receivable + $request->total;
             $customer->total_payable = $customer->total_payable + $request->paid;
             $customer->wallet_balance = $customer->wallet_balance + ($request->total - $request->paid);
@@ -254,6 +296,7 @@ class SaleController extends Controller
                 $transaction->debit = $request->paid;
                 $transaction->balance = $request->total - $request->paid;
             }
+            $transaction->branch_id =  Auth::user()->branch_id;
             $transaction->save();
 
             return response()->json([
@@ -281,9 +324,9 @@ class SaleController extends Controller
 
     public function view()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $sales = Sale::all();
-        }else{
+        } else {
             $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         // $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
@@ -417,6 +460,7 @@ class SaleController extends Controller
             if ($transaction) {
                 // Update existing transaction
                 $transaction->date =  $request->sale_date;
+                $transaction->branch_id =  Auth::user()->branch_id;
                 $transaction->payment_type = 'receive';
                 $transaction->particulars = 'Sale#' . $sale->id;
                 $transaction->credit = $transaction->credit + $request->change_amount;
@@ -428,6 +472,7 @@ class SaleController extends Controller
                 // Create new transaction
                 $transaction = new Transaction;
                 $transaction->date =  $request->sale_date;
+                $transaction->branch_id =  Auth::user()->branch_id;
                 $transaction->payment_type = 'receive';
                 $transaction->particulars = 'Sale#' . $sale->id;
                 $transaction->customer_id = $request->customer_id;
@@ -533,6 +578,7 @@ class SaleController extends Controller
             $accountTransaction->save();
 
             $transaction = new Transaction;
+            $transaction->branch_id =  Auth::user()->branch_id;
             $transaction->date = $request->payment_date;
             $transaction->payment_type = 'receive';
             $transaction->particulars = 'Sale#' . $id;
@@ -687,9 +733,9 @@ class SaleController extends Controller
     }
     public function saleViewProduct()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $products = Product::all();
-        }else{
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         return response()->json([
@@ -772,6 +818,7 @@ class SaleController extends Controller
 
                 $viaSale = new ViaSale;
                 $viaSale->invoice_date = Carbon::now();
+                $viaSale->branch_id =  Auth::user()->branch_id;
                 $viaSale->invoice_number = $request->invoice_number;
                 $viaSale->supplier_name = $request->via_supplier_name;
                 $viaSale->product_id = $product->id;
@@ -791,8 +838,6 @@ class SaleController extends Controller
                     $viaSale->status  = 1;
                 }
                 $viaSale->save();
-
-
                 // account Transaction crud
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;

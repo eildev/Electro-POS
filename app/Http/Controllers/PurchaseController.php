@@ -48,7 +48,7 @@ class PurchaseController extends Controller
                 $purchase = new Purchase;
                 $purchase->branch_id = Auth::user()->branch_id;
                 $purchase->supplier_id = $request->supplier_id;
-                $purchase->purchse_date =  $purchaseDate;
+                $purchase->purchase_date =  $purchaseDate;
                 $purchase->total_quantity =  $totalQty;
                 $purchase->total_amount =  $totalAmount;
                 $purchase->invoice = $request->invoice;
@@ -109,6 +109,7 @@ class PurchaseController extends Controller
                 // get Transaction Model
                 $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();
                 $transaction = new Transaction;
+                $transaction->branch_id = Auth::user()->branch_id;
                 $transaction->date =   $purchaseDate;
                 $transaction->payment_type = 'pay';
                 $transaction->particulars = 'Purchase#' . $purchaseId;
