@@ -34,15 +34,15 @@
                             @foreach ($promotions as $key => $promotion)
                                 <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>{{ $promotion->promotion_name ?? ''}}</td>
-                                <td>{{ $promotion->start_date ?? ''}}</td>
-                                <td>{{ $promotion->end_date ?? ''}}</td>
-                                <td>{{ $promotion->discount_type ?? ''}}</td>
+                                <td>{{ $promotion->promotion_name ?? '-'}}</td>
+                                <td>{{ $promotion->start_date ?? '-'}}</td>
+                                <td>{{ $promotion->end_date ?? '-'}}</td>
+                                <td>{{ $promotion->discount_type ?? '-'}}</td>
                                 <td>@if ($promotion->discount_type == 'percentage')
                                     {{ $promotion->discount_value ?? ''}} <span>%</span>
                                     @else
                                     {{ $promotion->discount_value ?? ''}} <span>Tk</span>
-                                  @endif
+                                    @endif
 
                                 </td>
                                 <td>{{ $promotion->description ?? ''}}</td>

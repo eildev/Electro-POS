@@ -4,9 +4,9 @@
 <div class="row">
 
 <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
-    <div class="">
-        <h4 class="text-right"><a href="{{route('employee.salary.advanced.view')}}" class="btn btn-info">Add New Advanced Salary </a></h4>
-    </div>
+    {{-- <div class="">
+        <h4 class="text-right"><a href="{{route('advanced.employee.salary.add')}}" class="btn btn-info">Add New Advanced Salary </a></h4>
+    </div> --}}
 </div>
 <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
@@ -23,6 +23,8 @@
                                     <th>Date</th>
                                     <th>Submited Salary</th>
                                     <th>Due Salary</th>
+                                    <th>Submit Date</th>
+                                    <th>Update Date</th>
                                     <th>Note</th>
                                     <th>Action</th>
                                 </tr>
@@ -37,12 +39,15 @@
                                 <td>{{ \Carbon\Carbon::parse($employeSalarys->date)->format('d F Y')   ?? ''}}</td>
                                 <td>{{ $employeSalarys->debit ?? ''}}</td>
                                 <td>{{ $employeSalarys->balance ?? ''}}</td>
+                                <td>{{$employeSalarys->created_at->format('d F Y') ?? ''}}</td>
+                                <td>{{ $employeSalarys->updated_at ? $employeSalarys->updated_at->format('d F Y') : '-' }}</td>
                                 <td>
                                     @php
                                     $note = $employeSalarys->note;
                                     $noteChunks = str_split($note, 40);
                                     echo implode("<br>", $noteChunks);
-                                    @endphp</td>
+                                    @endphp
+                                    </td>
                                 <td>
                                     <a href="{{route('employee.salary.advanced.edit',$employeSalarys->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit Data">
                                         <i data-feather="edit"></i>

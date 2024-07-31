@@ -127,11 +127,8 @@
                 <p>Time: {{ $formatted_time ?? '' }}</p>
             </div>
         </div>
-        {{-- <img src="" alt="">
-        <h2>Branch name</h2> --}}
         <div class="text-end">
             <hr>
-            {{-- <p>-------------------</p> --}}
             <table align="right">
                 <thead>
                     <tr>
@@ -163,36 +160,29 @@
                 </tbody>
             </table>
             <br> <br> <br>
-            {{-- <br> <br> <br> --}}
-            {{-- <p>-------------------</p> --}}
+
             <hr>
             <div class="flex">
-                <p>Total:</p>
+                <p>Product Total:</p>
                 <p>{{ $sale->total }}</p>
             </div>
-
-            {{-- <p>-------------------</p> --}}
+            @php
+                $subTotal = $sale->total - $sale->actual_discount;
+                $subTotal = (float) $subTotal;
+                $subTotalFormatted = number_format($subTotal, 2, '.', '');
+                $previousDue = $sale->receivable - $subTotal;
+                $previousDue = (float) $previousDue;
+                $previousDueFormatted = number_format($previousDue, 2, '.', '');
+            @endphp
             <hr>
-            @if ($sale->discount != 'No Discount')
+            @if ($sale->actual_discount > 0)
                 <div class="flex">
-                    @php
-                        $discount = App\Models\Promotion::findOrFail($sale->discount);
-                    @endphp
-                    @if ($discount->discount_type == 'percentage')
-                        <p>Discount: </p>
-                        <p>{{ $discount->discount_value }} %</p>
-                        <p>৳ {{ $sale->change_amount }}</p>
-                    @else
-                        <p>Discount: </p>
-                        <p>৳ {{ $discount->discount_value }}</p>
-                        <p>৳ {{ $sale->change_amount }}</p>
-                    @endif
-                    {{-- <p>-------------------</p> --}}
+                    <p>Discount: </p>
+                    <p>{{ $sale->actual_discount }} Tk</p>
+                    <p>৳ {{ $subTotalFormatted }}</p>
                 </div>
                 <hr>
             @endif
-
-
 
             @if ($sale->tax != null)
                 <div class="flex">
@@ -200,6 +190,13 @@
                     <p>TAX: </p>
                     <p>{{ $sale->tax }}%</p>
                     <p>৳ {{ $sale->receivable }}</p>
+                </div>
+                <hr>
+            @endif
+            @if ($sale->receivable > $subTotal)
+                <div class="flex">
+                    <p>Previous Due: </p>
+                    <p>৳ {{ $previousDueFormatted }}</p>
                 </div>
                 <hr>
             @endif
@@ -230,18 +227,18 @@
 
 
     <style>
-
         @media print {
             body {
-            font-family: "Space Mono", monospace;
-            font-weight: 500;
-            font-style: normal;
-            font-size: 11px;
-            color: #000000;
-            text-align: left !important;
-            width: 300px !important;
-            /* background: red !important; */
-        }
+                font-family: "Space Mono", monospace;
+                font-weight: 500;
+                font-style: normal;
+                font-size: 11px;
+                color: #000000;
+                text-align: left !important;
+                width: 300px !important;
+                /* background: red !important; */
+            }
+
             nav,
             .footer {
                 display: none !important;

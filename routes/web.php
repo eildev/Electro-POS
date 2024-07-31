@@ -27,6 +27,9 @@ use App\Http\Controllers\DamageController;
 use App\Http\Controllers\CustomeMailControler;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\CompanyBalanceController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ViaSaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,9 +47,7 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', function () {
-    return view('dashboard.dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -57,6 +58,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/profile', 'edit')->name('profile.edit');
         Route::patch('/profile', 'update')->name('profile.update');
         Route::delete('/profile', 'destroy')->name('profile.destroy');
+        Route::get('/user/profile', 'UserProfileEdit')->name('user.profile.edit');
+        Route::get('profile', 'UserProfile')->name('user.profile');
+        Route::post('user/profile/update', 'UserProfileUpdate')->name('user.profile.update');
+        /////////////////////////Change Password//////////////////////
+        Route::get('/change-password', 'ChangePassword')->name('user.change.password');
+        Route::post('/update-password', 'updatePassword')->name('user.update.password');
     });
 
     // category related route
@@ -144,6 +151,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/destroy/{id}', 'destroy')->name('product.destroy');
         Route::get('/product/find/{id}', 'find')->name('product.find');
         Route::get('/product/barcode/{id}', 'ProductBarcode')->name('product.barcode');
+        Route::get('/search/{value}', 'globalSearch');
     });
     // Product  related route(n)
     Route::controller(EmployeeController::class)->group(function () {
@@ -163,6 +171,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/bank/edit/{id}', 'edit')->name('bank.edit');
         Route::post('/bank/update/{id}', 'update')->name('bank.update');
         Route::get('/bank/destroy/{id}', 'destroy')->name('bank.destroy');
+        Route::post('/add/bank/balance/{id}', 'BankBalanceAdd');
     });
 
     // Supplier related route
@@ -209,6 +218,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/purchase/filter', 'filter')->name('purchase.filter');
         Route::post('/transaction/edit-amount/{id}', 'editTransaction')->name('purchase.edit.transaction');
         Route::get('/purchase/find/{id}', 'find')->name('purchase.find');
+        Route::get('/supplier/details/{id}', 'getSupplierDetails');
     });
     // damage related route
     Route::controller(DamageController::class)->group(function () {
@@ -217,8 +227,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/damage/view', 'view')->name('damage.view');
         Route::get('/damage/show_quantity/{id}', 'ShowQuantity')->name('damage.show.quantity');
         Route::get('/damage/edit/{id}', 'edit')->name('damage.edit');
-        // Route::post('/damage/update/{id}', 'update')->name('damage.update');
-        // Route::get('/damage/destroy/{id}', 'destroy')->name('damage.destroy');
+        Route::post('/damage/update/{id}', 'update')->name('damage.update');
+        Route::get('/damage/destroy/{id}', 'destroy')->name('damage.destroy');
         // Route::get('/damage/invoice/{id}', 'invoice')->name('damage.invoice');
     });
     // Promotion  related route(n)
@@ -275,17 +285,24 @@ Route::middleware('auth')->group(function () {
         Route::get('/transaction/filter/rander', 'TransactionFilterView')->name('transaction.filter.view');
         ////////Invoice///////////
         Route::get('/transaction/invoice/receipt/{id}', 'TransactionInvoiceReceipt')->name('transaction.invoice.receipt');
+        ////////Investment Route ////
+        Route::post('/add/investor', 'InvestmentStore');
+        Route::get('/get/investor', 'GetInvestor');
+        Route::get('/get/invoice/{id}', 'InvestorInvoice')->name('investor.invoice');
     });
     // pos setting related route
     Route::controller(PosSettingsController::class)->group(function () {
         Route::get('/pos/settings/add', 'PosSettingsAdd')->name('pos.settings.add');
-        // Route::get('/pos/settings/add', 'PosSettingsAdd')->name('pos.settings.add');
         Route::post('/pos/settings/store', 'PosSettingsStore')->name('pos.settings.store');
         Route::get('/pos/settings/view', 'PosSettingsView')->name('pos.settings.view');
         Route::get('/pos/settings/edit/{id}', 'PosSettingsEdit')->name('pos.settings.edit');
         Route::post('/pos/settings/update/{id}', 'PosSettingsUpdate')->name('pos.settings.update');
         Route::get('/pos/settings/delete/{id}', 'PosSettingsDelete')->name('pos.settings.delete');
         Route::post('/pos/switch_mode', 'switch_mode')->name('switch_mode');
+        Route::get('/invoice/settings', 'PosSettingsInvoice')->name('invoice.settings');
+        Route::get('/invoice2/settings', 'PosSettingsInvoice2')->name('invoice2.settings');
+        Route::get('/invoice3/settings', 'PosSettingsInvoice3')->name('invoice3.settings');
+        Route::get('/invoice4/settings', 'PosSettingsInvoice4')->name('invoice4.settings');
     });
     // sale related routes
     Route::controller(SaleController::class)->group(function () {
@@ -310,6 +327,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/sale/promotions/{id}', 'salePromotions')->name('sale.promotions');
         Route::get('/product/barcode/find/{id}', 'findProductWithBarcode')->name('product.barcode.find');
         Route::get('/sale/product/find/{id}', 'saleProductFind')->name('sale.product.find');
+        Route::get('/product/view/sale', 'saleViewProduct');
+
+        Route::post('/via/product/add', 'saleViaProductAdd');
     });
     // Transaction related route(n)
     Route::controller(EmployeeSalaryController::class)->group(function () {
@@ -387,6 +407,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/sms/report/filter', 'SmsReportFilter')->name('sms.report.filter');
             // MONNTHLY Report
             Route::get('/monthly/report', 'monthlyReport')->name('report.monthly');
+            Route::get('/monthly/view/{date}', 'monthlyReportView')->name('report.monthly.view');
+            Route::get('/yearly/report', 'yearlyReport')->name('report.yearly');
+            Route::get('/daily/balance', 'dailyBalance')->name('daily.balance');
+        });
+    });
+    // Report related routes
+    Route::controller(CompanyBalanceController::class)->group(function () {
+        Route::group(['prefix' => 'daily'], function () {
+            Route::get('/balance', 'dailyBalance')->name('balance');
         });
     });
     // Report related routes
@@ -414,12 +443,14 @@ Route::middleware('auth')->group(function () {
     Route::controller(CustomeMailControler::class)->group(function () {
         Route::post('/customer-send-email', 'CustomerSendEmail')->name('customer.send.email');
     });
-    // return controller 
+    // return controller
     Route::controller(ReturnController::class)->group(function () {
         Route::get('/return/{id}', 'Return')->name('return');
-        Route::post('/return/store', 'store')->name('return.store');
+        Route::get('/return/find/{id}', 'ReturnItems');
+        // Route::post('/return/store', 'store')->name('return.store');
+        Route::post('/return/store', 'store')->name('return.add');
         Route::post('/return/item/store', 'storeReturnItem')->name('return.item.store');
-        // Route::get('/return/views', 'viewReturn')->name('return.view');
+        Route::get('/return/views', 'viewReturn')->name('return.view');
         Route::get('/return/products/list', 'returnProductsList')->name('return.products.list');
         Route::get('/return/products/delete/{id}', 'returnProductsDelete')->name('return.products.delete');
         Route::get('/return/products/invoice/{id}', 'returnProductsInvoice')->name('return.products.invoice');
@@ -459,6 +490,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/manage/edit/{id}', 'AdminManageEdit')->name('admin.manage.edit');
         Route::get('/admin/manage/delete/{id}', 'AdminManageDelete')->name('admin.manage.delete');
         Route::post('/admin/manage/update/{id}', 'AdminManageUpdate')->name('update.admin.manage');
+    });
+
+    // via sale Route
+    Route::controller(ViaSaleController::class)->group(function () {
+        Route::get('/via-sale', 'index')->name('via.sale');
+        Route::get('/via-sale/get/{id}', 'viaSaleGet')->name('via.sale.get');
+        Route::post('/via-sale/payment/{id}', 'viaSalePayment')->name('via.sale.payment');
+        Route::get('/via-sale/invoice/{id}', 'viaSaleInvoice')->name('via.sale.invoice');
+        Route::get('/via/sale/delete/{id}', 'ViaSaleProductDelete')->name('via.sale.delete');
     });
 });
 

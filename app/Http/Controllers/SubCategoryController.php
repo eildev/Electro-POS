@@ -8,13 +8,15 @@ use App\Models\SubCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Repositories\RepositoryInterfaces\SubCategoryInterface;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 
 class SubCategoryController extends Controller
 {
 
     private $subCategory;
-    public function __construct(SubCategoryInterface $subCategory){
+    public function __construct(SubCategoryInterface $subCategory)
+    {
         $this->subCategory = $subCategory;
     }
 
@@ -52,22 +54,24 @@ class SubCategoryController extends Controller
                 'status' => '500',
                 'error' => $validator->messages()
             ]);
-        }//
+        } //
     }
-     //
+    //
     public function view()
     {
-     //   $subcategories = SubCategory::all();
+        //   $subcategories = SubCategory::all();
         $subcategories = $this->subCategory->getAllSubCategory();
-        // return view('pos.products.category-show-table', compact('categories'))->render();
+        $subcategories->load('category');
+
         return response()->json([
             "status" => 200,
-            "data" => $subcategories
+            "data" => $subcategories,
+
         ]);
     } //
     public function edit($id)
     {
-      //  $category = SubCategory::findOrFail($id);
+        //  $category = SubCategory::findOrFail($id);
         $subcategory = $this->subCategory->editData($id);
         // $categories = Category::get();
         if ($subcategory) {

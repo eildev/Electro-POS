@@ -1,220 +1,430 @@
 @extends('master')
 @section('admin')
     @php
-        // $branch = App\Models\Branch::findOrFail($sale->branch_id);
-        // $customer = App\Models\Customer::findOrFail($sale->customer_id);
-        // $products = App\Models\SaleItem::where('sale_id', $sale->id)->get();
+        $branch = App\Models\Branch::findOrFail($sale->branch_id);
+        $customer = App\Models\Customer::findOrFail($sale->customer_id);
+        $sale_items = App\Models\SaleItem::where('sale_id', $sale->id)->get();
+
     @endphp
-    {{-- <div class="row">
-        <div class="col-md-12">
-            <div class="card border-0 shadow-none">
-                <div class="card-body ">
-                    <div class="container-fluid d-flex justify-content-between">
-                        <div class="col-lg-3 ps-0">
-                            @if (!empty($invoice_logo_type))
-                                @if ($invoice_logo_type == 'Name')
-                                    <a href="#" class="noble-ui-logo logo-light d-block mt-3">{{ $siteTitle }}</a>
-                                @elseif($invoice_logo_type == 'Logo')
-                                    @if (!empty($logo))
-                                        <img height="50" width="150" src="{{ url($logo) }}" alt="logo">
-                                    @else
-                                        <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
-                                    @endif
-                                @elseif($invoice_logo_type == 'Both')
-                                    @if (!empty($logo))
-                                        <img height="50" width="150" src="{{ url($logo) }}" alt="logo">
-                                    @endif
-                                    <p class="mt-1 mb-1 show_branch_name"><b>{{ $siteTitle }}</b></p>
-                                @endif
-                            @else
-                                <a href="#" class="noble-ui-logo logo-light d-block mt-3">EIL<span>POS</span></a>
-                            @endif
-                            <p class="show_branch_address">{{ $address ?? 'Banasree' }}</p>
-                            <p class="show_branch_address">{{ $email ?? '' }}</p>
-                            <p class="show_branch_address">{{ $phone ?? '' }}</p>
-                            <hr>
-
-                            <p class="mt-3 mb-1 show_supplier_name"><b>{{ $customer->name ?? '' }}</b></p>
-                            <p class="show_supplier_address">{{ $customer->address ?? '' }}</p>
-                            <p class="show_supplier_email">{{ $customer->email ?? '' }}</p>
-                            <p class="show_supplier_phone">{{ $customer->phone ?? '' }}</p>
-
-                        </div>
-                        <div class="col-lg-3 pe-0 text-end">
-                            <h4 class="fw-bolder text-uppercase text-end mt-4 mb-2">invoice</h4>
-                            <h6 class="text-end mb-5 pb-4"># INV-{{ $sale->invoice_number }}</h6>
-                            <p class="text-end mb-1 mt-5">Total </p>
-                            <h4 class="text-end fw-normal">৳ {{ $sale->receivable ?? 00.0 }}</h4>
-                            <h6 class="mb-0 mt-2 text-end fw-normal"><span class="text-muted show_purchase_date">Invoice
-                                    Date :</span> {{ $sale->sale_date ?? '' }}</h6>
-                        </div>
-                    </div>
-                    <div class="container-fluid mt-5 d-flex justify-content-center w-100">
-                        <div class="table-responsive w-100">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Description</th>
-                                        <th class="text-end">Unit cost</th>
-                                        <th class="text-end">Quantity</th>
-                                        <th class="text-end">Discount</th>
-                                        <th class="text-end">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if ($products->count() > 0)
-                                        @foreach ($products as $index => $product)
-                                            <tr class="text-end">
-                                                <td class="text-start">{{ $index + 1 }}</td>
-                                                <td class="text-start">{{ $product->product->name }}</td>
-                                                <td>{{ $product->rate ?? 0 }}</td>
-                                                <td>{{ $product->qty ?? 0 }}</td>
-                                                <td>{{ $product->discount ?? 0 }}</td>
-                                                <td>{{ $product->sub_total ?? 0 }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr class="text-end">
-                                            <td class="text-start">1</td>
-                                            <td class="text-start">PSD to html conversion</td>
-                                            <td>02</td>
-                                            <td>$55</td>
-                                            <td>$110</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">2</td>
-                                            <td class="text-start">Package design</td>
-                                            <td>08</td>
-                                            <td>$34</td>
-                                            <td>$272</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">3</td>
-                                            <td class="text-start">Html template development</td>
-                                            <td>03</td>
-                                            <td>$500</td>
-                                            <td>$1500</td>
-                                        </tr>
-                                        <tr class="text-end">
-                                            <td class="text-start">4</td>
-                                            <td class="text-start">Redesign</td>
-                                            <td>01</td>
-                                            <td>$30</td>
-                                            <td>$30</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="container-fluid mt-5 w-100">
-                        <div class="row">
-                            <div class="col-md-6 ms-auto">
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr>
-                                                <td>Sub Total</td>
-                                                <td class="text-end">৳ {{ $sale->total }}</td>
-                                            </tr>
-                                            @if ($sale->discount != 'No Discount')
-                                                @php
-                                                    $discount = App\Models\Promotion::findOrFail($sale->discount);
-                                                @endphp
-                                                @if ($discount->discount_type == 'percentage')
-                                                    <tr>
-                                                        <td>Discount ({{ $discount->discount_value }} %)</td>
-                                                        <td class="text-end">৳ {{ $sale->change_amount }}</td>
-                                                    </tr>
-                                                @else
-                                                    <tr>
-                                                        <td>Discount (৳ {{ $discount->discount_value }})</td>
-                                                        <td class="text-end">৳ {{ $sale->change_amount }}</td>
-                                                    </tr>
-                                                @endif
-                                            @endif
-
-                                            @if ($sale->tax != null)
-                                                <tr>
-                                                    <td>TAX ({{ $sale->tax }}%)</td>
-                                                    <td class="text-end">৳ {{ $sale->receivable }} </td>
-                                                </tr>
-                                            @endif
-                                            <tr>
-                                                <td class="text-bold-800">Grand Total</td>
-                                                <td class="text-bold-800 text-end">৳ {{ $sale->receivable }} </td>
-                                            </tr>
-                                            @if ($sale->receivable <= $sale->paid)
-                                                <tr>
-                                                    <td>Payment Made</td>
-                                                    <td class="text-success text-end">৳ {{ $sale->paid }} </td>
-                                                </tr>
-                                            @else
-                                                <tr>
-                                                    <td>Payment Made</td>
-                                                    <td class="text-danger text-end">(-) ৳ {{ $sale->paid }} </td>
-                                                </tr>
-                                            @endif
-                                            @if ($sale->due >= 0)
-                                                <tr class="bg-dark">
-                                                    <td class="text-bold-800">Balance Due</td>
-                                                    <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
-                                                </tr>
-                                            @else
-                                                <tr class="bg-dark">
-                                                    <td class="text-bold-800">Return</td>
-                                                    <td class="text-bold-800 text-end">৳ {{ $sale->due }} </td>
-                                                </tr>
-                                            @endif
-
-                                        </tbody>
-                                    </table>
+    <div class="row ">
+        <div class="col-lg-4 grid-margin stretch-card mb-3">
+            <div class="card">
+                <div class="card-body px-4 py-2">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h6 class="card-title">Basic Details</h6>
+                            <div class="row my-0 py-0">
+                                <label for="exampleInputUsername2" class="col-6 col-form-label">Order Id :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ $sale->invoice_number ?? 00 }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputUsername2" class="col-6 col-form-label">Customer Name :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ $sale->customer->name ?? '' }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-6 col-form-label">Product Price :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                        </b>{{ number_format($sale->total, 2) ?? 0 }}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputUsername2" class="col-6 col-form-label">Discount :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->actual_discount, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputEmail2" class="col-6 col-form-label">Previous Due :</label>
+                                <div class="col-6 text-end">
+                                    @php
+                                        $total = $sale->total - $sale->actual_discount;
+                                        $previousDue = $sale->receivable - $total;
+                                    @endphp
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($previousDue, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputEmail2" class="col-6 col-form-label">Total Receivable :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->receivable, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-6 col-form-label">Total Paid :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ number_format($sale->paid, 2) ?? 0 }}</b></label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="exampleInputMobile" class="col-6 col-form-label">Due :</label>
+                                <div class="col-6 text-end">
+                                    <label for="exampleInputUsername2" class="col-form-label"><b>
+                                            {{ $sale->due > 0 ? $sale->due : 0 }}</b></label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="container-fluid w-100 btn_group">
-                        @if ($invoice_type == 'a4')
-                            <a href="#" class="btn btn-outline-primary float-end mt-4 me-3"
-                                onclick="window.print();"><i data-feather="printer" class="me-2 icon-md"></i>Print
-                                Invoice</a>
-                        @else
-                            <a target="_blank" href="{{ route('sale.print', $sale->id) }}"
-                                class="btn btn-outline-primary float-end mt-4 "><i data-feather="printer"
-                                    class="me-2 icon-md"></i>Print Invoice</a>
-                        @endif
-
-                    </div>
-
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
-            <div class="w-100 mx-auto btn_group">
-                <a href="{{ route('sale.view') }}" class="btn btn-primary  mt-4 ms-2"><i
-                        class="fa-solid fa-arrow-rotate-left me-2"></i>Manage Sale</a>
-                <a href="{{ route('sale') }}" class="btn btn-outline-primary mt-4"><i data-feather="plus-circle"
-                        class="me-2 icon-md"></i>Sale</a>
+        <div class="col-lg-8 grid-margin stretch-card mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title text-info">Add Return Product</h6>
+                    @csrf
+                    <div class="row">
+                        <!-- Col -->
+                        <div class="mb-3 col-md-6">
+                            <label for="" class="form-label">Product <span class="text-danger">*</span></label>
+                            <div class="d-flex g-3">
+                                <select class="js-example-basic-single form-select product_select" data-width="100%">
+                                    @if ($sale_items->count() > 0)
+                                        <option selected disabled>Select Returned Product</option>
+                                        @foreach ($sale_items as $product)
+                                            <option value="{{ $product->id }}"
+                                                {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                                                {{ $product->product->name }}
+                                                ({{ $product->qty }})
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option selected disabled>Please Add Product</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="mb-3 form-valid-groups">
+                                <label class="form-label">Date<span class="text-danger">*</span></label>
+                                <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
+                                    <span class="input-group-text input-group-addon bg-transparent border-primary"
+                                        data-toggle><i data-feather="calendar" class="text-primary"></i></span>
+                                    <input type="text" name="date"
+                                        class="form-control bg-transparent border-primary return_date" value=""
+                                        placeholder="Select date" data-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            @php
+                                $payments = App\Models\Bank::get();
+                            @endphp
+                            <label for="" class="form-label">Payment Method <span
+                                    class="text-danger">*</span></label>
+                            <div class="d-flex g-3">
+                                <select class="js-example-basic-single payment_method" data-width="100%">
+                                    @if ($payments->count() > 0)
+                                        @foreach ($payments as $payemnt)
+                                            <option value="{{ $payemnt->id }}">
+                                                {{ $payemnt->name }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option selected disabled>Please Add Payment Method</option>
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label">Adjus Due</label>
+                            <select class="form-select adjust_due">
+                                <option selected disabled>Please Select Adjust Due</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Return Reason</label>
+                                <textarea name="note" class="form-control return_purpose" value="{{ old('note') }}"
+                                    placeholder="Write About Return" rows="4" cols="50"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div> --}}
-    <style>
-        @media print {
+        <div class="col-md-12 mb-1 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body px-4 py-2">
+                    <div class="mb-3">
+                        <h6 class="card-title">Items</h6>
+                    </div>
 
-            nav,
-            .footer {
-                display: none !important;
+                    <div id="" class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="showData">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div id="" class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>Product Total</td>
+                                        <td class="text-end">
+                                            <span class="all_product_total"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="my-3">
+                        <button class="btn btn-primary return_btn">
+                            Return <i class="fa-solid fa-arrow-turn-down"
+                                style="transform: rotate(90deg); font-size: 10px;"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // show Product function
+            function showAddProduct(sale_items) {
+                let old_subtotal = sale_items.sub_total;
+                let old_quantity = sale_items.qty;
+                let max_return_price = parseFloat(old_subtotal / old_quantity);
+
+                $('.showData').append(
+                    `<tr class="data_row${sale_items.id}" product-id="${sale_items.id}">
+                        <td>
+                            ${sale_items.product.name}
+                        </td>
+                        <td>
+                            <input type="number" product-id="${sale_items.id}" class="form-control return_price product_price${sale_items.id}" old_price="${max_return_price ?? 0}" id="product_price" name="return_price[]" value="${max_return_price ?? 0}" />
+                        </td>
+                        <td>
+                            <input type="number" product-id="${sale_items.id}" maxLength="${sale_items.qty}" old_quantity="${sale_items.qty ?? 0}" class="form-control quantity productQuantity${sale_items.id}" name="quantity[]" value="1" />
+                        </td>
+
+
+                        <td><input type="number" class="form-control subTotal border-0 productTotal${sale_items.id}" old_subtotal="${sale_items.sub_total ?? 0}" name="total_price[]" id="productTotal" readonly value="${max_return_price ?? 0}" /></td>
+
+                        <td style="padding-top: 20px;">
+                            <a href="#" class="btn btn-sm btn-danger btn-icon purchase_delete" style="font-size: 8px; height: 25px; width: 25px;" data-id=${sale_items.id}>
+                                <i class="fa-solid fa-trash-can" style="font-size: 0.8rem; margin-top: 2px;"></i>
+                            </a>
+                        </td>
+                    </tr>`
+                );
+
             }
 
-            .page-content {
-                margin-top: 0 !important;
-                padding-top: 0 !important;
+            function calculateMaxReturnQuantity(productId, quantity) {
+                let max_quantity = $(`.productQuantity${productId}`).attr('maxLength');
+                let unitPrice = parseFloat($(`.product_price${productId}`).val());
+
+                if (quantity > max_quantity) {
+                    toastr.warning('Quantity should not exceed ' + max_quantity);
+                    $(`.productQuantity${productId}`).val(max_quantity);
+                    let subTotal = unitPrice * max_quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                } else if (quantity < 1) {
+                    toastr.warning('Quantity should not less than 1');
+                    $(`.productQuantity${productId}`).val(1);
+                    let subTotal = unitPrice * 1;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                } else {
+                    let subTotal = unitPrice * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                }
             }
 
-            .btn_group {
-                display: none !important;
+            // Function to calculate the subtotal for each product
+            $(document).on('keyup', '.quantity', function() {
+                let productId = $(this).attr('product-id');
+                let quantity = parseInt($(this).val());
+                calculateMaxReturnQuantity(productId, quantity);
+
+            });
+
+            $(document).on('click', '.quantity', function() {
+                let productId = $(this).attr('product-id');
+                let quantity = parseInt($(this).val());
+                calculateMaxReturnQuantity(productId, quantity);
+            });
+
+            function calculateReturnPrice(productId, return_price) {
+
+                let quantity = parseInt($(`.productQuantity${productId}`).val());
+                let max_return_price = $(`.product_price${productId}`).attr('old_price');
+
+                if (max_return_price < return_price) {
+                    toastr.warning('Return Price should not exceed selling price. Your Selling Price is' +
+                        max_return_price);
+                    $(`.product_price${productId}`).val(max_return_price);
+
+                    let subTotal = max_return_price * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                } else {
+                    let subTotal = return_price * quantity;
+                    $(`.productTotal${productId}`).val(subTotal);
+                    calculateProductTotal();
+                }
             }
-        }
-    </style>
+
+            $(document).on('keyup', '.return_price', function() {
+                // alert('Return price');
+                let productId = $(this).attr('product-id');
+                let return_price = parseFloat($(this).val());
+                calculateReturnPrice(productId, return_price);
+            });
+
+            $(document).on('click', '.return_price', function() {
+                let productId = $(this).attr('product-id');
+                let return_price = parseFloat($(this).val());
+                calculateReturnPrice(productId, return_price);
+            });
+
+            // Select product
+            $(document).on('change', '.product_select', function() {
+                let id = $(this).val();
+                if ($(`.data_row${id}`).length === 0 && id) {
+                    $.ajax({
+                        url: '/return/find/' + id,
+                        type: 'GET',
+                        dataType: 'JSON',
+                        success: function(res) {
+                            showAddProduct(res.sale_items);
+                            calculateProductTotal();
+                        }
+                    });
+                }
+            });
+
+            // Purchase delete
+            $(document).on('click', '.purchase_delete', function(e) {
+                let id = $(this).attr('data-id');
+                let dataRow = $('.data_row' + id);
+                dataRow.remove();
+                calculateProductTotal();
+            });
+
+            // Function to calculate the grand total from all products
+            function calculateProductTotal() {
+                let allProductTotal = document.querySelectorAll('#productTotal');
+                let allTotal = 0;
+                allProductTotal.forEach(product => {
+                    let productValue = parseFloat(product.value);
+                    if (!isNaN(productValue)) {
+                        allTotal += productValue;
+                    }
+                });
+
+                $('.all_product_total').text(allTotal.toFixed(2));
+            }
+            calculateProductTotal();
+
+            function returnInvoice() {
+
+                let sale_id = '{{ $sale->id }}';
+                let customer_id = '{{ $customer->id }}';
+                let return_date = $('.return_date').val();
+                let formattedReturnDate = moment(return_date, 'DD-MMM-YYYY').format('YYYY-MM-DD HH:mm:ss');
+                let adjustDue = $('.adjust_due').val();
+                let paymentMethod = $('.payment_method').val();
+                // console.log(adjustDue);
+
+                let refund_amount = parseFloat($('.all_product_total').text());
+                let note = $('.return_purpose').val();
+
+                let sale_items = [];
+
+                $('tr[class^="data_row"]').each(function() {
+                    let row = $(this);
+                    // Get values from the current row's elements
+
+                    let product_id = parseInt($(this).attr('product-id'));
+                    let quantity = row.find('input[name="quantity[]"]').val();
+                    let return_price = row.find('input[name="return_price[]"]').val();
+
+                    let total_price = row.find('input[name="total_price[]"]').val();
+                    // console.log(productDiscount);
+
+                    let product = {
+                        product_id,
+                        quantity,
+                        return_price,
+                        total_price
+                    };
+
+                    // Push the object into the products array
+                    sale_items.push(product);
+                });
+                // console.log(products);
+
+                let allData = {
+                    sale_id,
+                    customer_id,
+                    formattedReturnDate,
+                    refund_amount,
+                    note,
+                    sale_items,
+                    adjustDue,
+                    paymentMethod
+                }
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+
+                $.ajax({
+                    url: '/return/store',
+                    type: 'POST',
+                    data: allData,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            toastr.success(res.message);
+                            window.location.href = '/return/products/list';
+                        } else {
+                            // console.log(res);
+                            toastr.warning("Something Went Wrong");
+                        }
+                    }
+                });
+            }
+
+            // order btn
+            $('.return_btn').click(function(e) {
+                e.preventDefault();
+                returnInvoice();
+            })
+        })
+    </script>
 @endsection

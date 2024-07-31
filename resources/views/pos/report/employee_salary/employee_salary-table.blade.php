@@ -12,6 +12,8 @@
                         <th>Debit</th>
                         <th>Credit</th>
                         <th>Balance</th>
+                        <th>Submit Date</th>
+                        <th>Update Date</th>
                         <th>Note</th>
                     </tr>
                 </thead>
@@ -26,6 +28,9 @@
                     <td>{{ $employeeData->debit ?? '0'}} TK</td>
                     <td>{{ $employeeData->creadit ?? '0'}}TK</td>
                     <td>{{ $employeeData->balance ?? '0'}}TK</td>
+                    <td>{{$employeeData->created_at->format('d F Y') ?? ''}}</td>
+                    <td>{{ $employeeData->updated_at ? $employeeData->updated_at->format('d F Y') : '-' }}</td>
+
                     <td>{{ $employeeData->note ?? '-'}}</td>
                 </tr>
             @endforeach

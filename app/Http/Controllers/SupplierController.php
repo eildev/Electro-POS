@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use App\Models\User;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,8 +31,12 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->phone = $request->phone;
             $supplier->address = $request->address;
-            $supplier->opening_receivable = $request->opening_receivable;
-            $supplier->opening_payable = $request->opening_payable;
+            $supplier->opening_receivable = 0;
+            $opening_receivable = $request->opening_receivable ?? 0;
+            $supplier->total_receivable = $opening_receivable;
+            $supplier->wallet_balance = $opening_receivable;
+            $supplier->opening_payable = $opening_receivable;
+            $supplier->total_payable = 0;
             $supplier->save();
             return response()->json([
                 'status' => 200,
@@ -46,7 +51,11 @@ class SupplierController extends Controller
     }
     public function view()
     {
-        $suppliers = Supplier::get();
+        if(Auth::user()->id == 1){
+            $suppliers = Supplier::all();
+        }else{
+        $suppliers = Supplier::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return response()->json([
             "status" => 200,
             "data" => $suppliers
@@ -81,8 +90,6 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->phone = $request->phone;
             $supplier->address = $request->address;
-            $supplier->opening_receivable = $request->opening_receivable;
-            $supplier->opening_payable = $request->opening_payable;
             $supplier->save();
             return response()->json([
                 'status' => 200,

@@ -8,7 +8,7 @@
         </ol>
     </nav>
 
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-md-12   grid-margin stretch-card filter_box">
             <div class="card">
                 <div class="card-body">
@@ -49,18 +49,14 @@
                             <div class="d-flex justify-content-end ">
                                 <button class="btn btn-sm bg-info text-dark me-2" id="filter">Filter</button>
                                 <button class="btn btn-sm bg-warning text-dark me-2" id="filter">Reset</button>
-                                {{-- <button type="button"
-                                    class="btn btn-outline-primary btn-icon-text ms-2 mb-2 mb-md-0 print-btn">
-                                    <i class="btn-icon-prepend" data-feather="printer"></i>
-                                    Print
-                                </button> --}}
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <div class="row">
         <div class="col-12 col-xl-12 stretch-card">
@@ -70,12 +66,12 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Sale Amount</h6>
-                                <div class="dropdown mb-2">
-                                    <a type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                <div class="dropdown mb-3">
+                                    {{-- <a type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    </a> --}}
+                                    {{-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                                 data-feather="eye" class="icon-sm me-2"></i> <span
                                                 class="">View</span></a>
@@ -91,20 +87,20 @@
                                         <a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                                 data-feather="download" class="icon-sm me-2"></i> <span
                                                 class="">Download</span></a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h3 class="mb-2">
+                                    <h3 class="mb-3">
                                         ৳ {{ $saleAmount }}
                                     </h3>
-                                    <div class="d-flex align-items-baseline">
+                                    {{-- <div class="d-flex align-items-baseline">
                                         <p class="text-success">
                                             <span>+3.3%</span>
                                             <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                         </p>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -115,8 +111,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Purchase Cost</h6>
-                                <div class="dropdown mb-2">
-                                    <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                <div class="dropdown mb-3">
+                                    {{-- <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </a>
@@ -136,20 +132,20 @@
                                         <a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                                 data-feather="download" class="icon-sm me-2"></i> <span
                                                 class="">Download</span></a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h3 class="mb-2">
+                                    <h3 class="mb-3">
                                         ৳ {{ $purchaseAmount }}
                                     </h3>
-                                    <div class="d-flex align-items-baseline">
+                                    {{-- <div class="d-flex align-items-baseline">
                                         <p class="text-danger">
                                             <span>-2.8%</span>
                                             <i data-feather="arrow-down" class="icon-sm mb-1"></i>
                                         </p>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -160,8 +156,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">EXPENSE</h6>
-                                <div class="dropdown mb-2">
-                                    <a type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                                <div class="dropdown mb-3">
+                                    {{-- <a type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </a>
@@ -181,20 +177,20 @@
                                         <a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                                 data-feather="download" class="icon-sm me-2"></i> <span
                                                 class="">Download</span></a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h3 class="mb-2">
+                                    <h3 class="mb-3">
                                         ৳ {{ $expenseAmount }}
                                     </h3>
-                                    <div class="d-flex align-items-baseline">
+                                    {{-- <div class="d-flex align-items-baseline">
                                         <p class="text-success">
                                             <span>+2.8%</span>
                                             <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                         </p>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -205,8 +201,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Sell Profit</h6>
-                                <div class="dropdown mb-2">
-                                    <a type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                                <div class="dropdown mb-3">
+                                    {{-- <a type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </a>
@@ -226,7 +222,7 @@
                                         <a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                                 data-feather="download" class="icon-sm me-2"></i> <span
                                                 class="">Download</span></a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="row">
@@ -234,12 +230,12 @@
                                     <h3 class="mb-2">
                                         ৳ {{ $sellProfit }}
                                     </h3>
-                                    <div class="d-flex align-items-baseline">
+                                    {{-- <div class="d-flex align-items-baseline">
                                         <p class="text-success">
                                             <span>+3.3%</span>
                                             <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                         </p>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -256,8 +252,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Salary Sheet</h6>
-                                <div class="dropdown mb-2">
-                                    <a type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
+                                <div class="dropdown mb-3">
+                                    {{-- <a type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </a>
@@ -277,7 +273,7 @@
                                         <a class="dropdown-item d-flex align-items-center" href="javascript:;"><i
                                                 data-feather="download" class="icon-sm me-2"></i> <span
                                                 class="">Download</span></a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                             <div class="row">
@@ -285,12 +281,12 @@
                                     <h3 class="mb-2">
                                         ৳ {{ $totalSalary }}
                                     </h3>
-                                    <div class="d-flex align-items-baseline">
+                                    {{-- <div class="d-flex align-items-baseline">
                                         <p class="text-success">
                                             <span>+2.8%</span>
                                             <i data-feather="arrow-up" class="icon-sm mb-1"></i>
                                         </p>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>

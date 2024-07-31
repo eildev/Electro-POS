@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\PosSetting;
 use App\Models\Product;
 use App\Models\PromotionDetails;
-use Validator;
+// use Validator;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -75,7 +76,12 @@ class ProductsController extends Controller
     }
     public function view()
     {
-        $products = Product::all();
+        if(Auth::user()->id == 1){
+            $products = Product::all();
+        }else{
+            $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         return view('pos.products.product.product-show', compact('products'));
     }
     public function edit($id)
@@ -179,4 +185,23 @@ class ProductsController extends Controller
         $product = Product::findOrFail($id);
         return view('pos.products.product.product-barcode', compact('product'));
     }
+    public function globalSearch($search_value)
+    {
+        $product = Product::where('search_value');
+
+        $products = Product::where('name','LIKE','%'.$search_value.'%')
+        ->orWhere('details','LIKE','%'.$search_value.'%')
+        ->orWhere('price','LIKE','%'.$search_value.'%')
+        ->orWhereHas('category', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+        ->orWhereHas('subcategory', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+        ->orWhereHas('brand', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+
+        ->get();
+
+        return response()->json([
+            'products' => $products,
+            'status' => 200
+        ]);
+    }
+
 }

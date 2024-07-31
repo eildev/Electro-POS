@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccountTransaction;
-use App\Models\ActualPayment;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\ReturnItem;
@@ -14,148 +13,187 @@ use App\Models\SaleItem;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ReturnController extends Controller
 {
     public function Return($id)
     {
         $sale = Sale::findOrFail($id);
-        return view('pos.return.return', compact('sale'));
+        return view('pos.return.return-invoice', compact('sale'));
+    }
+    public function ReturnItems($id)
+    {
+        $sales = SaleItem::findOrFail($id);
+        $sales->load('product');
+        // dd($sales);
+        return response()->json([
+            'status' => '200',
+            'sale_items' => $sales
+        ]);
     }
 
     public function store(Request $request)
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
+            'sale_id' => 'required',
             'customer_id' => 'required',
-            'products' => 'required',
+            'formattedReturnDate' => 'required',
+            'refund_amount' => 'required',
+            'paymentMethod' => 'required',
         ]);
-
         if ($validator->passes()) {
+            $oldBalance = AccountTransaction::where('account_id', $request->paymentMethod)->latest('created_at')->first();
+            // dd($oldBalance);
+            if ($oldBalance && $oldBalance->balance > 0 && $oldBalance->balance >= $request->refund_amount ?? 0) {
+                $total_return_profit = 0;
+                foreach ($request->sale_items as $sale_item) {
+                    $saleItem = SaleItem::findOrFail($sale_item['product_id']);
 
-            $productCost = 0;
-            $productAll = $request->products;
-            foreach ($productAll as $product) {
-                $items = Product::findOrFail($product['product_id']);
-                $productCost += $items->cost;
-            }
-
-            $sale = Sale::findOrFail($request->sale_id);
-            $sale->paid = $sale->paid - $request->change_amount;
-            $sale->due =  $sale->due + $request->change_amount;
-            $sale->profit = $productCost - $request->change_amount;
-            $sale->quantity = $request->quantity;
-            if ($sale->total > $request->total_amount) {
-                $sale->total = $request->total_amount;
-            } else {
-                $sale->total = $sale->total - $request->total_amount;
-            }
-            $sale->discount = $request->discount;
-            if ($sale->change_amount > $request->total) {
-                $sale->change_amount = $request->total;
-            } else {
-                $sale->change_amount = $request->total;
-            }
-            $sale->actual_discount = $request->actual_discount;
-            $sale->tax = $request->tax;
-            $sale->receivable = $request->change_amount;
-            // $sale->paid = $request->paid;
-            $sale->due = $request->due;
-            if ($request->due < 0) {
-                $sale->paid = $request->paid + $request->due;
-            } else {
-                $sale->paid = $request->paid;
-            }
-            // $sale->returned = $request->due;
-            $sale->final_receivable = $request->change_amount;
-            $sale->payment_method = $request->payment_method;
-            $sale->profit = $request->change_amount - $productCost;
-            // dd($productCost);
-            $sale->total_purchase_cost = $productCost;
-            $sale->note = $request->note;
-            $sale->created_at = Carbon::now();
-            $sale->save();
-
-            // dd($return->id);
-
-            $products = $request->products;
-            foreach ($products as $product) {
-                $items = Product::findOrFail($product['product_id']);
-                $saleItem = new SaleItem;
-                $saleItem->sale_id = $request->sale_id;
-                $saleItem->product_id = $product['product_id'];
-                $saleItem->qty = $product['quantity'];
-                $saleItem->rate = $product['unit_price']; // Access 'unit_price' as an array key
-                $saleItem->discount = $product['discount'];
-                $saleItem->sub_total = $product['total_price'];
-                $saleItem->total_purchase_cost = $items->cost;
-                $saleItem->save();
+                    // dd($Product->stock);
+                    $old_subtotal = $saleItem->sub_total;
+                    $old_quantity = $saleItem->qty;
+                    $avg_selling_price = $old_subtotal / $old_quantity;
+                    $actual_total_return_price = $avg_selling_price * $sale_item['quantity'];
+                    $return_profit = $actual_total_return_price - $sale_item['total_price'];
 
 
-                $items->stock = $items->stock + $product['quantity'];
-                $items->total_sold = $items->total_sold - $product['quantity'];
-                $items->save();
-            }
+                    $saleItem->save();
+                    $Product = Product::findOrFail($saleItem->product_id);
+                    $Product->stock = $Product->stock + $sale_item['quantity'];
+                    $Product->save();
+                    $total_return_profit += $return_profit;
+                }
+
+                // $saleItem = SaleItem::Where('sale_id', $request->sale_id)->get();
+                // dd($saleItems);
+
+                $returns = new Returns;
+                $returns->return_invoice_number = rand(123456, 99999);
+                $returns->branch_id = Auth::user()->branch_id;
+                $returns->sale_id = $request->sale_id;
+                $returns->customer_id = $request->customer_id;
+                $returns->return_date = $request->formattedReturnDate;
+                $returns->refund_amount = $request->refund_amount;
+                $returns->return_reason = $request->note ?? '';
+
+                $returns->total_return_profit = $total_return_profit;
+                $returns->status = 1;
+                $returns->processed_by = Auth::user()->id;
+                $returns->save();
 
 
-            $customer = Customer::findOrFail($request->customer_id);
-            $customer->total_receivable = $customer->total_receivable + $request->change_amount;
-            $customer->total_payable = $customer->total_payable + $request->paid;
-            $customer->wallet_balance = $customer->wallet_balance + ($request->change_amount - $request->paid);
-            $customer->save();
+                // dd($total_return_profit);
 
-            // actual Payment 
-            $actualPayment = new ActualPayment;
-            $actualPayment->branch_id =  Auth::user()->branch_id;
-            $actualPayment->payment_type =  'receive';
-            $actualPayment->payment_method =  $request->payment_method;
-            $actualPayment->customer_id = $request->customer_id;
-            $actualPayment->amount = $request->paid;
-            $actualPayment->date = $request->sale_date;
-            $actualPayment->save();
+                foreach ($request->sale_items as $sale_item) {
+                    // dd($sale_item['product_id']);
+                    $returnItems = new ReturnItem;
+                    $returnItems->return_id = $returns->id;
+                    $returnItems->product_id = (int)$sale_item['product_id'];
+                    $returnItems->quantity = (int)$sale_item['quantity'];
+                    $returnItems->return_price = (int)$sale_item['return_price'];
+                    $returnItems->product_total = (int)$sale_item['total_price'];
 
+                    $saleItem = SaleItem::findOrFail($sale_item['product_id']);
+                    $old_subtotal = $saleItem->sub_total;
+                    $old_quantity = $saleItem->qty;
+                    $actual_selling_price = $old_subtotal / $old_quantity;
+                    $actual_total_return_price = $actual_selling_price * $sale_item['quantity'];
+                    $return_profit = $actual_total_return_price - $sale_item['total_price'];
 
-            // accountTransaction table 
-            $accountTransaction = new AccountTransaction;
-            $accountTransaction->branch_id =  Auth::user()->branch_id;
-            $accountTransaction->purpose =  'Withdraw';
-            $accountTransaction->account_id =  $request->payment_method;
-            $accountTransaction->credit = $request->paid;
-            // $accountTransaction->balance = $accountTransaction->balance + $request->paid;
-            $accountTransaction->save();
+                    $total_cost_price = $saleItem->total_purchase_cost;
+                    $purchase_cost = $total_cost_price / $old_quantity;
 
+                    $each_product_sell_profit = $actual_selling_price - $purchase_cost;
 
-            $transaction = Transaction::where('customer_id', $request->customer_id)->first();
+                    $sell_profit = $each_product_sell_profit * $sale_item['quantity'];
+                    $saleItem->total_profit = ($saleItem->total_profit - $sell_profit) +  $return_profit;
 
-            if ($transaction) {
-                // Update existing transaction
-                $transaction->date =  $request->sale_date;
-                $transaction->payment_type = 'receive';
-                $transaction->particulars = 'Sale#' . $request->sale_id;
-                $transaction->credit = $transaction->credit + $request->change_amount;
-                $transaction->debit = $transaction->debit + $request->paid;
-                $transaction->balance = $transaction->balance + ($request->change_amount - $request->paid);
-                $transaction->payment_method = $request->payment_method;
-                $transaction->save();
-            } else {
-                // Create new transaction
+                    // dd($return_profit);
+                    $returnItems->return_profit = $return_profit;
+
+                    // $returnItems->return_reason = $request->note;
+                    $returnItems->save();
+                }
+
+                $sales = Sale::findOrFail($request->sale_id);
+                $sales->returned = $request->refund_amount;
+                $sales->profit = $sales->profit - $total_return_profit;
+                $sales->save();
+
+                // customer crud
+                $customer = Customer::findOrFail($request->customer_id);
+                $customerDue = $customer->wallet_balance;
+
+                // account Transaction Crud
+                // $bank = Bank::where('name', "=", "Cash")->first();
+                $lastTransaction = AccountTransaction::where('account_id', $request->paymentMethod)->latest('created_at')->first();
+                $accountTransaction =  new AccountTransaction;
+                $accountTransaction->branch_id =  Auth::user()->branch_id;
+                $accountTransaction->reference_id = $returns->id;
+                $accountTransaction->purpose =  'Return';
+                $accountTransaction->account_id =  $request->paymentMethod;
+                $accountTransaction->created_at = Carbon::now();
+
+                // transaction CRUD
+                $lastTransactionData = Transaction::latest('created_at')->first();
                 $transaction = new Transaction;
-                $transaction->date =  $request->sale_date;
-                $transaction->payment_type = 'receive';
-                $transaction->particulars = 'Sale#' . $request->sale_id;
-                $transaction->customer_id = $request->customer_id;
-                $transaction->credit = $request->change_amount;
-                $transaction->debit = $request->paid;
-                $transaction->balance = $request->change_amount - $request->paid;
-                $transaction->payment_method = $request->payment_method;
-                $transaction->save();
-            }
+                $transaction->date = $request->formattedReturnDate;
+                $transaction->particulars = 'Adjust Due Collection';
+                $transaction->others_id = $returns->id;
+                $transaction->branch_id = Auth::user()->branch_id;
+                $transaction->payment_method = $request->paymentMethod;
+                $transaction->created_at = Carbon::now();
+                if ($request->adjustDue == 'yes') {
+                    if ($customerDue > $request->refund_amount) {
+                        $dueBalance = $customerDue - $request->refund_amount;
+                        $customer->wallet_balance = $customer->wallet_balance - $dueBalance;
 
-            return response()->json([
-                'status' => 200,
-                'message' => 'successfully Replace Products',
-            ]);
+                        $accountTransaction->credit = $request->refund_amount;
+                        $accountTransaction->balance = $lastTransaction->balance + $request->refund_amount;
+
+                        $transaction->payment_type = 'receive';
+                        $transaction->credit = $request->refund_amount;
+
+                        $transaction->balance = $lastTransactionData->balance + $request->refund_amount;
+                    } else {
+                        $returnBalance = $request->refund_amount - $customerDue;
+                        $customer->wallet_balance = 0;
+
+                        $cal1 = $lastTransaction->balance + $customerDue;
+                        $cal2 = $cal1 - $request->refund_amount;
+                        $accountTransaction->debit = $returnBalance;
+                        $accountTransaction->balance = $cal2;
+
+                        $calculation = $lastTransactionData->balance + $customerDue;
+                        $calculation2 = $calculation - $request->refund_amount;
+                        $transaction->payment_type = 'pay';
+                        $transaction->debit = $returnBalance;
+                        $transaction->balance = $calculation2;
+                    }
+                } else {
+                    $accountTransaction->debit = $request->refund_amount;
+                    $accountTransaction->balance = $lastTransaction->balance - $request->refund_amount;
+                    $transaction->payment_type = 'pay';
+                    $transaction->debit = $request->refund_amount;
+                    $transaction->balance = $lastTransactionData->balance - $request->refund_amount;
+                }
+                $customer->save();
+                $accountTransaction->save();
+                $transaction->save();
+
+                return response()->json([
+                    'status' => '200',
+                    'message' => 'Product Return successful',
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 400,
+                    'message' => 'Not Enough Balance in this Account. Please choose Another Account or Deposit Account Balance.',
+                ]);
+            }
         } else {
             return response()->json([
                 'status' => '500',
@@ -163,70 +201,14 @@ class ReturnController extends Controller
             ]);
         }
     }
-    public function storeReturnItem(Request $request)
-    {
-        // dd($request->all());
-        $productCost = 0;
-        $productAll = $request->products;
-        foreach ($productAll as $product) {
-            $items = Product::findOrFail($product['product_id']);
-            $productCost += $items->cost;
-        }
-        $saleItem = SaleItem::where('sale_id', $request->sale_id)->where('product_id', $request->id)->latest()->first();
-
-        $return = Returns::where('sale_id', $request->sale_id)->first();
-
-        if ($return) {
-            // Record exists, update it
-            $return->customer_id = $request->customer_id;
-            $return->total = $request->total_amount;
-            $return->discount_amount = $request->actual_discount;
-            $return->grand_total = $request->change_amount;
-            $return->created_at = Carbon::now();
-        } else {
-            // Record does not exist, create a new one
-            $return = new Returns;
-            $return->sale_id = $request->sale_id;
-            $return->customer_id = $request->customer_id;
-            $return->total = $request->total_amount;
-            $return->discount_amount = $request->actual_discount;
-            $return->grand_total = $request->change_amount;
-            $return->created_at = Carbon::now();
-        }
-
-        $return->save();
-
-        $returnItems = new ReturnItem;
-        $returnItems->return_id = 0;
-        // $returnItems->sale_item_id = $product['product_id']; 
-        $returnItems->product_id = $request->id;
-        $returnItems->quantity = $saleItem->qty;
-        $returnItems->unit_price = $saleItem->rate; // Access 'unit_price' as an array key
-        $returnItems->discount_amount = $saleItem->discount;
-        $returnItems->total = $saleItem->sub_total;
-        $returnItems->save();
-
-        $saleItem->delete();
-
-        return response()->JSON([
-            'status' => 200,
-            'message' => 'Successfully returned product',
-        ]);
-    }
     public function returnProductsList()
     {
-        $returns = Returns::get();
+        if(Auth::user()->id == 1){
+            $returns = Returns::get();
+        }else{
+            $returns = Returns::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
+
         return view('pos.return.return-view', compact('returns'));
-    }
-    public function returnProductsDelete($id)
-    {
-        $return = Returns::findOrFail($id);
-        $return->delete();
-        return back()->with('message', "Return successfully Deleted");
-    }
-    public function returnProductsInvoice($id)
-    {
-        $return = Returns::findOrFail($id);
-        return view('pos.return.return-invoice', compact('return'));
     }
 }

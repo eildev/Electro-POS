@@ -14,7 +14,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title text-info">View Customer List</h6>
+                    <h6 class="card-title text-info">View Damage History</h6>
 
                     <div id="" class="table-responsive">
                         <table id="dataTableExample" class="table">
@@ -46,16 +46,13 @@
                                                     class="btn btn-sm btn-primary btn-icon">
                                                     <i data-feather="edit"></i>
                                                 </a>
-<<<<<<< HEAD
                                                 @endif
                                                 @if(Auth::user()->can('damage.delete'))
                                                 {{-- <a href="{{route('damage.delete',$damage->id)}}" id="delete" class="btn btn-sm btn-danger btn-icon"> --}}
-                                                <i data-feather="trash-2"></i>
-=======
+                                                {{-- <i data-feather="trash-2"></i> --}}
                                                 <a href="{{ route('damage.destroy', $damage->id) }}" id="delete"
                                                     class="btn btn-sm btn-danger btn-icon">
                                                     <i data-feather="trash-2"></i>
->>>>>>> 48ef03ab96642f69da74a1e719c62dc561f8958c
                                                 </a>
                                                 @endif
                                             </td>

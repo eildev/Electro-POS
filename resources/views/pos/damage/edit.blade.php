@@ -4,36 +4,35 @@
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
             <div class="">
-                <h4 class="text-right"><a href="{{ route('damage.view') }}" class="btn btn-info">View All Damage List</a></h4>
+                <h4 class="text-right"><a href="{{ route('damage.view') }}" class="btn btn-info">All Damage List</a></h4>
             </div>
         </div>
         <div class="col-md-12 stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title text-info">Add Damage</h6>
-                    <form id="myValidForm" action="{{ route('damage.store') }}" method="post">
+                    <h6 class="card-title text-info">Edit Damage</h6>
+                    <form id="myValidForm" action="{{ route('damage.update',$damage_info->id) }}" method="post">
                         @csrf
                         <div class="row">
                             <!-- Col -->
-
                             <div class="mb-3 col-md-6">
                                 @php
                                     $products = App\Models\Product::get();
-
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product <span class="text-danger">*</span></label>
-                                <select class="js-example-basic-single form-select" name="product_id"
+                                {{-- <select class="js-example-basic-single form-select" name="product_id"
                                     data-width="100%"  onchange="show_quantity(this)">
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Damaged Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}" {{$damage_info->product_id == $product->id ? 'selected' : ''}}>{{ $product->name.$product->unit->name}}</option>
+                                            <option value="{{ $product->id }}" {{$damage_info->product_id == $product->id ? 'selected' : ''}}> {{ $product->name.' ' .$product->unit->name}}</option>
 
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Product</option>
                                     @endif
-                                </select>
+                                </select> --}}
+                                <input type="text" class="form-control" value="{{$damage_info->product->name}}" readonly>
                                 <span class="text-danger product_select_error"></span>
                             </div>
                             <div class="col-sm-6">
@@ -44,7 +43,7 @@
                                         <span class="text-primary" id="show_unit"></span>
                                     </label>
 
-                                    <input type="text" value="{{$damage_info->qty}}" id="damageQty" name="pc" onkeyup="damage_qty(this);" class="form-control" placeholder="0" disabled autocomplete="off" value="">
+                                    <input type="text" value="{{$damage_info->qty}}" id="damageQty" name="pc" onkeyup="damage_qty(this);" class="form-control" placeholder="0"  autocomplete="off" >
                                 </div>
                             </div>
                             <div class="col-sm-6">

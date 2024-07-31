@@ -17,4 +17,5 @@ class Returns extends Model
     {
         return $this->hasMany(ReturnItem::class, 'return_id', 'id');
     }
+
 }

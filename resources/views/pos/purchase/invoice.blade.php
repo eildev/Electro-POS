@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Purchase Invoice')
+@section('title', '| Purchase Invoice')
 @section('admin')
     @php
         $branch = App\Models\Branch::findOrFail($purchase->branch_id);
@@ -28,7 +28,7 @@
                             <p class="text-end mb-1 mt-5">Total </p>
                             <h4 class="text-end fw-normal">৳ {{ $purchase->grand_total ?? 00.0 }}</h4>
                             <h6 class="mb-0 mt-2 text-end fw-normal"><span class="text-muted show_purchase_date">Invoice
-                                    Date :</span> {{ $purchase->purchse_date ?? '' }}</h6>
+                                    Date :</span> {{ $purchase->purchase_date ?? '' }}</h6>
                         </div>
                     </div>
                     <div class="container-fluid mt-5 d-flex justify-content-center w-100">
@@ -121,6 +121,12 @@
                                                     <td class="text-end">৳ {{ $purchase->grand_total }} </td>
                                                 </tr>
                                             @endif
+                                            <tr>
+                                                <td class="text-bold-800">Previous Due</td>
+                                                <td class="text-bold-800 text-end">
+                                                    ৳{{ number_format($purchase->grand_total - $purchase->sub_total, 2) }}
+                                                </td>
+                                            </tr>
                                             <tr>
                                                 <td class="text-bold-800">Grand Total</td>
                                                 <td class="text-bold-800 text-end">৳ {{ $purchase->grand_total }} </td>

@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\models\PosSetting;
 use Carbon\Carbon;
-class settingSeed extends Seeder
+class SettingSeed extends Seeder
 {
     /**
      * Run the database seeds.

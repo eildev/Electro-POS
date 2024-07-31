@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
-use Validator;
+// use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Repositories\RepositoryInterfaces\BrandInterface;
+use Illuminate\Support\Facades\Validator;
 class BrandController extends Controller
 {
     private $brandRepo;

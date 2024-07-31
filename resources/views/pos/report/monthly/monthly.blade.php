@@ -6,100 +6,6 @@
             <li class="breadcrumb-item active" aria-current="page">Monthly Report</li>
         </ol>
     </nav>
-    {{-- <div class="row">
-        <div class="col-md-12   grid-margin stretch-card filter_box">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <div class="input-group flatpickr" id="flatpickr-date">
-                                <input type="text" class="form-control from-date flatpickr-input start-date"
-                                    placeholder="Start date" data-input="" readonly="readonly">
-                                <span class="input-group-text input-group-addon" data-toggle=""><svg
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="feather feather-calendar">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
-                                        </rect>
-                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    </svg></span>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="input-group flatpickr" id="flatpickr-date">
-                                <input type="text" class="form-control from-date flatpickr-input end-date"
-                                    placeholder="End date" data-input="" readonly="readonly">
-                                <span class="input-group-text input-group-addon" data-toggle=""><svg
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="feather feather-calendar">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
-                                        </rect>
-                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    </svg></span>
-                            </div>
-                        </div>
-                        @php
-                            $products = App\Models\Product::all();
-                            $customers = App\Models\Customer::all();
-                        @endphp
-                        <div class="col-md-3">
-                            <div class="input-group flatpickr" id="flatpickr-date">
-                                <select class="js-example-basic-single form-select product_select" data-width="100%">
-                                    @if ($products->count() > 0)
-                                        <option selected disabled>Select Product</option>
-                                        @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
-                                        @endforeach
-                                    @else
-                                        <option selected disabled>Please Add Product</option>
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="input-group flatpickr" id="flatpickr-date">
-                                <select class="js-example-basic-single form-select select-supplier customer_id"
-                                    data-width="100%" name="">
-                                    @if ($customers->count() > 0)
-                                        <option selected disabled>Select Customer</option>
-                                        @foreach ($customers as $customer)
-                                            <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                                        @endforeach
-                                    @else
-                                        <option selected disabled>Please Add Customer</option>
-                                    @endif
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <div class="justify-content-left">
-                                <button class="btn btn-sm bg-info text-dark mr-2" id="filter">Filter</button>
-                                <button class="btn btn-sm bg-primary text-dark" id="reset">Reset</button>
-                            </div>
-                        </div>
-                        <div class="col-md-6 ">
-                            <div class="flex text-md-end ">
-                                <button type="button"
-                                    class="btn btn-outline-primary btn-icon-text me-2 mb-2 mb-md-0 print-btn">
-                                    <i class="btn-icon-prepend" data-feather="printer"></i>
-                                    Print
-                                </button>
-                               
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
 
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card">
@@ -110,39 +16,32 @@
                         <table id="example" class="table">
                             <thead>
                                 <tr>
-                                    <th class="id">#</th>
-                                    <th>Month</th>
-                                    <th>Total Purchase</th>
-                                    <th>Total Sale</th>
-                                    <th>Profit</th>
-                                    <th>Expanse</th>
-                                    <th>Salary</th>
-                                    <th>Net Profit</th>
-                                    {{-- <th class="id">Action</th> --}}
+                                    <th>#</th>
+                                    <th>Date</th>
+                                    <th>Total Incoming</th>
+                                    <th>Total Outgoing</th>
+                                    <th>Balance</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
-                            {{-- @dd($monthlyReports) --}}
-                            <tbody id="showData">
+                            <tbody>
                                 @php
                                     $key = 1;
                                 @endphp
-                                @foreach ($monthlyReports as $report)
+                                @foreach ($dailyReports as $report)
                                     <tr>
-                                        <td>{{ $key }}</td>
-                                        @php
-                                            $key++;
-                                        @endphp
-                                        <td>{{ $report['month'] }}</td>
-                                        <td> {{ $report['totalPurchaseCost'] }}</td>
-                                        <td> {{ $report['totalSale'] }}</td>
-                                        <td> {{ $report['totalProfit'] }}</td>
-                                        <td> {{ $report['totalExpense'] }}</td>
-                                        <td> {{ $report['totalSalary'] }}</td>
-                                        <td> {{ $report['finalProfit'] }}</td>
-                                        {{-- <td>
-                                            <a class="btn btn-primary btn-sm" href="#"><i
-                                                    class="fa-solid fa-file-invoice me-2"></i> Print</a>
-                                        </td> --}}
+                                        <td>{{ $key++ }}</td>
+                                        <td>{{ $report['date'] }}</td>
+                                        <td>{{ number_format($report['totalIngoing'], 2) }}</td>
+                                        <td>{{ number_format($report['totalOutgoing'], 2) }}</td>
+                                        <td>{{ number_format($report['totalBalance'], 2) }}</td>
+                                        <td>
+                                            <button type="button" value="{{ $report['id'] }}"
+                                                class="btn btn-primary view_details" data-bs-toggle="modal"
+                                                data-bs-target="#details_modal">
+                                                View Details
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -152,4 +51,145 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="details_modal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle"><span class="date"></span> Reports</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary print_btn">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.view_details', function(e) {
+                e.preventDefault();
+                let id = $(this).val();
+                // alert(id);
+                $.ajax({
+                    url: '/report/monthly/view/' + id,
+                    method: 'GET',
+                    success: function(res) {
+                        const report = res.report;
+                        // console.log(report);
+                        $('.date').html(`${report.date}`);
+                        $('.modal-body').html(`
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Incomming</th>
+                                        <th colspan="2">Outgoing</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Purpose</th>
+                                        <th class="text-end">TK</th>
+                                        <th>Purpose</th>
+                                        <th class="text-end">TK</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Previous Day Balance</td>
+                                        <td class="text-end">${report.previousDayBalance.toFixed(2)}</td>
+                                        <td>Salary</td>
+                                        <td class="text-end">${report.totalSalary.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paid Sales</td>
+                                        <td class="text-end">${report.totalSale.toFixed(2)}</td>
+                                        <td>Purchase</td>
+                                        <td class="text-end">${report.totalPurchaseCost.toFixed(2)}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Due Collection</td>
+                                        <td class="text-end">${report.dueCollection.toFixed(2)}</td>
+                                        <td>Due Paid</td>
+                                        <td class="text-end">${report.purchaseDuePay.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Other Deposit</td>
+                                        <td class="text-end">${report.otherCollection}</td>
+                                        <td>Other Withdraw</td>
+                                        <td class="text-end">${report.otherPaid.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Adjust Due Collcetion</td>
+                                        <td class="text-end">${report.adjustDueCollection.toFixed(2)}</td>
+                                        <td>Return</td>
+                                        <td class="text-end">${report.todayReturnAmount.toFixed(2)}</td>
+                                            00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Add Balance</td>
+                                        <td class="text-end">${report.addBalance.toFixed(2)}</td>
+                                        <td>Expanse</td>
+                                        <td class="text-end">${report.totalExpense.toFixed(2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Via Sale</td>
+                                        <td class="text-end">${report.viaSale.toFixed(2)}</td>
+                                        <td>Via Purchase</td>
+                                        <td class="text-end">${report.viaPayment.toFixed(2)}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total</td>
+                                        <td class="text-end">${report.totalIngoing.toFixed(2)}</td>
+                                        <td>Total</td>
+                                        <td class="text-end">${report.totalOutgoing.toFixed(2)}</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="3">Total Balance</th>
+                                        <td class="text-end">${report.totalBalance.toFixed(2)}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        `)
+                    }
+                })
+            })
+
+            $(document).on('click', '.print_btn', function(e) {
+                e.preventDefault();
+
+                // Get the modal content
+                let printContents = document.querySelector('.modal-content').innerHTML;
+
+                // Open a new window
+                let originalContents = document.body.innerHTML;
+                let printWindow = window.open('', '', 'height=600,width=800');
+
+                // Write the modal content to the new window
+                printWindow.document.write('<html><head><title>Print</title>');
+                printWindow.document.write(
+                    '<link rel="stylesheet" href="path/to/your/css/styles.css">'); // Add your CSS file here
+                printWindow.document.write('</head><body>');
+                printWindow.document.write(printContents);
+                printWindow.document.write('</body></html>');
+
+                $('.modal-footer').hide();
+
+                // Print the contents of the new window
+                printWindow.document.close();
+                printWindow.print();
+            });
+        });
+    </script>
 @endsection

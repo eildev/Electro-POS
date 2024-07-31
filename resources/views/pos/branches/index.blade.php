@@ -20,7 +20,7 @@
         <div class="row mb-3">
             <label for="exampleInputBranchname2" class="col-sm-3 col-form-label">Name</label>
             <div class="col-sm-9">
-                <input type="text" name="name" class="form-control  @error('name') is-invalid  @enderror" id="exampleInputBranchname2" placeholder="Enter Branch Name">
+                <input type="text" name="name" class="form-control  @error('name') is-invalid  @enderror" id="exampleInputBranchname2" value="{{old('name')}}" placeholder="Enter Branch Name">
                 @error('name')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -29,7 +29,7 @@
         <div class="row mb-3">
             <label for="exampleInputBranchname2" class="col-sm-3 col-form-label">Email</label>
             <div class="col-sm-9">
-                <input type="email" name="email" class="form-control  @error('email') is-invalid  @enderror" id="exampleInputBranchname2" placeholder="Enter Email">
+                <input type="email" name="email" class="form-control  @error('email') is-invalid  @enderror" id="exampleInputBranchname2" value="{{old('email')}}" placeholder="Enter Email">
                 @error('email')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -38,7 +38,7 @@
         <div class="row mb-3">
             <label for="exampleInputMobile" class="col-sm-3 col-form-label">Mobile</label>
             <div class="col-sm-9">
-                <input type="text" class="form-control @error('email') is-invalid  @enderror" name="phone" id="exampleInputMobile"  placeholder="Mobile number">
+                <input type="text" class="form-control @error('phone') is-invalid  @enderror" name="phone" id="exampleInputMobile" value="{{old('phone')}}"  placeholder="Mobile number">
                 @error('phone')
                 <span class="text-danger">{{ $message }}</span>
                 @enderror
@@ -47,7 +47,7 @@
         <div class="row mb-3">
             <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Address</label>
             <div class="col-sm-9">
-            <textarea class="form-control  @error('address') is-invalid  @enderror" name="address" id="exampleFormControlTextarea1" placeholder="Enter Branch Address" rows="5"></textarea>
+            <textarea class="form-control  @error('address') is-invalid  @enderror" name="address" id="exampleFormControlTextarea1" placeholder="Enter Branch Address" rows="5">{{old('address')}}</textarea>
             @error('address')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
@@ -61,7 +61,7 @@
                             <div class="card">
                                 <div class="card-body">
 
-                                    <input type="file"  class="categoryImage  @error('logo') is-invalid  @enderror" name="logo" id="myDropify" />
+                                    <input type="file"  class="categoryImage  @error('logo') is-invalid  @enderror" value="{{old('logo')}}"  name="logo" id="myDropify" />
                                     @error('logo')
                                     <span class="text-danger">{{ $message }}</span>
                                     @enderror

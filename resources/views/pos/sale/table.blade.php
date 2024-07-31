@@ -19,8 +19,13 @@
                     @endforeach
                 </ul>
             </td>
+            <td>{{ $data->quantity ?? 0 }}</td>
             <td>{{ $data->sale_date ?? 0 }}</td>
+            <td>৳ {{ $data->total ?? 0 }}</td>
             <td>৳ {{ $data->actual_discount ?? 0 }}</td>
+            <td>৳
+                {{ $data->receivable - $data->change_amount ?? 0 }}
+            </td>
             <td>
                 ৳ {{ $data->receivable ?? 0 }}
             </td>
@@ -84,16 +89,12 @@
                         <a class="dropdown-item" href="{{ route('return', $data->id) }}"><i
                                 style="transform: rotate(90deg);" class="fa-solid fa-arrow-turn-down me-2"></i></i>
                             Return</a>
-                        @if ($data->due > 0)
+                        {{-- @if ($data->due > 0)
                             <a class="dropdown-item add_payment" href="#" data-bs-toggle="modal"
                                 data-bs-target="#paymentModal" data-id="{{ $data->id }}"><i
                                     class="fa-solid fa-credit-card me-2"></i> Payment</a>
-                        @endif
-                        @if (Auth::user()->can('pos-manage.edit'))
-                            <a class="dropdown-item" href="{{ route('sale.edit', $data->id) }}"><i
-                                    class="fa-solid fa-pen-to-square me-2"></i> Edit</a>
-                        @endif
-                        @if (Auth::user()->can('	pos-manage.delete'))
+                        @endif --}}
+                        @if (Auth::user()->can('pos-manage.delete'))
                             <a class="dropdown-item" id="delete" href="{{ route('sale.destroy', $data->id) }}"><i
                                     class="fa-solid fa-trash-can me-2"></i>Delete</a>
                         @endif

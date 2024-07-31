@@ -1,7 +1,6 @@
 @extends('master')
 @section('title','| Transaction Invoice')
 @section('admin')
-
 <div class="row" bis_skin_checked="1">
     <div class="col-md-2">
 
@@ -19,9 +18,11 @@
                 <address>
                     F/5
                     <br>
-                    Phone : <strong>-------</strong>
+                    Phone : <strong>{{ $phone ?? '-' }}</strong>
                     <br>
-                    Email : <strong>eilbangladesh@gmail.com</strong>
+                    Email : <strong>{{ $email ?? '-' }}</strong>
+                    <br>
+                    Address : <strong>{{$address ?? 'Banasree' }}</strong>
                 </address>
             </div>
             <table class="table payment-invoice-header mt-2">
@@ -35,25 +36,20 @@
                         <td style="width:15%;">Payment No :</td>
                         <td style="width: 35%;">{{$transaction->id}}</td>
                         <td style="width:15%;">Date :</td>
-                        <td>{{ \Carbon\Carbon::parse($transaction->date)->format('d F Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($transaction->date)->format('d F Y') ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Name :</td>
-                        <td colspan="3"> {{$transaction['supplier']['name'] ?? $transaction['customer']['name']}}</td>
-
+                        <td colspan="3"> {{$transaction['supplier']['name'] ?? $transaction['customer']['name'] ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Address :</td>
-                        <td colspan="3">{{$transaction['supplier']['address'] ?? $transaction['customer']['address']}}</td>
+                        <td colspan="3">{{$transaction['supplier']['address'] ?? $transaction['customer']['address'] ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Mobile :</td>
-                        <td colspan="3">{{$transaction['supplier']['phone'] ?? $transaction['customer']['phone']}}</td>
+                        <td colspan="3">{{$transaction['supplier']['phone'] ?? $transaction['customer']['phone'] ?? ''}} </td>
                     </tr>
-
                     <tr>
                         <td>Account Type :</td>
                         <td>
@@ -64,11 +60,9 @@
                             <span>Supplier</span>
                           @endif
                         </td>
-
                         <td>Account:</td>
-                     <td>{{$transaction['bank']['name']}}</td>
+                     <td>{{$transaction['bank']['name'] ?? ''}}</td>
                     </tr>
-
                     <tr>
                         <td>Transaction Type :</td>
                         <td colspan="3" style="text-transform: capitalize">
@@ -92,32 +86,34 @@
                 <table class="table table-bordered table-plist my-3">
                     <tbody><tr class="bg-primary">
                         <th>Date</th>
-                        <th>Previous Due</th>
+                        {{-- <th>Previous Due</th> --}}
                         <th>Paid</th>
-                        <th>Due/Wallet</th>
+                        <th>Total Due</th>
                     </tr>
                     </tbody><tbody>
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($transaction->date)->format('d F Y') }}</td>
-                            <td>
-                                @if(isset($transaction['customer']['total_payable']))
-                                    {{ $transaction['customer']['total_payable'] }}
-                                @elseif(isset($transaction['supplier']['total_payable']))
-                                    {{ $transaction['supplier']['total_payable'] }}
+                            {{-- <td>
+                                @if($transaction->credit != null && $transaction['customer']['wallet_balance'])
+                                    {{ $transaction->credit - $transaction['customer']['wallet_balance'] }}
+                                @elseif($transaction->debit != null && $transaction['supplier']['wallet_balance'])
+                                    {{$transaction->debit - $transaction['supplier']['wallet_balance'] }}
                                 @endif
-                            </td>
-                            <td>{{ $transaction->debit }}</td>
+                            </td> --}}
+                            <td>@if( $transaction->credit != null)
+                                {{ $transaction->credit }}</td>
+                                @elseif( $transaction->debit != null)
+                                {{ $transaction->debit }}</td>
+                                @endif
                             <td>
-                                @if(isset($transaction['customer']['total_payable']))
-                                    {{ $transaction->debit - $transaction['customer']['total_payable'] }}
+                                @if(isset($transaction['customer']['wallet_balance']))
+                                    {{ $transaction['customer']['wallet_balance'] }}
                                 @elseif(isset($transaction['supplier']['wallet_balance']))
-                                    {{ $transaction->debit - $transaction['supplier']['total_payable'] }}
+                                    {{  $transaction['supplier']['wallet_balance'] }}
                                 @endif
                             </td>
                         </tr>
                     </tbody>
-
-
                 </table>
         </div>
         <button class="btn btn-secondary btn-block" onclick="window.print();">

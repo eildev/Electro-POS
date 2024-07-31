@@ -5,9 +5,6 @@
         <div class="col-lg-12 grid-margin stretch-card mb-3">
             <div class="card">
                 <div class="card-body px-4 py-2">
-                    {{-- <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="card-title">POS Sale</h6>
-                    </div> --}}
                     <div class="row">
                         @if ($barcode == 1)
                             <div class="mb-2 col-md-6">
@@ -24,11 +21,6 @@
 
                         <div class="mb-2 col-md-6">
                             <label for="date" class="form-label">Date</label>
-                            {{-- <div class="input-group flatpickr" id="flatpickr-date">
-                                <input type="date" class="form-control purchase_date" placeholder="" data-input>
-                                <span class="input-group-text input-group-addon" data-toggle><i
-                                        data-feather="calendar"></i></span>
-                            </div> --}}
                             <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
                                 <span class="input-group-text input-group-addon bg-transparent border-primary"
                                     data-toggle><i data-feather="calendar" class="text-primary"></i></span>
@@ -39,35 +31,33 @@
                             <span class="text-danger purchase_date_error"></span>
                         </div>
                         <div class="mb-1 col-md-6">
-                            @php
-                                $products = App\Models\Product::where('stock', '>', 0)->get();
-                            @endphp
-                            <label for="ageSelect" class="form-label">Product</label>
-                            <select class="js-example-basic-single  form-select product_select" data-width="100%"
-                                onclick="errorRemove(this);" onblur="errorRemove(this);">
-                                @if ($products->count() > 0)
-                                    <option selected disabled>Select Product</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
-                                            {{ $product->unit->name }} Available )
-                                        </option>
-                                    @endforeach
-                                @else
-                                    <option selected disabled>Please Add Product</option>
+                            <label class="form-label">Product</label>
+                            <div class="d-flex g-3">
+                                <select class="js-example-basic-single form-select product_select view_product"
+                                    data-width="100%" onchange="errorRemove(this);">
+
+                                </select>
+                                <span class="text-danger product_select_error"></span>
+                                @if ($via_sale == 1)
+                                    <button class="btn btn-primary ms-2 w-25" data-bs-toggle="modal"
+                                        data-bs-target="#viaSellModal">Via Sell</button>
                                 @endif
-                            </select>
-                            <span class="text-danger product_select_error"></span>
+                            </div>
                         </div>
                         <div class="mb-1 col-md-6">
                             <label for="password" class="form-label">Customer</label>
                             <div class="d-flex g-3">
                                 <select class="js-example-basic-single form-select select-customer" data-width="100%"
-                                    onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                    onchange="errorRemove(this);">
 
                                 </select>
+                                <span class="text-danger select-customer_error"></span>
                                 <button class="btn btn-primary ms-2" data-bs-toggle="modal"
                                     data-bs-target="#customerModal">Add</button>
                             </div>
+                        </div>
+                        <div>
+                            <input type="hidden" class="generate_invoice">
                         </div>
                     </div>
                 </div>
@@ -190,17 +180,16 @@
                     </div>
                     <div class="row align-items-center mb-2">
                         <div class="col-sm-4">
-                            <label for="name" class="form-label">Pay Amount <span
-                                    class="text-danger">*</span>:</label>
+                            <label for="name" class="form-label">Pay Amount :</label>
                         </div>
                         <div class="col-sm-8">
-                            <input class="form-control total_payable" name="total_payable" type="number" value=""
-                                onkeyup="errorRemove(this);">
+                            <input class="form-control total_payable" minlength='0' name="total_payable" type="number"
+                                value="">
                             <span class="text-danger total_payable_error"></span>
                         </div>
                     </div>
                     <div class="row align-items-center">
-                        <div class="col-sm-4">
+                        <div class="col-sm-4 due_text">
                             Total Due :
                         </div>
                         <div class="col-sm-8">
@@ -215,7 +204,11 @@
                         </div>
                         <div class="col-sm-8">
                             @php
+                             if(Auth::user()->id == 1){
                                 $payments = App\Models\Bank::get();
+                                }else{
+                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+                                }
                             @endphp
                             <select class="form-select payment_method" data-width="100%" onclick="errorRemove(this);"
                                 onblur="errorRemove(this);">
@@ -235,10 +228,7 @@
 
                     <div class="my-3">
                         <button class="btn btn-primary payment_btn"><i class="fa-solid fa-money-check-dollar"></i>
-                            Payment</button>
-                        <button id="printButton" class="btn btn-primary print_btn"><i
-                                class="fa-solid fa-money-check-dollar"></i>
-                            print</button>
+                            Make Invoice</button>
                     </div>
                 </div>
             </div>
@@ -251,7 +241,7 @@
         }
     </style>
     <iframe id="printFrame" src="" width="0" height="0"></iframe>
-    <!-- Modal -->
+    <!-- customer Modal -->
     <div class="modal fade" id="customerModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -287,16 +277,12 @@
                             <input id="defaultconfig" class="form-control address" maxlength="39" name="address"
                                 type="text">
                         </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Opening Receivable</label>
-                            <input id="defaultconfig" class="form-control opening_receivable" maxlength="39"
-                                name="opening_receivable" type="number">
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Opening Payable</label>
-                            <input id="defaultconfig" class="form-control opening_payable" maxlength="39"
-                                name="opening_payable" type="number">
-                        </div>
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label class="form-label">Previous Due</label>
+                                <input type="number" class="form-control" name="wallet_balance" placeholder="0.00">
+                            </div>
+                        </div><!-- Col -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -306,32 +292,116 @@
             </div>
         </div>
     </div>
+    <!-- Via Sell -->
+    <div class="modal fade" id="viaSellModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Via Sell Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="viaSellForm row">
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Product Name <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control product_name" maxlength="255" name="name"
+                                type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger product_name_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Sell Price <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control sell_price" maxlength="39" name="price"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger sell_price_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Cost Price <span
+                                    class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control cost_price" maxlength="39" name="cost"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger cost_price_error"></span>
+                        </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#printButton').on('click', function() {
-                var printFrame = $('#printFrame')[0];
-                var printContentUrl =
-                    '{{ route('sale.invoice', 102049) }}'; // Specify the URL of the content to be printed
-                console.log('{{ route('sale.invoice', 102049) }}');
-                $('#printFrame').attr('src', printContentUrl);
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Quantity <span class="text-danger">*</span></label>
+                            <input id="defaultconfig" class="form-control via_quantity" maxlength="39" name="stock"
+                                type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                            <span class="text-danger via_quantity_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Supplier Name</label>
+                            <input id="defaultconfig" class="form-control via_supplier_name" name="via_supplier_name"
+                                type="text">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Total</label>
+                            <input id="defaultconfig" class="form-control via_product_total" maxlength="39"
+                                name="via_product_total" type="number" readonly>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Total Pay</label>
+                            <input id="defaultconfig" class="form-control via_total_pay" name="via_total_pay"
+                                type="number" readonly>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Paid</label>
+                            <input id="defaultconfig" class="form-control via_paid" name="via_paid" type="number">
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Payement Method <span
+                                    class="text-danger">*</span></label>
+                            @php
+                             if(Auth::user()->id == 1){
+                                $payments = App\Models\Bank::all();
+                                }else{
+                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+                                }
+                            @endphp
+                            <select class="form-select transaction_account" data-width="100%" name="transaction_account"
+                                onclick="errorRemove(this);" onblur="errorRemove(this);">
+                                @if ($payments->count() > 0)
+                                    {{-- <option selected disabled>Select Transaction</option> --}}
+                                    @foreach ($payments as $payment)
+                                        <option value="{{ $payment->id }}">{{ $payment->name }}</option>
+                                    @endforeach
+                                @else
+                                    <option selected disabled>Please Add Payment</option>
+                                @endif
+                            </select>
+                            <span class="text-danger transaction_account_error"></span>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="name" class="form-label">Due</label>
+                            <input id="defaultconfig" class="form-control via_due" name="via_due" type="number"
+                                readonly>
+                            <input type="hidden" class="invoice_number" name="invoice_number" />
+                        </div>
 
-                printFrame.onload = function() {
-                    printFrame.contentWindow.focus();
-                    printFrame.contentWindow.print();
-                };
-            });
-        });
-    </script>
-
-
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary save_via_product">Save</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
         // error remove
         function errorRemove(element) {
+            tag = element.tagName.toLowerCase();
             if (element.value != '') {
-                $(element).siblings('span').hide();
-                $(element).css('border-color', 'green');
+                // console.log('ok');
+                if (tag == 'select') {
+                    $(element).closest('.mb-3').find('.text-danger').hide();
+                } else {
+                    $(element).siblings('span').hide();
+                    $(element).css('border-color', 'green');
+                }
             }
         }
 
@@ -344,17 +414,139 @@
             }
         });
 
-        // Barcode Related
+        //  jquery redy function
         $(document).ready(function() {
+            // Barcode Focused
             $('.barcode_input').focus();
-            // var currentDate = new Date().toISOString().split('T')[0];
-            // $('.purchase_date').val(currentDate);
-            // show error
+
+            // showError Function
             function showError(name, message) {
                 $(name).css('border-color', 'red');
                 $(name).focus();
                 $(`${name}_error`).show().text(message);
             }
+
+            // generate Invoice number
+            function generateInvoice() {
+                let invoice_number = '{{ rand(123456, 99999) }}';
+                $('.generate_invoice').val(invoice_number);
+                $('.invoice_number').val(invoice_number);
+            }
+            generateInvoice();
+
+            // Via Sell Product view function
+            function viewViaSell() {
+                $.ajax({
+                    url: '/product/view/sale',
+                    method: 'GET',
+                    success: function(res) {
+                        // console.log(res);
+                        const products = res.products;
+                        $('.view_product').empty();
+
+                        if (products.length > 0) {
+                            $('.view_product').append(
+                                `<option selected disabled>Select Product</option>`
+                            );
+                            $.each(products, function(index, product) {
+                                $('.view_product').append(
+                                    `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
+                                );
+                            })
+                        } else {
+                            $('.view_product').html(`
+                        <option selected disable>Please add Product</option>`)
+                        }
+                    }
+                })
+            }
+            viewViaSell();
+
+
+            // add via Products
+            $(document).on('click', '.save_via_product', function(e) {
+                e.preventDefault();
+                let formData = new FormData($('.viaSellForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: '/via/product/add',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        // console.log(res);
+                        if (res.status == 200) {
+                            $('#viaSellModal').modal('hide');
+                            $('.viaSellForm')[0].reset();
+                            viewViaSell();
+                            let products = res.products;
+                            let quantity = products.stock;
+                            // console.log(quantity);
+                            showAddProduct(products, quantity);
+                            updateGrandTotal();
+                            calculateCustomerDue();
+                            toastr.success(res.message);
+                            $(window).on('beforeunload', function() {
+                                return 'Are you sure you want to leave? because You Add a Via Sale Product?';
+                            });
+                        } else if (res.status == 400) {
+                            $('#viaSellModal').modal('hide');
+                            toastr.warning(res.message);
+                        } else {
+                            // console.log(res);
+                            if (res.error.name) {
+                                showError('.product_name', res.error.name);
+                            }
+                            if (res.error.cost) {
+                                showError('.cost_price', res.error.cost);
+                            }
+                            if (res.error.price) {
+                                showError('.sell_price', res.error.price);
+                            }
+                            if (res.error.stock) {
+                                showError('.via_quantity', res.error.stock);
+                            }
+                            if (res.error.transaction_account) {
+                                showError('.transaction_account', res.error
+                                    .transaction_account);
+                            }
+                        }
+                    }
+                });
+            })
+
+            // via Product Calculation
+            function viaProductCalculation() {
+                let sellPrice = parseFloat($('.sell_price').val());
+                let costPrice = parseFloat($('.cost_price').val()) || 1;
+                let quantity = parseFloat($('.via_quantity').val()) || 1;
+                let total = sellPrice * quantity;
+                let totalCost = costPrice * quantity;
+                $('.via_product_total').val(total);
+                $('.via_total_pay').val(totalCost);
+            }
+            $(document).on('keyup', '.sell_price', function() {
+                viaProductCalculation();
+            })
+            $(document).on('keyup', '.via_quantity', function() {
+                viaProductCalculation();
+            })
+            $(document).on('keyup', '.cost_price', function() {
+                viaProductCalculation();
+            })
+
+            // via sell due
+            $(document).on('keyup', '.via_paid', function() {
+                let viaTotalPay = parseFloat($('.via_total_pay').val());
+                let paid = parseFloat($(this).val()) || 0;
+                let due = viaTotalPay - paid;
+                $('.via_due').val(due);
+            })
 
             // customer view function
             function viewCustomer() {
@@ -365,6 +557,7 @@
                         const customers = res.allData;
                         // console.log(customers);
                         $('.select-customer').empty();
+                        // Append the disabled "Select Product" option
                         if (customers.length > 0) {
                             $.each(customers, function(index, customer) {
                                 $('.select-customer').append(
@@ -436,7 +629,8 @@
             let discountCheck = '{{ $discount }}';
 
             // show Product function
-            function showAddProduct(product, promotion) {
+            function showAddProduct(product, quantity, promotion) {
+                let quantity1 = quantity || 1;
                 // Check if a row with the same product ID already exists
                 let existingRow = $(`.data_row${product.id}`);
                 if (existingRow.length > 0) {
@@ -457,7 +651,7 @@
                                 <input type="number" product-id="${product.id}" class="form-control unit_price product_price${product.id} ${checkSellEdit == 0 ? 'border-0' : ''}" id="product_price" name="unit_price[]" ${checkSellEdit == 0 ? 'readonly' : ''} value="${product.price ?? 0}" />
                             </td>
                             <td>
-                                <input type="number" product-id="${product.id}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="1" />
+                                <input type="number" product-id="${product.id}" class="form-control quantity productQuantity${product.id}" name="quantity[]" value="${quantity1}" />
                             </td>
                             <td class="d-flex align-items-center">
                                 <div class="form-check form-switch mb-2">
@@ -487,7 +681,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -498,7 +692,7 @@
                                             :
                                             `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price - promotion.discount_value}" />`
                                         :
-                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price}" />`
+                                        `<input type="number" class="form-control product_subtotal${product.id} border-0" name="total_price[]" id="productTotal" readonly value="${product.price * quantity1}" />`
                                 }
                             </td>
                             <td style="padding-top: 20px;">
@@ -510,10 +704,6 @@
                     );
                 }
             }
-
-
-
-
 
             // Function to calculate the subtotal for each product
             function calculateTotal() {
@@ -556,9 +746,10 @@
             $(document).on('change', '.unit_price', function() {
                 let product_id = $(this).attr('product-id');
                 // alert(product_id);
-                let quantity = $('.productQuantity' + product_id).val();
-                let unit_price = $(this).val();
+                let quantity = parseFloat($('.productQuantity' + product_id).val());
+                let unit_price = parseFloat($(this).val());
                 let productSubtotal = $('.product_subtotal' + product_id);
+                let total = unit_price * quantity;
 
                 $.ajax({
                     url: '/product/find-qty/' + product_id,
@@ -578,13 +769,19 @@
                                     confirmButtonText: 'Yes, I want!'
                                 }).then((result) => {
                                     if (result.isConfirmed) {
-                                        productSubtotal.val(unit_price);
+                                        productSubtotal.val(total);
+                                        calculateProductTotal();
                                         calculateCustomerDue();
                                     } else {
-                                        productSubtotal.val(unit_price);
+                                        productSubtotal.val(total);
+                                        calculateProductTotal();
                                         calculateCustomerDue();
                                     }
                                 })
+                            } else {
+                                productSubtotal.val(total);
+                                calculateProductTotal();
+                                calculateCustomerDue();
                             }
                         }
 
@@ -593,16 +790,19 @@
             });
 
             // when discount price is Edit
-            $(document).on('keyup', '.discountProduct', function() {
+            $(document).on('change', '.discountProduct', function() {
                 let product_id = $(this).attr('product-id');
                 // alert(product_id);
                 let quantity = $('.productQuantity' + product_id).val();
                 let discountProduct = parseFloat($(this).val());
                 let product_price = parseFloat($('.product_price' + product_id).val());
-                let productSubtotal = $('.product_subtotal' + product_id);
+                let productSubtotal = parseFloat($('.product_subtotal' + product_id).val());
                 let cost_price = parseFloat($('.produt_cost' + product_id).val());
 
-                let subTotal = product_price - discountProduct;
+                let subTotal = productSubtotal - discountProduct;
+                // console.log(subTotal);
+                // console.log(productSubtotal);
+                // console.log(discountProduct);
 
                 if (subTotal < cost_price) {
                     Swal.fire({
@@ -615,18 +815,16 @@
                         confirmButtonText: 'Yes, I want!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            productSubtotal.val(subTotal);
-
+                            $('.product_subtotal' + product_id).val(subTotal);
                             calculateProductTotal();
                             calculateCustomerDue();
                         } else {
                             $(this).val('');
-                            productSubtotal.val(product_price);
+                            $('.product_subtotal' + product_id).val(product_price);
                         }
                     })
                 } else {
-                    productSubtotal.val(subTotal);
-
+                    $('.product_subtotal' + product_id).val(subTotal);
                     calculateProductTotal();
                     calculateCustomerDue();
                 }
@@ -670,7 +868,7 @@
                         if (res.status == 200) {
                             const product = res.data;
                             const promotion = res.promotion;
-                            showAddProduct(product, promotion);
+                            showAddProduct(product, 1, promotion);
                             updateGrandTotal();
                             calculateCustomerDue();
                             $('.barcode_input').val('');
@@ -685,6 +883,7 @@
             // Select product
             $('.product_select').change(function() {
                 let id = $(this).val();
+                // console.log(id);
                 if ($(`.data_row${id}`).length === 0 && id) {
                     $.ajax({
                         url: '/product/find/' + id,
@@ -693,7 +892,7 @@
                         success: function(res) {
                             const product = res.data;
                             const promotion = res.promotion;
-                            showAddProduct(product, promotion);
+                            showAddProduct(product, 1, promotion);
                             updateGrandTotal();
                             calculateCustomerDue();
                         }
@@ -724,23 +923,25 @@
                         const grand_total = parseFloat($('.grand_total').val());
                         // const grandTotal = $('.grandTotal').val();
                         const customerDue = parseFloat(customer.wallet_balance);
-                        // console.log(customerDue);
+                        // console.log(customer.wallet_balance);
 
                         if (customerDue > 0) {
+                            // console.log(`customerDue > 0 : ${customer.wallet_balance}`);
                             $('.previous_due').val(customerDue);
-                            let amount = grand_total + customerDue;
+                            let amount = grand_total + (customerDue);
                             $('.grandTotal').val(amount);
                         } else {
+                            // console.log(customer.wallet_balance);
                             $('.grandTotal').val(grand_total);
+                            $('.previous_due').val(0);
                         }
                     }
                 })
-
             }
             calculateCustomerDue();
 
 
-            // handson discount calculation 
+            // handson discount calculation
             $(document).on('keyup', '.handsOnDiscount', function() {
                 // alert('Ok');
                 let discountPrice = parseFloat($(this).val());
@@ -763,7 +964,8 @@
             })
 
 
-            $(document).on('click', '.quantity', function(e) {
+            // quantity
+            $(document).on('keyup', '.quantity', function(e) {
                 e.preventDefault();
                 let id = $(this).attr("product-id")
                 let quantity = $(this).val();
@@ -781,55 +983,20 @@
                             let stock = res.product.stock;
                             let productPrice = res.product.price;
                             if (quantity > stock) {
-                                $('.quantity').val(stock);
-                                // subTotal.val(parseFloat(stock * productPrice).toFixed(2));
                                 updateGrandTotal();
                                 calculateCustomerDue();
-                                toastr.warning('Not enough stock');
+                                toastr.success(
+                                    `Your Product Quantity is ${stock}. You are selling additional products through Via Sell`
+                                )
                             } else {
-                                // subTotal.val(parseFloat(quantity * productPrice).toFixed(2));
                                 updateGrandTotal();
                                 calculateCustomerDue();
                             }
-
                         }
                     })
                 }
             })
 
-            $(document).on('keyup', '.quantity', function() {
-                let id = $(this).attr("product-id")
-                let quantity = $(this).val();
-                quantity = parseInt(quantity);
-                let subTotal = $('.product_subtotal' + id);
-                if (quantity < 0) {
-                    toastr.warning('quantity must be positive value');
-                    $(this).val('');
-                } else {
-                    $.ajax({
-                        url: `/product/find-qty/${id}`,
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function(res) {
-                            let stock = res.product.stock;
-                            let productPrice = res.product.price;
-                            if (quantity > stock) {
-                                $('.quantity').val(stock);
-                                // subTotal.val(parseFloat(stock * productPrice).toFixed(2));
-                                updateGrandTotal();
-                                calculateCustomerDue();
-                                toastr.warning('Not enough stock');
-                            } else {
-                                // subTotal.val(parseFloat(quantity * productPrice).toFixed(2));
-                                updateGrandTotal();
-                                calculateCustomerDue();
-                            }
-
-                        }
-                    })
-                }
-
-            })
 
             // Customer Due
             $(document).on('change', '.select-customer', function() {
@@ -838,10 +1005,7 @@
 
             // total_payable
             $('.total_payable').keyup(function(e) {
-                let grandTotal = parseFloat($('.grandTotal').val());
-                let value = parseFloat($(this).val());
                 totalDue();
-                // $('.total_payable_amount').text(value);
             })
 
             // due
@@ -849,7 +1013,13 @@
                 let pay = $('.total_payable').val();
                 let grandTotal = parseFloat($('.grandTotal').val());
                 let due = (grandTotal - pay).toFixed(2);
-                $('.total_due').val(due);
+                if (due > 0) {
+                    $('.total_due').val(due);
+                    $('.due_text').text('Due');
+                } else {
+                    $('.total_due').val(-(due));
+                    $('.due_text').text('Return');
+                }
             }
 
 
@@ -865,6 +1035,8 @@
                 // $('.total_payable').val(taxTotal);
             })
 
+            let checkPrintType = '{{ $invoice_type }}';
+            // console.log(checkPrintType);
 
             function saveInvoice() {
                 let customer_id = $('.select-customer').val();
@@ -876,12 +1048,13 @@
                 let total = parseFloat($('.grand_total').val());
                 let tax = $('.tax').val();
                 let change_amount = parseFloat($('.grandTotal').val());
-                let actual_discount = parseFloat($('.handsOnDiscount').val());
-                let paid = $('.total_payable').val();
-                let due = $('.total_due').val();
+                let actual_discount = parseFloat($('.handsOnDiscount').val()) || 0;
+                let paid = parseFloat($('.total_payable').val()) || 0;
+                let due = change_amount - paid;
                 let note = $('.note').val();
                 let payment_method = $('.payment_method').val();
                 let previous_due = $('.previous_due').val();
+                let invoice_number = $('.generate_invoice').val();
                 // let product_id = $('.product_id').val();
                 // console.log(total_quantity);
 
@@ -899,10 +1072,11 @@
                         '') || 0;
                     let discount_percentage = row.find(`.discount_percentage${product_id}`).text().replace(
                         '%', '') || 0;
+                    let productDiscount = row.find(`.product_discount${product_id}`).val();
                     let total_price = row.find('input[name="total_price[]"]').val();
-
+                    // console.log(productDiscount);
                     let product_discount = discount_amount || discount_percentage ? (discount_amount ?
-                        discount_amount : discount_percentage) : 0;
+                        discount_amount : discount_percentage) : (productDiscount ? productDiscount : 0);
                     let product = {
                         product_id,
                         quantity,
@@ -932,7 +1106,8 @@
                     note,
                     payment_method,
                     products,
-                    previous_due
+                    previous_due,
+                    invoice_number
                 }
 
                 // console.log(allData);
@@ -950,21 +1125,36 @@
                         if (res.status == 200) {
                             toastr.success(res.message);
                             let id = res.saleId;
-                            window.location.href = '/sale/invoice/' + id;
-                            // var printFrame = $('#printFrame')[0];
-                            // var printContentUrl = '/sale/print/' + id;
-                            // console.log('{{ route('sale.invoice', 102049) }}');
-                            // $('#printFrame').attr('src', printContentUrl);
+                            // window.location.href = '/sale/print/' + id;
+                            var printFrame = $('#printFrame')[0];
 
-                            // printFrame.onload = function() {
-                            //     printFrame.contentWindow.focus();
-                            //     printFrame.contentWindow.print();
-                            //     // Redirect after printing
-                            //     printFrame.contentWindow.onafterprint = function() {
-                            //         window.location.href = "/sale";
-                            //     };
-                            // };
+                            if (checkPrintType == 'a4' || checkPrintType == 'a5') {
+                                var printContentUrl = '/sale/invoice/' + id;
+                                $('#printFrame').attr('src', printContentUrl);
 
+                                printFrame.onload = function() {
+                                    printFrame.contentWindow.focus();
+                                    printFrame.contentWindow.print();
+                                    // Redirect after printing
+                                    printFrame.contentWindow.onafterprint = function() {
+                                        window.location.href = "/sale";
+                                    };
+                                };
+                            } else {
+                                var printContentUrl = '/sale/print/' + id;
+                                $('#printFrame').attr('src', printContentUrl);
+
+                                printFrame.onload = function() {
+                                    printFrame.contentWindow.focus();
+                                    printFrame.contentWindow.print();
+                                    // Redirect after printing
+                                    printFrame.contentWindow.onafterprint = function() {
+                                        window.location.href = "/sale";
+                                    };
+                                };
+                            }
+
+                            $(window).off('beforeunload');
                         } else {
                             // console.log(res);
                             if (res.error.customer_id) {
@@ -978,6 +1168,9 @@
                             }
                             if (res.error.paid) {
                                 showError('.total_payable', res.error.paid);
+                            }
+                            if (res.error.products) {
+                                toastr.warning("Please Select a Product to sell");
                             }
                         }
                     }

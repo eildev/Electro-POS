@@ -40,7 +40,7 @@
             });
         }
 
-        // nav links active 
+        // nav links active
         const links = document.querySelectorAll('.nav-link');
         links.forEach(link => {
             link.addEventListener('click', function() {
@@ -81,6 +81,82 @@
             });
         }
 
+    });
+
+
+    const global_search = document.querySelector("#global_search");
+    const search_result = document.querySelector(".search_result");
+    // console.log(global_search);
+    global_search.addEventListener('keyup', function() {
+        // console.log(global_search.value);
+        if (global_search.value != '') {
+            $.ajax({
+                url: '/search/' + global_search.value,
+                type: 'GET',
+                success: function(res) {
+                    // console.log(res);
+                    let findData = '';
+                    search_result.style.display = 'block';
+                    if (res.products.length > 0) {
+                        $.each(res.products, function(key, value) {
+                            findData += `<tr>
+                                    <td>${value.name}</td>
+                                    <td>${value.stock}</td>
+                                    <td>${value.price}</td>
+                                </tr>`
+                        });
+
+                        $('.findData').html(findData);
+                    } else {
+                        $('.table_header').hide();
+                        findData += `<tr>
+                                    <td colspan = "3" class = "text-center">Data not Found</td>
+                                </tr>`
+                        $('.findData').html(findData);
+                    }
+                }
+            });
+        } else {
+            search_result.style.display = 'none';
+        }
+    })
+
+    global_search.addEventListener('click', function() {
+        // console.log(global_search.value);
+        if (global_search.value != '') {
+            $.ajax({
+                url: '/search/' + global_search.value,
+                type: 'GET',
+                success: function(res) {
+                    // console.log(res);
+                    let findData = '';
+                    search_result.style.display = 'block';
+                    if (res.products.length > 0) {
+                        $.each(res.products, function(key, value) {
+                            findData += `<tr>
+                                            <td>${value.name}</td>
+                                            <td>${value.stock}</td>
+                                            <td>${value.price}</td>
+                                        </tr>`
+                        });
+
+                        $('.findData').html(findData);
+                    } else {
+                        $('.table_header').hide();
+                        findData += `<tr>
+                                        <td colspan = "3" class = "text-center">Data not Found</td>
+                                    </tr>`
+                        $('.findData').html(findData);
+                    }
+                }
+            });
+        } else {
+            search_result.style.display = 'none';
+        }
+    })
+
+    global_search.addEventListener('blur', function() {
+        search_result.style.display = 'none';
     });
 </script>
 

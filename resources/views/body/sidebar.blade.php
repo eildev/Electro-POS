@@ -56,7 +56,7 @@
             <li class="nav-item">
                 <a href="{{ route('dashboard') }}"
                     class="nav-link {{ request()->routeIs('dashboard') ? 'nav_active' : '' }}">
-                    <i class="ms-2 ms-2 link-icon" data-feather="home"></i>
+                    <i class="ms-2 link-icon" data-feather="home"></i>
                     <span class="link-title">Dashboard</span>
                 </a>
             </li>
@@ -64,7 +64,7 @@
             @if (Auth::user()->can('pos.menu'))
                 <li class="nav-item">
                     <a href="{{ route('sale') }}" class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
-                        <i class="ms-2 ms-2 link-icon" data-feather="shopping-cart"></i>
+                        <i class="ms-2 link-icon" data-feather="shopping-cart"></i>
                         <span class="link-title">POS</span>
                     </a>
                 </li>
@@ -73,7 +73,7 @@
                 <li class="nav-item">
                     <a href="{{ route('sale.view') }}"
                         class="nav-link {{ request()->routeIs('sale.view') ? 'nav_active' : '' }}">
-                        <i class="ms-2 ms-2 link-icon" data-feather="shopping-bag"></i>
+                        <i class="ms-2 link-icon" data-feather="shopping-bag"></i>
                         <span class="link-title">POS Manage</span>
                     </a>
                 </li>
@@ -84,7 +84,7 @@
                     <a class="nav-link {{ request()->routeIs('product*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false"
                         aria-controls="emails">
-                        <i class="link-icon" data-feather="mail"></i>
+                        <i class="ms-2 link-icon" data-feather="mail"></i>
                         <span class="link-title">Products</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -160,28 +160,40 @@
             @endif
             @if (Auth::user()->can('purchase.menu'))
                 <li class="nav-item">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#uiComponents" role="button"
-                        aria-expanded="false" aria-controls="uiComponents">
-                        <i class="link-icon" data-feather="feather"></i>
+                    <a class="nav-link {{ request()->routeIs('purchase*') ? '' : 'collapsed' }}"
+                        data-bs-toggle="collapse" href="#uiComponen" role="button" aria-expanded="false"
+                        aria-controls="uiComponen">
+                        <i class="ms-2 fa-solid fa-cart-arrow-down link-icon"></i>
                         <span class="link-title">Purchase</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse" id="uiComponents">
+                    <div class="collapse {{ request()->routeIs('purchase*') ? 'show' : '' }}" id="uiComponen">
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('purchase.add'))
                                 <li class="nav-item">
-                                    <a href="{{ route('purchase') }}" class="nav-link">Add Purchase</a>
+                                    <a href="{{ route('purchase') }}"
+                                        class="nav-link {{ request()->routeIs('purchase') ? 'nav_active' : '' }}">Add
+                                        Purchase</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('purchase.list'))
                                 <li class="nav-item">
-                                    <a href="{{ route('purchase.view') }}" class="nav-link">Manage Purchase</a>
+                                    <a href="{{ route('purchase.view') }}"
+                                        class="nav-link {{ request()->routeIs('purchase.view') ? 'nav_active' : '' }}">Manage
+                                        Purchase</a>
                                 </li>
                             @endif
                         </ul>
                     </div>
                 </li>
             @endif
+            <li class="nav-item">
+                <a href="{{ route('via.sale') }}"
+                    class="nav-link {{ request()->routeIs('via.sale') ? 'nav_active' : '' }}">
+                    <i class="ms-2 link-icon" data-feather="columns"></i>
+                    <span class="link-title">Via Sale</span>
+                </a>
+            </li>
             @if (Auth::user()->can('promotion.menu'))
                 <li class="nav-item">
                     <a href="{{ route('promotion.view') }}"
@@ -204,18 +216,22 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('damage') ? 'nav_active' : '' }}"
                         href="{{ route('damage') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 ms-2 link-icon" data-feather="book"></i>
+                        <i class="ms-2 link-icon" data-feather="book"></i>
                         <span class="link-title">Damage</span>
                     </a>
                 </li>
             @endif
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}"
-                    href="{{ route('return.products.list') }}" role="button" aria-controls="general-pages">
-                    <i class="ms-2 ms-2 link-icon" data-feather="book"></i>
-                    <span class="link-title">Return List</span>
-                </a>
-            </li>
+
+            @if (Auth::user()->can('return.menu'))
+                <li class="nav-item">
+                    <a href="{{ route('return.products.list') }}"
+                        class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}">
+                        <i class="ms-2 link-icon" data-feather="corner-down-right"></i>
+                        <span class="link-title">All
+                            return</span>
+                    </a>
+                </li>
+            @endif
             @if (Auth::user()->can('bank.menu'))
                 <li class="nav-item">
                     <a href="{{ route('bank') }}"
@@ -248,39 +264,40 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('customer.view') ? 'nav_active' : '' }}"
                         href="{{ route('customer.view') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 ms-2 link-icon" data-feather="users"></i>
+                        <i class="ms-2 link-icon" data-feather="users"></i>
                         <span class="link-title">Customer</span>
                     </a>
                 </li>
             @endif
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('employee*') ? '' : 'collapsed' }}"
-                    data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false"
+                    data-bs-toggle="collapse" href="#employee" role="button" aria-expanded="false"
                     aria-controls="emails">
-                    <i class="link-icon" data-feather="mail"></i>
+                    <i class="ms-2 link-icon" data-feather="mail"></i>
                     <span class="link-title">Employee</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('employee*') ? 'show' : '' }}" id="emails">
+                <div class="collapse {{ request()->routeIs('employee*') ? 'show' : '' }}" id="employee">
                     <ul class="nav sub-menu">
                         @if (Auth::user()->can('employee.menu'))
                             <li class="nav-item ">
-                                <a href="{{ route('employee.view') }}"
-                                    class="nav-link {{ request()->routeIs('employee.view') ? 'nav_active' : '' }}">Add
+                                <a href="{{ route('employee.add') }}"
+                                    class="nav-link {{ request()->routeIs('employee.add') ? 'nav_active' : '' }}">Add
                                     Employee</a>
                             </li>
                         @endif
                         @if (Auth::user()->can('employee-salary.menu'))
                             <li class="nav-item">
                                 <a href="{{ route('employee.salary.add') }}"
-                                    class="nav-link {{ request()->routeIs('employee.salary.add') ? 'nav_active' : '' }}">Manage
+                                    class="nav-link {{ request()->routeIs('employee.salary.add') ? 'nav_active' : '' }}">Add
                                     Employee Salary</a>
                             </li>
                         @endif
                         @if (Auth::user()->can('advanced-employee-salary.menu'))
                             <li class="nav-item">
                                 <a href="{{ route('advanced.employee.salary.add') }}"
-                                    class="nav-link {{ request()->routeIs('advanced.employee.salary.add') ? 'nav_active' : '' }}">Advanced
+                                    class="nav-link {{ request()->routeIs('advanced.employee.salary.add') ? 'nav_active' : '' }}">Add
+                                    Advanced
                                     Employee Salary</a>
                             </li>
                         @endif
@@ -293,7 +310,7 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('crm*') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
                         href="#advancedUI" role="button" aria-expanded="false" aria-controls="advancedUI">
-                        <i class="link-icon" data-feather="anchor"></i>
+                        <i class="ms-2 link-icon" data-feather="anchor"></i>
                         <span class="link-title">CRM</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -330,7 +347,7 @@
                     <a class="nav-link {{ request()->routeIs('report*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#majid" role="button" aria-expanded="false"
                         aria-controls="forms">
-                        <i class="link-icon" data-feather="inbox"></i>
+                        <i class="ms-2 link-icon" data-feather="inbox"></i>
                         <span class="link-title">Reports</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -425,27 +442,28 @@
                                     class="nav-link {{ request()->routeIs('report.monthly') ? 'nav_active' : '' }}">Monthly
                                     Report</a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('report.yearly') }}"
+                                    class="nav-link {{ request()->routeIs('report.yearly') ? 'nav_active' : '' }}">Yearly
+                                    Report</a>
+                            </li>
                         </ul>
                     </div>
                 </li>
             @endif
-            {{-- <li class="nav-item nav-category">Return</li>
-            <li class="nav-item">
-                <a href="{{ route('return.add') }}"
-                    class="nav-link {{ request()->routeIs('return.add') ? 'nav_active' : '' }}">Return</a>
-            </li> --}}
+
             <li class="nav-item nav-category">SETTING & CUSTOMIZE</li>
             <!---Role & Permission--->
             @if (Auth::user()->can('role-and-permission.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('role*') ? 'collapsed' : '' }}"
-                        data-bs-toggle="collapse" href="#role" role="button" aria-expanded="false"
-                        aria-controls="emails">
-                        <i class="fa-solid fa-users-gear link-icon"></i>
+                        data-bs-toggle="collapse" href="#role_permission" role="button" aria-expanded="false"
+                        aria-controls="role_permission">
+                        <i class="ms-2 fa-solid fa-users-gear link-icon"></i>
                         <span class="link-title">Role & Permission</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs('report*') ? '' : 'show' }}" id="role">
+                    <div class="collapse {{ request()->routeIs('role*') ? 'show' : '' }}" id="role_permission">
                         <ul class="nav sub-menu">
                             @if (Auth::user()->can('role-and-permission.all-permission'))
                                 <li class="nav-item">
@@ -488,7 +506,7 @@
                     <a class="nav-link {{ request()->routeIs('admin*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#admin-manage" role="button" aria-expanded="false"
                         aria-controls="emails">
-                        <i class="fa-solid fa-users-gear link-icon"></i>
+                        <i class="ms-2 fa-solid fa-users-gear link-icon"></i>
                         <span class="link-title">Admin Manage</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
@@ -512,20 +530,59 @@
                     </div>
                 </li>
             @endif
+            <!---Admin Manage--->
             @if (Auth::user()->can('settings.menu'))
                 <li class="nav-item">
-                    <a href="{{ route('pos.settings.add') }}"
-                        class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
-                        <i class="ms-2 ms-2 link-icon" data-feather="settings"></i>
-                        <span class="link-title">Settings</span>
+                    <a class="nav-link {{ request()->routeIs('setting*') ? '' : 'collapsed' }}"
+                        data-bs-toggle="collapse" href="#setting-manage" role="button" aria-expanded="false"
+                        aria-controls="emails">
+                        <i class="ms-2 link-icon" data-feather="settings"></i>
+                        <span class="link-title">Setting Manage</span>
+                        <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
+                    <div class="collapse {{ request()->routeIs('setting*') ? 'show' : '' }}" id="setting-manage">
+                        <ul class="nav sub-menu">
+                            <li class="nav-item">
+                                <a href="{{ route('pos.settings.add') }}"
+                                    class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
+                                    <span class="link-title">Settings</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('invoice.settings') }}"
+                                    class="nav-link {{ request()->routeIs('invoice.settings') ? 'nav_active' : '' }}">
+                                    <span class="link-title">Invoice-1</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('invoice2.settings') }}"
+                                    class="nav-link {{ request()->routeIs('invoice2.settings') ? 'nav_active' : '' }}">
+                                    <span class="link-title">Invoice-2</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('invoice3.settings') }}"
+                                    class="nav-link {{ request()->routeIs('invoice3.settings') ? 'nav_active' : '' }}">
+                                    <span class="link-title">Invoice-3</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('invoice4.settings') }}"
+                                    class="nav-link {{ request()->routeIs('invoice4.settings') ? 'nav_active' : '' }}">
+                                    <span class="link-title">Invoice-4</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
                 </li>
             @endif
+
             @if (Auth::user()->can('branch.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('branch.view') ? 'nav_active' : '' }}"
                         href="{{ route('branch.view') }}" role="button" aria-controls="general-pages">
-                        <i class="ms-2 ms-2 link-icon" data-feather="sliders"></i>
+                        <i class="ms-2 link-icon" data-feather="sliders"></i>
                         <span class="link-title">Branches</span>
                     </a>
                 </li>
@@ -533,9 +590,3 @@
         </ul>
     </div>
 </nav>
-
-{{-- <style>
-    .nav-link {
-        padding: 5px;
-    }
-</style> --}}

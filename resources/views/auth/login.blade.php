@@ -55,14 +55,14 @@
                                             <div class="mb-3">
                                                 <label for="userEmail" class="form-label">Email address</label>
                                                 <input type="email" class="form-control" name="email" id="userEmail"
-                                                    placeholder="Email" value="demo@gmail.com">
+                                                    placeholder="Email" value="">
                                                 <x-input-error :messages="$errors->get('email')" class="mt-2 text-danger" />
                                             </div>
                                             <div class="mb-3">
                                                 <label for="userPassword" class="form-label">Password</label>
                                                 <input type="password" class="form-control" id="userPassword"
                                                     autocomplete="current-password" placeholder="Password"
-                                                    name="password" value="123">
+                                                    name="password" value="">
                                                 <x-input-error :messages="$errors->get('password')" class="mt-2 text-danger" />
                                             </div>
                                             <div class="form-check mb-3">

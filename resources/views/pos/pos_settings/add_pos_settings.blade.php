@@ -130,17 +130,19 @@
                                     <label class="form-label">Invoice Design
                                         {{-- <span class="text-danger">*</span> --}}
                                     </label>
-                                    <select name="invoice_type" class="form-control">
+                                    {{-- <select name="invoice_type" class="form-control">
                                         <option value="a4"
                                             {{ !empty($allData->id) && $allData->invoice_type == 'a4' ? 'selected' : '' }}>
                                             A4</option>
-                                        {{-- <option value="a4-2" selected="">A4 - 2</option> --}}
-                                        {{-- <option value="a4-3">A4 - 3</option> --}}
                                         <option value="pos"
                                             {{ !empty($allData->id) && $allData->invoice_type == 'pos' ? 'selected' : '' }}>
                                             Pos Printer</option>
-                                        {{-- <option value="pos-2">Pos Printer - 2</option>
-                                <option value="pos-3">Pos Printer - 3</option> --}}
+                                    </select> --}}
+
+                                    <select name="invoice_type" class="form-control">
+                                        <option value="a4" {{ !empty($allData->id) && $allData->invoice_type == 'a4' ?  'selected' : '' }}>A4</option>
+                                        <option value="a5" {{ !empty($allData->id) && $allData->invoice_type == 'a5' ?  'selected' : '' }}>A5</option>
+                                        <option value="pos" {{ !empty($allData->id) && $allData->invoice_type == 'pos' ?  'selected' : '' }}>Pos Printer</option>
                                     </select>
                                 </div>
                             </div>
@@ -208,6 +210,17 @@
                                             {{ $mode->barcode == 1 ? 'checked' : '' }} name="barcode" role="switch"
                                             id="flexSwitchCheckDefault">
                                         <label class="form-check-label" for="flexSwitchCheckDefault">Barcode</label>
+                                    </div>
+                                    {{-- {{ $allData->dark_mode == 2 ?  'checked' : '' }} --}}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="mb-3 form-valid-groups">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox"
+                                            {{ $mode->via_sale == 1 ? 'checked' : '' }} name="via_sale" role="switch"
+                                            id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Via Sale</label>
                                     </div>
                                     {{-- {{ $allData->dark_mode == 2 ?  'checked' : '' }} --}}
                                 </div>

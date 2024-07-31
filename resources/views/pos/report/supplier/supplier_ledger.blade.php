@@ -14,7 +14,11 @@
                 <div class="card-body">
                     <div class="row mb-3">
                         @php
+                             if(Auth::user()->id == 1){
                             $suppliers = App\Models\Supplier::all();
+                            }else{
+                                $suppliers = App\Models\Supplier::where('branch_id', Auth::user()->branch_id)->get();
+                            }
                         @endphp
                         <div class="col-md-4">
                             <div class="input-group flatpickr" id="flatpickr-date">
@@ -70,7 +74,7 @@
                         <div class="col-md-6 mb-3">
                             <div class="justify-content-left">
                                 <button class="btn btn-sm bg-info text-dark mr-2" id="filter">Filter</button>
-                                <button class="btn btn-sm bg-primary text-dark" id="reset">Reset</button>
+                                <button onclick="window.location.reload();" class="btn btn-sm bg-primary text-dark" id="reset">Reset</button>
                             </div>
                         </div>
                         <div class="col-md-6 ">

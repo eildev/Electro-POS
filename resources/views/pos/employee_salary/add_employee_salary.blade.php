@@ -53,10 +53,22 @@
                             <span id="advancedSalary">Note: Avanced Amount:0</span>
 						</div>
 					</div><!-- Col -->
-					<div class="col-sm-12 form-valid-groups">
+					<div class="col-sm-6 form-valid-groups">
 						<div class="mb-3">
-							<label class="form-label">Note</label>
+							<label class="form-label">Select Bank Acoount <span class="text-danger">*</span></label>
+                            <select class="form-select js-example-basic-single" name="payment_method">
+                                 <option selected="" disabled>Select Bank Name</option>
+                                 @foreach ($bank as $item)
+                                <option value="{{$item->id}}">{{$item->name}}</option>
+                                @endforeach
+                            </select>
+						</div>
+					</div><!-- Col -->
+					<div class="col-sm-6 form-valid-groups">
+						<div class="mb-3">
+                            <label class="form-label">Note</label>
 							<textarea name="note" class="form-control" id=""  cols="20" rows="5"></textarea>
+
 						</div>
 					</div><!-- Col -->
 				</div><!-- Row -->
@@ -84,6 +96,9 @@
                 debit: {
                     required : true,
                 },
+                payment_method: {
+                    required : true,
+                },
             },
             messages :{
                 branch_id: {
@@ -97,6 +112,9 @@
                 },
                 debit: {
                     required : 'Please Enter Salary Amount',
+                },
+                payment_method: {
+                    required : 'Please Select Payment Method',
                 },
             },
             errorElement : 'span',
@@ -114,7 +132,6 @@
         });
     });
 //Dropdown js
-
 	$(document).ready(function(){
 		$('select[name="branch_id"]').on('change',function(){
 			var branch_id = $(this).val();
@@ -128,7 +145,7 @@
 						var d = $('select[name= "employee_id"]').empty();
 						$.each(data,function(key,value){
 							$('select[name= "employee_id"]').append(
-								'<option value="'+value.id+'">'+value.full_name+ " (" + value.salary+")"+  '</option>')
+							'<option value="'+value.id+'">'+value.full_name+ " (" + value.salary+")"+  '</option>')
 						});
 					},
 				});
@@ -140,18 +157,20 @@
         //
         $('select[name="employee_id"]').on('change', function(){
         var employee_id = $(this).val();
+        // alert(employee_id);
         let date = document.querySelector('.start-date').value;
         if(employee_id){
             // AJAX request to fetch additional information about the selected employee
             $.ajax({
-                url: "{{('/employee/info')}}/"+employee_id,
+                url: '/employee/info/' +employee_id,
                 type: "GET",
                 dataType: 'json',
                 data: {
                     date
                 },
                 success: function(employee){
-                    // console.log()
+                // alert(employee.data)
+                    // console.log(employee.data);
                     if(employee.data !== null){
                         $('#employeeSalary').text( "Due: ৳ "+(employee.data.creadit - employee.data.debit));
                         if(employee.data.creadit != employee.data.debit) {
