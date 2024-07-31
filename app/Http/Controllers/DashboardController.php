@@ -77,7 +77,6 @@ class DashboardController extends Controller
             ->get();
         $todayReturnAmount = $return->sum('refund_amount') - $adjustDueCollection;
 
-
         $totalIngoing =
             $previousDayBalance +
             $todaySales +
@@ -94,8 +93,6 @@ class DashboardController extends Controller
             $purchaseDuePay->sum('debit') +
             $otherPaid->sum('debit') +
             $viaPayment->sum('debit');
-
-
 
         // Total Summary
         $sales = Sale::all();
@@ -121,8 +118,7 @@ class DashboardController extends Controller
         $totalCustomerDue = $sales->sum('change_amount') - $sales->sum('paid');
         $totalSupplierDue = $sales->sum('change_amount') - $sales->sum('paid');
 
-
-        // weekly update Chart
+        // weekly update Chart //
         $salesByDay = [];
         $salesProfitByDay = [];
         $purchaseByDay = [];
@@ -137,7 +133,6 @@ class DashboardController extends Controller
             $salesProfitByDay[$date] = $dailyProfit;
             $purchaseByDay[$date] = $dailyPurchase;
         }
-
 
         // monthly update chart
         $salesByMonth = [];
