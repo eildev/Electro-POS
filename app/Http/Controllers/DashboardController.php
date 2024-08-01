@@ -174,7 +174,7 @@ else{
         ->first();
     $previousDayBalance = 0;
     $currentDate = Carbon::now()->toDateString();
-    // Get the last transaction date before today
+    // Get the last transaction date before today//
     $lastTransactionDate = AccountTransaction::where('branch_id', $branchId)
     ->whereDate('created_at', '<', $currentDate)
         ->latest('created_at')
