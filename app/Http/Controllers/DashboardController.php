@@ -285,23 +285,40 @@ else{
         $salesByDay = [];
         $salesProfitByDay = [];
         $purchaseByDay = [];
+        if(Auth::user()->id == 1){
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i)->toDateString();
-            $dailySales = Sale::whereDate('sale_date', $date)->sum('receivable');
-            $dailyProfit = Sale::whereDate('sale_date', $date)->sum('profit');
-            $dailyPurchase = Purchase::whereDate('purchase_date', $date)->sum('grand_total');
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subDays($i)->toDateString();
+                $dailySales = Sale::whereDate('sale_date', $date)->sum('receivable');
+                $dailyProfit = Sale::whereDate('sale_date', $date)->sum('profit');
+                $dailyPurchase = Purchase::whereDate('purchase_date', $date)->sum('grand_total');
 
-            $salesByDay[$date] = $dailySales;
-            $salesProfitByDay[$date] = $dailyProfit;
-            $purchaseByDay[$date] = $dailyPurchase;
+                $salesByDay[$date] = $dailySales;
+                $salesProfitByDay[$date] = $dailyProfit;
+                $purchaseByDay[$date] = $dailyPurchase;
+            }
+
+        }else{
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subDays($i)->toDateString();
+                $dailySales = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $date)->sum('receivable');
+                $dailyProfit = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $date)->sum('profit');
+                $dailyPurchase = Purchase::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('purchase_date', $date)->sum('grand_total');
+
+                $salesByDay[$date] = $dailySales;
+                $salesProfitByDay[$date] = $dailyProfit;
+                $purchaseByDay[$date] = $dailyPurchase;
+            }
+
         }
-
         // monthly update chart
         $salesByMonth = [];
         $profitsByMonth = [];
         $purchasesByMonth = [];
-
+        if(Auth::user()->id == 1){
         for ($i = 0; $i < 12; $i++) {
             $monthStart = now()->subMonths($i)->startOfMonth();
             $monthEnd = now()->subMonths($i)->endOfMonth();
@@ -316,7 +333,25 @@ else{
             $profitsByMonth[$monthStart->format('Y-m')] = $monthlyProfit;
             $purchasesByMonth[$monthStart->format('Y-m')] = $monthlyPurchase;
         }
+    }else{
+        for ($i = 0; $i < 12; $i++) {
+            $monthStart = now()->subMonths($i)->startOfMonth();
+            $monthEnd = now()->subMonths($i)->endOfMonth();
 
+            $monthlySales = Sale::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('sale_date', [$monthStart, $monthEnd])->sum('receivable');
+            $monthlyProfit = Sale::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('sale_date', [$monthStart, $monthEnd])->sum('profit');
+            $monthlyPurchase = Purchase::where('branch_id', Auth::user()->branch_id)
+            ->whereBetween('purchase_date', [$monthStart, $monthEnd])->sum(
+                'grand_total',
+            );
+
+            $salesByMonth[$monthStart->format('Y-m')] = $monthlySales;
+            $profitsByMonth[$monthStart->format('Y-m')] = $monthlyProfit;
+            $purchasesByMonth[$monthStart->format('Y-m')] = $monthlyPurchase;
+        }
+    }
         return view('dashboard.dashboard', compact(
             'previousDayBalance',
             'todayEmployeeSalary',

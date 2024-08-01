@@ -407,8 +407,6 @@
             };
             var apexLineChart = new ApexCharts(document.querySelector("#apexLine1"), lineChartOptions);
             apexLineChart.render();
-
-
             // pie chart
             var bankLabels = @json($bankLabels);
             var options = {
