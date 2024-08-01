@@ -22,11 +22,10 @@ class ProductsController extends Controller
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'category_id' => 'required',
-            'subcategory_id' => 'required',
-            'brand_id' => 'required',
-            'price' => 'required:max:7',
-            'unit_id' => 'required:max:11',
+            'category_id' => 'required|integer',
+            'brand_id' => 'required|integer',
+            'price' => 'required|max:7',
+            'unit_id' => 'required|max:11',
             'barcode' => [
                 'required',
                 Rule::unique('products', 'barcode')->where(function ($query) use ($request) {
@@ -42,6 +41,12 @@ class ProductsController extends Controller
             $product->barcode =  $request->barcode;
             $product->category_id =  $request->category_id;
             $product->subcategory_id =  $request->subcategory_id;
+            if ($request->subcategory_id != 'Please add Subcategory') {
+                // dd($request->subcategory_id);
+                $product->subcategory_id  =  $request->subcategory_id;
+            } else {
+                $product->subcategory_id  =  null;
+            }
             $product->brand_id  =  $request->brand_id;
             $product->cost  =  $request->cost;
             $product->price  =  $request->price;
@@ -76,9 +81,9 @@ class ProductsController extends Controller
     }
     public function view()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $products = Product::all();
-        }else{
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
@@ -94,11 +99,10 @@ class ProductsController extends Controller
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'category_id' => 'required',
-            'subcategory_id' => 'required',
-            'brand_id' => 'required',
-            'price' => 'required:max:7',
-            'unit_id' => 'required:max:11',
+            'category_id' => 'required|integer',
+            'brand_id' => 'required|integer',
+            'price' => 'required|max:7',
+            'unit_id' => 'required|max:11',
         ]);
         if ($validator->passes()) {
             $product = Product::findOrFail($id);
@@ -106,7 +110,12 @@ class ProductsController extends Controller
             $product->branch_id =  Auth::user()->branch_id;
             $product->barcode =  $request->barcode;
             $product->category_id =  $request->category_id;
-            $product->subcategory_id =  $request->subcategory_id;
+            if ($request->subcategory_id != 'Please add Subcategory') {
+                // dd($request->subcategory_id);
+                $product->subcategory_id  =  $request->subcategory_id;
+            } else {
+                $product->subcategory_id  =  null;
+            }
             $product->brand_id  =  $request->brand_id;
             $product->cost  =  $request->cost;
             $product->price  =  $request->price;
@@ -189,19 +198,24 @@ class ProductsController extends Controller
     {
         $product = Product::where('search_value');
 
-        $products = Product::where('name','LIKE','%'.$search_value.'%')
-        ->orWhere('details','LIKE','%'.$search_value.'%')
-        ->orWhere('price','LIKE','%'.$search_value.'%')
-        ->orWhereHas('category', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
-        ->orWhereHas('subcategory', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
-        ->orWhereHas('brand', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+        $products = Product::where('name', 'LIKE', '%' . $search_value . '%')
+            ->orWhere('details', 'LIKE', '%' . $search_value . '%')
+            ->orWhere('price', 'LIKE', '%' . $search_value . '%')
+            ->orWhereHas('category', function ($query) use ($search_value) {
+                $query->where('name', 'LIKE', '%' . $search_value . '%');
+            })
+            ->orWhereHas('subcategory', function ($query) use ($search_value) {
+                $query->where('name', 'LIKE', '%' . $search_value . '%');
+            })
+            ->orWhereHas('brand', function ($query) use ($search_value) {
+                $query->where('name', 'LIKE', '%' . $search_value . '%');
+            })
 
-        ->get();
+            ->get();
 
         return response()->json([
             'products' => $products,
             'status' => 200
         ]);
     }
-
 }
