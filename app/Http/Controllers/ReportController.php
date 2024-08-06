@@ -161,13 +161,13 @@ class ReportController extends Controller
         $salary = EmployeeSalary::all();
         $totalSalary = $salary->sum('debit');
         }else{
-            $products = Product::where('branch_id', Auth::user()->branch_id)
+             $products = Product::where('branch_id', Auth::user()->branch_id)
             ->orderBy('total_sold', 'desc')
             ->take(20)
             ->get();
         // $expense =  Expense::all();
-        $supplier = Transaction::whereNotNull('supplier_id')->get();
-        $customer = Transaction::whereNotNull('customer_id')->get();
+        $supplier = Transaction::where('branch_id', Auth::user()->branch_id)->whereNotNull('supplier_id')->get();
+        $customer = Transaction::where('branch_id', Auth::user()->branch_id)->whereNotNull('customer_id')->get();
         $sale = Sale::where('branch_id', Auth::user()->branch_id)->get();
         $saleAmount = $sale->sum('receivable');
         $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->get();
@@ -938,7 +938,7 @@ class ReportController extends Controller
              $otherPaid +
              $viaPayment;
 
-         // profit Calculation
+         // profit Calculation //
          $totalProfit = Sale::where('branch_id', Auth::user()->branch_id)
          ->whereDate('sale_date', $date)->sum('profit');
          $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
@@ -999,7 +999,7 @@ class ReportController extends Controller
                 $totalSalary = EmployeeSalary::whereBetween('date', [$startOfMonth, $endOfMonth])
                     ->sum('debit');
                 $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
-            } else {
+            }else {
                 $totalPurchaseCost = Purchase::whereBetween('purchase_date', [$startOfMonth, $endOfMonth])
                     ->sum('grand_total');
                 $totalSale = Sale::where('branch_id', Auth::user()->branch_id)
