@@ -122,19 +122,19 @@ class DamageController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-
-            'product_id' => 'required|max:255',
-            'pc' => 'required|max:255',
-            'date' => 'required|max:50',
+            'product_id' => 'required',
+            'pc' => 'required',
+            'date' => 'required',
         ]);
-
+        // dd($request->product_id);
         if ($validator->passes()) {
             $data = $request->all();
 
             // $this->damage_repo->create($data);
-            // @dd($data);
+            //  @dd($data);
 
             $product_qty = Product::findOrFail($request->product_id);
+            // dd($request->all());
             $stock = $product_qty->stock;
             $damage = Damage::findOrFail($id);
             $damage->product_id = $request->product_id;
@@ -149,23 +149,26 @@ class DamageController extends Controller
 
             //Update
             $existingTransaction  = AccountTransaction::where('reference_id',$id)->firstOrFail();
+            // dd($id);
             $oldProductPrice = $existingTransaction->debit;
             $product_price = $product_qty->price * $request->pc;
             $priceDifference = $product_price - $oldProductPrice;
             $existingTransaction->branch_id = Auth::user()->branch_id;
             $existingTransaction->purpose = 'Damage';
             $existingTransaction->debit = $product_price;
-            // $accountTransaction->account_id = '';
-            // Get the latest balance
             $oldBalance = AccountTransaction::latest('created_at')->first();
             if ($oldBalance) {
                 $existingTransaction->balance = $oldBalance->balance - $priceDifference;
+                // $oldBalance->balance = $oldBalance->balance - $priceDifference;
             } else {
                 $existingTransaction->balance = -$priceDifference;
+                // $oldBalance->balance = -$priceDifference;
             }
             $existingTransaction->created_at = Carbon::now();
             $existingTransaction->save();
+
         }
+
         $notification = array(
             'message' => 'Damage Update Successfully',
             'alert-type' => 'info'

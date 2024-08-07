@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\PosSetting;
+use App\Models\Company;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PosSettingsController extends Controller
@@ -71,7 +73,7 @@ class PosSettingsController extends Controller
              }
 
              $values = [
-              'company' => $request->input('company'),
+             'company' => $request->input('company'),
              'email' => $request->input('email'),
              'facebook' => $request->input('facebook'),
              'header_text' => $request->input('header_text'),
@@ -83,14 +85,31 @@ class PosSettingsController extends Controller
              'barcode_type' => $request->input('barcode_type'),
              'dark_mode' => $mdVal, // Checkbox value can be checked directly
              'discount' => $discount, // Checkbox value can be checked directly
-            'tax' => $tax, // Checkbox value can be checked directly
-            'barcode' => $barcode, // Checkbox value can be checked directly
-            'via_sale' => $via_sale, // Checkbox value can be checked directly
+             'tax' => $tax, // Checkbox value can be checked directly
+             'barcode' => $barcode, // Checkbox value can be checked directly
+             'via_sale' => $via_sale, // Checkbox value can be checked directly
              'low_stock' => $request->input('low_stock'),
              'logo' => $requestData['logo'] ?? null,
                 // Add more fields as needed
              ];
              PosSetting::updateOrCreate(['id' => $settingId],$values);
+
+
+             $Company = Company::where('name', $request->input('company'))->first();
+             if($Company){
+
+                    $Company->name = $request->input('company');
+                    $Company->logo = $requestData['logo'];
+                    $Company->update();
+             }else{
+                $company_info = new Company;
+                $company_info->name = $request->input('company') ?? null;
+                $company_info->slug = Str::slug($request->input('company'));
+                $company_info->logo = $requestData['logo'] ?? null;
+                $company_info->status = 1;
+                $company_info->save();
+
+             }
         }
         else{
             $settingId = $request->input('setting_id');
@@ -136,26 +155,39 @@ class PosSettingsController extends Controller
                 $selling_price_edit=0;
              }
             $values = [
-            'company' => $request->input('company'),
-            'email' => $request->input('email'),
-            'facebook' => $request->input('facebook'),
-            'header_text' => $request->input('header_text'),
-            'footer_text' => $request->input('footer_text'),
-            'phone' => $request->input('phone'),
-            'address' => $request->input('address'),
-            'invoice_logo_type' => $request->input('invoice_logo_type'),
-            'invoice_type' => $request->input('invoice_type'),
-            'barcode_type' => $request->input('barcode_type'),
-            'dark_mode' => $mdVal, // Checkbox value can be checked directly!
-            'discount' => $discount, // checked directly
-            'via_sale' => $via_sale, // checked directly
-            'tax' => $tax, //checked directly
-            'barcode' => $barcode, // checked directly
-            'selling_price_edit' => $selling_price_edit, // checked directly
-            'low_stock' => $request->input('low_stock'),
-        ];
-        PosSetting::updateOrCreate(['id' => $settingId],$values);
+                'company' => $request->input('company'),
+                'email' => $request->input('email'),
+                'facebook' => $request->input('facebook'),
+                'header_text' => $request->input('header_text'),
+                'footer_text' => $request->input('footer_text'),
+                'phone' => $request->input('phone'),
+                'address' => $request->input('address'),
+                'invoice_logo_type' => $request->input('invoice_logo_type'),
+                'invoice_type' => $request->input('invoice_type'),
+                'barcode_type' => $request->input('barcode_type'),
+                'dark_mode' => $mdVal, // Checkbox value can be checked directly!
+                'discount' => $discount, // checked directly
+                'via_sale' => $via_sale, // checked directly
+                'tax' => $tax, //checked directly
+                'barcode' => $barcode, // checked directly
+                'selling_price_edit' => $selling_price_edit, // checked directly
+                'low_stock' => $request->input('low_stock'),
+            ];
+            PosSetting::updateOrCreate(['id' => $settingId],$values);
+
+            $Company = Company::where('name', $request->input('company'))->first();
+            if($Company){
+
+                   $Company->name = $request->input('company');
+                   $Company->update();
+            }else{
+               $company_info = new Company;
+               $company_info->name = $request->input('company') ?? null;
+               $company_info->slug = Str::slug($request->input('company'));
+               $company_info->status = 1;
+               $company_info->save();
         }
+    }
         $notification = [
             'message' => 'Settings updated successfully!',
             'alert-type' => 'info'

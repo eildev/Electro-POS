@@ -486,7 +486,7 @@ Route::middleware('auth')->group(function () {
         ///Admin Manage Route ///
         Route::get('/all/admin/view', 'AllAdminView')->name('admin.all');
         Route::get('/add/admin', 'AddAdmin')->name('admin.add');
-        Route::post('/admin/store', 'AdminStore')->name('admin.store');
+        Route::post('/admin/store', 'AdminStore')->middleware(['check.user.limit', 'check.device'])->name('admin.store');
         Route::get('/admin/manage/edit/{id}', 'AdminManageEdit')->name('admin.manage.edit');
         Route::get('/admin/manage/delete/{id}', 'AdminManageDelete')->name('admin.manage.delete');
         Route::post('/admin/manage/update/{id}', 'AdminManageUpdate')->name('update.admin.manage');
@@ -501,5 +501,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/via/sale/delete/{id}', 'ViaSaleProductDelete')->name('via.sale.delete');
     });
 });
+
 
 require __DIR__ . '/auth.php';

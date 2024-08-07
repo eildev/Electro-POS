@@ -68,4 +68,13 @@ class User extends Authenticatable
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
     } //
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
 }

@@ -733,11 +733,9 @@ class SaleController extends Controller
     }
     public function saleViewProduct()
     {
-        if (Auth::user()->id == 1) {
-            $products = Product::all();
-        } else {
+
             $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
-        }
+
         return response()->json([
             'status' => '200',
             'products' => $products

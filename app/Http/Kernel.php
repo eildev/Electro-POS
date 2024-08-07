@@ -64,4 +64,10 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
     ];
+
+    protected $routeMiddleware = [
+        // Check User and Device Limitation in Middleware
+        'check.user.limit' => \App\Http\Middleware\CheckUserLimit::class,
+        'check.device' => \App\Http\Middleware\CheckDevice::class,
+    ];
 }

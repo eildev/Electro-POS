@@ -52,7 +52,6 @@
         </div>
     </div>
 
-
     <!-- Details Modal -->
     <div class="modal fade" id="details_modal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
@@ -63,7 +62,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
                 </div>
                 <div class="modal-body">
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -168,7 +166,6 @@
 
             $(document).on('click', '.print_btn', function(e) {
                 e.preventDefault();
-
                 // Get the modal content
                 let printContents = document.querySelector('.modal-content').innerHTML;
 
