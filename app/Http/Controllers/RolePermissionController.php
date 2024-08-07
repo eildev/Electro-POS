@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Branch;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class RolePermissionController extends Controller
 {
@@ -209,6 +210,28 @@ class RolePermissionController extends Controller
     }
     public function AdminStore(Request $request)
     {
+        // Fetch the company associated with the authenticated user
+        $company = Auth::user()->company;
+        // Get the user limit for the company
+
+
+        $userLimit = $company->userLimit->user_limit;
+        // Count the current number of users in the company
+        $currentUserCount = $company->users()->count();
+        // dd($currentUserCount);
+
+        // Check if the current user count has reached or exceeded the user limit
+        if ($currentUserCount >= $userLimit) {
+            // Find the super admin of the company
+            // $superAdmin = $company->users()->whereRole('super-admin')->first();
+            // Notify the super admin that the user limit has been reached
+            // $superAdmin->notify(new UserLimitReached($company));
+
+            // Redirect back with an error message
+            return redirect()->back()->with('error', 'User limit reached. Please upgrade your package to add more users.');
+        }
+
+        // Validate the request data
         $request->validate([
             'name' => 'required',
             'email' => 'required',
@@ -217,23 +240,27 @@ class RolePermissionController extends Controller
             'role_id' => 'required',
         ]);
 
+        // Create a new user instance
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password =  Hash::make($request->password);
+        $user->password = Hash::make($request->password);
         $user->phone = $request->phone;
         $user->address = $request->address;
         $user->branch_id = $request->branch_id;
         $user->save();
+
+        // Assign the role to the user if provided
         if ($request->role_id) {
             $user->assignRole($request->role_id);
         }
-        $notification = [
+
+        // Redirect with a success message
+        return redirect()->route('admin.all')->with([
             'message' => 'New Admin User Inserted Successfully',
             'alert-type' => 'info'
-        ];
-        return redirect()->route('admin.all')->with($notification);
-    } //
+        ]);
+    }
     public function AdminManageEdit($id)
     {
         $user = User::findOrFail($id);
