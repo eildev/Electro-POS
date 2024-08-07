@@ -109,7 +109,6 @@
                                     <h3 class="mb-2">
                                         ৳ {{ $data['totalSalary'] }}
                                     </h3>
-
                                 </div>
                             </div>
                         </div>

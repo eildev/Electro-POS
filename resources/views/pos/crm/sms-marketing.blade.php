@@ -10,7 +10,7 @@
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
             <div class="">
-                <h4 class="text-right"><a href="{{ route('employee.view') }}" class="btn btn-info">SMS To Customer</a></h4>
+                <h4 class="text-right"><a href="{{ route('report.sms') }}" class="btn btn-info">SMS To Customer</a></h4>
             </div>
         </div>
         <div class="col-md-12 stretch-card">
