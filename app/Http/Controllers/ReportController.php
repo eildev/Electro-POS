@@ -21,6 +21,7 @@ use App\Models\Damage;
 use Illuminate\Http\Request;
 use App\Models\AccountTransaction;
 use App\Models\Bank;
+use App\Models\Branch;
 use App\Models\Returns;
 use App\Models\ViaSale;
 use Carbon\Carbon;
@@ -33,9 +34,25 @@ class ReportController extends Controller
     {
 
         $todayDate = now()->toDateString();
-
+        $branchData = [];
         //Today Invoice
        if(Auth::user()->id == 1){
+        $branches = Branch::all();
+        foreach ($branches as $branch) {
+            $branchId = $branch->id;
+            $todayInvoiceAmount = Sale::whereDate('sale_date', $todayDate)->where('branch_id', $branchId)->sum('receivable');
+            $today_grand_total = Purchase::whereDate('purchase_date', $todayDate)->where('branch_id', $branchId)->sum('grand_total');
+            $todayExpenseAmount = Expense::whereDate('expense_date', $todayDate)->where('branch_id', $branchId)->sum('amount');
+            $totalSalary = EmployeeSalary::whereDate('created_at', $todayDate)->where('branch_id', $branchId)->sum('debit');
+            $branchData[$branchId] = [
+                'todayInvoiceAmount' => $todayInvoiceAmount,
+                'today_grand_total' => $today_grand_total,
+                'todayExpenseAmount' => $todayExpenseAmount,
+                'totalSalary' => $totalSalary,
+                'branch' => $branch,
+            ];
+
+        }
         $saleItemsForDate = SaleItem::whereDate('created_at', $todayDate);
         $todaySaleItemsToday = $saleItemsForDate->sum('qty');
         $totalInvoiceToday = Sale::whereDate('sale_date', $todayDate)->count();
@@ -48,9 +65,9 @@ class ReportController extends Controller
         $todayPurchaseItems = PurchaseItem::whereDate('created_at', $todayDate);
         $purchases = Purchase::whereDate('created_at', $todayDate)->get();
         $todayPurchaseItemsToday = $todayPurchaseItems->sum('quantity');
-        $todayPurchaseToday = Purchase::whereDate('purchase_date', $todayDate)->get();
+        // $todayPurchaseToday = Purchase::whereDate('purchase_date', $todayDate)->get();
         // dd($todayPurchaseToday);
-        $today_grand_total = $todayPurchaseToday->sum('grand_total');
+        // $today_grand_total = $todayPurchaseToday->sum('grand_total');
         $todayTotalPurchaseAmount = Purchase::whereDate('purchase_date', $todayDate)->sum('grand_total');
         $todayTotalPurchaseQty = Purchase::whereDate('purchase_date', $todayDate)->sum('total_quantity');
         $todayTotalPurchaseDue = Purchase::whereDate('purchase_date', $todayDate)->sum('due');
@@ -61,11 +78,11 @@ class ReportController extends Controller
         $todayInvoiceProductAmount = $todayInvoiceProductItems->sum('final_receivable');
         //today invoice amount
         $totalInvoiceTodaySum = Sale::whereDate('sale_date', $todayDate);
-        $todayInvoiceAmount = $totalInvoiceTodaySum->sum('receivable');
+        // $todayInvoiceAmount = $totalInvoiceTodaySum->sum('receivable');
         $todayProfit = $totalInvoiceTodaySum->sum('profit');
         //today expenses
-        $todayExpenseDate = Expense::whereDate('expense_date', $todayDate);
-        $todayExpenseAmount = $todayExpenseDate->sum('amount');
+        // $todayExpenseDate = Expense::whereDate('expense_date', $todayDate);
+        // $todayExpenseAmount = $todayExpenseDate->sum('amount');
         //Today Customer
         $todayCustomer = Customer::whereDate('created_at', $todayDate);
         //Sale Profit
@@ -74,9 +91,9 @@ class ReportController extends Controller
         $expense = Expense::whereDate('expense_date', $todayDate)->get();
         $expenseAmount = $expense->sum('amount');
         $salary = EmployeeSalary::whereDate('created_at', $todayDate)->get();
-        $totalSalary = $salary->sum('debit');
+        // $totalSalary = $salary->sum('debit');
         $totalSalaryDue = $salary->sum('balance');
-       }else{
+       } else{
         //for Branch
         $saleItemsForDate = SaleItem::whereHas('saleId', function ($query) {
             $query->where('branch_id', Auth::user()->branch_id);
@@ -138,28 +155,43 @@ class ReportController extends Controller
         $totalSalary = $salary->sum('debit');
         $totalSalaryDue = $salary->sum('balance');
        }
-
-        return view('pos.report.today.today', compact('todayInvoiceAmount', 'totalSales', 'today_grand_total', 'todayExpenseAmount', 'totalSalary', 'expense', 'todayTotalSaleAmount', 'todayTotalSaleDue', 'todayTotalSaleQty', 'purchases', 'todayTotalPurchaseDue', 'todayTotalPurchaseQty', 'todayTotalPurchaseAmount', 'salary'));
+        return view('pos.report.today.today', compact('todayInvoiceAmount', 'totalSales', 'today_grand_total', 'todayExpenseAmount', 'totalSalary', 'expense', 'todayTotalSaleAmount', 'todayTotalSaleDue', 'todayTotalSaleQty', 'purchases', 'todayTotalPurchaseDue', 'todayTotalPurchaseQty', 'todayTotalPurchaseAmount', 'salary','branchData'));
     }
     // summary report function
     public function summaryReport()
     {
+        $branchData = [];
         if(Auth::user()->id == 1){
-            $products = Product::orderBy('total_sold', 'desc')
-            ->take(20)
-            ->get();
+            $branches = Branch::all();
+        foreach ($branches as $branch) {
+            $branchId = $branch->id;
+
+            $sale = Sale::where('branch_id', $branchId)->get();
+            $saleAmount = $sale->sum('receivable');
+            $purchase = Purchase::where('branch_id', $branchId)->get();
+            $purchaseAmount = $purchase->sum('grand_total');
+            $expense =  Expense::where('branch_id', $branchId)->get();
+            $expenseAmount = $expense->sum('amount');
+            $sellProfit = $sale->sum('profit');
+            $salary = EmployeeSalary::where('branch_id', $branchId)->get();
+            $totalSalary = $salary->sum('debit');
+
+            $branchData[$branchId] = [
+                'saleAmount' => $saleAmount,
+                'purchaseAmount' => $purchaseAmount,
+                'sellProfit' => $sellProfit,
+                'expenseAmount' => $expenseAmount,
+                'totalSalary' => $totalSalary,
+                'branch' => $branch,
+            ];
+        }
+        $products = Product::orderBy('total_sold', 'desc')
+        ->take(20)
+        ->get();
         $expense =  Expense::all();
         $supplier = Transaction::whereNotNull('supplier_id')->get();
         $customer = Transaction::whereNotNull('customer_id')->get();
-        $sale = Sale::all();
-        $saleAmount = $sale->sum('receivable');
-        $purchase = Purchase::all();
-        $purchaseAmount = $purchase->sum('grand_total');
-        // $expense = Expense::where('branch_id', Auth::user()->branch_id)->get();
-        $expenseAmount = $expense->sum('amount');
-        $sellProfit = $sale->sum('profit');
-        $salary = EmployeeSalary::all();
-        $totalSalary = $salary->sum('debit');
+
         }else{
              $products = Product::where('branch_id', Auth::user()->branch_id)
             ->orderBy('total_sold', 'desc')
@@ -178,7 +210,7 @@ class ReportController extends Controller
         $salary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->get();
         $totalSalary = $salary->sum('debit');
         }
-        return view('pos.report.summary.summary', compact('saleAmount', 'purchaseAmount', 'expenseAmount', 'sellProfit', 'totalSalary', 'products', 'expense', 'supplier', 'customer'));
+        return view('pos.report.summary.summary', compact('saleAmount', 'purchaseAmount', 'expenseAmount', 'sellProfit', 'totalSalary', 'products', 'expense', 'supplier', 'customer','branchData'));
     }
     // customer due report function
     public function customerDue()
