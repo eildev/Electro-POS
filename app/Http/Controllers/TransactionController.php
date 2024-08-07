@@ -18,13 +18,13 @@ class TransactionController extends Controller
 {
     public function TransactionAdd()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $supplier = Supplier::latest()->get();
             $customer = Customer::latest()->get();
             $paymentMethod = Bank::all();
             $investors = Investor::latest()->get();
             $transaction = Transaction::latest()->get();
-        }else{
+        } else {
             $supplier = Supplier::where('branch_id', Auth::user()->branch_id)->latest()->get();
             $customer = Customer::where('branch_id', Auth::user()->branch_id)->latest()->get();
             $paymentMethod = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
@@ -44,10 +44,10 @@ class TransactionController extends Controller
         if ($account_type == "supplier") {
             $info = Supplier::findOrFail($accountId);
             $count = Purchase::where('supplier_id', $accountId)->where('due', '>', 0)->count();
-        } elseif($account_type == "customer") {
+        } elseif ($account_type == "customer") {
             $info = Customer::findOrFail($accountId);
-            $count ='-';
-        }elseif($account_type == "other"){
+            $count = '-';
+        } elseif ($account_type == "other") {
             $info = Investor::findOrFail($accountId);
             $count = '-';
         }
@@ -88,7 +88,7 @@ class TransactionController extends Controller
                 }
                 // dd($updateTraBalance);
                 $transaction = Transaction::create([
-                    'branch_id' =>Auth::user()->branch_id,
+                    'branch_id' => Auth::user()->branch_id,
                     'date' => $request->date,
                     'payment_type' => 'pay',
                     'particulars' => 'PurchaseDue',
@@ -228,7 +228,7 @@ class TransactionController extends Controller
             } else if ($request->transaction_type == 'receive') {
                 $receiveBalance = $currentBalance + $request->amount;
                 $transaction = Transaction::create([
-                    'branch_id' =>Auth::user()->branch_id,
+                    'branch_id' => Auth::user()->branch_id,
                     'date' => $request->date,
                     'payment_type' => $request->transaction_type,
                     'particulars' => 'OthersReceive',
@@ -334,9 +334,9 @@ class TransactionController extends Controller
     }
     public function GetInvestor()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $data = Investor::latest()->get();
-        }else{
+        } else {
             $data = Investor::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         return response()->json([

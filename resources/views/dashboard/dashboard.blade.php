@@ -38,178 +38,183 @@
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
                 {{-- ///////Today Summary ////// --}}
-                @if(Auth::user()->id == 1)
-                @foreach ($branchData as $branchId => $data)
-                <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
-                    <div class="card" style="">
-                        <div class="card-body">
-                            <h6 class="card-title">{{ $data['branch']->name }} Today Summary</h6>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Incomming</th>
-                                        <th colspan="2">Outgoing</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ number_format($data['previousDayBalance'], 2) }}</td>
-                                        <td>Salary</td>
-                                        <td class="text-end">{{ number_format($data['todayEmployeeSalary'], 2) }}
-                                        </td>
+                @if (Auth::user()->id == 1)
+                    @foreach ($branchData as $branchId => $data)
+                        <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
+                            <div class="card" style="">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ $data['branch']->name }} Today Summary</h6>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Incomming</th>
+                                                <th colspan="2">Outgoing</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Purpose</th>
+                                                <th class="text-end">TK</th>
+                                                <th>Purpose</th>
+                                                <th class="text-end">TK</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Previous Day Balance</td>
+                                                <td class="text-end">{{ number_format($data['previousDayBalance'], 2) }}
+                                                </td>
+                                                <td>Salary</td>
+                                                <td class="text-end">{{ number_format($data['todayEmployeeSalary'], 2) }}
+                                                </td>
 
-                                    </tr>
-                                    <tr>
-                                        <td>Paid Sales</td>
-                                        <td class="text-end">{{ number_format($data['todaySales'], 2) }}</td>
-                                        <td>Purchase</td>
-                                        <td class="text-end">{{ number_format($data['todayPurchase'], 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Paid Sales</td>
+                                                <td class="text-end">{{ number_format($data['todaySales'], 2) }}</td>
+                                                <td>Purchase</td>
+                                                <td class="text-end">{{ number_format($data['todayPurchase'], 2) }}</td>
 
-                                    </tr>
-                                    <tr>
-                                        <td>Due Collection</td>
-                                        <td class="text-end">{{ number_format($data['dueCollection'], 2) }}</td>
-                                        <td>Due Paid</td>
-                                        <td class="text-end">{{ number_format($data['purchaseDuePay'], 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Other Deposit</td>
-                                        <td class="text-end">{{ number_format($data['otherCollection'], 2) }}</td>
-                                        <td>Other Withdraw</td>
-                                        <td class="text-end">{{ number_format($data['otherPaid'], 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Adjust Due Collcetion</td>
-                                        <td class="text-end">
-                                            {{ number_format($data['adjustDueCollection'], 2) }}
-                                        </td>
-                                        <td>Return</td>
-                                        <td class="text-end">
-                                            {{ number_format($data['todayReturnAmount'], 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Add Balance</td>
-                                        <td class="text-end">{{ number_format($data['addBalance'], 2) }}</td>
-                                        <td>Expanse</td>
-                                        <td class="text-end">{{ number_format($data['todayExpanse'], 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Via Sale</td>
-                                        <td class="text-end">{{ number_format($data['viaSale'], 2) }}</td>
-                                        <td>Via Purchase</td>
-                                        <td class="text-end">{{ number_format($data['viaPayment'], 2) }}</td>
-                                    </tr>
+                                            </tr>
+                                            <tr>
+                                                <td>Due Collection</td>
+                                                <td class="text-end">{{ number_format($data['dueCollection'], 2) }}</td>
+                                                <td>Due Paid</td>
+                                                <td class="text-end">{{ number_format($data['purchaseDuePay'], 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Other Deposit</td>
+                                                <td class="text-end">{{ number_format($data['otherCollection'], 2) }}</td>
+                                                <td>Other Withdraw</td>
+                                                <td class="text-end">{{ number_format($data['otherPaid'], 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Adjust Due Collcetion</td>
+                                                <td class="text-end">
+                                                    {{ number_format($data['adjustDueCollection'], 2) }}
+                                                </td>
+                                                <td>Return</td>
+                                                <td class="text-end">
+                                                    {{ number_format($data['todayReturnAmount'], 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Add Balance</td>
+                                                <td class="text-end">{{ number_format($data['addBalance'], 2) }}</td>
+                                                <td>Expanse</td>
+                                                <td class="text-end">{{ number_format($data['todayExpanse'], 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Via Sale</td>
+                                                <td class="text-end">{{ number_format($data['viaSale'], 2) }}</td>
+                                                <td>Via Purchase</td>
+                                                <td class="text-end">{{ number_format($data['viaPayment'], 2) }}</td>
+                                            </tr>
 
-                                    <tr>
-                                        <td>Total</td>
-                                        <td class="text-end">{{ number_format($data['totalIngoing'], 2) }}</td>
-                                        <td>Total</td>
-                                        <td class="text-end">{{ number_format($data['totalOutgoing'], 2) }}</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3">Total Balance</th>
-                                        <th class="text-end">{{ number_format($data['totalIngoing'] - $data['totalOutgoing'], 2) }}</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                            <tr>
+                                                <td>Total</td>
+                                                <td class="text-end">{{ number_format($data['totalIngoing'], 2) }}</td>
+                                                <td>Total</td>
+                                                <td class="text-end">{{ number_format($data['totalOutgoing'], 2) }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="3">Total Balance</th>
+                                                <th class="text-end">
+                                                    {{ number_format($data['totalIngoing'] - $data['totalOutgoing'], 2) }}
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                @endforeach
+                    @endforeach
                 @else
-                <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
-                    <div class="card" style="">
-                        <div class="card-body">
-                            <h6 class="card-title">Today Summary</h6>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Incomming</th>
-                                        <th colspan="2">Outgoing</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                        <th>Purpose</th>
-                                        <th class="text-end">TK</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Previous Day Balance</td>
-                                        <td class="text-end">{{ number_format($previousDayBalance, 2) }}</td>
-                                        <td>Salary</td>
-                                        <td class="text-end">{{ number_format($todayEmployeeSalary->sum('debit'), 2) }}
-                                        </td>
+                    <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
+                        <div class="card" style="">
+                            <div class="card-body">
+                                <h6 class="card-title">Today Summary</h6>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2">Incomming</th>
+                                            <th colspan="2">Outgoing</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Purpose</th>
+                                            <th class="text-end">TK</th>
+                                            <th>Purpose</th>
+                                            <th class="text-end">TK</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Previous Day Balance</td>
+                                            <td class="text-end">{{ number_format($previousDayBalance, 2) }}</td>
+                                            <td>Salary</td>
+                                            <td class="text-end">{{ number_format($todayEmployeeSalary->sum('debit'), 2) }}
+                                            </td>
 
-                                    </tr>
-                                    <tr>
-                                        <td>Paid Sales</td>
-                                        <td class="text-end">{{ number_format($todaySales, 2) }}</td>
-                                        <td>Purchase</td>
-                                        <td class="text-end">{{ number_format($todayPurchase->sum('paid'), 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Paid Sales</td>
+                                            <td class="text-end">{{ number_format($todaySales, 2) }}</td>
+                                            <td>Purchase</td>
+                                            <td class="text-end">{{ number_format($todayPurchase->sum('paid'), 2) }}</td>
 
-                                    </tr>
-                                    <tr>
-                                        <td>Due Collection</td>
-                                        <td class="text-end">{{ number_format($dueCollection->sum('credit'), 2) }}</td>
-                                        <td>Due Paid</td>
-                                        <td class="text-end">{{ number_format($purchaseDuePay->sum('debit'), 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Other Deposit</td>
-                                        <td class="text-end">{{ number_format($otherCollection->sum('credit'), 2) }}</td>
-                                        <td>Other Withdraw</td>
-                                        <td class="text-end">{{ number_format($otherPaid->sum('debit'), 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Adjust Due Collcetion</td>
-                                        <td class="text-end">
-                                            {{ number_format($adjustDueCollection, 2) }}
-                                        </td>
-                                        <td>Return</td>
-                                        <td class="text-end">
-                                            {{ number_format($todayReturnAmount, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Add Balance</td>
-                                        <td class="text-end">{{ number_format($addBalance->sum('credit'), 2) }}</td>
-                                        <td>Expanse</td>
-                                        <td class="text-end">{{ number_format($todayExpanse->sum('amount'), 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Via Sale</td>
-                                        <td class="text-end">{{ number_format($viaSale->sum('sub_total'), 2) }}</td>
-                                        <td>Via Purchase</td>
-                                        <td class="text-end">{{ number_format($viaPayment->sum('debit'), 2) }}</td>
-                                    </tr>
+                                        </tr>
+                                        <tr>
+                                            <td>Due Collection</td>
+                                            <td class="text-end">{{ number_format($dueCollection->sum('credit'), 2) }}</td>
+                                            <td>Due Paid</td>
+                                            <td class="text-end">{{ number_format($purchaseDuePay->sum('debit'), 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Other Deposit</td>
+                                            <td class="text-end">{{ number_format($otherCollection->sum('credit'), 2) }}
+                                            </td>
+                                            <td>Other Withdraw</td>
+                                            <td class="text-end">{{ number_format($otherPaid->sum('debit'), 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Adjust Due Collcetion</td>
+                                            <td class="text-end">
+                                                {{ number_format($adjustDueCollection, 2) }}
+                                            </td>
+                                            <td>Return</td>
+                                            <td class="text-end">
+                                                {{ number_format($todayReturnAmount, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Add Balance</td>
+                                            <td class="text-end">{{ number_format($addBalance->sum('credit'), 2) }}</td>
+                                            <td>Expanse</td>
+                                            <td class="text-end">{{ number_format($todayExpanse->sum('amount'), 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Via Sale</td>
+                                            <td class="text-end">{{ number_format($viaSale->sum('sub_total'), 2) }}</td>
+                                            <td>Via Purchase</td>
+                                            <td class="text-end">{{ number_format($viaPayment->sum('debit'), 2) }}</td>
+                                        </tr>
 
-                                    <tr>
-                                        <td>Total</td>
-                                        <td class="text-end">{{ number_format($totalIngoing, 2) }}</td>
-                                        <td>Total</td>
-                                        <td class="text-end">{{ number_format($totalOutgoing, 2) }}</td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="3">Total Balance</th>
-                                        <th class="text-end">{{ number_format($totalIngoing - $totalOutgoing, 2) }}</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                        <tr>
+                                            <td>Total</td>
+                                            <td class="text-end">{{ number_format($totalIngoing, 2) }}</td>
+                                            <td>Total</td>
+                                            <td class="text-end">{{ number_format($totalOutgoing, 2) }}</td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="3">Total Balance</th>
+                                            <th class="text-end">{{ number_format($totalIngoing - $totalOutgoing, 2) }}
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
                 @endif
                 {{-- ///////End Today Summary ////// --}}
                 {{-- /////// ToTal Summary ////// --}}
@@ -266,9 +271,6 @@
                     </div>
                 </div>
                 {{-- /////// End Total Summary ////// --}}
-
-
-
             </div>
         </div>
     </div>

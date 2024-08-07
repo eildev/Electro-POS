@@ -30,8 +30,8 @@
             </li>
         @endif
         <li class="nav-item">
-            <a class="nav-link " id="investor-tab" data-bs-toggle="tab" href="#investor" role="tab" aria-controls="investor"
-                aria-selected="true">Investor History</a>
+            <a class="nav-link " id="investor-tab" data-bs-toggle="tab" href="#investor" role="tab"
+                aria-controls="investor" aria-selected="true">Investor History</a>
         </li>
     </ul>
     <div class="tab-content border border-print border-top-0 p-3" id="myTabContent">
@@ -65,13 +65,18 @@
                                                         <td>{{ $key + 1 }}</td>
                                                         <td>{{ $investor->name ?? '' }}</td>
                                                         @php
-                                                        $dacTimeZone = new DateTimeZone('Asia/Dhaka');
-                                                        $created_at = optional($investor->created_at)->setTimezone($dacTimeZone);
-                                                        $formatted_date = optional($investor->created_at)->format('d F Y') ?? '-';
-                                                        $formatted_time = $created_at ? $created_at->format('h:i A') : '-';
+                                                            $dacTimeZone = new DateTimeZone('Asia/Dhaka');
+                                                            $created_at = optional($investor->created_at)->setTimezone(
+                                                                $dacTimeZone,
+                                                            );
+                                                            $formatted_date =
+                                                                optional($investor->created_at)->format('d F Y') ?? '-';
+                                                            $formatted_time = $created_at
+                                                                ? $created_at->format('h:i A')
+                                                                : '-';
                                                         @endphp
 
-                                                        <td>{{ $formatted_date  ?? '-'}} <Span style="color:brown">:</Span>
+                                                        <td>{{ $formatted_date ?? '-' }} <Span style="color:brown">:</Span>
                                                             {{ $formatted_time ?? '' }}</td>
                                                         <td>{{ $investor->phone ?? '-' }}</td>
                                                         <td>{{ $investor->type ?? '-' }}</td>
@@ -79,9 +84,10 @@
                                                         <td>{{ $investor->credit ?? '-' }}</td>
                                                         <td>{{ $investor->balance ?? '-' }}</td>
                                                         <td class="actions">
-                                                            <a href="{{route('investor.invoice',$investor->id)}}"
+                                                            <a href="{{ route('investor.invoice', $investor->id) }}"
                                                                 class="btn btn-sm btn-primary " title="Print">
-                                                                <i class="fa fa-print"></i><span style="padding-left: 5px">Receipt</span>
+                                                                <i class="fa fa-print"></i><span
+                                                                    style="padding-left: 5px">Receipt</span>
                                                             </a>
 
                                                             {{-- <a href=" id="delete"
@@ -211,8 +217,8 @@
                                             <label class="form-label">Transaction Date<span
                                                     class="text-danger">*</span></label>
                                             <div class="input-group flatpickr" id="flatpickr-date">
-                                                <input type="date" id="datepicker" name="date" class="form-control active"
-                                                    placeholder="Select date" >
+                                                <input type="date" id="datepicker" name="date"
+                                                    class="form-control active" placeholder="Select date">
                                                 <span class="input-group-text input-group-addon" data-toggle><i
                                                         data-feather="calendar"></i></span>
                                             </div>
@@ -582,7 +588,8 @@
                     const selectAccountId = $('.select-account-id');
                     selectAccountId.empty();
                     //This Line Added
-                    $('.select-account-id').append('<option selected disabled value="">Select Account ID</option>');
+                    $('.select-account-id').append(
+                        '<option selected disabled value="">Select Account ID</option>');
                     if (investor.length > 0) {
                         $.each(investor, function(index, investors) {
                             $('.select-account-id').append(
@@ -632,10 +639,9 @@
             });
         })
         flatpickr("#datepicker", {
-        maxDate: "today",
-        disable: [
-        ]
-});
+            maxDate: "today",
+            disable: []
+        });
     </script>
 
     <style>
