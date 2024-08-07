@@ -60,7 +60,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <span class="text-danger subcategory_id_error"></span>
                             </div>
                             <div class="mb-3 col-md-4">
                                 @php
@@ -295,9 +294,6 @@
                             }
                             if (error.category_id) {
                                 showError('.category_id', error.category_id);
-                            }
-                            if (error.subcategory_id) {
-                                showError('.subcategory_id', error.subcategory_id);
                             }
                             if (error.brand_id) {
                                 showError('.brand_id', error.brand_id);

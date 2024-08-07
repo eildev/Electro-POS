@@ -26,7 +26,7 @@
                                     <th>Manager/Owner Name</th>
                                     <th>Phone Number</th>
                                     <th>Account</th>
-                                    <th>Opening Balance</th>
+                                    {{-- <th>Opening Balance</th> --}}
                                     <th>Total Balance</th>
                                     <th>Action</th>
                                 </tr>
@@ -287,7 +287,6 @@
                                     <td>${bank.manager_name ?? ""}</td>
                                     <td>${bank.phone_number ?? 0}</td>
                                     <td>${bank.account ?? 0}</td>
-                                    <td>${bank.opening_balance ?? 0}</td>
                                     <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
                                         <div class="dropdown">

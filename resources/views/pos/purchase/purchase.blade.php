@@ -53,24 +53,18 @@
                                     $category = App\Models\Category::where('slug', 'via-sell')->first();
                                     $products = collect();
                                     if ($category) {
-                                        if (Auth::user()->id == 1) {
-                                            $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                                ->orderBy('stock', 'asc')
-                                                ->get();
-                                        } else {
+
                                             $products = App\Models\Product::where('category_id', '!=', $category->id)
                                                 ->where('branch_id', Auth::user()->branch_id)
                                                 ->orderBy('stock', 'asc')
                                                 ->get();
-                                        }
+
                                     } else {
-                                        if (Auth::user()->id == 1) {
-                                            $products = App\Models\Product::orderBy('stock', 'asc')->get();
-                                        } else {
+
                                             $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
                                                 ->orderBy('stock', 'asc')
                                                 ->get();
-                                        }
+
                                     }
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
@@ -250,7 +244,6 @@
             </div>
         </div>
 
-
         {{-- payement modal  --}}
         <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
             aria-hidden="true">
@@ -299,13 +292,16 @@
                         </div>
                         {{-- <form id="signupForm" class="supplierForm row"> --}}
                         <div class="supplierForm row">
-
-
                             <div class="mb-3 col-md-6">
                                 <label for="name" class="form-label">Transaction Method <span
                                         class="text-danger">*</span></label>
                                 @php
+                                  if(Auth::user()->id == 1){
                                     $payments = App\Models\Bank::get();
+                                    }else{
+                                    $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+                                    }
+
                                 @endphp
                                 <select class="form-select payment_method" data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" name="payment_method">
@@ -362,14 +358,10 @@
                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i>
                                 Purchase</button>
                         </div>
-
                     </div>
                 </div>
             </div>
     </form>
-
-
-
 
     <script>
         // error remove
@@ -380,7 +372,6 @@
             }
         }
         $(document).ready(function() {
-
             // show error
             function showError(name, message) {
                 $(name).css('border-color', 'red');

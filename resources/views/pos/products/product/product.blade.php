@@ -41,7 +41,9 @@
                                     name="category_id" onchange="errorRemove(this);">
                                     @if ($categories->count() > 0)
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}" {{ old('category_name') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}"
+                                                {{ old('category_name') == $category->id ? 'selected' : '' }}>
+                                                {{ $category->name }}</option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Category</option>
@@ -52,11 +54,9 @@
                             <div class="mb-3 col-md-4">
                                 <label for="ageSelect" class="form-label">Subcategory <span
                                         class="text-danger">*</span></label>
-                                <select class="js-example-basic-single form-select subcategory_id" name="subcategory_id"
-                                    onchange="errorRemove(this);">
+                                <select class="js-example-basic-single form-select subcategory_id" name="subcategory_id">
                                     {{-- <option selected disabled>Select Subcategory</option> --}}
                                 </select>
-                                <span class="text-danger subcategory_id_error"></span>
                             </div>
                             <div class="mb-3 col-md-4">
                                 @php
@@ -68,7 +68,9 @@
                                     @if ($brands->count() > 0)
                                         {{-- <option selected disabled>Select Brand</option> --}}
                                         @foreach ($brands as $brand)
-                                            <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}</option>
+                                            <option value="{{ $brand->id }}"
+                                                {{ old('brand_id') == $brand->id ? 'selected' : '' }}>{{ $brand->name }}
+                                            </option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Brand</option>
@@ -78,13 +80,14 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="password" class="form-label">Cost Price</label>
-                                <input class="form-control" name="cost" value="{{ old('cost') }}" type='number' placeholder="00.00" />
+                                <input class="form-control" name="cost" value="{{ old('cost') }}" type='number'
+                                    placeholder="00.00" />
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="password" class="form-label">Sale Price <span
                                         class="text-danger">*</span></label>
-                                <input class="form-control price" name="price" value="{{ old('price') }}" type='number' placeholder="00.00"
-                                    onkeyup="errorRemove(this);" onblur="errorRemove(this);" />
+                                <input class="form-control price" name="price" value="{{ old('price') }}" type='number'
+                                    placeholder="00.00" onkeyup="errorRemove(this);" onblur="errorRemove(this);" />
                                 <span class="text-danger price_error"></span>
                             </div>
                             <div class="mb-3 col-12">
@@ -114,7 +117,8 @@
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Color</label>
                                 {{-- <div id="pickr_1"></div> --}}
-                                <input type="color" class="form-control" value="{{ old('color') }}" name="color" id="">
+                                <input type="color" class="form-control" value="{{ old('color') }}" name="color"
+                                    id="">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Size </label>
@@ -132,7 +136,9 @@
                                     @if ($units->count() > 0)
                                         <option selected disabled>Select Unit</option>
                                         @foreach ($units as $unit)
-                                            <option value="{{ $unit->id }}" {{ old('unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}</option>
+                                            <option value="{{ $unit->id }}"
+                                                {{ old('unit_id') == $unit->id ? 'selected' : '' }}>{{ $unit->name }}
+                                            </option>
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Unit</option>
@@ -196,53 +202,54 @@
                     subCategory(id);
                 }
             })
+
             function subCategory(categoryId) {
                 $.ajax({
-                        url: '/subcategory/find/' + categoryId,
-                        type: 'GET',
-                        dataType: 'JSON',
-                        success: function(res) {
-                            if (res.status == 200) {
-                                $('.subcategory_id').empty();
-                                // $('.subcategory_id').size_id();
-                                // console.log(res);
+                    url: '/subcategory/find/' + categoryId,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    success: function(res) {
+                        if (res.status == 200) {
+                            $('.subcategory_id').empty();
+                            // $('.subcategory_id').size_id();
+                            // console.log(res);
 
-                                // show subcategory
-                                if (res.data.length > 0) {
+                            // show subcategory
+                            if (res.data.length > 0) {
 
-                                    // console.log(res.data)
-                                    // $('.subcategory_id').html(
-                                    //     '<option selected disabled>Select a SubCategory</option>'
-                                    // );
-                                    $.each(res.data, function(key, item) {
-                                        $('.subcategory_id').append(
-                                            `<option value="${item.id}">${item.name}</option>`
-                                        );
-                                    })
-                                } else {
-                                    $('.subcategory_id').html(`
-                                        <option selected disable>Please add Subcategory</option>`)
-                                }
-
-                                // show Size
-                                if (res.size.length > 0) {
-                                    // console.log(res.size);
-                                    $('.size_id').html(
-                                        '<option selected disabled>Select a Size</option>'
+                                // console.log(res.data)
+                                // $('.subcategory_id').html(
+                                //     '<option selected disabled>Select a SubCategory</option>'
+                                // );
+                                $.each(res.data, function(key, item) {
+                                    $('.subcategory_id').append(
+                                        `<option value="${item.id}">${item.name}</option>`
                                     );
-                                    $.each(res.size, function(key, item) {
+                                })
+                            } else {
+                                $('.subcategory_id').html(`
+                                        <option selected disable>Please add Subcategory</option>`)
+                            }
 
-                                        $('.size_id').append(
-                                            `<option value="${item.id}">${item.size}</option>`
-                                        );
-                                    })
-                                } else {
-                                    $('.size_id').html(`
+                            // show Size
+                            if (res.size.length > 0) {
+                                // console.log(res.size);
+                                $('.size_id').html(
+                                    '<option selected disabled>Select a Size</option>'
+                                );
+                                $.each(res.size, function(key, item) {
+
+                                    $('.size_id').append(
+                                        `<option value="${item.id}">${item.size}</option>`
+                                    );
+                                })
+                            } else {
+                                $('.size_id').html(`
                                         <option selected disable>Please add Size</option>`)
-                                }
                             }
                         }
-                    });
+                    }
+                });
             }
 
             // product save
@@ -277,9 +284,6 @@
                             }
                             if (error.category_id) {
                                 showError('.category_id', error.category_id);
-                            }
-                            if (error.subcategory_id) {
-                                showError('.subcategory_id', error.subcategory_id);
                             }
                             if (error.brand_id) {
                                 showError('.brand_id', error.brand_id);
