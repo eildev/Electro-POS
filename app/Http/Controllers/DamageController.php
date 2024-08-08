@@ -51,6 +51,8 @@ class DamageController extends Controller
             $damage = new Damage;
             $damage->product_id = $request->product_id;
             $damage->qty = $request->pc;
+            $product_price = $product_qty->cost * $request->pc;
+            $damage->damage_cost = $product_price;
             $damage->branch_id = Auth::user()->branch_id;
             $formattedDate = date('Y-m-d H:i:s', strtotime($request->date));
             $damage->date = $formattedDate;
@@ -59,23 +61,23 @@ class DamageController extends Controller
             $product_qty->stock = $product_qty->stock - $request->pc;
             $product_qty->save();
 
-            $accountTransaction = new AccountTransaction;
-            $accountTransaction->branch_id = Auth::user()->branch_id;
-            $accountTransaction->reference_id = $damage->id;
-            $accountTransaction->purpose = 'Damage';
-            // $accountTransaction->account_id = '';
-            // Calculate product price
-            $product_price = $product_qty->price * $request->pc;
-            $accountTransaction->debit = $product_price; // $request->Amount
-            // Get the latest balance
-            $oldBalance = AccountTransaction::latest('created_at')->first();
-            if ($oldBalance) {
-                $accountTransaction->balance = $oldBalance->balance - $product_price;
-            } else {
-                $accountTransaction->balance = -$product_price; // assuming initial balance is 0
-            }
-            $accountTransaction->created_at = Carbon::now();
-            $accountTransaction->save();
+            // $accountTransaction = new AccountTransaction;
+            // $accountTransaction->branch_id = Auth::user()->branch_id;
+            // $accountTransaction->reference_id = $damage->id;
+            // $accountTransaction->purpose = 'Damage';
+            // // $accountTransaction->account_id = '';
+            // // Calculate product price
+            // $product_price = $product_qty->price * $request->pc;
+            // $accountTransaction->debit = $product_price; // $request->Amount
+            // // Get the latest balance
+            // $oldBalance = AccountTransaction::latest('created_at')->first();
+            // if ($oldBalance) {
+            //     $accountTransaction->balance = $oldBalance->balance - $product_price;
+            // } else {
+            //     $accountTransaction->balance = -$product_price; // assuming initial balance is 0
+            // }
+            // $accountTransaction->created_at = Carbon::now();
+            // $accountTransaction->save();
         }
         $notification = array(
             'message' => 'Damage Add Successfully',
@@ -139,6 +141,8 @@ class DamageController extends Controller
             $damage = Damage::findOrFail($id);
             $damage->product_id = $request->product_id;
             $damage->qty = $request->pc;
+            $product_price = $product_qty->cost * $request->pc;
+            $damage->damage_cost = $product_price;
             $damage->branch_id = Auth::user()->branch_id;
             $formattedDate = date('Y-m-d H:i:s', strtotime($request->date));
             $damage->date = $formattedDate;
@@ -147,26 +151,25 @@ class DamageController extends Controller
             $product_qty->stock = $product_qty->stock - $request->pc;
             $product_qty->save();
 
-            //Update
-            $existingTransaction  = AccountTransaction::where('reference_id',$id)->firstOrFail();
-            // dd($id);
-            $oldProductPrice = $existingTransaction->debit;
-            $product_price = $product_qty->price * $request->pc;
-            $priceDifference = $product_price - $oldProductPrice;
-            $existingTransaction->branch_id = Auth::user()->branch_id;
-            $existingTransaction->purpose = 'Damage';
-            $existingTransaction->debit = $product_price;
-            $oldBalance = AccountTransaction::latest('created_at')->first();
-            if ($oldBalance) {
-                $existingTransaction->balance = $oldBalance->balance - $priceDifference;
-                // $oldBalance->balance = $oldBalance->balance - $priceDifference;
-            } else {
-                $existingTransaction->balance = -$priceDifference;
-                // $oldBalance->balance = -$priceDifference;
-            }
-            $existingTransaction->created_at = Carbon::now();
-            $existingTransaction->save();
-
+            // Update
+            // $existingTransaction  = AccountTransaction::where('reference_id',$id)->firstOrFail();
+            // //dd($id)//
+            // $oldProductPrice = $existingTransaction->debit;
+            // $product_price = $product_qty->price * $request->pc;
+            // $priceDifference = $product_price - $oldProductPrice;
+            // $existingTransaction->branch_id = Auth::user()->branch_id;
+            // $existingTransaction->purpose = 'Damage';
+            // $existingTransaction->debit = $product_price;
+            // $oldBalance = AccountTransaction::latest('created_at')->first();
+            // if ($oldBalance) {
+            //     $existingTransaction->balance = $oldBalance->balance - $priceDifference;
+            //     // $oldBalance->balance = $oldBalance->balance - $priceDifference;
+            // } else {
+            //     $existingTransaction->balance = -$priceDifference;
+            //     // $oldBalance->balance = -$priceDifference;
+            // }
+            // $existingTransaction->created_at = Carbon::now();
+            // $existingTransaction->save();
         }
 
         $notification = array(

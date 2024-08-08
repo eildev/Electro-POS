@@ -31,7 +31,6 @@
                                         <option selected disabled>Please Add Product</option>
                                     @endif
                                 </select>
-
                                 <span class="text-danger product_select_error"></span>
                             </div>
                             <div class="col-sm-6">
