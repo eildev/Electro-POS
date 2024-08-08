@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->unsigned();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->integer('qty');
-            $table->integer('main_unit_qty')->nullable();
+            $table->decimal('damage_cost', 12, 2)->comment('cost_price * qty');
             $table->integer('sub_unit_qty')->nullable();
             $table->date('date');
             $table->text('note')->nullable();

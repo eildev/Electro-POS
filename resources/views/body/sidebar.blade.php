@@ -69,6 +69,52 @@
                     </a>
                 </li>
             @endif
+{{-- ///////////////////////////////////////////POS Start //////////////////////////////////////// --}}
+<li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('posMain*') ? '' : 'collapsed' }}"
+        data-bs-toggle="collapse" href="#posMainuiComponen" role="button" aria-expanded="{{ request()->routeIs('posMain*') ? 'true' : 'false' }}"
+        aria-controls="posMainuiComponen">
+        <i class="ms-2 fa-solid fa-cart-arrow-down link-icon"></i>
+        <span class="link-title">POS</span>
+        <i class="link-arrow" data-feather="chevron-down"></i>
+    </a>
+    <div class="collapse {{ request()->routeIs('posMain*') ? 'show' : '' }}" id="posMainuiComponen">
+        <ul class="nav sub-menu">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('purchase*') ? '' : 'collapsed' }}"
+                    data-bs-toggle="collapse" href="#purchaseSubMenu" role="button" aria-expanded="{{ request()->routeIs('purchase*') ? 'true' : 'false' }}"
+                    aria-controls="purchaseSubMenu">
+                    <i class="ms-2 fa-solid fa-cart-arrow-down link-icon"></i>
+                    <span class="link-title">Purchase</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('purchase*') ? 'show' : '' }}" id="purchaseSubMenu">
+                    <ul class="nav sub-menu">
+                        @if (Auth::user()->can('purchase.add'))
+                            <li class="nav-item">
+                                <a href="{{ route('purchase') }}"
+                                    class="nav-link {{ request()->routeIs('purchase') ? 'nav_active' : '' }}">Add
+                                    Purchase</a>
+                            </li>
+                        @endif
+                        @if (Auth::user()->can('purchase.list'))
+                            <li class="nav-item">
+                                <a href="{{ route('purchase.view') }}"
+                                    class="nav-link {{ request()->routeIs('purchase.view') ? 'nav_active' : '' }}">Manage
+                                    Purchase</a>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</li>
+
+
+{{-- ///////////////////////////////////////////POS End //////////////////////////////////////// --}}
+
+
             @if (Auth::user()->can('pos-manage.menu'))
                 <li class="nav-item">
                     <a href="{{ route('sale.view') }}"
