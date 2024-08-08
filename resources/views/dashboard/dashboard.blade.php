@@ -254,6 +254,12 @@
                                         <td class="text-end">0.00</td>
                                     </tr>
                                     <tr>
+                                        <td>Salary</td>
+                                        <td class="text-end">{{ number_format($salary->sum('debit'), 2) }}</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">0.00</td>
+                                    </tr>
+                                    <tr>
                                         <td>Balance</td>
                                         <td class="text-end">{{ number_format($grandTotal, 2) }}</td>
                                         <td class="text-end">0.00</td>

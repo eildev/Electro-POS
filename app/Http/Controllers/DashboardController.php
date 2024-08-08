@@ -59,25 +59,15 @@ class DashboardController extends Controller
                     ->latest()
                     ->first();
                 $previousDayBalance = 0;
-                $currentDate = Carbon::now()->toDateString();
-                // Get the last transaction date before today
-                $lastTransactionDate = AccountTransaction::where('branch_id', $branchId)
-                    ->whereDate('created_at', '<', $currentDate)
-                    ->latest('created_at')
-                    ->first();
-                if ($lastTransactionDate) {
-                    $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+                $date = Carbon::now();
+                foreach ($banks as $bank) {
+                    $transaction = AccountTransaction::where('account_id', $bank->id)
+                        ->whereDate('created_at', '<', $date)
+                        ->latest('created_at')
+                        ->first();
 
-                    foreach ($banks as $bank) {
-                        $transaction = AccountTransaction::where('branch_id', $branchId)
-                            ->where('account_id', $bank->id)
-                            ->whereDate('created_at', $lastTransactionDate)
-                            ->latest('created_at')
-                            ->first();
-
-                        if ($transaction) {
-                            $previousDayBalance += $transaction->balance;
-                        }
+                    if ($transaction) {
+                        $previousDayBalance += $transaction->balance;
                     }
                 }
                 $addBalance = AccountTransaction::where('branch_id', $branchId)
@@ -173,25 +163,15 @@ class DashboardController extends Controller
                 ->latest()
                 ->first();
             $previousDayBalance = 0;
-            $currentDate = Carbon::now()->toDateString();
-            // Get the last transaction date before today
-            $lastTransactionDate = AccountTransaction::where('branch_id', $branchId)
-                ->whereDate('created_at', '<', $currentDate)
-                ->latest('created_at')
-                ->first();
-            if ($lastTransactionDate) {
-                $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+            $date = Carbon::now();
+            foreach ($banks as $bank) {
+                $transaction = AccountTransaction::where('account_id', $bank->id)
+                    ->whereDate('created_at', '<', $date)
+                    ->latest('created_at')
+                    ->first();
 
-                foreach ($banks as $bank) {
-                    $transaction = AccountTransaction::where('branch_id', $branchId)
-                        ->where('account_id', $bank->id)
-                        ->whereDate('created_at', $lastTransactionDate)
-                        ->latest('created_at')
-                        ->first();
-
-                    if ($transaction) {
-                        $previousDayBalance += $transaction->balance;
-                    }
+                if ($transaction) {
+                    $previousDayBalance += $transaction->balance;
                 }
             }
             $addBalance = AccountTransaction::where('branch_id', $branchId)
@@ -236,6 +216,7 @@ class DashboardController extends Controller
             $sales = Sale::all();
             $purchase = Purchase::all();
             $expanse = Expense::all();
+            $salary = EmployeeSalary::all();
             $bankLabels = [];
             $grandTotal = 0;
             foreach ($banks as $bank) {
@@ -259,6 +240,7 @@ class DashboardController extends Controller
             $sales = Sale::where('branch_id', Auth::user()->branch_id)->get();
             $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->get();
             $expanse = Expense::where('branch_id', Auth::user()->branch_id)->get();
+            $salary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->get();
             $bankLabels = [];
             $grandTotal = 0;
             foreach ($banks as $bank) {
@@ -351,36 +333,44 @@ class DashboardController extends Controller
             }
         }
         return view('dashboard.dashboard', compact(
-            'previousDayBalance',
-            'todayEmployeeSalary',
-            'todaySales',
-            'todayPurchase',
-            'dueCollection',
-            'purchaseDuePay',
-            'otherCollection',
-            'otherPaid',
-            'adjustDueCollection',
-            'todayReturnAmount',
-            'addBalance',
-            'todayExpanse',
-            'viaPayment',
+            // today summary 
+            'branchData',
             'totalIngoing',
+            'previousDayBalance',
+            'todaySales',
+            'dueCollection',
+            'otherCollection',
+            'addBalance',
+            'adjustDueCollection',
+            'viaSale',
             'totalOutgoing',
+            'todayPurchase',
+            'todayExpanse',
+            'todayEmployeeSalary',
+            'todayReturnAmount',
+            'purchaseDuePay',
+            'otherPaid',
+            'viaPayment',
+
+            // total Summary 
             'sales',
-            'totalCustomerDue',
             'purchase',
-            'totalSupplierDue',
             'expanse',
+            'salary',
+            'bankLabels',
             'grandTotal',
+            'totalCustomerDue',
+            'totalSupplierDue',
+
+            // weekly summary 
             'salesByDay',
             'salesProfitByDay',
             'purchaseByDay',
-            'bankLabels',
+
+            // monthly summary 
             'salesByMonth',
             'profitsByMonth',
             'purchasesByMonth',
-            'viaSale',
-            'branchData',
         ));
     }
 }
