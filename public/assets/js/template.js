@@ -8,10 +8,8 @@
     var sidebar = $('.sidebar');
     var navbar = $('.navbar').not('.top-navbar');
 
-
     // Enable feather-icons with SVG markup
     feather.replace();
-
 
     // initialize clipboard plugin
     if ($('.btn-clipboard').length) {
@@ -30,20 +28,17 @@
       });
     }
 
-
     // initializing bootstrap tooltip
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
     })
 
-
-    // initializing bootstrap popover
+    // initializing bootstrap popover //
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
       return new bootstrap.Popover(popoverTriggerEl)
     })
-
 
     // Applying perfect-scrollbar
     if ($('.sidebar .sidebar-body').length) {
@@ -54,14 +49,12 @@
     //   const contentNavWrapper = new PerfectScrollbar('.content-nav-wrapper');
     // }
 
-
     // Close other submenu in sidebar on opening any
     sidebar.on('show.bs.collapse', '.collapse', function () {
       sidebar.find('.collapse.show').collapse('hide');
     });
 
-
-    // Sidebar toggle to sidebar-folded
+    // Sidebar toggle to sidebar-folded //
     $('.sidebar-toggler').on('click', function (e) {
       e.preventDefault();
       $('.sidebar-header .sidebar-toggler').toggleClass('active not-active');
@@ -73,7 +66,6 @@
         body.toggleClass('sidebar-open');
       }
     });
-
 
     // commmented because of apex chart width issue in desktop (in lg not in xl)
     // sidebar-folded on large devices
@@ -88,8 +80,7 @@
     // desktopMedium.addListener(iconSidebar);
     // iconSidebar(desktopMedium);
 
-
-    // Settings sidebar toggle
+    // Settings sidebar toggle //
     $('.settings-sidebar-toggler').on('click', function (e) {
       $('body').toggleClass('settings-open');
     });
@@ -139,9 +130,6 @@
     // })
 
 
-
-
-
     //  open sidebar-folded when hover
     $(".sidebar .sidebar-body").hover(
       function () {
@@ -154,7 +142,6 @@
           body.removeClass("open-sidebar-folded");
         }
       });
-
 
     // close sidebar when click outside on mobile/table
     $(document).on('click touchstart', function (e) {
