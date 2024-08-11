@@ -74,8 +74,7 @@ class SaleController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->paid);
-
+        // dd($request->products);
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required|numeric',
             'sale_date' => 'required',
@@ -126,35 +125,111 @@ class SaleController extends Controller
             $sale->created_at = Carbon::now();
             $sale->save();
 
+            // $saleId = $sale->id;
+            // $selectedItems = $request->products;
+
+            // $category = Category::where('name', 'Via Sell')->first();
+            // foreach ($selectedItems as $item) {
+            //     $product = Product::findOrFail($item['product_id']);
+            //     // $saleItem = null;
+            //     // dd($viaSales);
+            //     if ($category) {
+            //         if ($product->category_id == $category->id) {
+            //             // dd('hello');
+            //             $saleItem = new SaleItem;
+            //             $saleItem->sale_id = $saleId;
+            //             $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+            //             $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+            //             $saleItem->qty = $item['quantity'];
+            //             $saleItem->wa_status = $item['wa_status'];
+            //             $saleItem->wa_duration = $item['wa_duration'];
+            //             $saleItem->discount = $item['product_discount'];
+            //             $saleItem->sub_total = $item['total_price'];
+            //             $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
+            //             $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
+            //             $saleItem->sell_type = 'via sell';
+            //         }
+            //     } else if ($product->stock > $item['quantity']) {
+            //         $saleItem = new SaleItem;
+            //         $saleItem->sale_id = $saleId;
+            //         $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+            //         $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+            //         $saleItem->qty = $item['quantity'];
+            //         $saleItem->wa_status = $item['wa_status'];
+            //         $saleItem->wa_duration = $item['wa_duration'];
+            //         $saleItem->discount = $item['product_discount'];
+            //         $saleItem->sub_total = $item['total_price'];
+            //         $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
+            //         $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
+            //         $saleItem->sell_type = 'normal sell';
+            //     } else {
+            //         $extraQuantity = $item['quantity'] - $product->stock;
+            //         // dd($product->stock > 0);
+            //         if ($product->stock > 0) {
+            //             $saleItem = new SaleItem;
+            //             $saleItem->sale_id = $saleId;
+            //             $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+            //             $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+            //             $saleItem->qty = $product->stock;
+            //             $saleItem->wa_status = $item['wa_status'];
+            //             $saleItem->wa_duration = $item['wa_duration'];
+            //             $discount = $item['product_discount'] / 2;
+            //             $saleItem->discount = $discount;
+            //             $subTotal = ($item['unit_price'] * $product->stock) - $discount;
+            //             $saleItem->sub_total = $subTotal;
+            //             $saleItem->total_purchase_cost = $product->cost * $product->stock;
+            //             $saleItem->total_profit = $subTotal - ($product->cost * $product->stock);
+            //             $saleItem->sell_type = 'normal sell';
+            //         }
+
+            //         // Extra quantity
+            //         $extraItem = new SaleItem;
+            //         $extraItem->sale_id = $saleId;
+            //         $extraItem->product_id = $item['product_id']; // Access 'product_id' as an array key
+            //         $extraItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+            //         $extraItem->qty = $extraQuantity;
+            //         $extraItem->wa_status = $item['wa_status'];
+            //         $extraItem->wa_duration = $item['wa_duration'];
+            //         $discount = $item['product_discount'] / 2;
+            //         $extraItem->discount = $discount;
+            //         $subTotal2 = ($item['unit_price'] * $extraQuantity) - $discount;
+            //         $extraItem->sub_total = $subTotal2;
+            //         $extraItem->total_purchase_cost = $product->cost * $extraQuantity;
+            //         $extraItem->total_profit = $subTotal2 - ($product->cost * $extraQuantity);
+            //         $extraItem->sell_type = 'via sell';
+            //         $extraItem->save();
+            //     }
+            //     $saleItem->save();
+            //     // product quantity update
+            //     if ($product->stock > 0 && $product->stock >= $item['quantity']) {
+            //         $product->stock -= $item['quantity'];
+            //     } else {
+            //         $product->stock = 0;
+            //     }
+            //     $product->total_sold += $item['quantity'];
+            //     $product->save();
+            // }
+
             $saleId = $sale->id;
             $selectedItems = $request->products;
 
             $category = Category::where('name', 'Via Sell')->first();
             foreach ($selectedItems as $item) {
                 $product = Product::findOrFail($item['product_id']);
-                $saleItem = null;
-                // dd($viaSales);
-                if ($category) {
-                    if ($product->category_id == $category->id) {
-                        // dd('hello');
-                        $saleItem = new SaleItem;
-                        $saleItem->sale_id = $saleId;
-                        $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
-                        $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
-                        $saleItem->qty = $item['quantity'];
-                        $saleItem->wa_status = $item['wa_status'];
-                        $saleItem->wa_duration = $item['wa_duration'];
-                        $saleItem->discount = $item['product_discount'];
-                        $saleItem->sub_total = $item['total_price'];
-                        $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
-                        $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
-                        $saleItem->sell_type = 'via sell';
-                    }
-                } else if ($product->stock > $item['quantity']) {
+
+                // Determine if this should be a "via sell" or "normal sell"
+                $isViaSell = false;
+
+                // Check if product is in the "Via Sell" category or stock is 0 or less
+                if ($category && $product->category_id == $category->id || $product->stock <= 0) {
+                    $isViaSell = true;
+                }
+                // Handle the sale item
+                if ($isViaSell) {
                     $saleItem = new SaleItem;
                     $saleItem->sale_id = $saleId;
-                    $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
-                    $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                    $saleItem->product_id = $item['product_id'];
+                    $saleItem->rate = $item['unit_price'];
                     $saleItem->qty = $item['quantity'];
                     $saleItem->wa_status = $item['wa_status'];
                     $saleItem->wa_duration = $item['wa_duration'];
@@ -162,15 +237,16 @@ class SaleController extends Controller
                     $saleItem->sub_total = $item['total_price'];
                     $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
                     $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
-                    $saleItem->sell_type = 'normal sell';
-                } else {
+                    $saleItem->sell_type = 'via sell';
+                    $saleItem->save();
+                } else if ($product->stock < $item['quantity']) {
                     $extraQuantity = $item['quantity'] - $product->stock;
-                    // dd($product->stock > 0);
+                    // If the stock is greater than 0, first handle the available stock as a "normal sell"
                     if ($product->stock > 0) {
                         $saleItem = new SaleItem;
                         $saleItem->sale_id = $saleId;
-                        $saleItem->product_id = $item['product_id']; // Access 'product_id' as an array key
-                        $saleItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
+                        $saleItem->product_id = $item['product_id'];
+                        $saleItem->rate = $item['unit_price'];
                         $saleItem->qty = $product->stock;
                         $saleItem->wa_status = $item['wa_status'];
                         $saleItem->wa_duration = $item['wa_duration'];
@@ -181,32 +257,45 @@ class SaleController extends Controller
                         $saleItem->total_purchase_cost = $product->cost * $product->stock;
                         $saleItem->total_profit = $subTotal - ($product->cost * $product->stock);
                         $saleItem->sell_type = 'normal sell';
+                        $saleItem->save();
                     }
 
-                    // Extra quantity
-                    $extraItem = new SaleItem;
-                    $extraItem->sale_id = $saleId;
-                    $extraItem->product_id = $item['product_id']; // Access 'product_id' as an array key
-                    $extraItem->rate = $item['unit_price']; // Access 'unit_price' as an array key
-                    $extraItem->qty = $extraQuantity;
-                    $extraItem->wa_status = $item['wa_status'];
-                    $extraItem->wa_duration = $item['wa_duration'];
-                    $discount = $item['product_discount'] / 2;
-                    $extraItem->discount = $discount;
-                    $subTotal2 = ($item['unit_price'] * $extraQuantity) - $discount;
-                    $extraItem->sub_total = $subTotal2;
-                    $extraItem->total_purchase_cost = $product->cost * $extraQuantity;
-                    $extraItem->total_profit = $subTotal2 - ($product->cost * $extraQuantity);
-                    $extraItem->sell_type = 'via sell';
-                    $extraItem->save();
-                }
-                // dd($saleItem);
-                if ($saleItem) {
+                    // Handle the extra quantity as a "via sell"
+                    if ($extraQuantity > 0) {
+                        $extraItem = new SaleItem;
+                        $extraItem->sale_id = $saleId;
+                        $extraItem->product_id = $item['product_id'];
+                        $extraItem->rate = $item['unit_price'];
+                        $extraItem->qty = $extraQuantity;
+                        $extraItem->wa_status = $item['wa_status'];
+                        $extraItem->wa_duration = $item['wa_duration'];
+                        $discount = $item['product_discount'] / 2;
+                        $extraItem->discount = $discount;
+                        $subTotal2 = ($item['unit_price'] * $extraQuantity) - $discount;
+                        $extraItem->sub_total = $subTotal2;
+                        $extraItem->total_purchase_cost = $product->cost * $extraQuantity;
+                        $extraItem->total_profit = $subTotal2 - ($product->cost * $extraQuantity);
+                        $extraItem->sell_type = 'via sell';
+                        $extraItem->save();
+                    }
+                } else {
+                    // Handle a normal sell for items within stock
+                    $saleItem = new SaleItem;
+                    $saleItem->sale_id = $saleId;
+                    $saleItem->product_id = $item['product_id'];
+                    $saleItem->rate = $item['unit_price'];
+                    $saleItem->qty = $item['quantity'];
+                    $saleItem->wa_status = $item['wa_status'];
+                    $saleItem->wa_duration = $item['wa_duration'];
+                    $saleItem->discount = $item['product_discount'];
+                    $saleItem->sub_total = $item['total_price'];
+                    $saleItem->total_purchase_cost = $product->cost * $item['quantity'];
+                    $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
+                    $saleItem->sell_type = 'normal sell';
                     $saleItem->save();
                 }
 
-
-                // product quantity update
+                // Update product stock and sales information
                 if ($product->stock > 0 && $product->stock >= $item['quantity']) {
                     $product->stock -= $item['quantity'];
                 } else {
@@ -215,6 +304,7 @@ class SaleController extends Controller
                 $product->total_sold += $item['quantity'];
                 $product->save();
             }
+
 
 
             // via sale
@@ -325,7 +415,7 @@ class SaleController extends Controller
     public function view()
     {
         if (Auth::user()->id == 1) {
-            $sales = Sale::all();
+            $sales = Sale::latest()->get();
         } else {
             $sales = Sale::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
@@ -734,7 +824,7 @@ class SaleController extends Controller
     public function saleViewProduct()
     {
 
-            $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
 
         return response()->json([
             'status' => '200',

@@ -4,6 +4,7 @@
         $branch = App\Models\Branch::findOrFail($sale->branch_id);
         $customer = App\Models\Customer::findOrFail($sale->customer_id);
         $products = App\Models\SaleItem::where('sale_id', $sale->id)->get();
+        // dd($products);
     @endphp
 
     <style>

@@ -72,6 +72,7 @@ class DashboardController extends Controller
                 }
                 $addBalance = AccountTransaction::where('branch_id', $branchId)
                     ->where('purpose', 'Add Bank Balance')
+                    ->orWhere('purpose', 'Bank')
                     ->whereDate('created_at', Carbon::now())
                     ->get();
                 $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branchId)
@@ -176,6 +177,7 @@ class DashboardController extends Controller
             }
             $addBalance = AccountTransaction::where('branch_id', $branchId)
                 ->where('purpose', 'Add Bank Balance')
+                ->orWhere('purpose', 'Bank')
                 ->whereDate('created_at', Carbon::now())
                 ->get();
             $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branchId)
@@ -235,7 +237,7 @@ class DashboardController extends Controller
             }
 
             $totalCustomerDue = $sales->sum('change_amount') - $sales->sum('paid');
-            $totalSupplierDue = $sales->sum('change_amount') - $sales->sum('paid');
+            $totalSupplierDue = $purchase->sum('sub_total') - $purchase->sum('paid');
         } else {
             $sales = Sale::where('branch_id', Auth::user()->branch_id)->get();
             $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->get();
@@ -260,7 +262,7 @@ class DashboardController extends Controller
             }
 
             $totalCustomerDue = $sales->sum('change_amount') - $sales->sum('paid');
-            $totalSupplierDue = $sales->sum('change_amount') - $sales->sum('paid');
+            $totalSupplierDue = $purchase->sum('sub_total') - $purchase->sum('paid');
         }
 
         // weekly update Chart
