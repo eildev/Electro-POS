@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             ExpenseCategorySeeder::class,
             SubcategorySeed::class,
             BrandSeed::class,
+            CompanySeeder::class,
+            UserLimitSeeder::class,
         ]);
     }
 }
