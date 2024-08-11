@@ -29,6 +29,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\CompanyBalanceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserLimitController;
 use App\Http\Controllers\ViaSaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -499,6 +500,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/via-sale/payment/{id}', 'viaSalePayment')->name('via.sale.payment');
         Route::get('/via-sale/invoice/{id}', 'viaSaleInvoice')->name('via.sale.invoice');
         Route::get('/via/sale/delete/{id}', 'ViaSaleProductDelete')->name('via.sale.delete');
+    });
+    // User Limit Route
+    Route::controller(UserLimitController::class)->group(function () {
+        Route::get('/user-limit', 'index')->name('user.limit');
+        Route::get('/user-limit/view', 'view')->name('user.limit.view');
+        Route::post('/user-limit/store', 'store')->name('user.limit.store');
+        Route::get('/user-limit/edit/{id}', 'edit')->name('user.limit.edit');
+        Route::post('/user-limit/update/{id}', 'update')->name('user.limit.update');
+        Route::get('/user-limit/delete/{id}', 'delete')->name('user.limit.delete');
     });
 });
 
