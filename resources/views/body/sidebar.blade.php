@@ -63,7 +63,7 @@
 
 {{-- ///////////////////////////////////// ---- POS Start ---- //////////////////////////////////// --}}
         <li class="nav-item nav-category">POS (Point of Sale)</li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('pos*') ? '' : 'collapsed' }}"
                 data-bs-toggle="collapse" href="#uiComponen" role="button" aria-expanded="false"
                 aria-controls="uiComponen">
@@ -72,7 +72,7 @@
                 <i class="link-arrow" data-feather="chevron-down"></i>
             </a>
             <div class="collapse {{ request()->routeIs('pos*') ? 'show' : '' }}" id="uiComponen">
-                <ul class="nav sub-menu">
+                <ul class="nav sub-menu"> --}}
                     {{-- //Pos// --}}
                     @if (Auth::user()->can('pos.menu'))
                     <li class="nav-item">
@@ -135,14 +135,14 @@
                 </li>
                    @endif
                 {{-- //Damage End // --}}
-                </ul>
+                {{-- </ul>
             </div>
-        </li>
+        </li> --}}
 {{-- ///////////////////////////////////////////---- POS End ----//////////////////////////////////////// --}}
 {{-- //////////////////////////////---- Store Management ----/////////////////////////////// --}}
                 <li class="nav-item nav-category">Store Management</li>
                 @if (Auth::user()->can('products.menu'))
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('product*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false"
                         aria-controls="emails">
@@ -151,7 +151,7 @@
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
                     <div class="collapse {{ request()->routeIs('product*') ? 'show' : '' }}" id="emails">
-                        <ul class="nav sub-menu">
+                        <ul class="nav sub-menu"> --}}
                             @if (Auth::user()->can('products.add'))
                                 <li class="nav-item ">
                                     <a href="{{ route('product') }}"
@@ -236,15 +236,15 @@
                             @endif
 
                          <!----Supplier End --->
-                        </ul>
+                        {{-- </ul>
                     </div>
-                </li>
+                </li> --}}
             @endif
 
 {{-- ////////////////////////////////////---- Store Management End----//////////////////////////////// --}}
 {{-- ////////////////////////////////////---- Accounting----//////////////////////////////// --}}
             <li class="nav-item nav-category">Accounting</li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('Accounting*') ? '' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#Accounting" role="button" aria-expanded="false"
                     aria-controls="emails">
@@ -253,7 +253,7 @@
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse {{ request()->routeIs('Accounting*') ? 'show' : '' }}" id="Accounting">
-                    <ul class="nav sub-menu">
+                    <ul class="nav sub-menu"> --}}
                         <!---Bank--->
                         @if (Auth::user()->can('bank.menu'))
                         <li class="nav-item">
@@ -307,9 +307,9 @@
                     </li>
                 @endif
                 <!---Promotion End--->
-                    </ul>
+                    {{-- </ul>
                 </div>
-            </li>
+            </li> --}}
 {{-- ////////////////////////////////////---- Accounting End----//////////////////////////////// --}}
 
 {{-- ////////////////////////////////////---- Inventory----//////////////////////////////// --}}
@@ -366,7 +366,7 @@
 {{-- ////////////////////////////////////---- Inventory End----//////////////////////////////// --}}
 {{-- //////////////////////--- Human Resource Management (HRM)----///////////////////// --}}
             <li class="nav-item nav-category">HRM</li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('employee*') ? '' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#employee" role="button" aria-expanded="false"
                     aria-controls="emails">
@@ -375,7 +375,7 @@
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse {{ request()->routeIs('employee*') ? 'show' : '' }}" id="employee">
-                    <ul class="nav sub-menu">
+                    <ul class="nav sub-menu"> --}}
                         @if (Auth::user()->can('employee.menu'))
                             <li class="nav-item ">
                                 <a href="{{ route('employee.add') }}"
@@ -403,14 +403,14 @@
                                     </a>
                             </li>
                         @endif
-                    </ul>
+                    {{-- </ul>
                 </div>
-            </li>
+            </li> --}}
 {{-- ///////////////////---- Human Resource Management (HRM) End----////////////////// --}}
 {{-- ///////////////////---- Customer Relationship Manager (CRM)----////////////////// --}}
             @if (Auth::user()->can('crm.menu'))
             <li class="nav-item nav-category">CRM</li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('crm*') ? '' : 'collapsed' }}" data-bs-toggle="collapse"
                     href="#advancedUI" role="button" aria-expanded="false" aria-controls="advancedUI">
                     <i class="ms-2 link-icon" data-feather="anchor"></i>
@@ -418,7 +418,7 @@
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse {{ request()->routeIs('crm*') ? 'show' : '' }}" id="advancedUI">
-                    <ul class="nav sub-menu">
+                    <ul class="nav sub-menu"> --}}
 
                         @if (Auth::user()->can('customer.menu'))
                         <li class="nav-item">
@@ -457,9 +457,9 @@
                                  </a>
                             </li>
                         @endif
-                    </ul>
+                    {{-- </ul>
                 </div>
-            </li>
+            </li> --}}
             @endif
 {{-- ///////////////////---- Customer Relationship Manager (CRM) End----////////////////// --}}
 
@@ -562,7 +562,7 @@
                 </li>
             @endif
 
-            <li class="nav-item nav-category">SETTING & CUSTOMIZE</li>
+            <li class="nav-item nav-category">Software Control</li>
             <!---Role & Permission--->
             @if (Auth::user()->can('role-and-permission.menu'))
                 <li class="nav-item">
@@ -611,13 +611,14 @@
             @endif
 
             <!---Admin Manage--->
+
             @if (Auth::user()->can('admin-manage.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#admin-manage" role="button" aria-expanded="false"
                         aria-controls="emails">
                         <i class="ms-2 fa-solid fa-users-gear link-icon"></i>
-                        <span class="link-title">Admin Manage</span>
+                        <span class="link-title">Admin/User Manage</span>
                         <i class="link-arrow" data-feather="chevron-down"></i>
                     </a>
                     <div class="collapse {{ request()->routeIs('admin*') ? 'show' : '' }}" id="admin-manage">
@@ -626,14 +627,14 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.all') }}"
                                         class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All
-                                        Admin</a>
+                                        Admin/User</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('admin-manage.add'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.add') }}"
                                         class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add
-                                        Admin</a>
+                                        Admin/User</a>
                                 </li>
                             @endif
                         </ul>
@@ -687,7 +688,7 @@
                     </div>
                 </li>
             @endif
-
+            <li class="nav-item nav-category">Branch</li>
             @if (Auth::user()->can('branch.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('branch.view') ? 'nav_active' : '' }}"
