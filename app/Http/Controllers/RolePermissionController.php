@@ -230,7 +230,7 @@ class RolePermissionController extends Controller
             return redirect()->back()->with('error', 'User limit reached. Please upgrade your package to add more users.');
         }
 
-        // Validate the request data
+        // Validate the request data //
         $request->validate([
             'name' => 'required',
             'email' => 'required',
