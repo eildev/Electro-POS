@@ -214,7 +214,6 @@ class RolePermissionController extends Controller
         $company = Auth::user()->company;
         // Get the user limit for the company
 
-
         $userLimit = $company->userLimit->user_limit;
         // Count the current number of users in the company
         $currentUserCount = $company->users()->count();

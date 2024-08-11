@@ -314,7 +314,7 @@
 
 {{-- ////////////////////////////////////---- Inventory----//////////////////////////////// --}}
             <li class="nav-item nav-category">Inventory</li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('Inventory*') ? '' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#Inventory" role="button" aria-expanded="false"
                     aria-controls="emails">
@@ -323,7 +323,7 @@
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse {{ request()->routeIs('Inventory*') ? 'show' : '' }}" id="Inventory">
-                    <ul class="nav sub-menu">
+                    <ul class="nav sub-menu"> --}}
                          <!---Stock --->
                         <li class="nav-item">
                             <a href="{{ route('report.stock') }}"
@@ -360,9 +360,9 @@
                         </li>
                        @endif
                        <!---Damage End--->
-                    </ul>
+                    {{-- </ul>
                 </div>
-            </li>
+            </li> --}}
 {{-- ////////////////////////////////////---- Inventory End----//////////////////////////////// --}}
 {{-- //////////////////////--- Human Resource Management (HRM)----///////////////////// --}}
             <li class="nav-item nav-category">HRM</li>
@@ -626,15 +626,13 @@
                             @if (Auth::user()->can('admin-manage.list'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.all') }}"
-                                        class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All
-                                        Admin/User</a>
+                                        class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All Admin/User</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('admin-manage.add'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.add') }}"
-                                        class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add
-                                        Admin/User</a>
+                                        class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add Admin/User</a>
                                 </li>
                             @endif
                         </ul>
