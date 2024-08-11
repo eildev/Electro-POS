@@ -71,8 +71,10 @@ class DashboardController extends Controller
                     }
                 }
                 $addBalance = AccountTransaction::where('branch_id', $branchId)
-                    ->where('purpose', 'Add Bank Balance')
-                    ->orWhere('purpose', 'Bank')
+                    ->where(function ($query) {
+                        $query->where('purpose', 'Add Bank Balance')
+                            ->orWhere('purpose', 'Bank');
+                    })
                     ->whereDate('created_at', Carbon::now())
                     ->get();
                 $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branchId)
@@ -175,9 +177,10 @@ class DashboardController extends Controller
                     $previousDayBalance += $transaction->balance;
                 }
             }
-            $addBalance = AccountTransaction::where('branch_id', $branchId)
-                ->where('purpose', 'Add Bank Balance')
-                ->orWhere('purpose', 'Bank')
+            $addBalance = AccountTransaction::where(function ($query) {
+                $query->where('purpose', 'Add Bank Balance')
+                    ->orWhere('purpose', 'Bank');
+            })
                 ->whereDate('created_at', Carbon::now())
                 ->get();
             $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branchId)

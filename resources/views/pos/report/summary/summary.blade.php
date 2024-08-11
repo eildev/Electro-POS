@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Summarey Report')
+@section('title', '| Summarey Report')
 @section('admin')
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
@@ -8,89 +8,89 @@
         </ol>
     </nav>
     <div class="row">
-        @if(Auth::user()->id == 1)
-        @foreach ($branchData as $branchId => $data)
-        <div class="col-12 col-xl-12 stretch-card">
-            <div class="row flex-grow-1">
-                <h6 class="card-title">{{ $data['branch']->name }}</h6> <br>
-                <div class="col-md-3 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">Sale Amount</h6>
-                                <div class="dropdown mb-3">
+        @if (Auth::user()->id == 1)
+            @foreach ($branchData as $branchId => $data)
+                <div class="col-12 col-xl-12 stretch-card">
+                    <div class="row flex-grow-1">
+                        <h6 class="card-title">{{ $data['branch']->name }}</h6> <br>
+                        <div class="col-md-3 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-baseline">
+                                        <h6 class="card-title mb-0">Sale Amount</h6>
+                                        <div class="dropdown mb-3">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h3 class="mb-3">
+                                                ৳ {{ number_format($data['saleAmount'], 2) }}
+                                            </h3>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3 class="mb-3">
-                                        ৳ {{ $data['saleAmount'] }}
-                                    </h3>
+                        </div>
+                        <div class="col-md-3 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-baseline">
+                                        <h6 class="card-title mb-0">Purchase Cost</h6>
+                                        <div class="dropdown mb-3">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h3 class="mb-3">
+                                                ৳ {{ number_format($data['purchaseAmount'], 2) }}
+                                            </h3>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-baseline">
+                                        <h6 class="card-title mb-0">EXPENSE</h6>
+                                        <div class="dropdown mb-3">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h3 class="mb-3">
+                                                ৳ {{ number_format($data['expenseAmount'], 2) }}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-baseline">
+                                        <h6 class="card-title mb-0">Sell Profit</h6>
+                                        <div class="dropdown mb-3">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h3 class="mb-2">
+                                                ৳ {{ number_format($data['sellProfit'], 2) }}
+                                            </h3>
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">Purchase Cost</h6>
-                                <div class="dropdown mb-3">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3 class="mb-3">
-                                        ৳ {{ $data['purchaseAmount'] }}
-                                    </h3>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">EXPENSE</h6>
-                                <div class="dropdown mb-3">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3 class="mb-3">
-                                        ৳ {{ $data['expenseAmount'] }}
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">Sell Profit</h6>
-                                <div class="dropdown mb-3">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h3 class="mb-2">
-                                        ৳ {{ $data['sellProfit'] }}
-                                    </h3>
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="row">
         <div class="col-12 col-xl-12 stretch-card">
@@ -107,7 +107,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <h3 class="mb-2">
-                                        ৳ {{ $data['totalSalary'] }}
+                                        ৳ {{ number_format($data['totalSalary'], 2) }}
                                     </h3>
                                 </div>
                             </div>
@@ -117,7 +117,7 @@
             </div>
         </div>
         @endforeach
-        @else
+    @else
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
                 <div class="col-md-3 grid-margin stretch-card">
@@ -249,7 +249,7 @@
                             <tbody class="showData">
                                 @if ($products->count() > 0)
                                     @php
-                                        $num = 0;
+                                        $num = 1;
                                     @endphp
                                     <?php
                                     $totalSaleAmount = 0;
@@ -329,7 +329,7 @@
                             <tbody class="showData">
                                 @if ($expense->count() > 0)
                                     @php
-                                        $num = 0;
+                                        $num = 1;
                                     @endphp
                                     <?php
                                     $totalAmount = 0;
@@ -389,7 +389,7 @@
 
                                 @if ($supplier->count() > 0)
                                     @php
-                                        $num = 0;
+                                        $num = 1;
                                         $totalSupplierAmount = 0;
                                     @endphp
                                     @foreach ($supplier as $key => $supplierData)
@@ -443,7 +443,7 @@
                             <tbody class="showData">
                                 @if ($customer->count() > 0)
                                     @php
-                                        $num = 0;
+                                        $num = 1;
                                     @endphp
                                     <?php
                                     $customerTotalPayment = 0;
