@@ -175,8 +175,6 @@
 
                 // Write the modal content to the new window
                 printWindow.document.write('<html><head><title>Print</title>');
-                printWindow.document.write(
-                    '<link rel="stylesheet" href="path/to/your/css/styles.css">'); // Add your CSS file here
                 printWindow.document.write('</head><body>');
                 printWindow.document.write(printContents);
                 printWindow.document.write('</body></html>');

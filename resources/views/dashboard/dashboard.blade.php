@@ -266,7 +266,7 @@
                                         <td class="text-end">0.00</td>
                                     </tr>
                                     <tr>
-                                        <td>Profit</td>
+                                        <td>Sales Profit</td>
                                         <td class="text-end">{{ number_format($sales->sum('profit'), 2) }}</td>
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>

@@ -166,9 +166,9 @@ class ReportController extends Controller
                 $branchId = $branch->id;
 
                 $sale = Sale::where('branch_id', $branchId)->get();
-                $saleAmount = $sale->sum('receivable');
+                $saleAmount = $sale->sum('change_amount');
                 $purchase = Purchase::where('branch_id', $branchId)->get();
-                $purchaseAmount = $purchase->sum('grand_total');
+                $purchaseAmount = $purchase->sum('sub_total');
                 $expense =  Expense::where('branch_id', $branchId)->get();
                 $expenseAmount = $expense->sum('amount');
                 $sellProfit = $sale->sum('profit');
@@ -575,8 +575,10 @@ class ReportController extends Controller
                     ->where('payment_type', 'pay')
                     ->whereDate('created_at',  $date)
                     ->sum('credit');
-                $addBalance = AccountTransaction::where('purpose', 'Add Bank Balance')
-                    ->orWhere('purpose', 'Bank')
+                $addBalance = AccountTransaction::where(function ($query) {
+                    $query->where('purpose', 'Add Bank Balance')
+                        ->orWhere('purpose', 'Bank');
+                })
                     ->whereDate('created_at',  $date)
                     ->sum('credit');
                 $previousDayBalance = 0;
@@ -693,8 +695,10 @@ class ReportController extends Controller
                     ->whereDate('created_at',  $date)
                     ->sum('credit');
                 $addBalance = AccountTransaction::where('branch_id', Auth::user()->branch_id)
-                    ->where('purpose', 'Add Bank Balance')
-                    ->orWhere('purpose', 'Bank')
+                    ->where(function ($query) {
+                        $query->where('purpose', 'Add Bank Balance')
+                            ->orWhere('purpose', 'Bank');
+                    })
                     ->whereDate('created_at',  $date)
                     ->sum('credit');
                 $previousDayBalance = 0;
@@ -824,8 +828,10 @@ class ReportController extends Controller
                 ->where('payment_type', 'pay')
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
-            $addBalance = AccountTransaction::where('purpose', 'Add Bank Balance')
-                ->orWhere('purpose', 'Bank')
+            $addBalance = AccountTransaction::where(function ($query) {
+                $query->where('purpose', 'Add Bank Balance')
+                    ->orWhere('purpose', 'Bank');
+            })
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
             $previousDayBalance = 0;
@@ -906,8 +912,10 @@ class ReportController extends Controller
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
             $addBalance = AccountTransaction::where('branch_id', Auth::user()->branch_id)
-                ->where('purpose', 'Add Bank Balance')
-                ->orWhere('purpose', 'Bank')
+                ->where(function ($query) {
+                    $query->where('purpose', 'Add Bank Balance')
+                        ->orWhere('purpose', 'Bank');
+                })
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
             $previousDayBalance = 0;
@@ -982,30 +990,31 @@ class ReportController extends Controller
         $formattedDate = $date->format('d F Y');
         $report = [
             'date' => $formattedDate,
-            'totalSale' => $totalSale,
-            'dueCollection' => $dueCollection,
-            'otherCollection' => $otherCollection,
-            'adjustDueCollection' => $adjustDueCollection,
-            'addBalance' => $addBalance,
-            'viaSale' => $viaSale,
-            'previousDayBalance' => $previousDayBalance,
-            'totalIngoing' => $totalIngoing,
+            'totalSale' => number_format($totalSale, 2),
+            'dueCollection' => number_format($dueCollection, 2),
+            'otherCollection' => number_format($otherCollection, 2),
+            'adjustDueCollection' => number_format($adjustDueCollection, 2),
+            'addBalance' => number_format($addBalance, 2),
+            'viaSale' => number_format($viaSale, 2),
+            'previousDayBalance' => number_format($previousDayBalance, 2),
+            'totalIngoing' => number_format($totalIngoing, 2),
 
             // outgoing
-            'totalPurchaseCost' => $totalPurchaseCost,
-            'totalExpense' => $totalExpense,
-            'totalSalary' => $totalSalary,
-            'purchaseDuePay' => $purchaseDuePay,
-            'todayReturnAmount' => $todayReturnAmount,
-            'viaPayment' => $viaPayment,
-            'otherPaid' => $otherPaid,
-            'totalOutgoing' => $totalOutgoing,
+            'totalPurchaseCost' => number_format($totalPurchaseCost, 2),
+            'totalExpense' => number_format($totalExpense, 2),
+            'totalSalary' => number_format($totalSalary, 2),
+            'purchaseDuePay' => number_format($purchaseDuePay, 2),
+            'todayReturnAmount' => number_format($todayReturnAmount, 2),
+            'viaPayment' => number_format($viaPayment, 2),
+            'otherPaid' => number_format($otherPaid, 2),
+            'totalOutgoing' => number_format($totalOutgoing, 2),
 
             // profit
-            'totalProfit' => $totalProfit,
-            'finalProfit' => $finalProfit,
-            'totalBalance' => $totalBalance,
+            'totalProfit' => number_format($totalProfit, 2),
+            'finalProfit' => number_format($finalProfit, 2),
+            'totalBalance' => number_format($totalBalance, 2),
         ];
+
         return response()->json([
             'status' => '200',
             'report' => $report
