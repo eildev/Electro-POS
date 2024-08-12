@@ -627,13 +627,15 @@
                             @if (Auth::user()->can('admin-manage.list'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.all') }}"
-                                        class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All Admin/User</a>
+                                        class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All
+                                        Admin/User</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('admin-manage.add'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.add') }}"
-                                        class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add Admin/User</a>
+                                        class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add
+                                        Admin/User</a>
                                 </li>
                             @endif
                         </ul>
@@ -688,13 +690,13 @@
                 </li>
             @endif
             @if (Auth::user()->can('limit.user'))
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('user.limit') ? 'nav_active' : '' }}"
-                    href="{{ route('user.limit') }}" role="button" aria-controls="general-pages">
-                    <i class="ms-2 link-icon" data-feather="sliders"></i>
-                    <span class="link-title">User Limit</span>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('user.limit') ? 'nav_active' : '' }}"
+                        href="{{ route('user.limit') }}" role="button" aria-controls="general-pages">
+                        <i class="ms-2 link-icon" data-feather="sliders"></i>
+                        <span class="link-title">User Limit</span>
+                    </a>
+                </li>
             @endif
             <li class="nav-item nav-category">Branch</li>
             @if (Auth::user()->can('branch.menu'))
