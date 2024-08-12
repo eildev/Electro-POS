@@ -15,6 +15,7 @@ class UserLimitSeeder extends Seeder
     {
         UserLimit::create([
             'company_id' => 1,
+            'user_limit' => 5,
         ]);
     }
 }
