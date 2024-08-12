@@ -41,13 +41,16 @@
                                             </td>
                                             <td>
                             @if(Auth::user()->can('role-and-permission-check-role-permission.edit'))
+                                  @if ( Auth::user()->id === 4  || Auth::user()->id === 1 )
                                     <a href="{{route('admin.role.edit',$data->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit">
                                         <i data-feather="edit"></i>
                                     </a>
                                     @endif
+                                    @endif
                                     @if(Auth::user()->can('role-and-permission-check-role-permission.delete'))
 
-                                    @if ($data->name !== 'Super Admin')
+                                    @if ($data->id == 1 || $data->id == 4)
+                                    @else
                                     <a href="{{route('admin.role.delete',$data->id)}}" id="delete" class="btn btn-sm btn-danger btn-icon" title="Delete">
                                         <i data-feather="trash-2"></i>
                                     </a>

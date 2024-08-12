@@ -21,13 +21,15 @@ class EmployeeSalaryController extends Controller
         //     ->whereMonth('date', Carbon::now()->format('m'));;
         // })->get();
         if(Auth::user()->id == 1){
+            $branch = Branch::latest()->get();
             $employees = Employee::latest()->get();
             $bank = Bank::latest()->get();
         }else{
+            $branch = Branch::where('id', Auth::user()->branch_id)->latest()->get();
             $employees = Employee::where('branch_id', Auth::user()->branch_id)->latest()->get();
             $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
-        $branch = Branch::latest()->get();
+
         return view('pos.employee_salary.add_employee_salary', compact('employees', 'branch', 'bank'));
     } //
     public function EmployeeSalaryStore(Request $request)
@@ -223,13 +225,15 @@ class EmployeeSalaryController extends Controller
     public function EmployeeSalaryAdvancedAdd()
     {
         if(Auth::user()->id == 1){
+            $branch = Branch::latest()->get();
             $employees = Employee::all();
             $bank = Bank::latest()->get();
         }else{
+            $branch = Branch::where('id', Auth::user()->branch_id)->latest()->get();
             $bank = Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
             $employees = Employee::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
-        $branch = Branch::latest()->get();
+
         return view('pos.employee_salary.advanced_employee_salary_add', compact('employees', 'branch', 'bank'));
     } //End
 
