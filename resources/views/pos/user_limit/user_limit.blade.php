@@ -270,8 +270,9 @@
                     type: 'GET',
                     success: function(res) {
                         if (res.status == 200) {
-                            $('.edit_company_name').val(res.userLimit.company_name);
+                            $('.edit_company_name').val(res.userLimit.id);
                             $('.edit_user_limit').val(res.userLimit.user_limit);
+                            $('.update_user_limit').val(res.userLimit.id);
                         } else {
                             toastr.warning("No Data Found");
                         }
@@ -279,11 +280,10 @@
                 });
             })
 
-                 // update User Limit //
+            // update User Limit //
             $('.update_user_limit').click(function(e) {
                 e.preventDefault();
                 let id = $(this).val();
-                // alert(id);
                 let formData = new FormData($('.editUserLimit')[0]);
                 $.ajaxSetup({
                     headers: {
@@ -291,7 +291,7 @@
                     }
                 });
                 $.ajax({
-                    url: `/abcalksjd/${id}`,
+                    url: `/user-limit/update/${id}`,
                     type: 'POST',
                     data: formData,
                     processData: false,
