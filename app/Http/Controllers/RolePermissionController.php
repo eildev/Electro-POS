@@ -128,6 +128,7 @@ class RolePermissionController extends Controller
     {
         $role = Role::all();
         $permission = Permission::all();
+
         $permission_group = User::getPermissiongroup();
         return view('pos.role_and_permission.role_permission.add_role_permission', compact('role', 'permission', 'permission_group'));
     } //

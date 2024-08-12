@@ -74,7 +74,7 @@
                                     name="role_id" data-width="100%">
                                     <option selected disabled>----> Select Role <-----< /option>
                                             @foreach ($role as $roles)
-                                                @if ($roles->name === 'Super Admin')
+                                                @if ($roles->id === 1 || $roles->id === 4)
                                     <option value="{{ $roles->id }}" disabled>{{ $roles->name }}</option>
                                 @else
                                     <option value="{{ $roles->id }}">{{ $roles->name }}</option>
