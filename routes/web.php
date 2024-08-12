@@ -507,7 +507,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/user-limit/view', 'view')->name('user.limit.view');
         Route::post('/user-limit/store', 'store')->name('user.limit.store');
         Route::get('/user-limit/edit/{id}', 'edit')->name('user.limit.edit');
-        Route::post('/user-limit/update/{id}', 'update')->name('user.limit.update');
+        Route::post('/abcalksjd/{id}', 'update')->name('abcalksjd');
         Route::get('/user-limit/delete/{id}', 'delete')->name('user.limit.delete');
     });
 });

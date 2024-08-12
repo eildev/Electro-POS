@@ -291,7 +291,7 @@
                     }
                 });
                 $.ajax({
-                    url: `/user-limit/update/${id}`,
+                    url: `/abcalksjd/${id}`,
                     type: 'POST',
                     data: formData,
                     processData: false,
