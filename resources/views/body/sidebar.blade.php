@@ -687,6 +687,7 @@
                     </div>
                 </li>
             @endif
+            @if (Auth::user()->can('limit.user'))
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('user.limit') ? 'nav_active' : '' }}"
                     href="{{ route('user.limit') }}" role="button" aria-controls="general-pages">
@@ -694,6 +695,7 @@
                     <span class="link-title">User Limit</span>
                 </a>
             </li>
+            @endif
             <li class="nav-item nav-category">Branch</li>
             @if (Auth::user()->can('branch.menu'))
                 <li class="nav-item">
