@@ -65,6 +65,7 @@
                                         <option value="settings">Settings</option>
                                         <option value="branch">Branch</option>
                                         <option value="return">Return</option>
+                                        <option value="limit">Limitation</option>
                                     </select>
                                     @error('group_name')
                                         <div class="invalid-feedback">{{ $message }}</div>

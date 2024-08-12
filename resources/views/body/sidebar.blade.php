@@ -315,7 +315,7 @@
 
             {{-- ////////////////////////////////////---- Inventory----//////////////////////////////// --}}
             <li class="nav-item nav-category">Inventory</li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('Inventory*') ? '' : 'collapsed' }}"
                     data-bs-toggle="collapse" href="#Inventory" role="button" aria-expanded="false"
                     aria-controls="emails">
@@ -627,15 +627,13 @@
                             @if (Auth::user()->can('admin-manage.list'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.all') }}"
-                                        class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All
-                                        Admin/User</a>
+                                        class="nav-link {{ request()->routeIs('admin.all') ? 'nav_active' : '' }}">All Admin/User</a>
                                 </li>
                             @endif
                             @if (Auth::user()->can('admin-manage.add'))
                                 <li class="nav-item">
                                     <a href="{{ route('admin.add') }}"
-                                        class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add
-                                        Admin/User</a>
+                                        class="nav-link {{ request()->routeIs('admin.add') ? 'nav_active' : '' }}">Add Admin/User</a>
                                 </li>
                             @endif
                         </ul>
@@ -689,6 +687,7 @@
                     </div>
                 </li>
             @endif
+            @if (Auth::user()->can('limit.user'))
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('user.limit') ? 'nav_active' : '' }}"
                     href="{{ route('user.limit') }}" role="button" aria-controls="general-pages">
@@ -696,6 +695,7 @@
                     <span class="link-title">User Limit</span>
                 </a>
             </li>
+            @endif
             <li class="nav-item nav-category">Branch</li>
             @if (Auth::user()->can('branch.menu'))
                 <li class="nav-item">

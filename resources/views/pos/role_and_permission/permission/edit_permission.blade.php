@@ -57,6 +57,7 @@
                                         <option value="report" {{ $permissions->group_name == 'report' ? 'selected': ''}}>Report</option>
                                         <option value="settings" {{ $permissions->group_name == 'settings' ? 'selected': ''}}>Settings</option>
                                         <option value="branch" {{ $permissions->group_name == 'branch' ? 'selected': ''}}>Branch</option>
+                                        <option value="limit" {{ $permissions->group_name == 'branch' ? 'selected': ''}}>Limitation</option>
                                 </select>
                                 @error('group_name')
                                     <div class="invalid-feedback">{{ $message }}</div>

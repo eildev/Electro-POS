@@ -279,10 +279,11 @@
                 });
             })
 
-            // update User Limit
+                 // update User Limit //
             $('.update_user_limit').click(function(e) {
                 e.preventDefault();
                 let id = $(this).val();
+                // alert(id);
                 let formData = new FormData($('.editUserLimit')[0]);
                 $.ajaxSetup({
                     headers: {
