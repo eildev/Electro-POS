@@ -89,14 +89,16 @@ class ReturnController extends Controller
 
                 foreach ($request->sale_items as $sale_item) {
                     // dd($sale_item['product_id']);
+                    $saleItem = SaleItem::findOrFail($sale_item['product_id']);
+
                     $returnItems = new ReturnItem;
                     $returnItems->return_id = $returns->id;
-                    $returnItems->product_id = (int)$sale_item['product_id'];
+                    $returnItems->product_id = (int)$saleItem->product_id;
                     $returnItems->quantity = (int)$sale_item['quantity'];
                     $returnItems->return_price = (int)$sale_item['return_price'];
                     $returnItems->product_total = (int)$sale_item['total_price'];
 
-                    $saleItem = SaleItem::findOrFail($sale_item['product_id']);
+
                     $old_subtotal = $saleItem->sub_total;
                     $old_quantity = $saleItem->qty;
                     $actual_selling_price = $old_subtotal / $old_quantity;
@@ -203,9 +205,9 @@ class ReturnController extends Controller
     }
     public function returnProductsList()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $returns = Returns::get();
-        }else{
+        } else {
             $returns = Returns::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 

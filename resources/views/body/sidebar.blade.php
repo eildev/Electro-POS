@@ -120,7 +120,7 @@
                 <a href="{{ route('via.sale') }}"
                     class="nav-link {{ request()->routeIs('via.sale') ? 'nav_active' : '' }}">
                     <i class="ms-2 link-icon" data-feather="columns"></i>
-                    <span class="link-title">Via Sale</span>
+                    <span class="link-title">Via Purchase</span>
                 </a>
             </li>
             {{-- //Via Sale  End // --}}
@@ -325,43 +325,43 @@
                 </a>
                 <div class="collapse {{ request()->routeIs('Inventory*') ? 'show' : '' }}" id="Inventory">
                     <ul class="nav sub-menu"> --}}
-                        <!---Stock --->
-                        <li class="nav-item">
-                            <a href="{{ route('report.stock') }}"
-                                class="nav-link {{ request()->routeIs('report.stock') ? 'nav_active' : '' }}">
-                                <i class="ms-2 link-icon" data-feather="trending-up"></i>
-                                <span class="link-title">Stock Report</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('report.low.stock') }}"
-                                class="nav-link {{ request()->routeIs('report.low.stock') ? 'nav_active' : '' }}">
-                                <i class="ms-2 link-icon" data-feather="trending-down"></i>
-                                <span class="link-title"> Low Stock Report</span>
-                            </a>
-                        </li>
-                        <!---Stock End--->
-                        <!---Damage Product--->
-                        <li class="nav-item">
-                            <a href="{{ route('report.damage') }}"
-                                class="nav-link {{ request()->routeIs('report.damage') ? 'nav_active' : '' }}">
-                                <i class="ms-2 link-icon" data-feather="alert-triangle"></i>
-                                <span class="link-title"> Damage Report</span>
-                            </a>
-                        </li>
-                        <!---Damage End--->
-                        <!---Return --->
-                        @if (Auth::user()->can('return.menu'))
-                            <li class="nav-item">
-                                <a href="{{ route('return.products.list') }}"
-                                    class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}">
-                                    <i class="ms-2 link-icon" data-feather="corner-down-right"></i>
-                                    <span class="link-title">All Return</span>
-                                </a>
-                            </li>
-                        @endif
-                        <!---Damage End--->
-                    {{-- </ul>
+            <!---Stock --->
+            <li class="nav-item">
+                <a href="{{ route('report.stock') }}"
+                    class="nav-link {{ request()->routeIs('report.stock') ? 'nav_active' : '' }}">
+                    <i class="ms-2 link-icon" data-feather="trending-up"></i>
+                    <span class="link-title">Stock Report</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('report.low.stock') }}"
+                    class="nav-link {{ request()->routeIs('report.low.stock') ? 'nav_active' : '' }}">
+                    <i class="ms-2 link-icon" data-feather="trending-down"></i>
+                    <span class="link-title"> Low Stock Report</span>
+                </a>
+            </li>
+            <!---Stock End--->
+            <!---Damage Product--->
+            <li class="nav-item">
+                <a href="{{ route('report.damage') }}"
+                    class="nav-link {{ request()->routeIs('report.damage') ? 'nav_active' : '' }}">
+                    <i class="ms-2 link-icon" data-feather="alert-triangle"></i>
+                    <span class="link-title"> Damage Report</span>
+                </a>
+            </li>
+            <!---Damage End--->
+            <!---Return --->
+            @if (Auth::user()->can('return.menu'))
+                <li class="nav-item">
+                    <a href="{{ route('return.products.list') }}"
+                        class="nav-link {{ request()->routeIs('return.products.list') ? 'nav_active' : '' }}">
+                        <i class="ms-2 link-icon" data-feather="corner-down-right"></i>
+                        <span class="link-title">All Return</span>
+                    </a>
+                </li>
+            @endif
+            <!---Damage End--->
+            {{-- </ul>
                 </div>
             </li> --}}
             {{-- ////////////////////////////////////---- Inventory End----//////////////////////////////// --}}

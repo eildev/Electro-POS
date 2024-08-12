@@ -13,10 +13,8 @@
             </td>
             <td>
                 <ul>
-                    {{-- @dd($data->returnItem) --}}
                     @foreach ($data->returnItem as $item)
-                        <li>{{ $item->product->name ?? '' }}
-                        </li>
+                        <li>{{ $item->product->name ?? 'Product Name Not Available' }} </li>
                     @endforeach
                 </ul>
             </td>
@@ -26,10 +24,12 @@
             <td>
                 ৳ {{ $data->total_return_profit ?? 0 }}
             </td>
+            @php
+                $user = App\Models\User::findOrfail($data->processed_by);
+            @endphp
             <td>
-                ৳ {{ $data->processed_by ?? 0 }}
+                {{ $user->name ?? 'Processed by Not Available' }}
             </td>
-
         </tr>
     @endforeach
 @else

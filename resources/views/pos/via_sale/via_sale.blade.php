@@ -64,7 +64,8 @@
                                                                 data-bs-target="#paymentModal"><i
                                                                     class="fa-solid fa-credit-card me-2"></i> Payment</a>
                                                         @endif
-                                                        <a class="dropdown-item delete_via_sale" data-id="{{ $via->id }}"   href="#"><i
+                                                        <a class="dropdown-item delete_via_sale"
+                                                            data-id="{{ $via->id }}" href="#"><i
                                                                 class="fa-solid fa-trash-can me-2"></i>Delete</a>
                                                     </div>
                                                 </div>
@@ -112,7 +113,7 @@
                                 <label for="name" class="form-label">Transaction Account<span
                                         class="text-danger">*</span></label>
                                 @php
-                                    $payments = App\Models\Bank::all();
+                                    $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->get();
                                 @endphp
                                 <select class="form-select transaction_account" data-width="100%"
                                     name="transaction_account" onclick="errorRemove(this);" onblur="errorRemove(this);">
@@ -231,13 +232,13 @@
             })
         })
         $(document).ready(function() {
-    $('.delete_via_sale').on('click', function(e) {
-        e.preventDefault();
+            $('.delete_via_sale').on('click', function(e) {
+                e.preventDefault();
 
-        var id = $(this).data('id');
-        var url = '/via/sale/delete/' + id;
-        // alert(id)
-        Swal.fire({
+                var id = $(this).data('id');
+                var url = '/via/sale/delete/' + id;
+                // alert(id)
+                Swal.fire({
                     title: "Are you sure?",
                     text: "You won't be able to Delete this!",
                     icon: "warning",
@@ -247,39 +248,39 @@
                     confirmButtonText: "Yes, delete it!"
                 }).then((result) => {
                     if (result.isConfirmed) {
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    if (response.message) {
-                        Swal.fire({
-                            title: "Deleted!",
-                            text: "Your file has been deleted.",
-                            icon: "success"
+                        $.ajax({
+                            url: url,
+                            type: 'GET',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.message) {
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your file has been deleted.",
+                                        icon: "success"
+                                    });
+                                    location.reload();
+                                } else {
+                                    Swal.fire({
+                                        position: "top-end",
+                                        icon: "warning",
+                                        title: "Deleted Unsuccessful!",
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    });
+                                }
+                                location.reload(); // Reload the page
+                            },
+                            error: function(xhr) {
+                                alert('Error deleting record.');
+                            }
                         });
-                        location.reload();
-                   } else {
-                        Swal.fire({
-                            position: "top-end",
-                            icon: "warning",
-                            title: "Deleted Unsuccessful!",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                      }
-                     location.reload(); // Reload the page
-                },
-                error: function(xhr) {
-                    alert('Error deleting record.');
-                }
+                    }
+                });
             });
-        }
-    });
-    });
 
-});
+        });
     </script>
 @endsection

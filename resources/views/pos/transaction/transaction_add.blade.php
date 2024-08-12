@@ -356,7 +356,7 @@
                             <label for="name" class="form-label">Phone Number<span
                                     class="text-danger">*</span></label>
                             <input id="defaultconfig" class="form-control phone investor_phone" maxlength="39"
-                                name="phone" type="number" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
+                                name="phone" type="tel" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger investor_phone_error"></span>
                         </div>
                 </div>
