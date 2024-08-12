@@ -27,21 +27,24 @@
                             <tbody class="showData">
                                 @if ($role->count() > 0)
                                     @foreach ($role as $key => $data)
-                                        <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>{{ $data->name ?? '' }}</td>
-                                            <td class="permissions-container">
-                                                {{-- @foreach(array_chunk($data->permissions->toArray(), 12) as $chunk) --}}
-                                                <div class="chunk">
-                                                @foreach($data->permissions as $permission)
-                                                    <span class="badge rounded-pill bg-danger"> {{ $permission['name'] ??  '' }}</span>
-                                                @endforeach
-                                            </div>
-                                                 {{-- @endforeach --}}
-                                            </td>
-                                            <td>
-                            @if(Auth::user()->can('role-and-permission-check-role-permission.edit'))
-                                  @if ( Auth::user()->id === 4  || Auth::user()->id === 1 )
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ $data->name ?? '' }}</td>
+                                        <td class="permissions-container">
+                                            {{-- @foreach(array_chunk($data->permissions->toArray(), 12) as $chunk) --}}
+                                            <div class="chunk">
+                                            @foreach($data->permissions as $permission)
+                                                <span class="badge rounded-pill bg-danger"> {{ $permission['name'] ??  '' }}</span>
+                                            @endforeach
+                                        </div>
+                                                {{-- @endforeach --}}
+                                        </td>
+                                        <td>
+                                @if(Auth::user()->can('role-and-permission-check-role-permission.edit'))
+                                  @if ( $data->id == 4 )
+                                    {{-- //This is Edit  --}}
+
+                                    @else
                                     <a href="{{route('admin.role.edit',$data->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit">
                                         <i data-feather="edit"></i>
                                     </a>
