@@ -42,6 +42,15 @@ class UserSeed extends Seeder
                 'branch_id' => 1,
                 'password' => Hash::make('12345678'),
             ],
+            [
+                'id' => 4,
+                'company_id' => 1,
+                'name' => 'TecAdmin',
+                'email' => 'tecadmin@gmail.com',
+                'phone' => '1234538',
+                'branch_id' => 1,
+                'password' => Hash::make('12345678'),
+            ],
         ];
 
         foreach ($users as $user) {
