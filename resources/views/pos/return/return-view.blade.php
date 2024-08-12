@@ -11,7 +11,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-title">Sales Table</h6>
+                    <h6 class="card-title">Return List</h6>
 
                     <div class="table-responsive">
                         <table id="example" class="table">
@@ -51,15 +51,14 @@
                 <div class="modal-body">
                     <form id="signupForm" class="paymentForm row">
                         <div class="mb-3 col-md-12">
-                            <label for="name" class="form-label">Payment Date<span
-                                    class="text-danger">*</span></label>
+                            <label for="name" class="form-label">Payment Date<span class="text-danger">*</span></label>
                             <div class="input-group flatpickr" id="flatpickr-date">
                                 <input type="text" class="form-control from-date flatpickr-input payment_date"
                                     placeholder="Payment Date" data-input="" readonly="readonly" name="payment_date">
                                 <span class="input-group-text input-group-addon" data-toggle=""><svg
-                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-calendar">
                                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2">
                                         </rect>
                                         <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -72,7 +71,7 @@
                             <label for="name" class="form-label">Transaction Account<span
                                     class="text-danger">*</span></label>
                             @php
-                                $payments = App\Models\Bank::all();
+                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->get();
                             @endphp
                             <select class="form-select transaction_account" data-width="100%" name="transaction_account"
                                 onclick="errorRemove(this);" onblur="errorRemove(this);">

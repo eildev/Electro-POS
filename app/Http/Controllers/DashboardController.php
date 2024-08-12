@@ -24,7 +24,6 @@ class DashboardController extends Controller
         $branchData = [];
         $banks = Bank::all();
         if (Auth::user()->id == 1) {
-
             $branches = Branch::all();
             foreach ($branches as $branch) {
                 $branchId = $branch->id;
@@ -79,7 +78,7 @@ class DashboardController extends Controller
                     ->get();
                 $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branchId)
                     ->whereDate('created_at', Carbon::now())->get();
-                $return = Returns::whereDate('created_at', Carbon::now())->get();
+                $return = Returns::where('branch_id', $branchId)->whereDate('created_at', Carbon::now())->get();
                 $adjustDueCollectionDB = Transaction::where('branch_id', $branchId)
                     ->where('particulars', 'Adjust Due Collection')
                     ->where('payment_type', 'pay')
@@ -177,15 +176,16 @@ class DashboardController extends Controller
                     $previousDayBalance += $transaction->balance;
                 }
             }
-            $addBalance = AccountTransaction::where(function ($query) {
-                $query->where('purpose', 'Add Bank Balance')
-                    ->orWhere('purpose', 'Bank');
-            })
+            $addBalance = AccountTransaction::where('branch_id', $branchId)
+                ->where(function ($query) {
+                    $query->where('purpose', 'Add Bank Balance')
+                        ->orWhere('purpose', 'Bank');
+                })
                 ->whereDate('created_at', Carbon::now())
                 ->get();
             $todayEmployeeSalary = EmployeeSalary::where('branch_id', $branchId)
                 ->whereDate('created_at', Carbon::now())->get();
-            $return = Returns::whereDate('created_at', Carbon::now())->get();
+            $return = Returns::where('branch_id', $branchId)->whereDate('created_at', Carbon::now())->get();
             $adjustDueCollectionDB = Transaction::where('branch_id', $branchId)
                 ->where('particulars', 'Adjust Due Collection')
                 ->where('payment_type', 'pay')
