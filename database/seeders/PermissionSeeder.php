@@ -139,10 +139,10 @@ class PermissionSeeder extends Seeder
             ['id' => 98, 'name' => 'branch.edit', 'guard_name' => 'web', 'group_name' => 'branch'],
             ['id' => 99, 'name' => 'branch.delete', 'guard_name' => 'web', 'group_name' => 'branch'],
 
-            ['id' => 100, 'name' => 'report.menu', 'guard_name' => 'web', 'group_name' => '	report'],
-            ['id' => 101, 'name' => 'return.menu', 'guard_name' => 'web', 'group_name' => '	return'],
-            ['id' => 102, 'name' => 'limit.user', 'guard_name' => 'web', 'group_name' => '	limit'],
-            ['id' => 103, 'name' => 'limit.device', 'guard_name' => 'web', 'group_name' => '	limit'],
+            ['id' => 100, 'name' => 'report.menu', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 101, 'name' => 'return.menu', 'guard_name' => 'web', 'group_name' => 'return'],
+            ['id' => 102, 'name' => 'limit.user', 'guard_name' => 'web', 'group_name' => 'limit'],
+            ['id' => 103, 'name' => 'limit.device', 'guard_name' => 'web', 'group_name' => 'limit'],
 
             // add more permissions as needed
         ];
