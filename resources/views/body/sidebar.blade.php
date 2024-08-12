@@ -324,7 +324,7 @@
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse {{ request()->routeIs('Inventory*') ? 'show' : '' }}" id="Inventory">
-                    <ul class="nav sub-menu">
+                    <ul class="nav sub-menu"> --}}
                         <!---Stock --->
                         <li class="nav-item">
                             <a href="{{ route('report.stock') }}"
@@ -361,9 +361,9 @@
                             </li>
                         @endif
                         <!---Damage End--->
-                    </ul>
+                    {{-- </ul>
                 </div>
-            </li>
+            </li> --}}
             {{-- ////////////////////////////////////---- Inventory End----//////////////////////////////// --}}
             {{-- //////////////////////--- Human Resource Management (HRM)----///////////////////// --}}
             <li class="nav-item nav-category">HRM</li>

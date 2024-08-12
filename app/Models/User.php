@@ -51,7 +51,7 @@ class User extends Authenticatable
             return $permission_groups;
         }
         else{
-            $permission_groups = DB::table('permissions')->select('group_name')->orderBy('group_name')->get();
+            $permission_groups = DB::table('permissions')->select('group_name')->where('group_name','!=','limit')->orderBy('group_name')->get();
             return $permission_groups;
         }
     }
