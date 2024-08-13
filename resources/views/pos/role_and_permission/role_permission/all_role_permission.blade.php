@@ -43,6 +43,11 @@
                                 @if(Auth::user()->can('role-and-permission-check-role-permission.edit'))
                                   @if ( $data->id == 4 )
                                     {{-- //This is Edit  --}}
+                                    @if(Auth::user()->id == 4 )
+                                    <a href="{{route('admin.role.edit',$data->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit">
+                                        <i data-feather="edit"></i>
+                                    </a>
+                                    @endif
 
                                     @else
                                     <a href="{{route('admin.role.edit',$data->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit">
