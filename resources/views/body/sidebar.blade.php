@@ -708,6 +708,13 @@
                     </a>
                 </li>
             @endif
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('products.imports') ? 'nav_active' : '' }}"
+                    href="{{ route('products.imports') }}" role="button" aria-controls="general-pages">
+                    <i class="ms-2 link-icon" data-feather="sliders"></i>
+                    <span class="link-title">Excel File Import</span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

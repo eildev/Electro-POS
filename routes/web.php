@@ -153,6 +153,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/find/{id}', 'find')->name('product.find');
         Route::get('/product/barcode/{id}', 'ProductBarcode')->name('product.barcode');
         Route::get('/search/{value}', 'globalSearch');
+        //Excel import Route
+        Route::get('/products/imports', 'ProductsImport')->name('products.imports');
+        Route::post('/products/imports/all', 'ImportExcelData');
     });
     // Product  related route(n)
     Route::controller(EmployeeController::class)->group(function () {
