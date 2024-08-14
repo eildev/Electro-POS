@@ -325,8 +325,8 @@ class SaleController extends Controller
                     $costPrice = $viaItem->total_purchase_cost / $viaItem->qty;
                     $viaSale->cost_price = $costPrice;
                     $viaSale->sale_price = $viaItem->rate;
-                    $viaSale->sub_total = $viaItem->sub_total;
                     $viaTotalPay = $costPrice * $viaItem->qty;
+                    $viaSale->sub_total = $viaTotalPay;
                     $viaSale->paid = 0;
                     $viaSale->due = $viaTotalPay;
                     $viaSale->status  = 0;
