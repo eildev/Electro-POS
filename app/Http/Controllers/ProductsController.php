@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
+use App\Jobs\ImportExcelDataJob;
 class ProductsController extends Controller
 {
     public function index()
@@ -222,6 +223,7 @@ class ProductsController extends Controller
     public function ProductsImport(){
         return view('pos.products.product.product-import');
     }
+
     public function ImportExcelData(Request $request){
         $request->validate([
             'import_file' => [
@@ -229,14 +231,20 @@ class ProductsController extends Controller
                 'file'
             ]
         ]);
+        //     // Save the file to a temporary location
+        // $file = $request->file('import_file');
+        // $filePath = $file->store('imports', 'local'); // 'local' is the default disk
 
+        // // Dispatch the import job with the file path
+        // ImportExcelDataJob::dispatch($filePath);
+        // ImportExcelDataJob::dispatch($request->file('import_file'));
          Excel::import(new ProductsImport, $request->file('import_file'));
+
          $notification = array(
             'message' => 'Products imported successfully.',
             'alert-type' => 'info'
         );
         return redirect()->back()->with($notification);
     }
-
 
 }
