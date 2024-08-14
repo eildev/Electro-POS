@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
 class ProductsController extends Controller
 {
     public function index()
@@ -218,4 +219,24 @@ class ProductsController extends Controller
             'status' => 200
         ]);
     }
+    public function ProductsImport(){
+        return view('pos.products.product.product-import');
+    }
+    public function ImportExcelData(Request $request){
+        $request->validate([
+            'import_file' => [
+                'required',
+                'file'
+            ]
+        ]);
+
+         Excel::import(new ProductsImport, $request->file('import_file'));
+         $notification = array(
+            'message' => 'Products imported successfully.',
+            'alert-type' => 'info'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+
 }
