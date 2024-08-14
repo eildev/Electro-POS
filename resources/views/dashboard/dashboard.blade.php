@@ -128,6 +128,96 @@
                             </div>
                         </div>
                     @endforeach
+                    @if (count($branchData) > 1)
+                        <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
+                            <div class="card" style="">
+                                <div class="card-body">
+                                    <h6 class="card-title">Today Total Summary</h6>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="2">Incomming</th>
+                                                <th colspan="2">Outgoing</th>
+                                            </tr>
+                                            <tr>
+                                                <th>Purpose</th>
+                                                <th class="text-end">TK</th>
+                                                <th>Purpose</th>
+                                                <th class="text-end">TK</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Previous Day Balance</td>
+                                                <td class="text-end">{{ number_format($previousDayTotalBalance, 2) }}
+                                                </td>
+                                                <td>Salary</td>
+                                                <td class="text-end">{{ number_format($todayTotalEmployeeSalary, 2) }}
+                                                </td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Paid Sales</td>
+                                                <td class="text-end">{{ number_format($todayTotalSales, 2) }}</td>
+                                                <td>Purchase</td>
+                                                <td class="text-end">{{ number_format($todayTotalPurchase, 2) }}</td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Due Collection</td>
+                                                <td class="text-end">{{ number_format($todayTotalDueCollection, 2) }}</td>
+                                                <td>Due Paid</td>
+                                                <td class="text-end">{{ number_format($todayTotalPurchaseDuePay, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Other Deposit</td>
+                                                <td class="text-end">{{ number_format($todayTotalOtherCollection, 2) }}
+                                                </td>
+                                                <td>Other Withdraw</td>
+                                                <td class="text-end">{{ number_format($todayTotalOtherPaid, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Adjust Due Collcetion</td>
+                                                <td class="text-end">
+                                                    {{ number_format($todayTotalAdjustDueCollection, 2) }}
+                                                </td>
+                                                <td>Return</td>
+                                                <td class="text-end">
+                                                    {{ number_format($todayTotalReturnAmount, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Add Balance</td>
+                                                <td class="text-end">{{ number_format($todayTotalAddBalance, 2) }}</td>
+                                                <td>Expanse</td>
+                                                <td class="text-end">{{ number_format($todayTotalExpanse, 2) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Via Sale</td>
+                                                <td class="text-end">{{ number_format($todayTotalViaSale, 2) }}</td>
+                                                <td>Via Purchase</td>
+                                                <td class="text-end">{{ number_format($todayTotalViaPayment, 2) }}</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>Total</td>
+                                                <td class="text-end">{{ number_format($todayTotalIngoing, 2) }}</td>
+                                                <td>Total</td>
+                                                <td class="text-end">{{ number_format($todayTotalOutgoing, 2) }}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="3">Total Balance</th>
+                                                <th class="text-end">
+                                                    {{ number_format($todayTotalIngoing - $todayTotalOutgoing, 2) }}
+                                                </th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 @else
                     <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
                         <div class="card" style="">
