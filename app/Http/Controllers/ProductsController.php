@@ -247,8 +247,8 @@ class ProductsController extends Controller
         } catch (\Exception $e) {
             // Handle any errors that occurred during the import
             $notification = array(
-                'message' => 'Error importing products: ' . $e->getMessage(),
-                'alert-type' => 'error'
+                'warning' => 'Error importing products: ' . $e->getMessage(),
+                'alert-type' => 'info'
             );
         }
 
