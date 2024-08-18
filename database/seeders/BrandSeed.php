@@ -16,18 +16,53 @@ class BrandSeed extends Seeder
         $brands = [
             [
                 'id' => 1,
-                'name' => 'Local Brand',
-                'slug' => 'local-brand',
+                'name' => 'Philips',
+                'slug' => 'philips',
             ],
             [
                 'id' => 2,
-                'name' => 'Basundhara',
-                'slug' => 'basundhara',
+                'name' => 'Havells',
+                'slug' => 'havells',
             ],
             [
                 'id' => 3,
-                'name' => 'Fresh',
-                'slug' => 'fresh',
+                'name' => 'Panasonic',
+                'slug' => 'panasonic',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Belkin',
+                'slug' => 'belkin',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Siemens',
+                'slug' => 'siemens',
+            ],
+            [
+                'id' => 6,
+                'name' => 'Exide',
+                'slug' => 'exide',
+            ],
+            [
+                'id' => 7,
+                'name' => 'TP-Link',
+                'slug' => 'tp-link',
+            ],
+            [
+                'id' => 8,
+                'name' => 'Bajaj',
+                'slug' => 'bajaj',
+            ],
+            [
+                'id' => 9,
+                'name' => 'LG',
+                'slug' => 'lg',
+            ],
+            [
+                'id' => 10,
+                'name' => 'Schneider',
+                'slug' => 'schneider',
             ],
         ];
 

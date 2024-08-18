@@ -16,18 +16,53 @@ class CategorySeeder extends Seeder
         $productCategorys = [
             [
                 'id' => 1,
-                'name' => 'Clothing',
-                'slug' => 'clothing',
+                'name' => 'Lighting',
+                'slug' => 'lighting',
             ],
             [
                 'id' => 2,
-                'name' => 'Electronics',
-                'slug' => 'electronics',
+                'name' => 'Fans',
+                'slug' => 'fans',
             ],
             [
                 'id' => 3,
-                'name' => 'Food',
-                'slug' => 'food',
+                'name' => 'Kitchen Appliances',
+                'slug' => 'kitchen-appliances',
+            ],
+            [
+                'id' => 4,
+                'name' => 'Accessories',
+                'slug' => 'accessories',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Motors',
+                'slug' => 'motors',
+            ],
+            [
+                'id' => 6,
+                'name' => 'Power Solutions',
+                'slug' => 'power-solutions',
+            ],
+            [
+                'id' => 7,
+                'name' => 'Smart Devices',
+                'slug' => 'smart-devices',
+            ],
+            [
+                'id' => 8,
+                'name' => 'Home Appliances',
+                'slug' => 'home-appliances',
+            ],
+            [
+                'id' => 9,
+                'name' => 'Air Conditioning',
+                'slug' => 'air-conditioning',
+            ],
+            [
+                'id' => 10,
+                'name' => 'Electrical Components',
+                'slug' => 'electrical-components',
             ],
         ];
 

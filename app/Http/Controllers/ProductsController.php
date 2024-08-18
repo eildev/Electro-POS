@@ -13,6 +13,7 @@ use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
 use App\Jobs\ImportExcelDataJob;
+
 class ProductsController extends Controller
 {
     public function index()
@@ -220,31 +221,37 @@ class ProductsController extends Controller
             'status' => 200
         ]);
     }
-    public function ProductsImport(){
+    public function importProduct()
+    {
         return view('pos.products.product.product-import');
     }
 
-    public function ImportExcelData(Request $request){
+    public function ImportExcelData(Request $request)
+    {
         $request->validate([
             'import_file' => [
                 'required',
                 'file'
             ]
         ]);
-        //     // Save the file to a temporary location
-        // $file = $request->file('import_file');
-        // $filePath = $file->store('imports', 'local'); // 'local' is the default disk
 
-        // // Dispatch the import job with the file path
-        // ImportExcelDataJob::dispatch($filePath);
-        // ImportExcelDataJob::dispatch($request->file('import_file'));
-         Excel::import(new ProductsImport, $request->file('import_file'));
+        try {
+            // Attempt to import the Excel file
+            Excel::import(new ProductsImport, $request->file('import_file'));
 
-         $notification = array(
-            'message' => 'Products imported successfully.',
-            'alert-type' => 'info'
-        );
+            // Success notification
+            $notification = array(
+                'message' => 'Products imported successfully.',
+                'alert-type' => 'info'
+            );
+        } catch (\Exception $e) {
+            // Handle any errors that occurred during the import
+            $notification = array(
+                'message' => 'Error importing products: ' . $e->getMessage(),
+                'alert-type' => 'error'
+            );
+        }
+
         return redirect()->back()->with($notification);
     }
-
 }

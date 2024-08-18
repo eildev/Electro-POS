@@ -154,7 +154,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/barcode/{id}', 'ProductBarcode')->name('product.barcode');
         Route::get('/search/{value}', 'globalSearch');
         //Excel import Route
-        Route::get('/products/imports', 'ProductsImport')->name('products.imports');
+        Route::get('/products/imports', 'importProduct')->name('products.imports');
         Route::post('/products/imports/all', 'ImportExcelData');
     });
     // Product  related route(n)

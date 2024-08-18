@@ -14,8 +14,8 @@ class CompanySeeder extends Seeder
     public function run(): void
     {
         Company::create([
-            'name' => 'Eclipse Blends and Blossom',
-            'slug' => 'eclipse-blends-and-blossom',
+            'name' => 'Eclipse Electro POS',
+            'slug' => 'eclipse-electro-pos',
         ]);
     }
 }

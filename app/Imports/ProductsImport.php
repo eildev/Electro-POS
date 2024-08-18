@@ -6,20 +6,19 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use App\Models\product;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-class ProductsImport implements ToCollection ,WithHeadingRow
+
+class ProductsImport implements ToCollection, WithHeadingRow
 {
     /**
-    * @param Collection $collection
-    */
+     * @param Collection $collection
+     */
     public function collection(Collection $rows)
     {
-        foreach ($rows as $row)
-
-        {
-            $product = product::where('id',$row['id'])->first();
-            if($product){
+        foreach ($rows as $row) {
+            $product = product::where('name', $row['name'])->first();
+            if ($product) {
                 $product->update([
-                    'id' => $row['id'],
+                    // 'id' => $row['id'],
                     'name' => $row['name'],
                     'branch_id' => $row['branch_id'],
                     'barcode' => $row['barcode'],
@@ -37,9 +36,9 @@ class ProductsImport implements ToCollection ,WithHeadingRow
                     'size_id' => $row['size_id'],
                     'unit_id' => $row['unit_id'],
                 ]);
-            }else{
+            } else {
                 product::create([
-                    'id' => $row['id'],
+                    // 'id' => $row['id'],
                     'name' => $row['name'],
                     'branch_id' => $row['branch_id'],
                     'barcode' => $row['barcode'],
@@ -58,8 +57,6 @@ class ProductsImport implements ToCollection ,WithHeadingRow
                     'unit_id' => $row['unit_id'],
                 ]);
             }
-
         }
-
     }
 }

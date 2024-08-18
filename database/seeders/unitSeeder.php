@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Unit;
+
 class UnitSeeder extends Seeder
 {
     /**
@@ -14,15 +15,15 @@ class UnitSeeder extends Seeder
     {
         $units = [
             [
-            'id' => 1,
-            'name' => 'Pieces',
+                'id' => 1,
+                'name' => 'Piece',
             ],
             [
-            'id' => 2,
-            'name' => 'Dozen',
-            'related_to_unit' => 'pc',
-            'related_sign' => '*',
-            'related_by' => 12,
+                'id' => 2,
+                'name' => 'Dozen',
+                'related_to_unit' => 'pc',
+                'related_sign' => '*',
+                'related_by' => 12,
             ],
             [
                 'id' => 3,
