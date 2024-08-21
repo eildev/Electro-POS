@@ -47,7 +47,7 @@ class UnitSeeder extends Seeder
         ];
 
         foreach ($units as $unit) {
-            unit::create($unit);
+            Unit::create($unit);
         }
     }
 }
