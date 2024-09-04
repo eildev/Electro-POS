@@ -13,60 +13,56 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        $productCategorys = [
+        $categories = [
             [
                 'id' => 1,
-                'name' => 'Lighting',
-                'slug' => 'lighting',
+                'name' => 'Consumer Electronics',
+                'slug' => 'consumer-electronics',
             ],
             [
                 'id' => 2,
-                'name' => 'Fans',
-                'slug' => 'fans',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Kitchen Appliances',
-                'slug' => 'kitchen-appliances',
-            ],
-            [
-                'id' => 4,
-                'name' => 'Accessories',
-                'slug' => 'accessories',
-            ],
-            [
-                'id' => 5,
-                'name' => 'Motors',
-                'slug' => 'motors',
-            ],
-            [
-                'id' => 6,
-                'name' => 'Power Solutions',
-                'slug' => 'power-solutions',
-            ],
-            [
-                'id' => 7,
-                'name' => 'Smart Devices',
-                'slug' => 'smart-devices',
-            ],
-            [
-                'id' => 8,
                 'name' => 'Home Appliances',
                 'slug' => 'home-appliances',
             ],
             [
-                'id' => 9,
-                'name' => 'Air Conditioning',
-                'slug' => 'air-conditioning',
+                'id' => 3,
+                'name' => 'Computing Devices',
+                'slug' => 'computing-devices',
             ],
             [
-                'id' => 10,
-                'name' => 'Electrical Components',
-                'slug' => 'electrical-components',
+                'id' => 4,
+                'name' => 'Audio/Video Equipment',
+                'slug' => 'audio-video-equipment',
+            ],
+            [
+                'id' => 5,
+                'name' => 'Wearable Technology',
+                'slug' => 'wearable-technology',
+            ],
+            [
+                'id' => 6,
+                'name' => 'Networking Devices',
+                'slug' => 'networking-devices',
+            ],
+            [
+                'id' => 7,
+                'name' => 'Gaming',
+                'slug' => 'gaming',
+            ],
+            [
+                'id' => 8,
+                'name' => 'Medical Electronics',
+                'slug' => 'medical-electronics',
+            ],
+            [
+                'id' => 9,
+                'name' => 'Industrial Electronics',
+                'slug' => 'industrial-electronics',
             ],
         ];
 
-        foreach ($productCategorys as $productCategory) {
+
+        foreach ($categories as $productCategory) {
             Category::create($productCategory);
         }
     }
