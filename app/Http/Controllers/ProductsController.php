@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BrandImport;
+use App\Imports\CategoryImport;
 use App\Models\PosSetting;
 use App\Models\Product;
 use App\Models\PromotionDetails;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
+use App\Imports\SubcategoryImport;
 use App\Jobs\ImportExcelDataJob;
 
 class ProductsController extends Controller
@@ -226,6 +229,8 @@ class ProductsController extends Controller
         return view('pos.products.product.product-import');
     }
 
+    /////////////////////// Products Import Data //////////////////////
+
     public function ImportExcelData(Request $request)
     {
         $request->validate([
@@ -252,6 +257,50 @@ class ProductsController extends Controller
             );
         }
 
+        return redirect()->back()->with($notification);
+    }
+
+    /////////////////////// Category Import Data //////////////////////
+
+    public function importCategoryExcelData(Request $request)
+    {
+        // dd($request->all());
+        Excel::import(new CategoryImport, $request->file('category-import_file'));
+        $notification = array(
+            'message' => 'Category imported successfully.',
+            'alert-type' => 'info'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+    /////////////////////// Category Import Data //////////////////////
+
+    public function importSubcategoryExcelData(Request $request)
+    {
+        Excel::import(new SubcategoryImport, $request->file('subcategory-import_file'));
+        $notification = array(
+            'message' => 'Category imported successfully.',
+            'alert-type' => 'info'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+    ///////////////////////Brand Import Data //////////////////////
+
+    public function importBrandExcelData(Request $request)
+    {
+        $request->validate([
+            'brand-import_file' => [
+                'required',
+                'file'
+            ]
+        ]);
+
+        Excel::import(new BrandImport, $request->file('brand-import_file'));
+        $notification = array(
+            'message' => 'Brand imported successfully.',
+            'alert-type' => 'info'
+        );
         return redirect()->back()->with($notification);
     }
 }

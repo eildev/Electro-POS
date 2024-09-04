@@ -156,6 +156,12 @@ Route::middleware('auth')->group(function () {
         //Excel import Route
         Route::get('/products/imports', 'importProduct')->name('products.imports');
         Route::post('/products/imports/all', 'ImportExcelData');
+        //Category import
+        Route::post('/category/imports/all', 'importCategoryExcelData');
+        //Subcategory import
+        Route::post('/subcategory/imports/all', 'importSubcategoryExcelData');
+        //Brand import
+        Route::post('/brand/imports/all', 'importBrandExcelData');
     });
     // Product  related route(n)
     Route::controller(EmployeeController::class)->group(function () {
