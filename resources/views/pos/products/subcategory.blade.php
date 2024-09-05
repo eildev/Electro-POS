@@ -248,8 +248,10 @@
                                 <img src="${subcategory.image ? `${url}/uploads/subcategory/` + subcategory.image : `${url}/dummy/image.jpg`}" alt="cat Image">
                             </td>
                             <td>
-                                <button id="subcategoryButton_${subcategory.id}" class="btn btn-success subcategoryButton"
-                        data-id="${subcategory.id}">Active</button>
+                               <button id="subcategoryButton_${subcategory.id}" class="subcategoryButton btn ${subcategory.status != 0 ? 'btn-success' : 'btn-danger' } categoryButton"
+                                data-id="${subcategory.id}">${subcategory.status != 0 ? 'Active' : 'Inactive'}</button>
+
+
                             </td>
                             <td>
                                 <a href="#" class="btn btn-primary btn-icon subcategory_edit" data-id=${subcategory.id} data-bs-toggle="modal" data-bs-target="#edit">
@@ -396,7 +398,7 @@
             $(document).ready(function() {
                 $('.showData').on('click', '.subcategoryButton', function() {
                     var subcategoryId = $(this).data('id');
-                    // alert(categoryId);
+                    // alert(subcategoryId);
                     $.ajax({
                         url: '/subcategory/status/' + subcategoryId,
                         type: 'POST',
