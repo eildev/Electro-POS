@@ -41,7 +41,6 @@ class SubCategoryController extends Controller
                 $request->image->move(public_path('uploads/subcategory'), $imageName);
                 $data['image'] = $imageName;
             }
-
             $data['slug'] = Str::slug($request->name);
 
             $this->subCategory->create($data);
