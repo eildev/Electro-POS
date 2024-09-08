@@ -8,6 +8,7 @@ use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
+use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\Transaction;
 use Carbon\Carbon;
@@ -82,8 +83,17 @@ class PurchaseController extends Controller
                     $items->save();
 
                     $items2 = Product::findOrFail($request->product_id[$i]);
-                    $items2->stock += $request->quantity[$i];
-                    $items2->save();
+                    $stock = Stock::where('product_id', $request->product_id[$i])->first();
+                    if ($stock) {
+                        $stock->stock_quantity += $request->quantity[$i];
+                        $stock->save();
+                    } else {
+                        // dd(Auth::user()->branch_id);
+                        $stock->branch_id = Auth::user()->branch_id || 1;
+                        $stock->product_id = $request->product_id[$i];
+                        $stock->stock_quantity += $request->quantity[$i];
+                        $stock->save();
+                    }
                 }
                 // product Carrying Cost carrying cost
                 // actual payment CRUD
@@ -99,7 +109,7 @@ class PurchaseController extends Controller
                 // Account Transaction Crud //
 
                 //Carry Cost
-                if($request->carrying_cost > 0){
+                if ($request->carrying_cost > 0) {
                     $expense = new Expense;
                     $expense->branch_id = Auth::user()->branch_id;
                     $expense->purpose =  'Purchase Carrying Cost';
@@ -117,7 +127,7 @@ class PurchaseController extends Controller
                     $accountTransaction->balance = $oldBalance->balance  - ($request->total_payable + $request->carrying_cost) ?? 0;
                     $accountTransaction->created_at = Carbon::now();
                     $accountTransaction->save();
-                   }else{
+                } else {
                     $accountTransaction = new AccountTransaction;
                     $accountTransaction->branch_id =  Auth::user()->branch_id;
                     $accountTransaction->purpose =  'Purchase';
@@ -127,7 +137,7 @@ class PurchaseController extends Controller
                     $accountTransaction->balance = $oldBalance->balance - $request->total_payable ?? 0;
                     $accountTransaction->created_at = Carbon::now();
                     $accountTransaction->save();
-                   }
+                }
 
                 // get Transaction Model
                 $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();
@@ -183,9 +193,9 @@ class PurchaseController extends Controller
 
     public function view()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $purchase = Purchase::latest()->get();
-        }else{
+        } else {
             $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
