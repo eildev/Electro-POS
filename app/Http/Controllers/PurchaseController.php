@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountTransaction;
 use App\Models\ActualPayment;
+use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
@@ -84,6 +85,18 @@ class PurchaseController extends Controller
                     $items2->stock += $request->quantity[$i];
                     $items2->save();
                 }
+                // product Carrying Cost carrying cost
+                if($request->carrying_cost > 0){
+                    $expense = new Expense;
+                    $expense->branch_id = Auth::user()->branch_id;
+                    $expense->purpose =  'Purchase Carrying Cost';
+                    $expense->expense_date = now()->toDateString();
+                    $expense->amount = $request->carrying_cost;
+                    $expense->bank_account_id = $request->payment_method;
+                    $expense->amount = $request->carrying_cost;
+                    $expense->save();
+                }
+
                 // actual payment CRUD
                 $actualPayment = new ActualPayment;
                 $actualPayment->branch_id =  Auth::user()->branch_id;
@@ -94,7 +107,7 @@ class PurchaseController extends Controller
                 $actualPayment->date =  $purchaseDate;
                 $actualPayment->save();
 
-                // account Transaction crud
+                // account Transaction crud //
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->purpose =  'Purchase';
@@ -105,12 +118,11 @@ class PurchaseController extends Controller
                 $accountTransaction->created_at = Carbon::now();
                 $accountTransaction->save();
 
-
                 // get Transaction Model
                 $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();
                 $transaction = new Transaction;
                 $transaction->branch_id = Auth::user()->branch_id;
-                $transaction->date =   $purchaseDate;
+                $transaction->date =  $purchaseDate;
                 $transaction->payment_type = 'pay';
                 $transaction->particulars = 'Purchase#' . $purchaseId;
                 $transaction->supplier_id = $request->supplier_id;

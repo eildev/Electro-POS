@@ -31,7 +31,7 @@
                                             alt="Receipt image">
                                     </td>
                                     <td>{{ $expenses['bank']['name'] ?? '-' }}</td>
-                                    <td>{{ $expenses['expenseCat']['name'] ?? '' }}</td>
+                                    <td>{{ $expenses['expenseCat']['name'] ?? '-' }}</td>
                                     <td>{{ $expenses->expense_date ?? '' }}</td>
                                     <td>{{ $expenses->note ?? '-' }}</td>
 
