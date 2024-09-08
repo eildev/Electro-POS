@@ -25,7 +25,7 @@ class ProductsController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'category_id' => 'required|integer',
@@ -56,7 +56,7 @@ class ProductsController extends Controller
             $product->brand_id  =  $request->brand_id;
             $product->cost  =  $request->cost;
             $product->price  =  $request->price;
-            $product->details  =  $request->details;
+            $product->details =  $request->details;
             $product->color  =  $request->color;
             $product->unit_id  =  $request->unit_id;
             if ($request->size_id !== 'Please add Size') {

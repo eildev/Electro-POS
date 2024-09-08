@@ -326,7 +326,7 @@
                                 <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" value="" name="tax">
                                     @if ($taxs->count() > 0)
-                                        <option selected disabled>Select Taxes</option>
+                                        <option selected value="0" >Select Taxes</option>
                                         @foreach ($taxs as $taxs)
                                             <option value="{{ $taxs->percentage }}">
                                                 {{ $taxs->percentage }} %
@@ -668,7 +668,8 @@
                 let taxTotal = ((grandTotal * value) / 100);
                 taxTotal = (taxTotal + grandTotal);
                 let totalAmount = taxTotal + previousDue;
-                $('.grandTotal').val(totalAmount);
+                let roundedTotal = Math.round(totalAmount);
+                $('.grandTotal').val(roundedTotal);
             })
 
 
