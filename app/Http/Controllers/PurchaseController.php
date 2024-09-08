@@ -117,8 +117,7 @@ class PurchaseController extends Controller
                     $accountTransaction->balance = $oldBalance->balance  - ($request->total_payable + $request->carrying_cost) ?? 0;
                     $accountTransaction->created_at = Carbon::now();
                     $accountTransaction->save();
-
-                }else{
+                   }else{
                     $accountTransaction = new AccountTransaction;
                     $accountTransaction->branch_id =  Auth::user()->branch_id;
                     $accountTransaction->purpose =  'Purchase';
@@ -128,7 +127,7 @@ class PurchaseController extends Controller
                     $accountTransaction->balance = $oldBalance->balance - $request->total_payable ?? 0;
                     $accountTransaction->created_at = Carbon::now();
                     $accountTransaction->save();
-                }
+                   }
 
                 // get Transaction Model
                 $lastTransaction = Transaction::where('supplier_id', $request->supplier_id)->latest()->first();

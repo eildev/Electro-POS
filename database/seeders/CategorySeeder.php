@@ -16,8 +16,8 @@ class CategorySeeder extends Seeder
         $categories = [
             [
                 'id' => 1,
-                'name' => 'Consumer Electronics',
-                'slug' => 'consumer-electronics',
+                'name' => 'Mobile Phones',
+                'slug' => 'mobile-phones',
                 'status' =>1,
             ],
             [
@@ -26,48 +26,7 @@ class CategorySeeder extends Seeder
                 'slug' => 'home-appliances',
                 'status' =>1,
             ],
-            [
-                'id' => 3,
-                'name' => 'Computing Devices',
-                'slug' => 'computing-devices',
-                'status' =>1,
-            ],
-            [
-                'id' => 4,
-                'name' => 'Audio/Video Equipment',
-                'slug' => 'audio-video-equipment',
-                'status' =>1,
-            ],
-            [
-                'id' => 5,
-                'name' => 'Wearable Technology',
-                'slug' => 'wearable-technology',
-                'status' =>1,
-            ],
-            [
-                'id' => 6,
-                'name' => 'Networking Devices',
-                'slug' => 'networking-devices',
-                'status' =>1,
-            ],
-            [
-                'id' => 7,
-                'name' => 'Gaming',
-                'slug' => 'gaming',
-                'status' =>1,
-            ],
-            [
-                'id' => 8,
-                'name' => 'Medical Electronics',
-                'slug' => 'medical-electronics',
-                'status' =>1,
-            ],
-            [
-                'id' => 9,
-                'name' => 'Industrial Electronics',
-                'slug' => 'industrial-electronics',
-                'status' =>1,
-            ],
+
         ];
 
 
