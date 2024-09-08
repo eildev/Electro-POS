@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\models\PosSetting;
+use App\Models\PosSetting;
 use Carbon\Carbon;
 class SettingSeed extends Seeder
 {

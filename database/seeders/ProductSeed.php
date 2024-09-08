@@ -16,7 +16,7 @@ class ProductSeed extends Seeder
         $products = [
             [
                 'id' => 1,
-                'name' => 'Apple iPhone 15',
+                'name' => 'OnePlus Foldable Phones Model 974',
                 'branch_id' => 1,
                 'barcode' => '000000000001',
                 'category_id' => 1, // Consumer Electronics
@@ -24,7 +24,7 @@ class ProductSeed extends Seeder
                 'brand_id' => 1, // Apple
                 'cost' => 240,
                 'price' => 300,
-                'details' => 'Apple iPhone 15 features a sleek design, powerful A15 Bionic chip, and advanced camera system.',
+                'details' => 'OnePlus Foldable Phones Model 974 features a sleek design, powerful A15 Bionic chip, and advanced camera system.',
                 'image' => null,
                 'stock' => 0,
                 'main_unit_stock' => 0,
