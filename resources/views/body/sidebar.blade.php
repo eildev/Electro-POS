@@ -643,7 +643,14 @@
                 </li>
             @endif
             <!---Admin Manage--->
-            @if (Auth::user()->can('settings.menu'))
+            <li class="nav-item">
+                <a href="{{ route('pos.settings.add') }}"
+                    class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
+                    <i class="ms-2 link-icon" data-feather="message-square"></i>
+                    <span class="link-title">Setting Manage</span>
+                </a>
+            </li>
+            {{-- @if (Auth::user()->can('settings.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('setting*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#setting-manage" role="button" aria-expanded="false"
@@ -659,8 +666,8 @@
                                     class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
                                     <span class="link-title">Settings</span>
                                 </a>
-                            </li>
-                            <li class="nav-item">
+                            </li> --}}
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('invoice.settings') }}"
                                     class="nav-link {{ request()->routeIs('invoice.settings') ? 'nav_active' : '' }}">
                                     <span class="link-title">Invoice-1</span>
@@ -683,12 +690,12 @@
                                     class="nav-link {{ request()->routeIs('invoice4.settings') ? 'nav_active' : '' }}">
                                     <span class="link-title">Invoice-4</span>
                                 </a>
-                            </li>
-
+                            </li> --}}
+{{--
                         </ul>
                     </div>
                 </li>
-            @endif
+            @endif --}}
             @if (Auth::user()->can('limit.user'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('user.limit') ? 'nav_active' : '' }}"

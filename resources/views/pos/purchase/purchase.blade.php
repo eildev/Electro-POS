@@ -141,7 +141,8 @@
                                                         name="total" readonly value="0.00" />
                                                 </div>
                                             </div>
-                                            <div class="row align-items-center">
+                                             {{-- //Display None Discount// --}}
+                                            <div class="row align-items-center d-none">
                                                 <div class="col-md-4">
                                                     Discount :
                                                 </div>
@@ -156,7 +157,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <input type="number" class="form-control carrying_cost"
-                                                        name="carrying_cost" value="0.00" />
+                                                       id="carrying_cost" name="carrying_cost" value="0.00" />
                                                 </div>
                                             </div>
                                             <div class="row align-items-center">
@@ -292,7 +293,7 @@
                         </div>
                         {{-- <form id="signupForm" class="supplierForm row"> --}}
                         <div class="supplierForm row">
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-12">
                                 <label for="name" class="form-label">Transaction Method <span
                                         class="text-danger">*</span></label>
                                 @php
@@ -317,16 +318,16 @@
                                 </select>
                                 <span class="text-danger payment_method_error"></span>
                             </div>
-
-                            <div class="mb-3 col-md-6">
+                            {{-- //Display None Tax// --}}
+                            <div class="mb-3 col-md-6 d-none">
                                 <label for="name" class="form-label">Tax</label>
                                 @php
                                     $taxs = App\Models\Tax::get();
                                 @endphp
-                                <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
+                                <select class="form-select tax " data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" value="" name="tax">
                                     @if ($taxs->count() > 0)
-                                        <option selected disabled>Select Taxes</option>
+                                        <option selected value="0" >Select Taxes</option>
                                         @foreach ($taxs as $taxs)
                                             <option value="{{ $taxs->percentage }}">
                                                 {{ $taxs->percentage }} %
@@ -668,7 +669,8 @@
                 let taxTotal = ((grandTotal * value) / 100);
                 taxTotal = (taxTotal + grandTotal);
                 let totalAmount = taxTotal + previousDue;
-                $('.grandTotal').val(totalAmount);
+                let roundedTotal = Math.round(totalAmount);
+                $('.grandTotal').val(roundedTotal);
             })
 
 
