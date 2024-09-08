@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             ExpenseCategorySeeder::class,
             SubcategorySeed::class,
             BrandSeed::class,
-
+            ProductSeed::class,
         ]);
     }
 }
