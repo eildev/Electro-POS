@@ -10,6 +10,7 @@ use App\Models\Returns;
 use Illuminate\Http\Request;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\Stock;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -57,16 +58,22 @@ class ReturnController extends Controller
                     $avg_selling_price = $old_subtotal / $old_quantity;
                     $actual_total_return_price = $avg_selling_price * $sale_item['quantity'];
                     $return_profit = $actual_total_return_price - $sale_item['total_price'];
-
-
                     $saleItem->save();
                     $Product = Product::findOrFail($saleItem->product_id);
-                    $Product->stock = $Product->stock + $sale_item['quantity'];
-                    $Product->save();
+                    //  dd($Product->stock);
+                    $stock = Stock::where('product_id', $saleItem->product_id)->first();
+                    if ($stock) {
+                        $stock->stock_quantity = $stock->stock_quantity + $sale_item['quantity'];
+                        $stock->save();
+                    } else {
+                        $stock = new Stock();
+                        $stock->branch_id = Auth::user()->branch_id ?? 1;
+                        $stock->product_id = $saleItem->product_id;
+                        $stock->stock_quantity = $sale_item['quantity'];
+                        $stock->save();
+                    }
                     $total_return_profit += $return_profit;
                 }
-
-
                 $returns = new Returns;
                 $returns->return_invoice_number = rand(123456, 99999);
                 $returns->branch_id = Auth::user()->branch_id;
