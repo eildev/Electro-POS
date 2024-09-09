@@ -43,24 +43,6 @@
                                 <span class="text-danger purchase_date_error"></span>
                             </div>
                             <div class="mb-3 col-md-6">
-                                @php
-                                    $category = App\Models\Category::where('slug', 'via-sell')->first();
-                                    $products = collect();
-
-                                    if ($category) {
-                                        $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
-                                            ->withSum('stockQuantity', 'stock_quantity') // Sum the stock_quantity
-                                            ->where('category_id', '!=', $category->id)
-                                            ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // Explicitly reference the stock_quantity_sum
-                                            ->get();
-                                    } else {
-                                        $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
-                                            ->withSum('stockQuantity', 'stock_quantity')
-                                            ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
-                                            ->get();
-                                    }
-
-                                @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
                                 <select class="js-example-basic-single form-select product_select" data-width="100%"
                                     onclick="errorRemove(this);">
