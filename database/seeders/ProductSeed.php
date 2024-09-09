@@ -57,7 +57,7 @@ class ProductSeed extends Seeder
                 'name' => 'Sony PlayStation 5',
                 'branch_id' => 1,
                 'barcode' => '000000000003',
-                'category_id' => 7, // Gaming
+                'category_id' => 1, // Gaming
                 'subcategory_id' => 1, // Gaming Consoles
                 'brand_id' => 3, // Sony
                 'cost' => 500,
@@ -76,7 +76,7 @@ class ProductSeed extends Seeder
                 'name' => 'LG OLED TV C1',
                 'branch_id' => 1,
                 'barcode' => '000000000004',
-                'category_id' => 4, // Audio/Video Equipment
+                'category_id' => 1, // Audio/Video Equipment
                 'subcategory_id' => 1, // Home Theater Systems
                 'brand_id' => 4, // LG
                 'cost' => 1200,
@@ -95,7 +95,7 @@ class ProductSeed extends Seeder
                 'name' => 'Dell XPS 13',
                 'branch_id' => 1,
                 'barcode' => '000000000005',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 2, // Laptops
                 'brand_id' => 5, // Dell
                 'cost' => 900,
@@ -114,7 +114,7 @@ class ProductSeed extends Seeder
                 'name' => 'HP Spectre x360',
                 'branch_id' => 1,
                 'barcode' => '000000000006',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 2, // Laptops
                 'brand_id' => 6, // HP
                 'cost' => 950,
@@ -133,7 +133,7 @@ class ProductSeed extends Seeder
                 'name' => 'Lenovo ThinkPad X1 Carbon',
                 'branch_id' => 1,
                 'barcode' => '000000000007',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 2, // Laptops
                 'brand_id' => 7, // Lenovo
                 'cost' => 1000,
@@ -152,7 +152,7 @@ class ProductSeed extends Seeder
                 'name' => 'Microsoft Surface Pro 9',
                 'branch_id' => 1,
                 'barcode' => '000000000008',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 2, // Laptops
                 'brand_id' => 8, // Microsoft
                 'cost' => 1100,
@@ -171,7 +171,7 @@ class ProductSeed extends Seeder
                 'name' => 'NVIDIA GeForce RTX 4090',
                 'branch_id' => 1,
                 'barcode' => '000000000009',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 3, // Graphics Cards
                 'brand_id' => 9, // NVIDIA
                 'cost' => 1500,
@@ -190,7 +190,7 @@ class ProductSeed extends Seeder
                 'name' => 'Intel Core i9-13900K',
                 'branch_id' => 1,
                 'barcode' => '000000000010',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 4, // Processors
                 'brand_id' => 10, // Intel
                 'cost' => 600,
@@ -209,7 +209,7 @@ class ProductSeed extends Seeder
                 'name' => 'Asus ROG Strix Scar 16',
                 'branch_id' => 1,
                 'barcode' => '000000000011',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 2, // Laptops
                 'brand_id' => 11, // Asus
                 'cost' => 1400,
@@ -228,7 +228,7 @@ class ProductSeed extends Seeder
                 'name' => 'Acer Predator Helios 300',
                 'branch_id' => 1,
                 'barcode' => '000000000012',
-                'category_id' => 3, // Computing Devices
+                'category_id' => 1, // Computing Devices
                 'subcategory_id' => 2, // Laptops
                 'brand_id' => 12, // Acer
                 'cost' => 1300,
@@ -247,7 +247,7 @@ class ProductSeed extends Seeder
                 'name' => 'Panasonic Lumix GH6',
                 'branch_id' => 1,
                 'barcode' => '000000000013',
-                'category_id' => 6, // Cameras
+                'category_id' => 1, // Cameras
                 'subcategory_id' => 1, // Digital Cameras
                 'brand_id' => 13, // Panasonic
                 'cost' => 1700,
@@ -266,7 +266,7 @@ class ProductSeed extends Seeder
                 'name' => 'Canon EOS R6',
                 'branch_id' => 1,
                 'barcode' => '000000000014',
-                'category_id' => 6, // Cameras
+                'category_id' => 1, // Cameras
                 'subcategory_id' => 1, // Digital Cameras
                 'brand_id' => 14, // Canon
                 'cost' => 2500,
@@ -285,7 +285,7 @@ class ProductSeed extends Seeder
                 'name' => 'Nikon Z9',
                 'branch_id' => 1,
                 'barcode' => '000000000015',
-                'category_id' => 6, // Cameras
+                'category_id' => 1, // Cameras
                 'subcategory_id' => 1, // Digital Cameras
                 'brand_id' => 15, // Nikon
                 'cost' => 5500,
@@ -304,7 +304,7 @@ class ProductSeed extends Seeder
                 'name' => 'GoPro HERO11 Black',
                 'branch_id' => 1,
                 'barcode' => '000000000016',
-                'category_id' => 6, // Cameras
+                'category_id' => 1, // Cameras
                 'subcategory_id' => 2, // Action Cameras
                 'brand_id' => 16, // GoPro
                 'cost' => 400,
@@ -323,7 +323,7 @@ class ProductSeed extends Seeder
                 'name' => 'Bose QuietComfort 45',
                 'branch_id' => 1,
                 'barcode' => '000000000017',
-                'category_id' => 5, // Audio Equipment
+                'category_id' => 1, // Audio Equipment
                 'subcategory_id' => 1, // Noise-Canceling Headphones
                 'brand_id' => 17, // Bose
                 'cost' => 300,
@@ -342,7 +342,7 @@ class ProductSeed extends Seeder
                 'name' => 'Beats Studio3 Wireless',
                 'branch_id' => 1,
                 'barcode' => '000000000018',
-                'category_id' => 5, // Audio Equipment
+                'category_id' => 1, // Audio Equipment
                 'subcategory_id' => 1, // Noise-Canceling Headphones
                 'brand_id' => 18, // Beats by Dre
                 'cost' => 250,
@@ -361,7 +361,7 @@ class ProductSeed extends Seeder
                 'name' => 'JBL Charge 5',
                 'branch_id' => 1,
                 'barcode' => '000000000019',
-                'category_id' => 5, // Audio Equipment
+                'category_id' => 1, // Audio Equipment
                 'subcategory_id' => 2, // Portable Speakers
                 'brand_id' => 19, // JBL
                 'cost' => 150,
@@ -380,7 +380,7 @@ class ProductSeed extends Seeder
                 'name' => 'Philips Hue Smart Bulbs',
                 'branch_id' => 1,
                 'barcode' => '000000000020',
-                'category_id' => 2, // Home Automation
+                'category_id' => 1, // Home Automation
                 'subcategory_id' => 1, // Smart Lighting
                 'brand_id' => 20, // Philips
                 'cost' => 60,
