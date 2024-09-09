@@ -33,12 +33,6 @@
 
                             <div class="mb-3 col-md-6">
                                 <label for="password" class="form-label">Purchase Date</label>
-                                {{-- <div class="input-group flatpickr" id="flatpickr-date">
-                                <input type="date" class="form-control purchase_date" placeholder="" data-input
-                                    onkeyup="errorRemove(this);" onblur="errorRemove(this);" max="<?php echo date('Y-m-d'); ?>">
-                                <span class="input-group-text input-group-addon" data-toggle><i
-                                        data-feather="calendar"></i></span>
-                            </div> --}}
                                 <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
                                     <span class="input-group-text input-group-addon bg-transparent border-primary"
                                         data-toggle><i data-feather="calendar" class="text-primary"></i></span>
@@ -53,18 +47,14 @@
                                     $category = App\Models\Category::where('slug', 'via-sell')->first();
                                     $products = collect();
                                     if ($category) {
-
-                                            $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                                ->where('branch_id', Auth::user()->branch_id)
-                                                ->orderBy('stock', 'asc')
-                                                ->get();
-
+                                        $products = App\Models\Product::where('category_id', '!=', $category->id)
+                                            ->where('branch_id', Auth::user()->branch_id)
+                                            ->orderBy('stock', 'asc')
+                                            ->get();
                                     } else {
-
-                                            $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
-                                                ->orderBy('stock', 'asc')
-                                                ->get();
-
+                                        $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
+                                            ->orderBy('stock', 'asc')
+                                            ->get();
                                     }
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
@@ -73,12 +63,21 @@
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
-                                                {{ $product->unit->name }})</option>
+                                            <option value="{{ $product->id }}">
+                                                {{ $product->name }} (
+                                                @if ($product->stockQuantity->count() > 0)
+                                                    @foreach ($product->stockQuantity as $stock)
+                                                        {{ $stock->stock_quantity ?? 0 }}
+                                                    @endforeach
+                                                @else
+                                                    0
+                                                @endif
+                                                {{ $product->unit->name }}
+                                                )
+                                            </option>
                                         @endforeach
                                     @else
-                                        <option selected disabled>
-                                            Please Add Product</option>
+                                        <option selected disabled>Please Add Product</option>
                                     @endif
                                 </select>
                                 <span class="text-danger product_select_error"></span>
@@ -141,7 +140,7 @@
                                                         name="total" readonly value="0.00" />
                                                 </div>
                                             </div>
-                                             {{-- //Display None Discount// --}}
+                                            {{-- //Display None Discount// --}}
                                             <div class="row align-items-center d-none">
                                                 <div class="col-md-4">
                                                     Discount :
@@ -157,7 +156,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <input type="number" class="form-control carrying_cost"
-                                                       id="carrying_cost" name="carrying_cost" value="0.00" />
+                                                        id="carrying_cost" name="carrying_cost" value="0.00" />
                                                 </div>
                                             </div>
                                             <div class="row align-items-center">
@@ -297,10 +296,12 @@
                                 <label for="name" class="form-label">Transaction Method <span
                                         class="text-danger">*</span></label>
                                 @php
-                                  if(Auth::user()->id == 1){
-                                    $payments = App\Models\Bank::get();
-                                    }else{
-                                    $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
+                                    if (Auth::user()->id == 1) {
+                                        $payments = App\Models\Bank::get();
+                                    } else {
+                                        $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)
+                                            ->latest()
+                                            ->get();
                                     }
 
                                 @endphp
@@ -327,7 +328,7 @@
                                 <select class="form-select tax " data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" value="" name="tax">
                                     @if ($taxs->count() > 0)
-                                        <option selected value="0" >Select Taxes</option>
+                                        <option selected value="0">Select Taxes</option>
                                         @foreach ($taxs as $taxs)
                                             <option value="{{ $taxs->percentage }}">
                                                 {{ $taxs->percentage }} %
