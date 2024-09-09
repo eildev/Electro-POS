@@ -12,6 +12,7 @@ use App\Models\Promotion;
 use App\Models\PromotionDetails;
 use App\Models\Sale;
 use App\Models\SaleItem;
+use App\Models\Stock;
 use App\Models\SubCategory;
 use App\Models\Transaction;
 use App\Models\Unit;
@@ -216,12 +217,20 @@ class SaleController extends Controller
             $category = Category::where('name', 'Via Sell')->first();
             foreach ($selectedItems as $item) {
                 $product = Product::findOrFail($item['product_id']);
-
+                $stock = Stock::where('product_id', $item['product_id'])->first();
+                if (!$stock) {
+                    $stock = new Stock();
+                    $stock->branch_id = Auth::user()->branch_id ?? 1;
+                    $stock->product_id = $item['product_id'];
+                    $stock->stock_quantity = $item['quantity'];
+                    $stock->save();
+                }
                 // Determine if this should be a "via sell" or "normal sell"
                 $isViaSell = false;
 
                 // Check if product is in the "Via Sell" category or stock is 0 or less
-                if ($category && $product->category_id == $category->id || $product->stock <= 0) {
+                //  dd($stock->stock_quantity);
+                if ($category && $product->category_id == $category->id ||$stock->stock_quantity <= 0) {
                     $isViaSell = true;
                 }
                 // Handle the sale item
@@ -239,23 +248,23 @@ class SaleController extends Controller
                     $saleItem->total_profit = $item['total_price'] - ($product->cost * $item['quantity']);
                     $saleItem->sell_type = 'via sell';
                     $saleItem->save();
-                } else if ($product->stock < $item['quantity']) {
-                    $extraQuantity = $item['quantity'] - $product->stock;
+                } else if ($stock->stock_quantity < $item['quantity']) {
+                    $extraQuantity = $item['quantity'] - $stock->stock_quantity;
                     // If the stock is greater than 0, first handle the available stock as a "normal sell"
-                    if ($product->stock > 0) {
+                    if ($stock->stock_quantity > 0) {
                         $saleItem = new SaleItem;
                         $saleItem->sale_id = $saleId;
                         $saleItem->product_id = $item['product_id'];
                         $saleItem->rate = $item['unit_price'];
-                        $saleItem->qty = $product->stock;
+                        $saleItem->qty = $stock->stock_quantity;
                         $saleItem->wa_status = $item['wa_status'];
                         $saleItem->wa_duration = $item['wa_duration'];
                         $discount = $item['product_discount'] / 2;
                         $saleItem->discount = $discount;
-                        $subTotal = ($item['unit_price'] * $product->stock) - $discount;
+                        $subTotal = ($item['unit_price'] * $stock->stock_quantity) - $discount;
                         $saleItem->sub_total = $subTotal;
-                        $saleItem->total_purchase_cost = $product->cost * $product->stock;
-                        $saleItem->total_profit = $subTotal - ($product->cost * $product->stock);
+                        $saleItem->total_purchase_cost = $product->cost * $stock->stock_quantity;
+                        $saleItem->total_profit = $subTotal - ($product->cost * $stock->stock_quantity);
                         $saleItem->sell_type = 'normal sell';
                         $saleItem->save();
                     }
@@ -294,15 +303,16 @@ class SaleController extends Controller
                     $saleItem->sell_type = 'normal sell';
                     $saleItem->save();
                 }
-
+                // dd($stock->stock_quantity);
                 // Update product stock and sales information
-                if ($product->stock > 0 && $product->stock >= $item['quantity']) {
-                    $product->stock -= $item['quantity'];
+                if ($stock->stock_quantity > 0 && $stock->stock_quantity >= $item['quantity']) {
+                    $stock->stock_quantity -= $item['quantity'];
                 } else {
-                    $product->stock = 0;
+                    $stock->stock_quantity = 0;
                 }
                 $product->total_sold += $item['quantity'];
                 $product->save();
+                $stock->save();
             }
 
 
@@ -443,8 +453,6 @@ class SaleController extends Controller
     }
     public function update(Request $request, $id)
     {
-
-
 
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
@@ -823,12 +831,15 @@ class SaleController extends Controller
     }
     public function saleViewProduct()
     {
-
-        $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
-
+        // $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        $products  = Product::where('branch_id', Auth::user()->branch_id)
+        ->withSum('stockQuantity', 'stock_quantity')
+        // ->having('stock_quantity_sum_stock_quantity', '>', 0)
+        ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+        ->get();
         return response()->json([
             'status' => '200',
-            'products' => $products
+            'products' => $products,
         ]);
     }
     public function saleViaProductAdd(Request $request)

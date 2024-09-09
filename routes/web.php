@@ -238,7 +238,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/damage/show_quantity/{id}', 'ShowQuantity')->name('damage.show.quantity');
         Route::get('/damage/edit/{id}', 'edit')->name('damage.edit');
         Route::post('/damage/update/{id}', 'update')->name('damage.update');
-        Route::get('/damage/destroy/{id}', 'destroy')->name('damage.destroy');
+        Route::get('/damage/destroy/{damage_id}/{product_id}', 'destroy')->name('damage.destroy');
         // Route::get('/damage/invoice/{id}', 'invoice')->name('damage.invoice');
     });
     // Promotion  related route(n)
