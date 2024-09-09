@@ -85,13 +85,15 @@ class PurchaseController extends Controller
                     $items2 = Product::findOrFail($request->product_id[$i]);
                     $stock = Stock::where('product_id', $request->product_id[$i])->first();
                     if ($stock) {
+                        // If stock exists, update the quantity
                         $stock->stock_quantity += $request->quantity[$i];
                         $stock->save();
                     } else {
-                        // dd(Auth::user()->branch_id);
-                        $stock->branch_id = Auth::user()->branch_id || 1;
+                        // Create a new Stock instance
+                        $stock = new Stock();
+                        $stock->branch_id = Auth::user()->branch_id ?? 1; // Use null coalescing operator
                         $stock->product_id = $request->product_id[$i];
-                        $stock->stock_quantity += $request->quantity[$i];
+                        $stock->stock_quantity = $request->quantity[$i]; // Assign the initial quantity
                         $stock->save();
                     }
                 }
