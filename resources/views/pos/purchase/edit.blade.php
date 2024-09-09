@@ -62,9 +62,17 @@
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }}
-                                                ({{ $product->stock }}
-                                                {{ $product->unit->name }})
+                                            <option value="{{ $product->id }}">
+                                                {{ $product->name }} (
+                                                @if ($product->stockQuantity->count() > 0)
+                                                    @foreach ($product->stockQuantity as $stock)
+                                                        {{ $stock->stock_quantity ?? 0 }}
+                                                    @endforeach
+                                                @else
+                                                    0
+                                                @endif
+                                                {{ $product->unit->name }}
+                                                )
                                             </option>
                                         @endforeach
                                     @else
