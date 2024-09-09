@@ -17,19 +17,27 @@
                             <!-- Col -->
                             <div class="mb-3 col-md-6">
                                 @php
-                                     if(Auth::user()->id == 1){
-                                    $products = App\Models\Product::get();
-                                }else{
-                                    $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
-                                }
+                                    $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
+                                    ->withSum('stockQuantity', 'stock_quantity')
+                                    ->having('stock_quantity_sum_stock_quantity', '>', 0)
+                                    ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+                                    ->get();
+                                    // $products = App\Models\Product::get();
                                 @endphp
-                                <label for="ageSelect" class="form-label">Product <span class="text-danger">*</span></label>
+                                <label for="ageSelect" class="form-label">Products <span class="text-danger">*</span></label>
                                 <select class="js-example-basic-single form-select" name="product_id" data-width="100%"
                                     onchange="show_quantity(this)">
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Damaged Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name }} ({{ $product->stock }}
+                                            <option value="{{ $product->id }}">{{ $product->name }} (
+                                                @if ($product->stockQuantity->count() > 0)
+                                                    @foreach ($product->stockQuantity as $stock)
+                                                        {{ $stock->stock_quantity ?? 0 }}
+                                                    @endforeach
+                                                @else
+                                                    0
+                                                @endif
                                                 {{ $product->unit->name }})</option>
                                         @endforeach
                                     @else
@@ -90,7 +98,7 @@
                 url: '/damage/show_quantity/' + newValue,
                 type: 'get',
                 success: function(res) {
-                    $('#show_stock').text(res.all_data.stock);
+                    $('#show_stock').text(res.stock_quantity);
                     $('#show_unit').text(res.unit.name);
                     $('#damageQty').removeAttr('disabled');
                 }

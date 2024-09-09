@@ -50,7 +50,7 @@
                                                 @if(Auth::user()->can('damage.delete'))
                                                 {{-- <a href="{{route('damage.delete',$damage->id)}}" id="delete" class="btn btn-sm btn-danger btn-icon"> --}}
                                                 {{-- <i data-feather="trash-2"></i> --}}
-                                                <a href="{{ route('damage.destroy', $damage->id) }}" id="delete"
+                                                <a href="{{ route('damage.destroy', [$damage->id, $damage->product_id]) }}" id="delete"
                                                     class="btn btn-sm btn-danger btn-icon">
                                                     <i data-feather="trash-2"></i>
                                                 </a>

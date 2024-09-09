@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AccountTransaction;
 use App\Models\ActualPayment;
+use App\Models\Category;
 use App\Models\Expense;
 use App\Models\Product;
 use App\Models\Purchase;
@@ -20,7 +21,23 @@ class PurchaseController extends Controller
 {
     public function index()
     {
-        return view('pos.purchase.purchase');
+        $category = Category::where('slug', 'via-sell')->first();
+        $products = collect();
+
+        if ($category) {
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity') // Sum the stock_quantity
+                ->where('category_id', '!=', $category->id)
+                ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // Explicitly reference the stock_quantity_sum
+                ->get();
+        } else {
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+                ->get();
+        }
+
+        return view('pos.purchase.purchase', compact('products'));
     }
     public function store(Request $request)
     {

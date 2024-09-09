@@ -80,11 +80,18 @@ class DamageController extends Controller
      */
     public function ShowQuantity($id)
     {
-        $show_qty = Product::with('unit')->findOrFail($id);
+        $show_qty =  Product::with('unit')
+                    ->where('branch_id', Auth::user()->branch_id)
+                    ->withSum('stockQuantity', 'stock_quantity')
+                    ->having('stock_quantity_sum_stock_quantity', '>', 0)
+                    ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+                    ->findOrFail($id);
+        // $show_qty = Product::with('unit')->findOrFail($id);
         return response()->json([
 
             'all_data' => $show_qty,
-            'unit' => $show_qty->unit
+            'unit' => $show_qty->unit,
+            'stock_quantity' => $show_qty->stock_quantity_sum_stock_quantity
         ]);
     }
     public function edit($id)
@@ -144,9 +151,12 @@ class DamageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($damage_id, $product_id)
     {
-        $damage_info = Damage::findOrFail($id);
+        $damage_info = Damage::findOrFail($damage_id);
+        $stock = Stock::where('product_id', $product_id)->first();
+        $stock->stock_quantity += $damage_info->qty;
+        $stock->save();
         $damage_info->delete();
         $notification = array(
             'message' => 'Damage Deleted successfully',
