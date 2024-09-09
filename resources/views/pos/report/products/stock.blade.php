@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Stock Report')
+@section('title', '| Stock Report')
 @section('admin')
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
@@ -9,7 +9,7 @@
     </nav>
 
     <div class="row">
-       
+
 
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
@@ -31,7 +31,6 @@
                                     <th>Available Stock</th>
                                     <th>Sell Value</th>
                                     <th>Profit</th>
-                                    <th class="id">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="showData">

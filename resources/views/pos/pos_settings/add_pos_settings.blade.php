@@ -140,9 +140,15 @@
                                     </select> --}}
 
                                     <select name="invoice_type" class="form-control">
-                                        <option value="a4" {{ !empty($allData->id) && $allData->invoice_type == 'a4' ?  'selected' : '' }}>A4</option>
-                                        <option value="a5" {{ !empty($allData->id) && $allData->invoice_type == 'a5' ?  'selected' : '' }}>A5</option>
-                                        <option value="pos" {{ !empty($allData->id) && $allData->invoice_type == 'pos' ?  'selected' : '' }}>Pos Printer</option>
+                                        <option value="a4"
+                                            {{ !empty($allData->id) && $allData->invoice_type == 'a4' ? 'selected' : '' }}>
+                                            A4</option>
+                                        <option value="a5"
+                                            {{ !empty($allData->id) && $allData->invoice_type == 'a5' ? 'selected' : '' }}>
+                                            A5</option>
+                                        <option value="pos"
+                                            {{ !empty($allData->id) && $allData->invoice_type == 'pos' ? 'selected' : '' }}>
+                                            Pos Printer</option>
                                     </select>
                                 </div>
                             </div>
@@ -187,7 +193,8 @@
                                         <input class="form-check-input" type="checkbox"
                                             {{ $mode->discount == 1 ? 'checked' : '' }} name="discount" role="switch"
                                             id="flexSwitchCheckDefault">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Discount/Promotion</label>
+                                        <label class="form-check-label"
+                                            for="flexSwitchCheckDefault">Discount/Promotion</label>
                                     </div>
                                     {{-- {{ $allData->dark_mode == 2 ?  'checked' : '' }} --}}
                                 </div>
@@ -229,9 +236,10 @@
                                 <div class="mb-3 form-valid-groups">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox"
-                                            {{ $mode->selling_price_edit == 1 ? 'checked' : '' }} name="selling_price_edit" role="switch"
-                                            id="flexSwitchCheckDefault">
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Selling Price Edit</label>
+                                            {{ $mode->selling_price_edit == 1 ? 'checked' : '' }}
+                                            name="selling_price_edit" role="switch" id="flexSwitchCheckDefault">
+                                        <label class="form-check-label" for="flexSwitchCheckDefault">Selling Price
+                                            Edit</label>
                                     </div>
                                     {{-- {{ $allData->dark_mode == 2 ?  'checked' : '' }} --}}
                                 </div>
@@ -249,7 +257,6 @@
                         <div>
                             <input type="submit" class="btn btn-primary submit" value="Save Changes">
                         </div>
-
                     </form>
                 </div>
             </div>

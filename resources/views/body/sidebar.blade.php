@@ -667,7 +667,7 @@
                                     <span class="link-title">Settings</span>
                                 </a>
                             </li> --}}
-                            {{-- <li class="nav-item">
+            {{-- <li class="nav-item">
                                 <a href="{{ route('invoice.settings') }}"
                                     class="nav-link {{ request()->routeIs('invoice.settings') ? 'nav_active' : '' }}">
                                     <span class="link-title">Invoice-1</span>
@@ -691,7 +691,7 @@
                                     <span class="link-title">Invoice-4</span>
                                 </a>
                             </li> --}}
-{{--
+            {{--
                         </ul>
                     </div>
                 </li>

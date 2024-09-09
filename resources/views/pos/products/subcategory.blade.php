@@ -21,8 +21,8 @@
                             <thead>
                                 <tr>
                                     <th>SN</th>
-                                    <th>Category Name</th>
                                     <th>Sub Category Name</th>
+                                    <th>Category Name</th>
                                     <th>Image</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -239,10 +239,10 @@
                                 ${index+1}
                             </td>
                             <td>
-                        ${subcategory.category ? subcategory.category.name : ""}
+                                ${subcategory.name ?? ""}
                             </td>
                             <td>
-                                ${subcategory.name ?? ""}
+                                ${subcategory.category ? subcategory.category.name : ""}
                             </td>
                             <td>
                                 <img src="${subcategory.image ? `${url}/uploads/subcategory/` + subcategory.image : `${url}/dummy/image.jpg`}" alt="cat Image">

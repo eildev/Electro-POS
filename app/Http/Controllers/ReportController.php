@@ -23,6 +23,7 @@ use App\Models\AccountTransaction;
 use App\Models\Bank;
 use App\Models\Branch;
 use App\Models\Returns;
+use App\Models\Stock;
 use App\Models\ViaSale;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -281,12 +282,16 @@ class ReportController extends Controller
     // low stock report function
     public function lowStockReport()
     {
+        $stock = Stock::get();
         if (Auth::user()->id == 1) {
-            $products = Product::where('stock', '<=', 10)
+            $products = Product::withSum('stockQuantity', 'stock_quantity')
+                ->having('stock_quantity_sum_stock_quantity', '<=', 10)
+                ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // or 'desc'
                 ->get();
         } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->where('stock', '<=', 10)
+            $products = Product::where('branch_id', Auth::user()->branch_id)->withSum('stockQuantity', 'stock_quantity')
+                ->having('stock_quantity_sum_stock_quantity', '<=', 10)
+                ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // or 'desc'
                 ->get();
         }
         return view('pos.report.products.low_stock', compact('products'));
@@ -295,11 +300,13 @@ class ReportController extends Controller
     public function topProducts()
     {
         if (Auth::user()->id == 1) {
-            $products = Product::orderBy('total_sold', 'desc')
+            $products = Product::withSum('stockQuantity', 'stock_quantity')
+                ->orderBy('total_sold', 'desc')
                 ->take(20)
                 ->get();
         } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
                 ->orderBy('total_sold', 'desc')
                 ->take(20)
                 ->get();
@@ -435,9 +442,16 @@ class ReportController extends Controller
     public function stockReport()
     {
         if (Auth::user()->id == 1) {
-            $products = Product::all();
+            $products = Product::withSum('stockQuantity', 'stock_quantity')
+                ->orderBy('stock_quantity_sum_stock_quantity', 'desc') // or 'desc'
+                ->get();
+            // $products = Product::all();
         } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)->get();
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->orderBy('stock_quantity_sum_stock_quantity', 'desc') // or 'desc'
+                ->get();
+            // $products = Product::where('branch_id', Auth::user()->branch_id)->get();
         }
         return view('pos.report.products.stock', compact('products'));
     } //
@@ -504,34 +518,51 @@ class ReportController extends Controller
     public function ProductInfoReport()
     {
         if (Auth::user()->id == 1) {
-            $productInfo = Product::all();
+            // $productInfo = Product::all();
+            $productInfo = Product::withSum('stockQuantity', 'stock_quantity')->latest()->get();
         } else {
-            $productInfo = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $productInfo = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->latest()
+                ->get();
+            // $productInfo = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
         return view('pos.report.products.product_info_report', compact('productInfo'));
     } //
-    // public function ProductSubCategoryShow($categoryId){
-    //     $subCategory =SubCategory::where('category_id',$categoryId)->get();
-    //     return  json_encode($subCategory);
-    // }
 
     public function ProductInfoFilter(Request $request)
     {
-        // dd($request->filterBrand);
-        $productInfo = Product::when($request->filterStartPrice, function ($query) use ($request) {
-            return $query->where('price', '<=', (float) $request->filterStartPrice);
-        })
-            ->when($request->filterBrand != "Select Brand", function ($query) use ($request) {
-                return $query->where('brand_id', $request->filterBrand);
+        if (Auth::user()->id == 1) {
+            $productInfo = Product::withSum('stockQuantity', 'stock_quantity')->when($request->filterStartPrice, function ($query) use ($request) {
+                return $query->where('price', '<=', (float) $request->filterStartPrice);
             })
-            ->when($request->FilterCat != "Select Category", function ($query) use ($request) {
-                return $query->where('category_id', $request->FilterCat);
+                ->when($request->filterBrand != "Select Brand", function ($query) use ($request) {
+                    return $query->where('brand_id', $request->filterBrand);
+                })
+                ->when($request->FilterCat != "Select Category", function ($query) use ($request) {
+                    return $query->where('category_id', $request->FilterCat);
+                })
+                ->when($request->filterSubcat != "Select Sub Category", function ($query) use ($request) {
+                    return $query->where('subcategory_id', $request->filterSubcat);
+                })
+                ->get();
+        } else {
+            $productInfo = Product::where('branch_id', Auth::user()->branch_id)->withSum('stockQuantity', 'stock_quantity')->when($request->filterStartPrice, function ($query) use ($request) {
+                return $query->where('price', '<=', (float) $request->filterStartPrice);
             })
-            ->when($request->filterSubcat != "Select Sub Category", function ($query) use ($request) {
-                return $query->where('subcategory_id', $request->filterSubcat);
-            })
-            ->get();
+                ->when($request->filterBrand != "Select Brand", function ($query) use ($request) {
+                    return $query->where('brand_id', $request->filterBrand);
+                })
+                ->when($request->FilterCat != "Select Category", function ($query) use ($request) {
+                    return $query->where('category_id', $request->FilterCat);
+                })
+                ->when($request->filterSubcat != "Select Sub Category", function ($query) use ($request) {
+                    return $query->where('subcategory_id', $request->filterSubcat);
+                })
+                ->get();
+        }
+
         return view('pos.report.products.product-info-filter-rander-table', compact('productInfo'))->render();
     }
     ///SMS Report Method

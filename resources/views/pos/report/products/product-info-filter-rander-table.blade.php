@@ -1,6 +1,5 @@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
-
         <div class="card">
             <div class="card-body">
                 <h6>Product Info</h6> <br>
@@ -29,24 +28,21 @@
                                                 alt="product image">
                                         </td>
                                         <td>{{ $product->name ?? '' }}</td>
-                                        <td>{{$product->barcode}}</td>
+                                        <td>{{ $product->barcode }}</td>
                                         <td>{{ $product->category->name ?? '' }}</td>
                                         <td>{{ $product->brand->name ?? '' }}</td>
                                         <td>{{ $product->price ?? 0 }}</td>
-                                        <td>{{ $product->stock ?? 0 }}</td>
+                                        <td>{{ $product->stock_quantity_sum_stock_quantity ?? 0 }}</td>
                                         <td>{{ $product->unit->name ?? '' }}</td>
                                     </tr>
-
-
                                 @endforeach
-                                @else
+                            @else
                                 <tr>
                                     <td colspan="12">
                                         <div class="text-center text-warning mb-2">Data Not Found</div>
                                     </td>
                                 </tr>
                             @endif
-
                         </tbody>
                     </table>
                 </div>

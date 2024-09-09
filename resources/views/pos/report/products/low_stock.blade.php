@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Low Stock Report')
+@section('title', '| Low Stock Report')
 @section('admin')
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
@@ -9,7 +9,7 @@
     </nav>
 
     <div class="row">
-        
+
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">

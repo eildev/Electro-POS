@@ -62,9 +62,6 @@ class ProductsController extends Controller
             if ($request->size_id !== 'Please add Size') {
                 $product->size_id  =  $request->size_id;
             }
-            if ($request->stock) {
-                $product->stock  =  $request->stock;
-            }
             if ($request->main_unit_stock) {
                 $product->main_unit_stock  =  $request->main_unit_stock;
             }
@@ -88,11 +85,17 @@ class ProductsController extends Controller
     public function view()
     {
         if (Auth::user()->id == 1) {
-            $products = Product::all();
+            // $products = Product::all();
+            $products = Product::withSum('stockQuantity', 'stock_quantity')
+                ->latest()
+                ->get();
         } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            // $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->latest()
+                ->get();
         }
-
         return view('pos.products.product.product-show', compact('products'));
     }
     public function edit($id)
@@ -129,9 +132,6 @@ class ProductsController extends Controller
             $product->color  =  $request->color;
             $product->size_id  =  $request->size_id;
             $product->unit_id  =  $request->unit_id;
-            if ($request->stock) {
-                $product->stock  =  $request->stock;
-            }
             if ($request->main_unit_stock) {
                 $product->main_unit_stock  =  $request->main_unit_stock;
             }
@@ -204,20 +204,39 @@ class ProductsController extends Controller
     {
         $product = Product::where('search_value');
 
-        $products = Product::where('name', 'LIKE', '%' . $search_value . '%')
-            ->orWhere('details', 'LIKE', '%' . $search_value . '%')
-            ->orWhere('price', 'LIKE', '%' . $search_value . '%')
-            ->orWhereHas('category', function ($query) use ($search_value) {
-                $query->where('name', 'LIKE', '%' . $search_value . '%');
-            })
-            ->orWhereHas('subcategory', function ($query) use ($search_value) {
-                $query->where('name', 'LIKE', '%' . $search_value . '%');
-            })
-            ->orWhereHas('brand', function ($query) use ($search_value) {
-                $query->where('name', 'LIKE', '%' . $search_value . '%');
-            })
+        if (Auth::user()->id == 1) {
+            $products = Product::withSum('stockQuantity', 'stock_quantity')->where('name', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('details', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('price', 'LIKE', '%' . $search_value . '%')
+                ->orWhereHas('category', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('subcategory', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('brand', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
 
-            ->get();
+                ->get();
+        } else {
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->where('name', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('details', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('price', 'LIKE', '%' . $search_value . '%')
+                ->orWhereHas('category', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('subcategory', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('brand', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+
+                ->get();
+        }
 
         return response()->json([
             'products' => $products,

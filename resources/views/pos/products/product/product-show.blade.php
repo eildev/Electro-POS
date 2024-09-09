@@ -52,7 +52,8 @@
                                             <td>{{ $product->brand->name ?? '' }}</td>
                                             <td>{{ $product->cost ?? 0 }}</td>
                                             <td>{{ $product->price ?? 0 }}</td>
-                                            <td>{{ $product->stock ?? 0 }} ({{ $product->unit->name ?? '' }})</td>
+                                            <td>{{ $product->stock_quantity_sum_stock_quantity ?? 0 }}
+                                                ({{ $product->unit->name ?? '' }})</td>
                                             <td>
                                                 @if (Auth::user()->can('products.edit'))
                                                     <a href="{{ route('product.edit', $product->id) }}"
@@ -72,45 +73,8 @@
                                                         <i class="fa-solid fa-barcode"></i>
                                                     </a>
                                                 @endif
-                                                {{-- <a href="#"  data-bs-toggle="modal" data-bs-target="#exampleModal{{$product->id}}" class="input-text btn border-dark">
-                                                    <i class="fa-solid fa-barcode"></i>
-                                                </a> --}}
                                             </td>
                                         </tr>
-
-                                        {{-- /Modal Start/ --}}
-                                        <!-- Button trigger modal -->
-
-                                        <!-- Modal -->
-                                        {{-- <div class="modal fade modal-lg" id="exampleModal{{$product->id}}"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center border">
-                        <div class="row">
-                        @for ($i = 0; $i < $product->stock; $i++)
-                        <div class="col-md-4">
-                        <div class="barcode-container">
-                            <span class="dblock">
-                            {!! DNS1D::getBarcodeHTML($product->barcode, 'PHARMA') !!}</span><br>
-                            <span style="">{{$product->barcode}}</span><br>
-                            <span>{{ $product->name ?? '' }} </span><br>
-                            <span class="bold">{{ $product->price ?? 0 }}TK</span>
-                        </div>
-                    </div>
-                        @endfor
-                    </div>
-                </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button onclick="printModalContent('modalContent{{$product->id}}')" class="btn btn-primary">Print</button>
-                    </div>
-                </div>
-                </div>
-            </div> --}}
-                                        {{-- /Modal End/ --}}
                                     @endforeach
                                 @endif
 

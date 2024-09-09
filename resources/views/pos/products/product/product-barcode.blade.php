@@ -1,24 +1,30 @@
 @extends('master')
-@section('title','| Barcode Page')
+@section('title', '| Barcode Page')
 @section('admin')
     <div class="btn-print">
         <button class="btn btn-info text-center" onClick="window.print();">Print</button> </br></br>
     </div>
 
     <div class="bbcode">
-        @for ($i = 0; $i < $product->stock; $i++)
-            <div class="printable">
-                <div class="barcode-container">
-                    <span class="dblock">
-                        <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($product->barcode, 'C39', 1, 30) }}"
-                            alt="Barcode"> </br>
-                        {{-- {!! DNS1D::getBarcodeHTML($product->barcode, 'PHARMA') !!}</span><br> --}}
-                        <span style="">{{ $product->barcode }}</span><br>
-                        <span>{{ $product->name ?? '' }} </span><br>
-                        <span class="bold">{{ $product->price ?? 0 }}TK</span>
-                </div>
-            </div>
-        @endfor
+        @if ($product->stockQuantity->count() > 0)
+            @foreach ($product->stockQuantity as $stock)
+                @for ($i = 0; $i < ($stock->stock_quantity ?? 0); $i++)
+                    <div class="printable">
+                        <div class="barcode-container">
+                            <span class="dblock">
+                                <img src="data:image/png;base64,{{ DNS1D::getBarcodePNG($product->barcode, 'C39', 1, 30) }}"
+                                    alt="Barcode"> </br>
+                                <span>{{ $product->barcode }}</span><br>
+                                <span>{{ $product->name ?? '' }} </span><br>
+                                <span class="bold">{{ $product->price ?? 0 }}TK</span>
+                            </span>
+                        </div>
+                    </div>
+                @endfor
+            @endforeach
+        @else
+            <div>No stock available.</div>
+        @endif
     </div>
 @endsection
 
