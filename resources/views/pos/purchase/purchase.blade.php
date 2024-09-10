@@ -47,13 +47,7 @@
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}">
                                                 {{ $product->name }} (
-                                                @if ($product->stockQuantity->count() > 0)
-                                                    @foreach ($product->stockQuantity as $stock)
-                                                        {{ $stock->stock_quantity ?? 0 }}
-                                                    @endforeach
-                                                @else
-                                                    0
-                                                @endif
+                                                {{ $product->branch_stock_quantity ?? 0 }}
                                                 {{ $product->unit->name }}
                                                 )
                                             </option>

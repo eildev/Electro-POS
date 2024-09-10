@@ -33,14 +33,13 @@
             }
         }
     </style>
-
     <div class="row">
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
-                {{-- ///////Today Summary ////// --}}
+                {{--- /////// Today Summary ///// ---}}
                 @if (Auth::user()->id == 1)
                     @foreach ($branchData as $branchId => $data)
-                        <div class="col-md-12 col-xl-6 col-12  grid-margin stretch-card">
+                        <div class="col-md-12 col-xl-6 col-12 grid-margin stretch-card">
                             <div class="card" style="">
                                 <div class="card-body">
                                     <h6 class="card-title">{{ $data['branch']->name }} Today Summary</h6>
@@ -65,14 +64,12 @@
                                                 <td>Salary</td>
                                                 <td class="text-end">{{ number_format($data['todayEmployeeSalary'], 2) }}
                                                 </td>
-
                                             </tr>
                                             <tr>
                                                 <td>Paid Sales</td>
                                                 <td class="text-end">{{ number_format($data['todaySales'], 2) }}</td>
                                                 <td>Purchase</td>
                                                 <td class="text-end">{{ number_format($data['todayPurchase'], 2) }}</td>
-
                                             </tr>
                                             <tr>
                                                 <td>Due Collection</td>

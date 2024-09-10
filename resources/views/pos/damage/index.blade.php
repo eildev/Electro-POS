@@ -17,10 +17,11 @@
                             <!-- Col -->
                             <div class="mb-3 col-md-6">
                                 @php
-                                    $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
-                                    ->withSum('stockQuantity', 'stock_quantity')
-                                    ->having('stock_quantity_sum_stock_quantity', '>', 0)
-                                    ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+                                    $products = App\Models\Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                                        $query->where('branch_id', Auth::user()->branch_id);
+                                    }], 'stock_quantity')
+                                    ->having('stock_quantity_sum', '>', 0) // Use having method here
+                                    ->orderBy('stock_quantity_sum', 'asc')
                                     ->get();
                                     // $products = App\Models\Product::get();
                                 @endphp

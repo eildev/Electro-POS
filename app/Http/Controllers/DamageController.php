@@ -51,7 +51,7 @@ class DamageController extends Controller
             $damage->note = $request->note;
             $damage->save();
 
-            $stock = Stock::where('product_id', $request->product_id)->first();
+            $stock = Stock::where('branch_id',Auth::user()->branch_id)->where('product_id', $request->product_id)->first();
             $stock->stock_quantity -= $request->pc;
             $stock->save();
         }
@@ -71,7 +71,7 @@ class DamageController extends Controller
         if (Auth::user()->id == 1) {
             $damages = Damage::all();
         } else {
-            $damages = Damage::where('branch_id', Auth::user()->branch_id)->latest()->get();;
+            $damages = Damage::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
         return view('pos.damage.view_damage', compact('damages'));
     }
@@ -81,14 +81,11 @@ class DamageController extends Controller
     public function ShowQuantity($id)
     {
         $show_qty =  Product::with('unit')
-                    ->where('branch_id', Auth::user()->branch_id)
                     ->withSum('stockQuantity', 'stock_quantity')
                     ->having('stock_quantity_sum_stock_quantity', '>', 0)
                     ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
                     ->findOrFail($id);
-        // $show_qty = Product::with('unit')->findOrFail($id);
         return response()->json([
-
             'all_data' => $show_qty,
             'unit' => $show_qty->unit,
             'stock_quantity' => $show_qty->stock_quantity_sum_stock_quantity
@@ -119,7 +116,7 @@ class DamageController extends Controller
             $damage = Damage::findOrFail($id);
 
             $damage->product_id = $request->product_id;
-            $stock = Stock::where('product_id', $request->product_id)->first();
+            $stock = Stock::where('branch_id',Auth::user()->branch_id)->where('product_id', $request->product_id)->first();
             // dd($damage->qty, $request->pc);
             if ($damage->qty > $request->pc) {
                 $updatedValue = $damage->qty - $request->pc;

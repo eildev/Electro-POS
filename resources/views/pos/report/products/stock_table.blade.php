@@ -46,11 +46,12 @@
                 ৳ {{ $data->price ?? 0 }}
             </td>
             <td>
-                @if ($data->stock_quantity_sum_stock_quantity <= 10)
-                    <span class="text-danger"> {{ $data->stock_quantity_sum_stock_quantity ?? 0 }}
-                        {{ $data->unit->name }}</span>
+                @if ($data->stock_quantity_sum <= 10)
+                    <span class="text-danger">
+                        {{ $data->stock_quantity_sum ?? 0 }} {{ $data->unit->name }}
+                    </span>
                 @else
-                    {{ $data->stock_quantity_sum_stock_quantity ?? 0 }} {{ $data->unit->name }}
+                    {{ $data->stock_quantity_sum ?? 0 }} {{ $data->unit->name }}
                 @endif
             </td>
             <td>

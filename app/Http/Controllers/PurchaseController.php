@@ -25,18 +25,22 @@ class PurchaseController extends Controller
         $products = collect();
 
         if ($category) {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->withSum('stockQuantity', 'stock_quantity') // Sum the stock_quantity
+            $products = Product::
+                withSum('stockQuantity', 'stock_quantity') // Sum the stock_quantity
                 ->where('category_id', '!=', $category->id)
                 ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // Explicitly reference the stock_quantity_sum
                 ->get();
         } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->withSum('stockQuantity', 'stock_quantity')
+            $products = Product::
+                withSum('stockQuantity', 'stock_quantity')
                 ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
                 ->get();
         }
-
+        $branchId = Auth::user()->branch_id;
+        $products = $products->map(function ($product) use ($branchId) {
+            $branchStockQuantity = $product->stockQuantity->where('branch_id', $branchId)->sum('stock_quantity');
+            return $product->setAttribute('branch_stock_quantity', $branchStockQuantity);
+        });
         return view('pos.purchase.purchase', compact('products'));
     }
     public function store(Request $request)
@@ -100,7 +104,7 @@ class PurchaseController extends Controller
                     $items->save();
 
                     $items2 = Product::findOrFail($request->product_id[$i]);
-                    $stock = Stock::where('product_id', $request->product_id[$i])->first();
+                    $stock = Stock::where('branch_id',Auth::user()->branch_id)->where('product_id', $request->product_id[$i])->first();
                     if ($stock) {
                         // If stock exists, update the quantity
                         $stock->stock_quantity += $request->quantity[$i];

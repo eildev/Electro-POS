@@ -448,7 +448,7 @@
                             );
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
-                                    `<option value="${product.id}">${product.name} (${product.stock_quantity_sum_stock_quantity} pc Available)</option>`
+                                    `<option value="${product.id}">${product.name} (${product.stock_quantity_sum  || 0} pc Available)</option>`
                                 );
                             })
                         } else {

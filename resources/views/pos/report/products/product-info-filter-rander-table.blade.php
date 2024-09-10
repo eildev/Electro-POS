@@ -32,7 +32,7 @@
                                         <td>{{ $product->category->name ?? '' }}</td>
                                         <td>{{ $product->brand->name ?? '' }}</td>
                                         <td>{{ $product->price ?? 0 }}</td>
-                                        <td>{{ $product->stock_quantity_sum_stock_quantity ?? 0 }}</td>
+                                        <td>{{ $product->stock_quantity_sum ?? $product->stock_quantity_sum_stock_quantity?? 0 }}</td>
                                         <td>{{ $product->unit->name ?? '' }}</td>
                                     </tr>
                                 @endforeach

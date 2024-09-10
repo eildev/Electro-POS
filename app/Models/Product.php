@@ -43,4 +43,5 @@ class Product extends Model
     {
         return $this->hasMany(Stock::class, 'product_id');
     }
+    
 }

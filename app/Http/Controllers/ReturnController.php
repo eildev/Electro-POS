@@ -61,7 +61,7 @@ class ReturnController extends Controller
                     $saleItem->save();
                     $Product = Product::findOrFail($saleItem->product_id);
                     //  dd($Product->stock);
-                    $stock = Stock::where('product_id', $saleItem->product_id)->first();
+                    $stock = Stock::where('branch_id',Auth::user()->branch_id)->where('product_id', $saleItem->product_id)->first();
                     if ($stock) {
                         $stock->stock_quantity = $stock->stock_quantity + $sale_item['quantity'];
                         $stock->save();
