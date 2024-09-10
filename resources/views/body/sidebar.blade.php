@@ -16,7 +16,7 @@
 
     <style>
         .nav_active {
-            background: #00a9f1;
+            background: #ff541e;
             border-radius: 5px;
             color: #fff !important;
         }
@@ -77,7 +77,7 @@
             @if (Auth::user()->can('pos.menu'))
                 <li class="nav-item">
                     <a href="{{ route('sale') }}"
-                        class="nav-link {{ request()->routeIs('pos.sale') ? 'nav_active' : '' }}">
+                        class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
                         <i class="ms-2 link-icon" data-feather="shopping-cart"></i>
                         <span class="link-title">POS</span>
                     </a>
@@ -129,7 +129,7 @@
             @if (Auth::user()->can('damage.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('damage') ? 'nav_active' : '' }}"
-                        href="{{ route('damage.view') }}" role="button" aria-controls="general-pages">
+                        href="{{ route('damage') }}" role="button" aria-controls="general-pages">
                         <i class="ms-2 link-icon" data-feather="book"></i>
                         <span class="link-title">Damage</span>
                     </a>
