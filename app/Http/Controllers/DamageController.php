@@ -81,7 +81,10 @@ class DamageController extends Controller
     public function ShowQuantity($id)
     {
         $show_qty =  Product::with('unit')
-                    ->withSum('stockQuantity', 'stock_quantity')
+        ->withSum(['stockQuantity' => function ($query) {
+            // This ensures you're not filtering by branch_id
+                        $query->where('branch_id',  Auth::user()->branch_id); // or remove any condition on branch_id if not needed
+                    }], 'stock_quantity')
                     ->having('stock_quantity_sum_stock_quantity', '>', 0)
                     ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
                     ->findOrFail($id);

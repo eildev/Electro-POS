@@ -32,13 +32,7 @@
                                         <option selected disabled>Select Damaged Product</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}">{{ $product->name }} (
-                                                @if ($product->stockQuantity->count() > 0)
-                                                    @foreach ($product->stockQuantity as $stock)
-                                                        {{ $stock->stock_quantity ?? 0 }}
-                                                    @endforeach
-                                                @else
-                                                    0
-                                                @endif
+                                                {{$product->stock_quantity_sum}}
                                                 {{ $product->unit->name }})</option>
                                         @endforeach
                                     @else
