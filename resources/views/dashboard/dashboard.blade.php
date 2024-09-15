@@ -355,12 +355,32 @@
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>
                                     </tr>
+                                    @php
+                                $products = App\Models\Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                                    $query->where('branch_id', Auth::user()->branch_id);
+                                }], 'stock_quantity')
+                                ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+                                ->get();
+                                //Show Stock Value
+                                $products->each(function ($product) {
+                                    $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+                                });
+                                //Total stock Value
+                                 $totalStockValueSum = $products->sum('total_stock_value');
+                                    @endphp
+                                    <tr>
+                                        <td>Stock Value</td>
+                                        <td class="text-end">{{ $totalStockValueSum}}</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">0.00</td>
+                                    </tr>
                                     <tr>
                                         <td>Sales Profit</td>
                                         <td class="text-end">{{ number_format($sales->sum('profit'), 2) }}</td>
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>
                                     </tr>
+
                                 </tbody>
                             </table>
                         </div>

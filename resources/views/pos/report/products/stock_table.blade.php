@@ -58,7 +58,7 @@
                 ৳ {{ $totalSalePrice ?? 0 }}
             </td>
             <td>
-                <span>৳</span> {{ $data->total_stock_value }}
+                <span>৳</span> {{ $data->total_stock_value}}
             </td>
             <td>
                 ৳ {{ $totalProfit ?? 0 }}

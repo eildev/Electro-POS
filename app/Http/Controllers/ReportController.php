@@ -362,10 +362,9 @@ class ReportController extends Controller
             $damageItem = Damage::all();
         } else {
             $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->with('product')->get();
-            // $totalCost = 0;
         }
         foreach ($damageItem as $damage) {
-            $damage->total_cost = $damage->product->cost * $damage->qty;
+             $damage->total_cost = $damage->product->cost * $damage->qty;
         }
         $totalSum = $damageItem->sum('total_cost');
         return view('pos.report.damages.damage', compact('damageItem','totalSum'));
@@ -448,15 +447,28 @@ class ReportController extends Controller
     //stock Report function
     public function stockReport()
     {
-                $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
-                    $query->where('branch_id', Auth::user()->branch_id);
-                }], 'stock_quantity')
-                ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
-                ->get();
-                //Show Stock Value
-                $products->each(function ($product) {
-                    $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
-                });
+         if(Auth::user()->id == 1){
+            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            }], 'stock_quantity')
+            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->get();
+            $products->each(function ($product) {
+                $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+             });
+            }else{
+          $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+            $query->where('branch_id', Auth::user()->branch_id);
+        }], 'stock_quantity')
+        ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+        ->get();
+        $products->each(function ($product) {
+            $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+         });
+        }
+
+                 //Show Stock Value
+
                 //Total stock Value
             $totalStockValueSum = $products->sum('total_stock_value');
         return view('pos.report.products.stock', compact('products','totalStockValueSum'));
