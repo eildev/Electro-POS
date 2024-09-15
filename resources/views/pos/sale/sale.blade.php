@@ -204,11 +204,9 @@
                         </div>
                         <div class="col-sm-8">
                             @php
-                             if(Auth::user()->id == 1){
-                                $payments = App\Models\Bank::get();
-                                }else{
-                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
-                                }
+                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)
+                                    ->latest()
+                                    ->get();
                             @endphp
                             <select class="form-select payment_method" data-width="100%" onclick="errorRemove(this);"
                                 onblur="errorRemove(this);">
@@ -354,11 +352,11 @@
                             <label for="name" class="form-label">Payement Method <span
                                     class="text-danger">*</span></label>
                             @php
-                             if(Auth::user()->id == 1){
-                                $payments = App\Models\Bank::all();
-                                }else{
-                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->latest()->get();
-                                }
+
+                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)
+                                    ->latest()
+                                    ->get();
+
                             @endphp
                             <select class="form-select transaction_account" data-width="100%" name="transaction_account"
                                 onclick="errorRemove(this);" onblur="errorRemove(this);">
@@ -450,7 +448,7 @@
                             );
                             $.each(products, function(index, product) {
                                 $('.view_product').append(
-                                    `<option value="${product.id}">${product.name} (${product.stock} pc Available)</option>`
+                                    `<option value="${product.id}">${product.name} (${product.stock_quantity_sum  || 0} pc Available)</option>`
                                 );
                             })
                         } else {
@@ -681,7 +679,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>

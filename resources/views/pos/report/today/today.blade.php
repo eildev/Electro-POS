@@ -8,6 +8,82 @@
         </ol>
     </nav>
     <div class="row">
+        @if(Auth::user()->id == 1)
+        @foreach ($branchData as $branchId => $data)
+        <div class="col-12 col-xl-12 stretch-card">
+            <div class="row flex-grow-1">
+                <h6 class="card-title">{{ $data['branch']->name }}</h6> <br>
+                <div class="col-md-3 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Sale Amount</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="mb-2">
+                                        ৳ {{ $data['todayInvoiceAmount'] }}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Purchase Cost</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="mb-2">
+                                        ৳ {{ $data['today_grand_total'] }}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">EXPENSE</h6>
+                                <div class="dropdown mb-2">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="mb-2">
+                                        ৳ {{ $data['todayExpenseAmount'] }}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Salary Sheet</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h3 class="mb-2">
+                                        ৳{{ $data['totalSalary'] }}
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+        @else
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
                 <div class="col-md-3 grid-margin stretch-card">
@@ -78,8 +154,9 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
-
+{{-- //End Today Summary --}}
     <div class="row">
 
         {{-- today sale Report  --}}

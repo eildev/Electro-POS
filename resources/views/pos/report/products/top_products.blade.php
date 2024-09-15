@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Top Products Report')
+@section('title', '| Top Products Report')
 @section('admin')
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
@@ -30,7 +30,6 @@
                                     <th>Available Stock</th>
                                     <th>Sell Value</th>
                                     <th>Profit</th>
-                                    <th class="id">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="showData">

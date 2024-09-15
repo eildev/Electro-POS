@@ -100,9 +100,9 @@
                     if (res.products.length > 0) {
                         $.each(res.products, function(key, value) {
                             findData += `<tr>
-                                    <td>${value.name}</td>
-                                    <td>${value.stock}</td>
-                                    <td>${value.price}</td>
+                                    <td>${value.name ?? ""}</td>
+                                    <td>${value.stock_quantity_sum_stock_quantity ?? 0}</td>
+                                    <td>${value.price ?? 0}</td>
                                 </tr>`
                         });
 

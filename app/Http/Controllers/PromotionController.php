@@ -40,9 +40,9 @@ class PromotionController extends Controller
 
     public function PromotionView()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $promotions = Promotion::all();
-        }else{
+        } else {
             $promotions = Promotion::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
@@ -94,13 +94,12 @@ class PromotionController extends Controller
     ///////////////////////Start Promotion Details All Method ////////////////////////
     public function PromotionDetailsAdd()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $product = Product::latest()->get();
             $promotions = Promotion::latest()->get();
-        }else{
+        } else {
             $product = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
             $promotions = Promotion::where('branch_id', Auth::user()->branch_id)->latest()->get();
-
         }
 
         return view('pos.promotion.promotion_details_add', compact('product', 'promotions'));
@@ -137,9 +136,9 @@ class PromotionController extends Controller
     } //End Method
     public function PromotionDetailsView()
     {
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $promotion_details = PromotionDetails::all();
-        }else{
+        } else {
             $promotion_details = PromotionDetails::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
@@ -148,9 +147,9 @@ class PromotionController extends Controller
     public function PromotionDetailsEdit($id)
     {
         // $product = Product::latest()->get();
-        if(Auth::user()->id == 1){
+        if (Auth::user()->id == 1) {
             $promotions = Promotion::latest()->get();
-        }else{
+        } else {
             $promotions = Promotion::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
@@ -184,7 +183,6 @@ class PromotionController extends Controller
                 'errors' => $validator->errors()
             ]);
         }
-
     } //
     public function PromotionDetailsDelete($id)
     {
@@ -202,13 +200,23 @@ class PromotionController extends Controller
 
         if ($type) {
             if ($type == 'wholesale') {
-                $wholesale = Product::where('branch_id', Auth::user()->branch_id)->where('stock', ">", 0)->get();
+                // $wholesale = Product::where('branch_id', Auth::user()->branch_id)->where('stock', ">", 0)->get();
+                $wholesale = Product::where('branch_id', Auth::user()->branch_id)
+                    ->withSum('stockQuantity', 'stock_quantity')
+                    ->having('stock_quantity_sum_stock_quantity', '>', 0)
+                    ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // or 'desc'
+                    ->get();
+
                 return response()->json([
                     "status" => 200,
                     'wholesale' => $wholesale
                 ]);
             } else if ($type == 'products') {
-                $products = Product::where('branch_id', Auth::user()->branch_id)->where('stock', ">", 0)->get();
+                $products = Product::where('branch_id', Auth::user()->branch_id)
+                    ->withSum('stockQuantity', 'stock_quantity')
+                    ->having('stock_quantity_sum_stock_quantity', '>', 0)
+                    ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // or 'desc'
+                    ->get();
                 return response()->json([
                     "status" => 200,
                     'products' => $products
@@ -241,7 +249,11 @@ class PromotionController extends Controller
 
     public function allProduct()
     {
-        $products = Product::where('branch_id', Auth::user()->branch_id)->where('stock', ">", 0)->get();
+        $products = Product::where('branch_id', Auth::user()->branch_id)
+            ->withSum('stockQuantity', 'stock_quantity')
+            ->having('stock_quantity_sum_stock_quantity', '>', 0)
+            ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // or 'desc'
+            ->get();
         return response()->json([
             "status" => 200,
             'products' => $products

@@ -32,14 +32,14 @@
                                             <td>{{ $data->name ?? '' }}</td>
                                             <td>
                                     @if(Auth::user()->can('role-and-permission.all-role.edit'))
-                                    @if($data->name !== 'Super Admin')
+                                    @if($data->id !== 1 && $data->id !== 4)
                                     <a href="{{route('role.edit',$data->id)}}" class="btn btn-sm btn-primary btn-icon" title="Edit">
                                         <i data-feather="edit"></i>
                                     </a>
                                     @endif
                                     @endif
                                     @if(Auth::user()->can('role-and-permission.all-role.delete'))
-                                    @if($data->name !== 'Super Admin')
+                                    @if($data->id !== 1 && $data->id !== 4)
                                     <a href="{{route('role.delete',$data->id)}}" id="delete" class="btn btn-sm btn-danger btn-icon" title="Delete">
                                         <i data-feather="trash-2"></i>
                                     </a>

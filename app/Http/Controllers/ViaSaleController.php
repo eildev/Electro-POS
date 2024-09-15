@@ -13,7 +13,11 @@ class ViaSaleController extends Controller
 {
     public function index()
     {
-        $viaSale = ViaSale::latest()->get();
+        if (Auth::user()->id == 1) {
+            $viaSale = ViaSale::latest()->get();
+        } else {
+            $viaSale = ViaSale::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        }
         return view('pos.via_sale.via_sale', compact('viaSale'));
     }
     public function viaSaleGet($id)

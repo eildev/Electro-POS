@@ -27,7 +27,6 @@ return new class extends Migration
             $table->decimal('price');
             $table->text('details')->nullable();
             $table->string('image')->nullable();
-            $table->integer('stock')->default(0);
             $table->integer('main_unit_stock')->nullable();
             $table->integer('total_sold')->default(0);
             $table->string('color', 255)->nullable();

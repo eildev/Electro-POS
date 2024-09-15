@@ -26,7 +26,7 @@
                                     <th>Manager/Owner Name</th>
                                     <th>Phone Number</th>
                                     <th>Account</th>
-                                    <th>Opening Balance</th>
+                                    {{-- <th>Opening Balance</th> --}}
                                     <th>Total Balance</th>
                                     <th>Action</th>
                                 </tr>
@@ -148,13 +148,7 @@
                             <input id="defaultconfig" class="form-control edit_email" maxlength="39" name="email"
                                 type="email">
                         </div>
-                        {{-- <div class="mb-3 col-md-12">
-                            <label for="name" class="form-label">Opening Balance</label>
-                            <input id="defaultconfig" class="form-control edit_opening_balance" maxlength="39"
-                                name="opening_balance" type="number" onkeyup="errorRemove(this);"
-                                onblur="errorRemove(this);">
-                            <span class="text-danger edit_opening_balance_error"></span>
-                        </div> --}}
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -287,7 +281,6 @@
                                     <td>${bank.manager_name ?? ""}</td>
                                     <td>${bank.phone_number ?? 0}</td>
                                     <td>${bank.account ?? 0}</td>
-                                    <td>${bank.opening_balance ?? 0}</td>
                                     <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
                                         <div class="dropdown">
@@ -302,7 +295,7 @@
                                                 <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 Edit</a>
-                                                <a href="#"  class="dropdown-item bank_delete" data-id=${bank.id}>
+                                                <a href="#" class="dropdown-item bank_delete" data-id=${bank.id}>
                                                     <i class="fa-solid fa-trash-can"></i>
                                                 Delete</a>
                                             </div>

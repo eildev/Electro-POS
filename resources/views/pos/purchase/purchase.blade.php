@@ -16,10 +16,6 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="card-title">Create Purchase</h6>
-                            {{-- <button class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModalLongScollable"><i class="fa-solid fa-plus"></i> Add
-                                Supplier
-                            </button> --}}
                         </div>
                         <div class="row">
                             <div class="mb-3 col-md-6">
@@ -33,12 +29,6 @@
 
                             <div class="mb-3 col-md-6">
                                 <label for="password" class="form-label">Purchase Date</label>
-                                {{-- <div class="input-group flatpickr" id="flatpickr-date">
-                                <input type="date" class="form-control purchase_date" placeholder="" data-input
-                                    onkeyup="errorRemove(this);" onblur="errorRemove(this);" max="<?php echo date('Y-m-d'); ?>">
-                                <span class="input-group-text input-group-addon" data-toggle><i
-                                        data-feather="calendar"></i></span>
-                            </div> --}}
                                 <div class="input-group flatpickr me-2 mb-2 mb-md-0" id="dashboardDate">
                                     <span class="input-group-text input-group-addon bg-transparent border-primary"
                                         data-toggle><i data-feather="calendar" class="text-primary"></i></span>
@@ -49,42 +39,21 @@
                                 <span class="text-danger purchase_date_error"></span>
                             </div>
                             <div class="mb-3 col-md-6">
-                                @php
-                                    $category = App\Models\Category::where('slug', 'via-sell')->first();
-                                    $products = collect();
-                                    if ($category) {
-                                        if (Auth::user()->id == 1) {
-                                            $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                                ->orderBy('stock', 'asc')
-                                                ->get();
-                                        } else {
-                                            $products = App\Models\Product::where('category_id', '!=', $category->id)
-                                                ->where('branch_id', Auth::user()->branch_id)
-                                                ->orderBy('stock', 'asc')
-                                                ->get();
-                                        }
-                                    } else {
-                                        if (Auth::user()->id == 1) {
-                                            $products = App\Models\Product::orderBy('stock', 'asc')->get();
-                                        } else {
-                                            $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
-                                                ->orderBy('stock', 'asc')
-                                                ->get();
-                                        }
-                                    }
-                                @endphp
                                 <label for="ageSelect" class="form-label">Product</label>
                                 <select class="js-example-basic-single form-select product_select" data-width="100%"
                                     onclick="errorRemove(this);">
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Product</option>
                                         @foreach ($products as $product)
-                                            <option value="{{ $product->id }}">{{ $product->name }} ({{ $product->stock }}
-                                                {{ $product->unit->name }})</option>
+                                            <option value="{{ $product->id }}">
+                                                {{ $product->name }} (
+                                                {{ $product->branch_stock_quantity ?? 0 }}
+                                                {{ $product->unit->name }}
+                                                )
+                                            </option>
                                         @endforeach
                                     @else
-                                        <option selected disabled>
-                                            Please Add Product</option>
+                                        <option selected disabled>Please Add Product</option>
                                     @endif
                                 </select>
                                 <span class="text-danger product_select_error"></span>
@@ -147,7 +116,8 @@
                                                         name="total" readonly value="0.00" />
                                                 </div>
                                             </div>
-                                            <div class="row align-items-center">
+                                            {{-- //Display None Discount// --}}
+                                            <div class="row align-items-center d-none">
                                                 <div class="col-md-4">
                                                     Discount :
                                                 </div>
@@ -162,7 +132,7 @@
                                                 </div>
                                                 <div class="col-md-8">
                                                     <input type="number" class="form-control carrying_cost"
-                                                        name="carrying_cost" value="0.00" />
+                                                        id="carrying_cost" name="carrying_cost" value="0.00" />
                                                 </div>
                                             </div>
                                             <div class="row align-items-center">
@@ -250,7 +220,6 @@
             </div>
         </div>
 
-
         {{-- payement modal  --}}
         <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
             aria-hidden="true">
@@ -299,13 +268,18 @@
                         </div>
                         {{-- <form id="signupForm" class="supplierForm row"> --}}
                         <div class="supplierForm row">
-
-
-                            <div class="mb-3 col-md-6">
+                            <div class="mb-3 col-md-12">
                                 <label for="name" class="form-label">Transaction Method <span
                                         class="text-danger">*</span></label>
                                 @php
-                                    $payments = App\Models\Bank::get();
+                                    if (Auth::user()->id == 1) {
+                                        $payments = App\Models\Bank::get();
+                                    } else {
+                                        $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)
+                                            ->latest()
+                                            ->get();
+                                    }
+
                                 @endphp
                                 <select class="form-select payment_method" data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" name="payment_method">
@@ -321,16 +295,16 @@
                                 </select>
                                 <span class="text-danger payment_method_error"></span>
                             </div>
-
-                            <div class="mb-3 col-md-6">
+                            {{-- //Display None Tax// --}}
+                            <div class="mb-3 col-md-6 d-none">
                                 <label for="name" class="form-label">Tax</label>
                                 @php
                                     $taxs = App\Models\Tax::get();
                                 @endphp
-                                <select class="form-select tax" data-width="100%" onclick="errorRemove(this);"
+                                <select class="form-select tax " data-width="100%" onclick="errorRemove(this);"
                                     onblur="errorRemove(this);" value="" name="tax">
                                     @if ($taxs->count() > 0)
-                                        <option selected disabled>Select Taxes</option>
+                                        <option selected value="0">Select Taxes</option>
                                         @foreach ($taxs as $taxs)
                                             <option value="{{ $taxs->percentage }}">
                                                 {{ $taxs->percentage }} %
@@ -362,14 +336,10 @@
                             <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i>
                                 Purchase</button>
                         </div>
-
                     </div>
                 </div>
             </div>
     </form>
-
-
-
 
     <script>
         // error remove
@@ -380,7 +350,6 @@
             }
         }
         $(document).ready(function() {
-
             // show error
             function showError(name, message) {
                 $(name).css('border-color', 'red');
@@ -677,7 +646,8 @@
                 let taxTotal = ((grandTotal * value) / 100);
                 taxTotal = (taxTotal + grandTotal);
                 let totalAmount = taxTotal + previousDue;
-                $('.grandTotal').val(totalAmount);
+                let roundedTotal = Math.round(totalAmount);
+                $('.grandTotal').val(roundedTotal);
             })
 
 

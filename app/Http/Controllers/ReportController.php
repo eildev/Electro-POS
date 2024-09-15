@@ -21,7 +21,9 @@ use App\Models\Damage;
 use Illuminate\Http\Request;
 use App\Models\AccountTransaction;
 use App\Models\Bank;
+use App\Models\Branch;
 use App\Models\Returns;
+use App\Models\Stock;
 use App\Models\ViaSale;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -33,152 +35,181 @@ class ReportController extends Controller
     {
 
         $todayDate = now()->toDateString();
-
+        $branchData = [];
         //Today Invoice
-       if(Auth::user()->id == 1){
-        $saleItemsForDate = SaleItem::whereDate('created_at', $todayDate);
-        $todaySaleItemsToday = $saleItemsForDate->sum('qty');
-        $totalInvoiceToday = Sale::whereDate('sale_date', $todayDate)->count();
-        $totalSales = Sale::whereDate('sale_date', $todayDate)->get();
-        $todayTotalSaleAmount = Sale::whereDate('sale_date', $todayDate)->sum('receivable');
-        $todayTotalSaleQty = Sale::whereDate('sale_date', $todayDate)->sum('quantity');
-        $todayTotalSaleDue = Sale::whereDate('sale_date', $todayDate)->sum('due');
+        if (Auth::user()->id == 1) {
+            $branches = Branch::all();
+            foreach ($branches as $branch) {
+                $branchId = $branch->id;
+                $todayInvoiceAmount = Sale::whereDate('sale_date', $todayDate)->where('branch_id', $branchId)->sum('receivable');
+                $today_grand_total = Purchase::whereDate('purchase_date', $todayDate)->where('branch_id', $branchId)->sum('grand_total');
+                $todayExpenseAmount = Expense::whereDate('expense_date', $todayDate)->where('branch_id', $branchId)->sum('amount');
+                $totalSalary = EmployeeSalary::whereDate('created_at', $todayDate)->where('branch_id', $branchId)->sum('debit');
+                $branchData[$branchId] = [
+                    'todayInvoiceAmount' => $todayInvoiceAmount,
+                    'today_grand_total' => $today_grand_total,
+                    'todayExpenseAmount' => $todayExpenseAmount,
+                    'totalSalary' => $totalSalary,
+                    'branch' => $branch,
+                ];
+            }
+            $saleItemsForDate = SaleItem::whereDate('created_at', $todayDate);
+            $todaySaleItemsToday = $saleItemsForDate->sum('qty');
+            $totalInvoiceToday = Sale::whereDate('sale_date', $todayDate)->count();
+            $totalSales = Sale::whereDate('sale_date', $todayDate)->get();
+            $todayTotalSaleAmount = Sale::whereDate('sale_date', $todayDate)->sum('receivable');
+            $todayTotalSaleQty = Sale::whereDate('sale_date', $todayDate)->sum('quantity');
+            $todayTotalSaleDue = Sale::whereDate('sale_date', $todayDate)->sum('due');
 
-        //Today Purchase
-        $todayPurchaseItems = PurchaseItem::whereDate('created_at', $todayDate);
-        $purchases = Purchase::whereDate('created_at', $todayDate)->get();
-        $todayPurchaseItemsToday = $todayPurchaseItems->sum('quantity');
-        $todayPurchaseToday = Purchase::whereDate('purchase_date', $todayDate)->get();
-        // dd($todayPurchaseToday);
-        $today_grand_total = $todayPurchaseToday->sum('grand_total');
-        $todayTotalPurchaseAmount = Purchase::whereDate('purchase_date', $todayDate)->sum('grand_total');
-        $todayTotalPurchaseQty = Purchase::whereDate('purchase_date', $todayDate)->sum('total_quantity');
-        $todayTotalPurchaseDue = Purchase::whereDate('purchase_date', $todayDate)->sum('due');
+            //Today Purchase
+            $todayPurchaseItems = PurchaseItem::whereDate('created_at', $todayDate);
+            $purchases = Purchase::whereDate('created_at', $todayDate)->get();
+            $todayPurchaseItemsToday = $todayPurchaseItems->sum('quantity');
+            // $todayPurchaseToday = Purchase::whereDate('purchase_date', $todayDate)->get();
+            // dd($todayPurchaseToday);
+            // $today_grand_total = $todayPurchaseToday->sum('grand_total');
+            $todayTotalPurchaseAmount = Purchase::whereDate('purchase_date', $todayDate)->sum('grand_total');
+            $todayTotalPurchaseQty = Purchase::whereDate('purchase_date', $todayDate)->sum('total_quantity');
+            $todayTotalPurchaseDue = Purchase::whereDate('purchase_date', $todayDate)->sum('due');
 
-        //Today invoice product
-        $todayInvoiceProductItems = Sale::whereDate('sale_date', $todayDate);
-        $todayInvoiceProductTotal = $todayInvoiceProductItems->sum('quantity');
-        $todayInvoiceProductAmount = $todayInvoiceProductItems->sum('final_receivable');
-        //today invoice amount
-        $totalInvoiceTodaySum = Sale::whereDate('sale_date', $todayDate);
-        $todayInvoiceAmount = $totalInvoiceTodaySum->sum('receivable');
-        $todayProfit = $totalInvoiceTodaySum->sum('profit');
-        //today expenses
-        $todayExpenseDate = Expense::whereDate('expense_date', $todayDate);
-        $todayExpenseAmount = $todayExpenseDate->sum('amount');
-        //Today Customer
-        $todayCustomer = Customer::whereDate('created_at', $todayDate);
-        //Sale Profit
-        $saleProfitAmount = $totalInvoiceTodaySum->sum('profit');
+            //Today invoice product
+            $todayInvoiceProductItems = Sale::whereDate('sale_date', $todayDate);
+            $todayInvoiceProductTotal = $todayInvoiceProductItems->sum('quantity');
+            $todayInvoiceProductAmount = $todayInvoiceProductItems->sum('final_receivable');
+            //today invoice amount
+            $totalInvoiceTodaySum = Sale::whereDate('sale_date', $todayDate);
+            // $todayInvoiceAmount = $totalInvoiceTodaySum->sum('receivable');
+            $todayProfit = $totalInvoiceTodaySum->sum('profit');
+            //today expenses
+            // $todayExpenseDate = Expense::whereDate('expense_date', $todayDate);
+            // $todayExpenseAmount = $todayExpenseDate->sum('amount');
+            //Today Customer
+            $todayCustomer = Customer::whereDate('created_at', $todayDate);
+            //Sale Profit
+            $saleProfitAmount = $totalInvoiceTodaySum->sum('profit');
 
-        $expense = Expense::whereDate('expense_date', $todayDate)->get();
-        $expenseAmount = $expense->sum('amount');
-        $salary = EmployeeSalary::whereDate('created_at', $todayDate)->get();
-        $totalSalary = $salary->sum('debit');
-        $totalSalaryDue = $salary->sum('balance');
-       }else{
-        //for Branch
-        $saleItemsForDate = SaleItem::whereHas('saleId', function ($query) {
-            $query->where('branch_id', Auth::user()->branch_id);
-        })
-        ->whereDate('created_at', $todayDate);
-        $todaySaleItemsToday = $saleItemsForDate->sum('qty');
-        $totalInvoiceToday = Sale::where('branch_id', Auth::user()->branch_id)->whereDate('sale_date', $todayDate)->count();
-        $totalSales = Sale::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('sale_date', $todayDate)->get();
-        $todayTotalSaleAmount = Sale::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('sale_date', $todayDate)->sum('receivable');
-        $todayTotalSaleQty = Sale::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('sale_date', $todayDate)->sum('quantity');
-        $todayTotalSaleDue = Sale::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('sale_date', $todayDate)->sum('due');
+            $expense = Expense::whereDate('expense_date', $todayDate)->get();
+            $expenseAmount = $expense->sum('amount');
+            $salary = EmployeeSalary::whereDate('created_at', $todayDate)->get();
+            // $totalSalary = $salary->sum('debit');
+            $totalSalaryDue = $salary->sum('balance');
+        } else {
+            //for Branch
+            $saleItemsForDate = SaleItem::whereHas('saleId', function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            })
+                ->whereDate('created_at', $todayDate);
+            $todaySaleItemsToday = $saleItemsForDate->sum('qty');
+            $totalInvoiceToday = Sale::where('branch_id', Auth::user()->branch_id)->whereDate('sale_date', $todayDate)->count();
+            $totalSales = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $todayDate)->get();
+            $todayTotalSaleAmount = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $todayDate)->sum('receivable');
+            $todayTotalSaleQty = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $todayDate)->sum('quantity');
+            $todayTotalSaleDue = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $todayDate)->sum('due');
 
-        //Today Purchase
-        $todayPurchaseItems = PurchaseItem::whereHas('Purchas', function ($query) {
-            $query->where('branch_id', Auth::user()->branch_id);
-        })
-        ->whereDate('created_at', $todayDate);
-        $purchases = Purchase::whereDate('created_at', $todayDate)->get();
-        $todayPurchaseItemsToday = $todayPurchaseItems->sum('quantity');
-        $todayPurchaseToday = Purchase::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('purchase_date', $todayDate)->get();
-        // dd($todayPurchaseToday);
-        $today_grand_total = $todayPurchaseToday->sum('grand_total');
-        $todayTotalPurchaseAmount = Purchase::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('purchase_date', $todayDate)->sum('grand_total');
-        $todayTotalPurchaseQty = Purchase::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('purchase_date', $todayDate)->sum('total_quantity');
-        $todayTotalPurchaseDue = Purchase::whereDate('purchase_date', $todayDate)->sum('due');
+            //Today Purchase
+            $todayPurchaseItems = PurchaseItem::whereHas('Purchas', function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            })
+                ->whereDate('created_at', $todayDate);
+            $purchases = Purchase::whereDate('created_at', $todayDate)->get();
+            $todayPurchaseItemsToday = $todayPurchaseItems->sum('quantity');
+            $todayPurchaseToday = Purchase::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('purchase_date', $todayDate)->get();
+            // dd($todayPurchaseToday);
+            $today_grand_total = $todayPurchaseToday->sum('grand_total');
+            $todayTotalPurchaseAmount = Purchase::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('purchase_date', $todayDate)->sum('grand_total');
+            $todayTotalPurchaseQty = Purchase::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('purchase_date', $todayDate)->sum('total_quantity');
+            $todayTotalPurchaseDue = Purchase::whereDate('purchase_date', $todayDate)->sum('due');
 
-        //Today invoice product
-        $todayInvoiceProductItems = Sale::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('sale_date', $todayDate);
-        $todayInvoiceProductTotal = $todayInvoiceProductItems->sum('quantity');
-        $todayInvoiceProductAmount = $todayInvoiceProductItems->sum('final_receivable');
-        //today invoice amount
-        $totalInvoiceTodaySum = Sale::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('sale_date', $todayDate);
-        $todayInvoiceAmount = $totalInvoiceTodaySum->sum('receivable');
-        $todayProfit = $totalInvoiceTodaySum->sum('profit');
-        //today expenses
-        $todayExpenseDate = Expense::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('expense_date', $todayDate);
-        $todayExpenseAmount = $todayExpenseDate->sum('amount');
-        //Today Customer//
-        $todayCustomer = Customer::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('created_at', $todayDate);
-        //Sale Profit
-        $saleProfitAmount = $totalInvoiceTodaySum->sum('profit');
+            //Today invoice product
+            $todayInvoiceProductItems = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $todayDate);
+            $todayInvoiceProductTotal = $todayInvoiceProductItems->sum('quantity');
+            $todayInvoiceProductAmount = $todayInvoiceProductItems->sum('final_receivable');
+            //today invoice amount
+            $totalInvoiceTodaySum = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $todayDate);
+            $todayInvoiceAmount = $totalInvoiceTodaySum->sum('receivable');
+            $todayProfit = $totalInvoiceTodaySum->sum('profit');
+            //today expenses
+            $todayExpenseDate = Expense::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('expense_date', $todayDate);
+            $todayExpenseAmount = $todayExpenseDate->sum('amount');
+            //Today Customer//
+            $todayCustomer = Customer::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('created_at', $todayDate);
+            //Sale Profit
+            $saleProfitAmount = $totalInvoiceTodaySum->sum('profit');
 
-        $expense = Expense::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('expense_date', $todayDate)->get();
-        $expenseAmount = $expense->sum('amount');
-        $salary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
-        ->whereDate('created_at', $todayDate)->get();
-        $totalSalary = $salary->sum('debit');
-        $totalSalaryDue = $salary->sum('balance');
-       }
-
-        return view('pos.report.today.today', compact('todayInvoiceAmount', 'totalSales', 'today_grand_total', 'todayExpenseAmount', 'totalSalary', 'expense', 'todayTotalSaleAmount', 'todayTotalSaleDue', 'todayTotalSaleQty', 'purchases', 'todayTotalPurchaseDue', 'todayTotalPurchaseQty', 'todayTotalPurchaseAmount', 'salary'));
+            $expense = Expense::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('expense_date', $todayDate)->get();
+            $expenseAmount = $expense->sum('amount');
+            $salary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('created_at', $todayDate)->get();
+            $totalSalary = $salary->sum('debit');
+            $totalSalaryDue = $salary->sum('balance');
+        }
+        return view('pos.report.today.today', compact('todayInvoiceAmount', 'totalSales', 'today_grand_total', 'todayExpenseAmount', 'totalSalary', 'expense', 'todayTotalSaleAmount', 'todayTotalSaleDue', 'todayTotalSaleQty', 'purchases', 'todayTotalPurchaseDue', 'todayTotalPurchaseQty', 'todayTotalPurchaseAmount', 'salary', 'branchData'));
     }
     // summary report function
     public function summaryReport()
     {
-        if(Auth::user()->id == 1){
+        $branchData = [];
+        if (Auth::user()->id == 1) {
+            $branches = Branch::all();
+            foreach ($branches as $branch) {
+                $branchId = $branch->id;
+
+                $sale = Sale::where('branch_id', $branchId)->get();
+                $saleAmount = $sale->sum('change_amount');
+                $purchase = Purchase::where('branch_id', $branchId)->get();
+                $purchaseAmount = $purchase->sum('sub_total');
+                $expense =  Expense::where('branch_id', $branchId)->get();
+                $expenseAmount = $expense->sum('amount');
+                $sellProfit = $sale->sum('profit');
+                $salary = EmployeeSalary::where('branch_id', $branchId)->get();
+                $totalSalary = $salary->sum('debit');
+
+                $branchData[$branchId] = [
+                    'saleAmount' => $saleAmount,
+                    'purchaseAmount' => $purchaseAmount,
+                    'sellProfit' => $sellProfit,
+                    'expenseAmount' => $expenseAmount,
+                    'totalSalary' => $totalSalary,
+                    'branch' => $branch,
+                ];
+            }
             $products = Product::orderBy('total_sold', 'desc')
-            ->take(20)
-            ->get();
-        $expense =  Expense::all();
-        $supplier = Transaction::whereNotNull('supplier_id')->get();
-        $customer = Transaction::whereNotNull('customer_id')->get();
-        $sale = Sale::all();
-        $saleAmount = $sale->sum('receivable');
-        $purchase = Purchase::all();
-        $purchaseAmount = $purchase->sum('grand_total');
-        // $expense = Expense::where('branch_id', Auth::user()->branch_id)->get();
-        $expenseAmount = $expense->sum('amount');
-        $sellProfit = $sale->sum('profit');
-        $salary = EmployeeSalary::all();
-        $totalSalary = $salary->sum('debit');
-        }else{
+                ->take(20)
+                ->get();
+            $expense =  Expense::all();
+            $supplier = Transaction::whereNotNull('supplier_id')->get();
+            $customer = Transaction::whereNotNull('customer_id')->get();
+        } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)
-            ->orderBy('total_sold', 'desc')
-            ->take(20)
-            ->get();
-        // $expense =  Expense::all();
-        $supplier = Transaction::whereNotNull('supplier_id')->get();
-        $customer = Transaction::whereNotNull('customer_id')->get();
-        $sale = Sale::where('branch_id', Auth::user()->branch_id)->get();
-        $saleAmount = $sale->sum('receivable');
-        $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->get();
-        $purchaseAmount = $purchase->sum('grand_total');
-        $expense = Expense::where('branch_id', Auth::user()->branch_id)->get();
-        $expenseAmount = $expense->sum('amount');
-        $sellProfit = $sale->sum('profit');
-        $salary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->get();
-        $totalSalary = $salary->sum('debit');
+                ->orderBy('total_sold', 'desc')
+                ->take(20)
+                ->get();
+            // $expense =  Expense::all();
+            $supplier = Transaction::where('branch_id', Auth::user()->branch_id)->whereNotNull('supplier_id')->get();
+            $customer = Transaction::where('branch_id', Auth::user()->branch_id)->whereNotNull('customer_id')->get();
+            $sale = Sale::where('branch_id', Auth::user()->branch_id)->get();
+            $saleAmount = $sale->sum('receivable');
+            $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->get();
+            $purchaseAmount = $purchase->sum('grand_total');
+            $expense = Expense::where('branch_id', Auth::user()->branch_id)->get();
+            $expenseAmount = $expense->sum('amount');
+            $sellProfit = $sale->sum('profit');
+            $salary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)->get();
+            $totalSalary = $salary->sum('debit');
         }
-        return view('pos.report.summary.summary', compact('saleAmount', 'purchaseAmount', 'expenseAmount', 'sellProfit', 'totalSalary', 'products', 'expense', 'supplier', 'customer'));
+        return view('pos.report.summary.summary', compact('saleAmount', 'purchaseAmount', 'expenseAmount', 'sellProfit', 'totalSalary', 'products', 'expense', 'supplier', 'customer', 'branchData'));
     }
     // customer due report function
     public function customerDue()
@@ -251,25 +282,33 @@ class ReportController extends Controller
     // low stock report function
     public function lowStockReport()
     {
-        if (Auth::user()->id == 1) {
-            $products = Product::where('stock', '<=', 10)
-                ->get();
-        } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->where('stock', '<=', 10)
-                ->get();
-        }
+        $stock = Stock::get();
+        // if (Auth::user()->id == 1) {
+        //     $products = Product::withSum('stockQuantity', 'stock_quantity') // Note: 'stockQuantity' matches the relationship name
+        //     ->having('stock_quantity_sum', '<=', 10)
+        //     ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+        //     ->get();
+        // } else {
+            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            }], 'stock_quantity')
+            ->having('stock_quantity_sum', '<=', 10)
+            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->get();
+        // }
         return view('pos.report.products.low_stock', compact('products'));
     }
     // Top Products  function
     public function topProducts()
     {
         if (Auth::user()->id == 1) {
-            $products = Product::orderBy('total_sold', 'desc')
+            $products = Product::withSum('stockQuantity', 'stock_quantity')
+                ->orderBy('total_sold', 'desc')
                 ->take(20)
                 ->get();
         } else {
             $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
                 ->orderBy('total_sold', 'desc')
                 ->take(20)
                 ->get();
@@ -322,9 +361,13 @@ class ReportController extends Controller
         if (Auth::user()->id == 1) {
             $damageItem = Damage::all();
         } else {
-            $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->get();
+            $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->with('product')->get();
         }
-        return view('pos.report.damages.damage', compact('damageItem'));
+        foreach ($damageItem as $damage) {
+             $damage->total_cost = $damage->product->cost * $damage->qty;
+        }
+        $totalSum = $damageItem->sum('total_cost');
+        return view('pos.report.damages.damage', compact('damageItem','totalSum'));
     }
 
     public function DamageProductFilter(Request $request)
@@ -404,12 +447,31 @@ class ReportController extends Controller
     //stock Report function
     public function stockReport()
     {
-        if (Auth::user()->id == 1) {
-            $products = Product::all();
-        } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)->get();
+         if(Auth::user()->id == 1){
+            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            }], 'stock_quantity')
+            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->get();
+            $products->each(function ($product) {
+                $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+             });
+            }else{
+          $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+            $query->where('branch_id', Auth::user()->branch_id);
+        }], 'stock_quantity')
+        ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+        ->get();
+        $products->each(function ($product) {
+            $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+         });
         }
-        return view('pos.report.products.stock', compact('products'));
+
+                 //Show Stock Value
+
+                //Total stock Value
+            $totalStockValueSum = $products->sum('total_stock_value');
+        return view('pos.report.products.stock', compact('products','totalStockValueSum'));
     } //
 
     ////////////////Account Transaction Method  //////////////
@@ -474,34 +536,51 @@ class ReportController extends Controller
     public function ProductInfoReport()
     {
         if (Auth::user()->id == 1) {
-            $productInfo = Product::all();
+            // $productInfo = Product::all();
+            $productInfo = Product::withSum('stockQuantity', 'stock_quantity')->latest()->get();
         } else {
-            $productInfo = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $productInfo = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->latest()
+                ->get();
+            // $productInfo = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
         }
 
         return view('pos.report.products.product_info_report', compact('productInfo'));
     } //
-    // public function ProductSubCategoryShow($categoryId){
-    //     $subCategory =SubCategory::where('category_id',$categoryId)->get();
-    //     return  json_encode($subCategory);
-    // }
 
     public function ProductInfoFilter(Request $request)
     {
-        // dd($request->filterBrand);
-        $productInfo = Product::when($request->filterStartPrice, function ($query) use ($request) {
-            return $query->where('price', '<=', (float) $request->filterStartPrice);
-        })
-            ->when($request->filterBrand != "Select Brand", function ($query) use ($request) {
-                return $query->where('brand_id', $request->filterBrand);
+        if (Auth::user()->id == 1) {
+            $productInfo = Product::withSum('stockQuantity', 'stock_quantity')->when($request->filterStartPrice, function ($query) use ($request) {
+                return $query->where('price', '<=', (float) $request->filterStartPrice);
             })
-            ->when($request->FilterCat != "Select Category", function ($query) use ($request) {
-                return $query->where('category_id', $request->FilterCat);
+                ->when($request->filterBrand != "Select Brand", function ($query) use ($request) {
+                    return $query->where('brand_id', $request->filterBrand);
+                })
+                ->when($request->FilterCat != "Select Category", function ($query) use ($request) {
+                    return $query->where('category_id', $request->FilterCat);
+                })
+                ->when($request->filterSubcat != "Select Sub Category", function ($query) use ($request) {
+                    return $query->where('subcategory_id', $request->filterSubcat);
+                })
+                ->get();
+        } else {
+            $productInfo = Product::where('branch_id', Auth::user()->branch_id)->withSum('stockQuantity', 'stock_quantity')->when($request->filterStartPrice, function ($query) use ($request) {
+                return $query->where('price', '<=', (float) $request->filterStartPrice);
             })
-            ->when($request->filterSubcat != "Select Sub Category", function ($query) use ($request) {
-                return $query->where('subcategory_id', $request->filterSubcat);
-            })
-            ->get();
+                ->when($request->filterBrand != "Select Brand", function ($query) use ($request) {
+                    return $query->where('brand_id', $request->filterBrand);
+                })
+                ->when($request->FilterCat != "Select Category", function ($query) use ($request) {
+                    return $query->where('category_id', $request->FilterCat);
+                })
+                ->when($request->filterSubcat != "Select Sub Category", function ($query) use ($request) {
+                    return $query->where('subcategory_id', $request->filterSubcat);
+                })
+                ->get();
+        }
+
         return view('pos.report.products.product-info-filter-rander-table', compact('productInfo'))->render();
     }
     ///SMS Report Method
@@ -525,13 +604,266 @@ class ReportController extends Controller
     {
         $dailyReports = [];
         $banks = Bank::all();
+        if (Auth::user()->id == 1) {
+            for ($i = 0; $i < 30; $i++) { // Loop for the last 30 days
+                // Calculate the start and end dates for the day
+                $date = now()->subDays($i)->toDateString();
 
-        for ($i = 0; $i < 30; $i++) { // Loop for the last 30 days
-            // Calculate the start and end dates for the day
-            $date = now()->subDays($i)->toDateString();
+                // Calculate the totals for the day
+                //   incoming value
+                $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
+                $totalSaleAmount = Sale::whereDate('sale_date', $date)->sum('paid');
+                $totalSale = $totalSaleAmount - $viaSale;
+                $dueCollection = Transaction::where('particulars', 'SaleDue')
+                    ->whereDate('created_at', $date)
+                    ->sum('credit');
+                $otherCollection = Transaction::where('particulars', 'OthersReceive')
+                    ->whereDate('created_at', $date)
+                    ->sum('credit');
+                $adjustDueCollection = Transaction::where('particulars', 'Adjust Due Collection')
+                    ->where('payment_type', 'pay')
+                    ->whereDate('created_at',  $date)
+                    ->sum('credit');
+                $addBalance = AccountTransaction::where(function ($query) {
+                    $query->where('purpose', 'Add Bank Balance')
+                        ->orWhere('purpose', 'Bank');
+                })
+                    ->whereDate('created_at',  $date)
+                    ->sum('credit');
+                $previousDayBalance = 0;
+                $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $date)
+                    ->latest('created_at')
+                    ->first();
+                if ($lastTransactionDate) {
+                    $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
 
-            // Calculate the totals for the day
-            //   incoming value
+                    foreach ($banks as $bank) {
+                        $transaction = AccountTransaction::where('account_id', $bank->id)
+                            ->whereDate('created_at', $lastTransactionDate)
+                            ->latest('created_at')
+                            ->first();
+
+                        if ($transaction) {
+                            $previousDayBalance += $transaction->balance;
+                        }
+                    }
+                }
+
+                $totalIngoing =
+                    $previousDayBalance +
+                    $totalSale +
+                    $dueCollection +
+                    $otherCollection +
+                    $addBalance +
+                    $adjustDueCollection +
+                    $viaSale;
+
+                // outgoing Value//
+                $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
+                $totalExpense = Expense::whereDate('expense_date', $date)->sum('amount');
+                $totalSalary = EmployeeSalary::whereDate('date', $date)->sum('debit');
+                $purchaseDuePay = Transaction::where('particulars', 'PurchaseDue')
+                    ->whereDate('created_at', $date)
+                    ->sum('debit');
+                $otherPaid = Transaction::where('particulars', 'OthersPayment')
+                    ->whereDate('created_at', $date)
+                    ->sum('debit');
+                $viaPayment = AccountTransaction::where('purpose', 'Via Payment')
+                    ->whereDate('created_at', $date)
+                    ->sum('debit');
+                $return = Returns::whereDate('created_at', $date)->sum('refund_amount');
+                $todayReturnAmount = $return - $adjustDueCollection;
+
+                $totalOutgoing =
+                    $totalPurchaseCost +
+                    $totalExpense +
+                    $totalSalary +
+                    $todayReturnAmount +
+                    $purchaseDuePay +
+                    $otherPaid +
+                    $viaPayment;
+
+                // profit Calculation//
+                $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
+                $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+                $totalBalance = $totalIngoing - $totalOutgoing;
+                $dayName = now()->subDays($i)->format('d F Y');
+                // Store the report data in the array
+                $dailyReports[now()->subDays($i)->format('Y-m-d')] = [
+                    'id' => now()->subDays($i)->format('Ymd'),
+                    'date' => $dayName,
+                    // incoming
+                    'totalSale' => $totalSale,
+                    'dueCollection' => $dueCollection,
+                    'otherCollection' => $otherCollection,
+                    'adjustDueCollection' => $adjustDueCollection,
+                    'addBalance' => $addBalance,
+                    'viaSale' => $viaSale,
+                    'previousDayBalance' => $previousDayBalance,
+                    'totalIngoing' => $totalIngoing,
+
+                    // outgoing
+                    'totalPurchaseCost' => $totalPurchaseCost,
+                    'totalExpense' => $totalExpense,
+                    'totalSalary' => $totalSalary,
+                    'purchaseDuePay' => $purchaseDuePay,
+                    'todayReturnAmount' => $todayReturnAmount,
+                    'viaPayment' => $viaPayment,
+                    'otherPaid' => $otherPaid,
+                    'totalOutgoing' => $totalOutgoing,
+
+                    // profit
+                    'totalProfit' => $totalProfit,
+                    'finalProfit' => $finalProfit,
+                    'totalBalance' => $totalBalance,
+                ];
+            }
+        } else {
+            for ($i = 0; $i < 30; $i++) { // Loop for the last 30 days
+                // Calculate the start and end dates for the day
+                $date = now()->subDays($i)->toDateString();
+
+                // Calculate the totals for the day
+                //   incoming value
+                $viaSale = ViaSale::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('created_at', $date)->sum('sub_total');
+                $totalSaleAmount = Sale::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('sale_date', $date)->sum('paid');
+                $totalSale = $totalSaleAmount - $viaSale;
+                $dueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('particulars', 'SaleDue')
+                    ->whereDate('created_at', $date)
+                    ->sum('credit');
+                $otherCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('particulars', 'OthersReceive')
+                    ->whereDate('created_at', $date)
+                    ->sum('credit');
+                $adjustDueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('particulars', 'Adjust Due Collection')
+                    ->where('payment_type', 'pay')
+                    ->whereDate('created_at',  $date)
+                    ->sum('credit');
+                $addBalance = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                    ->where(function ($query) {
+                        $query->where('purpose', 'Add Bank Balance')
+                            ->orWhere('purpose', 'Bank');
+                    })
+                    ->whereDate('created_at',  $date)
+                    ->sum('credit');
+                $previousDayBalance = 0;
+                $lastTransactionDate = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('created_at', '<', $date)
+                    ->latest('created_at')
+                    ->first();
+                if ($lastTransactionDate) {
+                    $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
+
+                    foreach ($banks as $bank) {
+                        $transaction = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                            ->where('account_id', $bank->id)
+                            ->whereDate('created_at', $lastTransactionDate)
+                            ->latest('created_at')
+                            ->first();
+
+                        if ($transaction) {
+                            $previousDayBalance += $transaction->balance;
+                        }
+                    }
+                }
+
+                $totalIngoing =
+                    $previousDayBalance +
+                    $totalSale +
+                    $dueCollection +
+                    $otherCollection +
+                    $addBalance +
+                    $adjustDueCollection +
+                    $viaSale;
+
+                // outgoing Value
+                $totalPurchaseCost = Purchase::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('purchase_date', $date)->sum('paid');
+                $totalExpense = Expense::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('expense_date', $date)->sum('amount');
+                $totalSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('date', $date)->sum('debit');
+                $purchaseDuePay = Transaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('particulars', 'PurchaseDue')
+                    ->whereDate('created_at', $date)
+                    ->sum('debit');
+                $otherPaid = Transaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('particulars', 'OthersPayment')
+                    ->whereDate('created_at', $date)
+                    ->sum('debit');
+                $viaPayment = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                    ->where('purpose', 'Via Payment')
+                    ->whereDate('created_at', $date)
+                    ->sum('debit');
+                $return = Returns::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('created_at', $date)->sum('refund_amount');
+                $todayReturnAmount = $return - $adjustDueCollection;
+
+                $totalOutgoing =
+                    $totalPurchaseCost +
+                    $totalExpense +
+                    $totalSalary +
+                    $todayReturnAmount +
+                    $purchaseDuePay +
+                    $otherPaid +
+                    $viaPayment;
+
+                // profit Calculation//
+                $totalProfit = Sale::where('branch_id', Auth::user()->branch_id)
+                    ->whereDate('sale_date', $date)->sum('profit');
+                $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+                $totalBalance = $totalIngoing - $totalOutgoing;
+                $dayName = now()->subDays($i)->format('d F Y');
+                // Store the report data in the array
+                $dailyReports[now()->subDays($i)->format('Y-m-d')] = [
+                    'id' => now()->subDays($i)->format('Ymd'),
+                    'date' => $dayName,
+                    // incoming
+                    'totalSale' => $totalSale,
+                    'dueCollection' => $dueCollection,
+                    'otherCollection' => $otherCollection,
+                    'adjustDueCollection' => $adjustDueCollection,
+                    'addBalance' => $addBalance,
+                    'viaSale' => $viaSale,
+                    'previousDayBalance' => $previousDayBalance,
+                    'totalIngoing' => $totalIngoing,
+
+                    // outgoing
+                    'totalPurchaseCost' => $totalPurchaseCost,
+                    'totalExpense' => $totalExpense,
+                    'totalSalary' => $totalSalary,
+                    'purchaseDuePay' => $purchaseDuePay,
+                    'todayReturnAmount' => $todayReturnAmount,
+                    'viaPayment' => $viaPayment,
+                    'otherPaid' => $otherPaid,
+                    'totalOutgoing' => $totalOutgoing,
+
+                    // profit
+                    'totalProfit' => $totalProfit,
+                    'finalProfit' => $finalProfit,
+                    'totalBalance' => $totalBalance,
+                ];
+            }
+        }
+
+
+        // Pass the daily reports array to the view
+        return view('pos.report.monthly.monthly', compact('dailyReports'));
+    }
+
+    public function monthlyReportView($id)
+    {
+        // dd($id);
+        $date = \DateTime::createFromFormat('Ymd', $id);
+
+        $banks = Bank::all();
+
+        if (Auth::user()->id == 1) {
+            //  Calculate the totals for the day //
             $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
             $totalSaleAmount = Sale::whereDate('sale_date', $date)->sum('paid');
             $totalSale = $totalSaleAmount - $viaSale;
@@ -545,7 +877,10 @@ class ReportController extends Controller
                 ->where('payment_type', 'pay')
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
-            $addBalance = AccountTransaction::where('purpose', 'Add Bank Balance')
+            $addBalance = AccountTransaction::where(function ($query) {
+                $query->where('purpose', 'Add Bank Balance')
+                    ->orWhere('purpose', 'Bank');
+            })
                 ->whereDate('created_at',  $date)
                 ->sum('credit');
             $previousDayBalance = 0;
@@ -605,153 +940,130 @@ class ReportController extends Controller
             $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
             $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
             $totalBalance = $totalIngoing - $totalOutgoing;
+        } else {
+            //  Calculate the totals for the day //
+            $viaSale = ViaSale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('created_at', $date)->sum('sub_total');
+            $totalSaleAmount = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $date)->sum('paid');
+            $totalSale = $totalSaleAmount - $viaSale;
+            $dueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'SaleDue')
+                ->whereDate('created_at', $date)
+                ->sum('credit');
+            $otherCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'OthersReceive')
+                ->whereDate('created_at', $date)
+                ->sum('credit');
+            $adjustDueCollection = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'Adjust Due Collection')
+                ->where('payment_type', 'pay')
+                ->whereDate('created_at',  $date)
+                ->sum('credit');
+            $addBalance = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                ->where(function ($query) {
+                    $query->where('purpose', 'Add Bank Balance')
+                        ->orWhere('purpose', 'Bank');
+                })
+                ->whereDate('created_at',  $date)
+                ->sum('credit');
+            $previousDayBalance = 0;
+            $lastTransactionDate = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('created_at', '<', $date)
+                ->latest('created_at')
+                ->first();
+            if ($lastTransactionDate) {
+                $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
 
+                foreach ($banks as $bank) {
+                    $transaction = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                        ->where('account_id', $bank->id)
+                        ->whereDate('created_at', $lastTransactionDate)
+                        ->latest('created_at')
+                        ->first();
 
-            $dayName = now()->subDays($i)->format('d F Y');
-            // Store the report data in the array
-            $dailyReports[now()->subDays($i)->format('Y-m-d')] = [
-                'id' => now()->subDays($i)->format('Ymd'),
-                'date' => $dayName,
-                // incoming
-                'totalSale' => $totalSale,
-                'dueCollection' => $dueCollection,
-                'otherCollection' => $otherCollection,
-                'adjustDueCollection' => $adjustDueCollection,
-                'addBalance' => $addBalance,
-                'viaSale' => $viaSale,
-                'previousDayBalance' => $previousDayBalance,
-                'totalIngoing' => $totalIngoing,
-
-                // outgoing
-                'totalPurchaseCost' => $totalPurchaseCost,
-                'totalExpense' => $totalExpense,
-                'totalSalary' => $totalSalary,
-                'purchaseDuePay' => $purchaseDuePay,
-                'todayReturnAmount' => $todayReturnAmount,
-                'viaPayment' => $viaPayment,
-                'otherPaid' => $otherPaid,
-                'totalOutgoing' => $totalOutgoing,
-
-                // profit
-                'totalProfit' => $totalProfit,
-                'finalProfit' => $finalProfit,
-                'totalBalance' => $totalBalance,
-            ];
-        }
-
-        // Pass the daily reports array to the view
-        return view('pos.report.monthly.monthly', compact('dailyReports'));
-    }
-
-    public function monthlyReportView($id)
-    {
-        // dd($id);
-        $date = \DateTime::createFromFormat('Ymd', $id);
-
-        $banks = Bank::all();
-
-        // Calculate the totals for the day
-        $viaSale = ViaSale::whereDate('created_at', $date)->sum('sub_total');
-        $totalSaleAmount = Sale::whereDate('sale_date', $date)->sum('paid');
-        $totalSale = $totalSaleAmount - $viaSale;
-        $dueCollection = Transaction::where('particulars', 'SaleDue')
-            ->whereDate('created_at', $date)
-            ->sum('credit');
-        $otherCollection = Transaction::where('particulars', 'OthersReceive')
-            ->whereDate('created_at', $date)
-            ->sum('credit');
-        $adjustDueCollection = Transaction::where('particulars', 'Adjust Due Collection')
-            ->where('payment_type', 'pay')
-            ->whereDate('created_at',  $date)
-            ->sum('credit');
-        $addBalance = AccountTransaction::where('purpose', 'Add Bank Balance')
-            ->whereDate('created_at',  $date)
-            ->sum('credit');
-        $previousDayBalance = 0;
-        $lastTransactionDate = AccountTransaction::whereDate('created_at', '<', $date)
-            ->latest('created_at')
-            ->first();
-        if ($lastTransactionDate) {
-            $lastTransactionDate = $lastTransactionDate->created_at->toDateString();
-
-            foreach ($banks as $bank) {
-                $transaction = AccountTransaction::where('account_id', $bank->id)
-                    ->whereDate('created_at', $lastTransactionDate)
-                    ->latest('created_at')
-                    ->first();
-
-                if ($transaction) {
-                    $previousDayBalance += $transaction->balance;
+                    if ($transaction) {
+                        $previousDayBalance += $transaction->balance;
+                    }
                 }
             }
+
+            $totalIngoing =
+                $previousDayBalance +
+                $totalSale +
+                $dueCollection +
+                $otherCollection +
+                $addBalance +
+                $adjustDueCollection +
+                $viaSale;
+
+            // outgoing Value
+            $totalPurchaseCost = Purchase::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('purchase_date', $date)->sum('paid');
+            $totalExpense = Expense::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('expense_date', $date)->sum('amount');
+            $totalSalary = EmployeeSalary::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('date', $date)->sum('debit');
+            $purchaseDuePay = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'PurchaseDue')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $otherPaid = Transaction::where('branch_id', Auth::user()->branch_id)
+                ->where('particulars', 'OthersPayment')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $viaPayment = AccountTransaction::where('branch_id', Auth::user()->branch_id)
+                ->where('purpose', 'Via Payment')
+                ->whereDate('created_at', $date)
+                ->sum('debit');
+            $return = Returns::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('created_at', $date)->sum('refund_amount');
+            $todayReturnAmount = $return - $adjustDueCollection;
+
+            $totalOutgoing =
+                $totalPurchaseCost +
+                $totalExpense +
+                $totalSalary +
+                $todayReturnAmount +
+                $purchaseDuePay +
+                $otherPaid +
+                $viaPayment;
+
+            // profit Calculation //
+            $totalProfit = Sale::where('branch_id', Auth::user()->branch_id)
+                ->whereDate('sale_date', $date)->sum('profit');
+            $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
+            $totalBalance = $totalIngoing - $totalOutgoing;
         }
-
-        $totalIngoing =
-            $previousDayBalance +
-            $totalSale +
-            $dueCollection +
-            $otherCollection +
-            $addBalance +
-            $adjustDueCollection +
-            $viaSale;
-
-        // outgoing Value
-        $totalPurchaseCost = Purchase::whereDate('purchase_date', $date)->sum('paid');
-        $totalExpense = Expense::whereDate('expense_date', $date)->sum('amount');
-        $totalSalary = EmployeeSalary::whereDate('date', $date)->sum('debit');
-        $purchaseDuePay = Transaction::where('particulars', 'PurchaseDue')
-            ->whereDate('created_at', $date)
-            ->sum('debit');
-        $otherPaid = Transaction::where('particulars', 'OthersPayment')
-            ->whereDate('created_at', $date)
-            ->sum('debit');
-        $viaPayment = AccountTransaction::where('purpose', 'Via Payment')
-            ->whereDate('created_at', $date)
-            ->sum('debit');
-        $return = Returns::whereDate('created_at', $date)->sum('refund_amount');
-        $todayReturnAmount = $return - $adjustDueCollection;
-
-        $totalOutgoing =
-            $totalPurchaseCost +
-            $totalExpense +
-            $totalSalary +
-            $todayReturnAmount +
-            $purchaseDuePay +
-            $otherPaid +
-            $viaPayment;
-
-        // profit Calculation
-        $totalProfit = Sale::whereDate('sale_date', $date)->sum('profit');
-        $finalProfit = $totalProfit - ($totalExpense + $totalSalary);
-        $totalBalance = $totalIngoing - $totalOutgoing;
 
         $formattedDate = $date->format('d F Y');
         $report = [
             'date' => $formattedDate,
-            'totalSale' => $totalSale,
-            'dueCollection' => $dueCollection,
-            'otherCollection' => $otherCollection,
-            'adjustDueCollection' => $adjustDueCollection,
-            'addBalance' => $addBalance,
-            'viaSale' => $viaSale,
-            'previousDayBalance' => $previousDayBalance,
-            'totalIngoing' => $totalIngoing,
+            'totalSale' => number_format($totalSale, 2),
+            'dueCollection' => number_format($dueCollection, 2),
+            'otherCollection' => number_format($otherCollection, 2),
+            'adjustDueCollection' => number_format($adjustDueCollection, 2),
+            'addBalance' => number_format($addBalance, 2),
+            'viaSale' => number_format($viaSale, 2),
+            'previousDayBalance' => number_format($previousDayBalance, 2),
+            'totalIngoing' => number_format($totalIngoing, 2),
 
             // outgoing
-            'totalPurchaseCost' => $totalPurchaseCost,
-            'totalExpense' => $totalExpense,
-            'totalSalary' => $totalSalary,
-            'purchaseDuePay' => $purchaseDuePay,
-            'todayReturnAmount' => $todayReturnAmount,
-            'viaPayment' => $viaPayment,
-            'otherPaid' => $otherPaid,
-            'totalOutgoing' => $totalOutgoing,
+            'totalPurchaseCost' => number_format($totalPurchaseCost, 2),
+            'totalExpense' => number_format($totalExpense, 2),
+            'totalSalary' => number_format($totalSalary, 2),
+            'purchaseDuePay' => number_format($purchaseDuePay, 2),
+            'todayReturnAmount' => number_format($todayReturnAmount, 2),
+            'viaPayment' => number_format($viaPayment, 2),
+            'otherPaid' => number_format($otherPaid, 2),
+            'totalOutgoing' => number_format($totalOutgoing, 2),
 
             // profit
-            'totalProfit' => $totalProfit,
-            'finalProfit' => $finalProfit,
-            'totalBalance' => $totalBalance,
+            'totalProfit' => number_format($totalProfit, 2),
+            'finalProfit' => number_format($finalProfit, 2),
+            'totalBalance' => number_format($totalBalance, 2),
         ];
+
         return response()->json([
             'status' => '200',
             'report' => $report

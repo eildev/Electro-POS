@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
 class UserSeed extends Seeder
 {
     /**
@@ -16,6 +17,7 @@ class UserSeed extends Seeder
         $users = [
             [
                 'id' => 1,
+                'company_id' => 1,
                 'name' => 'Super Admin',
                 'email' => 'superadmin@gmail.com',
                 'phone' => '12345656',
@@ -24,6 +26,7 @@ class UserSeed extends Seeder
             ],
             [
                 'id' => 2,
+                'company_id' => 1,
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
                 'phone' => '1234567838',
@@ -32,8 +35,18 @@ class UserSeed extends Seeder
             ],
             [
                 'id' => 3,
+                'company_id' => 1,
                 'name' => 'Demo',
                 'email' => 'demo@gmail.com',
+                'phone' => '1234538',
+                'branch_id' => 1,
+                'password' => Hash::make('12345678'),
+            ],
+            [
+                'id' => 4,
+                'company_id' => 1,
+                'name' => 'TecAdmin',
+                'email' => 'tecadmin@gmail.com',
                 'phone' => '1234538',
                 'branch_id' => 1,
                 'password' => Hash::make('12345678'),

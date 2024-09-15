@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             BranchSeed::class,
+            CompanySeeder::class,
+            UserLimitSeeder::class,
             UserSeed::class,
             SettingSeed::class,
             PermissionSeeder::class,
@@ -33,6 +35,7 @@ class DatabaseSeeder extends Seeder
             ExpenseCategorySeeder::class,
             SubcategorySeed::class,
             BrandSeed::class,
+            ProductSeed::class,
         ]);
     }
 }

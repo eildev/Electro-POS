@@ -34,7 +34,7 @@
                         <div class="row mb-3">
                             <label for="exampleInputMobile" class="col-sm-3 col-form-label">Mobile (Optional)</label>
                             <div class="col-sm-9">
-                                <input type="number" name="phone" class="form-control" id="exampleInputMobile"
+                                <input type="tel" name="phone" class="form-control" id="exampleInputMobile"
                                     placeholder="Mobile number">
                             </div>
                         </div>
@@ -72,12 +72,12 @@
                             <div class="col-sm-9 form-valid-groupss">
                                 <select class="js-example-basic-single form-select " id="exampleInputPassword2s"
                                     name="role_id" data-width="100%">
-                                    <option selected disabled>----> Select Role <-----</option>
-                                    @foreach ($role as $roles)
-                                    @if ($roles->name === 'Super Admin')
+                                    <option selected disabled>----> Select Role <-----< /option>
+                                            @foreach ($role as $roles)
+                                                @if ($roles->id === 1 || $roles->id === 4)
                                     <option value="{{ $roles->id }}" disabled>{{ $roles->name }}</option>
-                                    @else
-                                        <option value="{{ $roles->id }}">{{ $roles->name }}</option>
+                                @else
+                                    <option value="{{ $roles->id }}">{{ $roles->name }}</option>
                                     @endif
                                     @endforeach
                                 </select>

@@ -14,9 +14,9 @@ class BranchSeed extends Seeder
     public function run(): void
     {
         Branch::create([
-            'name' => 'Eclipse Blends and Blossom',
+            'name' => 'Eclipse Electro POS',
             'address' => 'House 41, Road 6, Block E, Banasree, Rampura, Dhaka, Bangladesh',
-            'email' => 'ebb@gmail.com',
+            'email' => 'eclipse.electro@gmail.com',
             'phone' => '01917344267',
         ]);
     }

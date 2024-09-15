@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Stock Report')
+@section('title', '| Stock Report')
 @section('admin')
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
@@ -9,7 +9,7 @@
     </nav>
 
     <div class="row">
-       
+
 
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
@@ -23,20 +23,25 @@
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Category</th>
-                                    <th>Price</th>
                                     <th>Purchased</th>
                                     <th>Sold</th>
                                     <th>Damaged</th>
-                                    <th>Returned</th>
+                                    <th>Cost Price</th>
+                                    <th>Sell Price</th>
                                     <th>Available Stock</th>
                                     <th>Sell Value</th>
+                                    <th>Stock Value</th>
                                     <th>Profit</th>
-                                    <th class="id">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="showData">
                                 @include('pos.report.products.stock_table')
                             </tbody>
+                            <tfoot>
+                                <td colspan="10"></td> <!-- Empty cells for alignment -->
+                                <td class="text-right"><strong>Total Stock Value:</strong></td> <!-- Label in second last column -->
+                                <td colspan="11"> <strong>৳ {{ $totalStockValueSum }}  </strong></td> <!-- Total value in last column -->
+                            </tfoot>
                         </table>
                     </div>
                 </div>

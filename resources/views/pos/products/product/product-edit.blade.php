@@ -60,7 +60,6 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <span class="text-danger subcategory_id_error"></span>
                             </div>
                             <div class="mb-3 col-md-4">
                                 @php
@@ -103,21 +102,6 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            {{-- <div class="mb-3 col-md-6">
-                                <label for="name" class="form-label">Stock</label>
-                                <input class="form-control" name="stock" type="number" placeholder="00"
-                                    value="{{ $product->stock ?? '' }}">
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="name" class="form-label">Main Unit Stock</label>
-                                <input class="form-control" name="main_unit_stock" type="number" placeholder="00"
-                                    value="{{ $product->main_unit_stock ?? '' }}">
-                            </div> --}}
-                            {{-- <div class="mb-3 col-md-6">
-                                <label for="name" class="form-label">Total Sold</label>
-                                <input class="form-control" name="total_sold" type="number" placeholder="00"
-                                    value="{{ $product->total_sold ?? '' }}">
-                            </div> --}}
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Color</label>
                                 {{-- <div id="pickr_1"></div> --}}
@@ -157,13 +141,6 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h6 class="card-title">Product Image</h6>
-                                        {{-- <div style="height:150px;position:relative">
-                                            <button class="btn btn-info edit_upload_img"
-                                                style="position: absolute;top:50%;left:50%;transform:translate(-50%,-50%)">Browse</button>
-                                            <img class="img-fluid showEditImage"
-                                                src="{{ $product->image ? asset('uploads/images/' . $product->image) : asset('dummy/image.jpg') }}"
-                                                style="height:100%; object-fit:cover">
-                                        </div> --}}
                                         <input type="file" class="productImage"
                                             data-default-file="{{ $product->image ? asset('uploads/images/' . $product->image) : asset('dummy/image.jpg') }}"
                                             name="image" id="myDropify" />
@@ -202,23 +179,6 @@
                 $(name).focus(); // Set focus to the input field
                 $(`${name}_error`).show().text(message); // Show error message
             }
-
-
-            // image onload when category edit
-            // const edit_upload_img = document.querySelector('.edit_upload_img');
-            // const edit_image = document.querySelector('.edit_image');
-            // edit_upload_img.addEventListener('click', function(e) {
-            //     e.preventDefault();
-            //     edit_image.click();
-
-            //     edit_image.addEventListener('change', function(e) {
-            //         var reader = new FileReader();
-            //         reader.onload = function(e) {
-            //             document.querySelector('.showEditImage').src = e.target.result;
-            //         }
-            //         reader.readAsDataURL(this.files[0]);
-            //     });
-            // });
 
             // when select category
             const category = document.querySelector('#category_name');
@@ -295,9 +255,6 @@
                             }
                             if (error.category_id) {
                                 showError('.category_id', error.category_id);
-                            }
-                            if (error.subcategory_id) {
-                                showError('.subcategory_id', error.subcategory_id);
                             }
                             if (error.brand_id) {
                                 showError('.brand_id', error.brand_id);

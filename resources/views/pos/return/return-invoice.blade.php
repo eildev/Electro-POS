@@ -118,7 +118,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             @php
-                                $payments = App\Models\Bank::get();
+                                $payments = App\Models\Bank::where('branch_id', Auth::user()->branch_id)->get();
                             @endphp
                             <label for="" class="form-label">Payment Method <span
                                     class="text-danger">*</span></label>

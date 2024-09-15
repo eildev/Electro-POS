@@ -16,9 +16,9 @@ class RoleSeeder extends Seeder
             ['id' => 1, 'name' => 'Super Admin', 'guard_name' => 'web', 'created_at' => Carbon::now()],
             ['id' => 2, 'name' => 'Admin', 'guard_name' => 'web', 'created_at' => Carbon::now()],
             ['id' => 3, 'name' => 'Demo', 'guard_name' => 'web', 'created_at' => Carbon::now()],
-            // add more Role as needed
+            ['id' => 4, 'name' => 'TecAdmin', 'guard_name' => 'web', 'created_at' => Carbon::now()],
+            //add more Role as needed//
         ];
-
         // Insert permissions into the database
         DB::table('roles')->insert($roles);
     }

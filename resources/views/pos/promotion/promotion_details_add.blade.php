@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Add Promotional Details')
+@section('title', '| Add Promotional Details')
 @section('admin')
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
@@ -39,7 +39,6 @@
                                         <option value="products">Products</option>
                                         <option value="customers">Customer</option>
                                         <option value="branch">Branch</option>
-                                        {{-- <option value="jksdhf">Branclsdfj</option> --}}
                                     </select>
                                     <span class="text-danger promotion_type_error"></span>
                                 </div>
@@ -50,7 +49,7 @@
                                     <input type="number" name="additional_conditions"
                                         class="form-control field_required additional_conditions"
                                         placeholder="Enter Addional Condition">
-                               </div>
+                                </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="mb-3 form-valid-groups logic_field">
@@ -123,7 +122,7 @@
                                         </td>
 
                                         <td>${product.name}</td>
-                                        <td>${product.stock}</td>
+                                        <td>${product.stock_quantity_sum_stock_quantity}</td>
                                     </tr>`;
                                 });
                                 productHTML += `</tbody></table></div>`;

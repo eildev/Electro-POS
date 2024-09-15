@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\BrandImport;
+use App\Imports\CategoryImport;
 use App\Models\PosSetting;
 use App\Models\Product;
 use App\Models\PromotionDetails;
@@ -10,6 +12,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\ProductsImport;
+use App\Imports\SubcategoryImport;
+use App\Jobs\ImportExcelDataJob;
 
 class ProductsController extends Controller
 {
@@ -19,14 +25,13 @@ class ProductsController extends Controller
     }
     public function store(Request $request)
     {
-        // dd($request->all());
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'category_id' => 'required',
-            'subcategory_id' => 'required',
-            'brand_id' => 'required',
-            'price' => 'required:max:7',
-            'unit_id' => 'required:max:11',
+            'category_id' => 'required|integer',
+            'brand_id' => 'required|integer',
+            'price' => 'required|max:7',
+            'unit_id' => 'required|max:11',
             'barcode' => [
                 'required',
                 Rule::unique('products', 'barcode')->where(function ($query) use ($request) {
@@ -42,17 +47,20 @@ class ProductsController extends Controller
             $product->barcode =  $request->barcode;
             $product->category_id =  $request->category_id;
             $product->subcategory_id =  $request->subcategory_id;
+            if ($request->subcategory_id != 'Please add Subcategory') {
+                // dd($request->subcategory_id);
+                $product->subcategory_id  =  $request->subcategory_id;
+            } else {
+                $product->subcategory_id  =  null;
+            }
             $product->brand_id  =  $request->brand_id;
             $product->cost  =  $request->cost;
             $product->price  =  $request->price;
-            $product->details  =  $request->details;
+            $product->details =  $request->details;
             $product->color  =  $request->color;
             $product->unit_id  =  $request->unit_id;
             if ($request->size_id !== 'Please add Size') {
                 $product->size_id  =  $request->size_id;
-            }
-            if ($request->stock) {
-                $product->stock  =  $request->stock;
             }
             if ($request->main_unit_stock) {
                 $product->main_unit_stock  =  $request->main_unit_stock;
@@ -76,12 +84,18 @@ class ProductsController extends Controller
     }
     public function view()
     {
-        if(Auth::user()->id == 1){
-            $products = Product::all();
-        }else{
-            $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        if (Auth::user()->id == 1) {
+            // $products = Product::all();
+            $products = Product::withSum('stockQuantity', 'stock_quantity')
+                ->latest()
+                ->get();
+        } else {
+            // $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->latest()
+                ->get();
         }
-
         return view('pos.products.product.product-show', compact('products'));
     }
     public function edit($id)
@@ -94,11 +108,10 @@ class ProductsController extends Controller
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            'category_id' => 'required',
-            'subcategory_id' => 'required',
-            'brand_id' => 'required',
-            'price' => 'required:max:7',
-            'unit_id' => 'required:max:11',
+            'category_id' => 'required|integer',
+            'brand_id' => 'required|integer',
+            'price' => 'required|max:7',
+            'unit_id' => 'required|max:11',
         ]);
         if ($validator->passes()) {
             $product = Product::findOrFail($id);
@@ -106,7 +119,12 @@ class ProductsController extends Controller
             $product->branch_id =  Auth::user()->branch_id;
             $product->barcode =  $request->barcode;
             $product->category_id =  $request->category_id;
-            $product->subcategory_id =  $request->subcategory_id;
+            if ($request->subcategory_id != 'Please add Subcategory') {
+                // dd($request->subcategory_id);
+                $product->subcategory_id  =  $request->subcategory_id;
+            } else {
+                $product->subcategory_id  =  null;
+            }
             $product->brand_id  =  $request->brand_id;
             $product->cost  =  $request->cost;
             $product->price  =  $request->price;
@@ -114,9 +132,6 @@ class ProductsController extends Controller
             $product->color  =  $request->color;
             $product->size_id  =  $request->size_id;
             $product->unit_id  =  $request->unit_id;
-            if ($request->stock) {
-                $product->stock  =  $request->stock;
-            }
             if ($request->main_unit_stock) {
                 $product->main_unit_stock  =  $request->main_unit_stock;
             }
@@ -189,19 +204,122 @@ class ProductsController extends Controller
     {
         $product = Product::where('search_value');
 
-        $products = Product::where('name','LIKE','%'.$search_value.'%')
-        ->orWhere('details','LIKE','%'.$search_value.'%')
-        ->orWhere('price','LIKE','%'.$search_value.'%')
-        ->orWhereHas('category', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
-        ->orWhereHas('subcategory', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
-        ->orWhereHas('brand', function($query) use ($search_value) {  $query->where('name', 'LIKE','%'.$search_value.'%');})
+        if (Auth::user()->id == 1) {
+            $products = Product::withSum('stockQuantity', 'stock_quantity')->where('name', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('details', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('price', 'LIKE', '%' . $search_value . '%')
+                ->orWhereHas('category', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('subcategory', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('brand', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
 
-        ->get();
+                ->get();
+        } else {
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->where('name', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('details', 'LIKE', '%' . $search_value . '%')
+                ->orWhere('price', 'LIKE', '%' . $search_value . '%')
+                ->orWhereHas('category', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('subcategory', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+                ->orWhereHas('brand', function ($query) use ($search_value) {
+                    $query->where('name', 'LIKE', '%' . $search_value . '%');
+                })
+
+                ->get();
+        }
 
         return response()->json([
             'products' => $products,
             'status' => 200
         ]);
     }
+    public function importProduct()
+    {
+        return view('pos.products.product.product-import');
+    }
 
+    /////////////////////// Products Import Data //////////////////////
+
+    public function ImportExcelData(Request $request)
+    {
+        $request->validate([
+            'import_file' => [
+                'required',
+                'file'
+            ]
+        ]);
+
+        try {
+            // Attempt to import the Excel file
+            Excel::import(new ProductsImport, $request->file('import_file'));
+
+            // Success notification
+            $notification = array(
+                'message' => 'Products imported successfully.',
+                'alert-type' => 'info'
+            );
+        } catch (\Exception $e) {
+            // Handle any errors that occurred during the import
+            $notification = array(
+                'warning' => 'Error importing products: ' . $e->getMessage(),
+                'alert-type' => 'info'
+            );
+        }
+
+        return redirect()->back()->with($notification);
+    }
+
+    /////////////////////// Category Import Data //////////////////////
+
+    public function importCategoryExcelData(Request $request)
+    {
+        // dd($request->all());
+        Excel::import(new CategoryImport, $request->file('category-import_file'));
+        $notification = array(
+            'message' => 'Category imported successfully.',
+            'alert-type' => 'info'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+    /////////////////////// Category Import Data //////////////////////
+
+    public function importSubcategoryExcelData(Request $request)
+    {
+        Excel::import(new SubcategoryImport, $request->file('subcategory-import_file'));
+        $notification = array(
+            'message' => 'Category imported successfully.',
+            'alert-type' => 'info'
+        );
+        return redirect()->back()->with($notification);
+    }
+
+    ///////////////////////Brand Import Data //////////////////////
+
+    public function importBrandExcelData(Request $request)
+    {
+        $request->validate([
+            'brand-import_file' => [
+                'required',
+                'file'
+            ]
+        ]);
+
+        Excel::import(new BrandImport, $request->file('brand-import_file'));
+        $notification = array(
+            'message' => 'Brand imported successfully.',
+            'alert-type' => 'info'
+        );
+        return redirect()->back()->with($notification);
+    }
 }

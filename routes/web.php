@@ -29,6 +29,7 @@ use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\CompanyBalanceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserLimitController;
 use App\Http\Controllers\ViaSaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -152,6 +153,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/product/find/{id}', 'find')->name('product.find');
         Route::get('/product/barcode/{id}', 'ProductBarcode')->name('product.barcode');
         Route::get('/search/{value}', 'globalSearch');
+        //Excel import Route
+        Route::get('/products/imports', 'importProduct')->name('products.imports');
+        Route::post('/products/imports/all', 'ImportExcelData');
+        //Category import
+        Route::post('/category/imports/all', 'importCategoryExcelData');
+        //Subcategory import
+        Route::post('/subcategory/imports/all', 'importSubcategoryExcelData');
+        //Brand import
+        Route::post('/brand/imports/all', 'importBrandExcelData');
     });
     // Product  related route(n)
     Route::controller(EmployeeController::class)->group(function () {
@@ -228,7 +238,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/damage/show_quantity/{id}', 'ShowQuantity')->name('damage.show.quantity');
         Route::get('/damage/edit/{id}', 'edit')->name('damage.edit');
         Route::post('/damage/update/{id}', 'update')->name('damage.update');
-        Route::get('/damage/destroy/{id}', 'destroy')->name('damage.destroy');
+        Route::get('/damage/destroy/{damage_id}/{product_id}', 'destroy')->name('damage.destroy');
         // Route::get('/damage/invoice/{id}', 'invoice')->name('damage.invoice');
     });
     // Promotion  related route(n)
@@ -486,7 +496,7 @@ Route::middleware('auth')->group(function () {
         ///Admin Manage Route ///
         Route::get('/all/admin/view', 'AllAdminView')->name('admin.all');
         Route::get('/add/admin', 'AddAdmin')->name('admin.add');
-        Route::post('/admin/store', 'AdminStore')->name('admin.store');
+        Route::post('/admin/store', 'AdminStore')->middleware(['check.user.limit', 'check.device'])->name('admin.store');
         Route::get('/admin/manage/edit/{id}', 'AdminManageEdit')->name('admin.manage.edit');
         Route::get('/admin/manage/delete/{id}', 'AdminManageDelete')->name('admin.manage.delete');
         Route::post('/admin/manage/update/{id}', 'AdminManageUpdate')->name('update.admin.manage');
@@ -500,6 +510,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/via-sale/invoice/{id}', 'viaSaleInvoice')->name('via.sale.invoice');
         Route::get('/via/sale/delete/{id}', 'ViaSaleProductDelete')->name('via.sale.delete');
     });
+    // User Limit Route
+    Route::controller(UserLimitController::class)->group(function () {
+        Route::get('/user-limit', 'index')->name('user.limit');
+        Route::get('/user-limit/view', 'view')->name('user.limit.view');
+        Route::post('/user-limit/store', 'store')->name('user.limit.store');
+        Route::get('/user-limit/edit/{id}', 'edit')->name('user.limit.edit');
+        Route::post('/user-limit/update/{id}', 'update')->name('abcalksjd');
+        Route::get('/user-limit/delete/{id}', 'delete')->name('user.limit.delete');
+    });
 });
+
 
 require __DIR__ . '/auth.php';

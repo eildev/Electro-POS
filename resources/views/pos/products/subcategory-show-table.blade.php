@@ -8,7 +8,7 @@
                     alt="cat-image">
             </td>
             <td>
-                @if ($category->status != 0)
+                @if ($category->status === 1)
                     <button id="categoryButton_{{ $category->id }}" class="btn btn-success categoryButton"
                         data-id="{{ $category->id }}">Active</button>
                 @else

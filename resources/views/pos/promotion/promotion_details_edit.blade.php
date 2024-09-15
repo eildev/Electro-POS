@@ -1,5 +1,5 @@
 @extends('master')
-@section('title','| Edit Promotional Details')
+@section('title', '| Edit Promotional Details')
 @section('admin')
     <div class="row">
         <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
@@ -132,7 +132,7 @@
                                         <input type="hidden" value="${product.id}">
                                     </td>
                                     <td>${product.name}</td>
-                                    <td>${product.stock}</td>
+                                    <td>${product.stock_quantity_sum_stock_quantity}</td>
                                 </tr>`;
                                     });
                                     productHTML += `</tbody></table></div>`;

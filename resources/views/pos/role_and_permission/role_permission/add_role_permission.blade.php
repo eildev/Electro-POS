@@ -28,7 +28,7 @@
                                     data-width="100%"  >
                                         <option selected disabled>Select Role Name</option>
                                         @foreach ($role as $roles)
-                                        @if ($roles->name === 'Super Admin')
+                                        @if ($roles->id === 1 || $roles->id === 4)
                                         <option value="{{ $roles->id }}" disabled>{{ $roles->name }}</option>
                                         @else
                                             <option value="{{ $roles->id }}">{{ $roles->name }}</option>
@@ -50,6 +50,7 @@
                                         {{-- <h5 class="form-label">Group Name</h5><br> --}}
                                     <div class="form-check form-check-inline">
 
+
                                         <label class="form-check-label" for="checkInlineChecked{{$group->group_name}}">
                                             {{$group->group_name}} </label>
                                         <input type="checkbox" class="form-check-input" id="checkInlineChecked{{$group->group_name}}" >
@@ -61,8 +62,6 @@
                                 @endphp
                                     {{-- <h5 class="form-label">Permission Name </h5><br> --}}
                                     @foreach ($permissions as $permission)
-
-
                                 <div class="form-check form-check-inline form-valid-groups">
                                     <label class="form-check-label" for="checkInlineChecked{{$permission->id}}">
                                         {{$permission->name}}

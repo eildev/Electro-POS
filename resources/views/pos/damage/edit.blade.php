@@ -17,22 +17,24 @@
                             <!-- Col -->
                             <div class="mb-3 col-md-6">
                                 @php
-                                    $products = App\Models\Product::get();
+                                   $products = App\Models\Product::where('branch_id', Auth::user()->branch_id)
+                                    ->withSum('stockQuantity', 'stock_quantity')
+                                    ->having('stock_quantity_sum_stock_quantity', '>', 0)
+                                    ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+                                    ->get();
                                 @endphp
                                 <label for="ageSelect" class="form-label">Product <span class="text-danger">*</span></label>
-                                {{-- <select class="js-example-basic-single form-select" name="product_id"
-                                    data-width="100%"  onchange="show_quantity(this)">
+                                <select class="js-example-basic-single form-select" name="product_id"
+                                    data-width="100%"  onchange="show_quantity(this)" readonly>
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Damaged Product</option>
                                         @foreach ($products as $product)
                                             <option value="{{ $product->id }}" {{$damage_info->product_id == $product->id ? 'selected' : ''}}> {{ $product->name.' ' .$product->unit->name}}</option>
-
                                         @endforeach
                                     @else
                                         <option selected disabled>Please Add Product</option>
                                     @endif
-                                </select> --}}
-                                <input type="text" class="form-control" value="{{$damage_info->product->name}}" readonly>
+                                </select>
                                 <span class="text-danger product_select_error"></span>
                             </div>
                             <div class="col-sm-6">
@@ -81,15 +83,13 @@
 
         //show available Quantity information
         function show_quantity(event) {
-
             let newValue = event.value;
-
 
             $.ajax({
                 url: '/damage/show_quantity/' + newValue,
                 type: 'get',
                 success: function(res) {
-                    $('#show_stock').text(res.all_data.stock);
+                    $('#show_stock').text(res.stock_quantity);
                     $('#show_unit').text(res.unit.name);
                     $('#damageQty').removeAttr('disabled');
                 }

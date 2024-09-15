@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable,HasRoles;
@@ -45,8 +46,14 @@ class User extends Authenticatable
     ];
     /////for Role Permission /////
     public static function getPermissiongroup(){
-        $permission_groups = DB::table('permissions')->select('group_name')->orderBy('group_name')->get();
-        return $permission_groups;
+        if(Auth::user()->id === 4){
+            $permission_groups = DB::table('permissions')->select('group_name')->orderBy('group_name')->get();
+            return $permission_groups;
+        }
+        else{
+            $permission_groups = DB::table('permissions')->select('group_name')->where('group_name','!=','limit')->orderBy('group_name')->get();
+            return $permission_groups;
+        }
     }
     public static function getPermissionByGroupName($group_name){
         $permissions = DB::table('permissions')->select('name','id')->where('group_name',$group_name)->get();
@@ -68,4 +75,13 @@ class User extends Authenticatable
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
     } //
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
 }
