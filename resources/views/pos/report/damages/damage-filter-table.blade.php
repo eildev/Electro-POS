@@ -11,7 +11,9 @@
                                 <th>Date</th>
                                 <th>Product Name</th>
                                 <th>Branch Name</th>
+                                <th>Cost Price</th>
                                 <th>Quantity</th>
+                                <th>Damage Amount</th>
                                 <th>Note</th>
 
                             </tr>
@@ -24,9 +26,9 @@
                                         <td>{{ $damage->date ?? '' }}</td>
                                         <td>{{ $damage['product']['name'] ?? '' }}</td>
                                         <td>{{ $damage['branch']['name'] ?? '' }}</td>
-                                        {{-- <td>{{ $damage->branch_id ?? ''}}</td>
-                                                <td>{{ $damage->product_id ?? ''}}</td> --}}
+                                        <td>{{ $damage['product']['cost'] ?? '' }}</td>
                                         <td>{{ $damage->qty ?? '' }}</td>
+                                        <td><span>৳</span> {{ $damage->total_cost ?? 0 }}</td>
                                         <td>{{ $damage->note ?? '' }}</td>
                                     </tr>
                                 @endforeach
@@ -37,8 +39,14 @@
                                     </td>
                                 </tr>
                             @endif
-
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="6" class="text-end">Total Damage Amount:</th>
+                                <th><span>৳</span> {{ $totalSum ?? '0' }}</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

@@ -51,7 +51,7 @@
                 {{-- <div class="input-group-text">
                     <i data-feather="search"></i>
                 </div> --}}
-                <input type="text" style="border: 1px solid #00a9f1" class="form-control py-2" id="global_search"
+                <input type="text" style="border: 1px solid #0d6efd" class="form-control py-2" id="global_search"
                     placeholder="Search here..." autocomplete="off">
             </div>
         </div>
@@ -69,7 +69,7 @@
             </table>
         </div>
         <ul class="navbar-nav">
-         
+
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle my_nav" href="#" id="notificationDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -10,7 +10,7 @@
     <meta name="keywords"
         content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-    <title>Log In - EIL - Bites || Eclipse Intellitech LTD POS Software</title>
+    <title>Log In - EIL - Electro || Eclipse Intellitech LTD POS Software</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +56,8 @@
     .input_design:focus {
         color: #408dff; /* Ensure text remains white on focus */
         outline: none; /* Remove the default outline */
-        /* background-color: #444; Optional: change background on focus */
+        /* background-color: #444; */
+        border-color:#408dff;
     }
     .input-wrapper {
         position: relative;

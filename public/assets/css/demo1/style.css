@@ -69,7 +69,7 @@
   --bs-border-radius-xl: 1rem;
   --bs-border-radius-2xl: 2rem;
   --bs-border-radius-pill: 50rem;
-  --bs-link-color: #ff541e;
+  --bs-link-color: #0d6efd;
   --bs-link-hover-color: #515acc;
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fff3cd;
@@ -3631,9 +3631,9 @@ div.tox .tox-button:not(.tox-button--naked):not(.tox-button--secondary),
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
   --bs-btn-color: #fff;
-  --bs-btn-border-color: #ee4036;
+  --bs-btn-border-color: #0d6efd;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-border-color: #f6921e;
+  --bs-btn-hover-border-color: #4c55bf;
   --bs-btn-focus-shadow-rgb: 124, 134, 255;
   --bs-btn-active-color: #fff;
   --bs-btn-active-border-color: #4c55bf;
@@ -24481,7 +24481,7 @@ div.tox .buy-now-wrapper .tox-button svg,
 }
 
 .sidebar .sidebar-body .nav.sub-menu .nav-item:hover .nav-link {
-  color: #6571ff;
+  color: #fff;
   margin-left: 3px;
 }
 

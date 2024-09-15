@@ -361,9 +361,14 @@ class ReportController extends Controller
         if (Auth::user()->id == 1) {
             $damageItem = Damage::all();
         } else {
-            $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->get();
+            $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->with('product')->get();
+            // $totalCost = 0;
         }
-        return view('pos.report.damages.damage', compact('damageItem'));
+        foreach ($damageItem as $damage) {
+            $damage->total_cost = $damage->product->cost * $damage->qty;
+        }
+        $totalSum = $damageItem->sum('total_cost');
+        return view('pos.report.damages.damage', compact('damageItem','totalSum'));
     }
 
     public function DamageProductFilter(Request $request)
@@ -448,8 +453,13 @@ class ReportController extends Controller
                 }], 'stock_quantity')
                 ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
                 ->get();
-            // }
-        return view('pos.report.products.stock', compact('products'));
+                //Show Stock Value
+                $products->each(function ($product) {
+                    $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+                });
+                //Total stock Value
+            $totalStockValueSum = $products->sum('total_stock_value');
+        return view('pos.report.products.stock', compact('products','totalStockValueSum'));
     } //
 
     ////////////////Account Transaction Method  //////////////

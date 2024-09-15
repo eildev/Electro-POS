@@ -2961,8 +2961,8 @@ textarea.is-invalid.typeahead.tt-hint, .select2-container--default .select2-sear
 .wizard > .actions a:hover, div.tox .tox-button:not(.tox-button--naked):not(.tox-button--secondary), .swal2-popup .swal2-actions button.swal2-confirm, .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #6571ff;
-  --bs-btn-border-color: #6571ff;
+  --bs-btn-bg: #0d6efd;
+  --bs-btn-border-color: #0d6efd;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #5660d9;
   --bs-btn-hover-border-color: #515acc;
@@ -19896,6 +19896,7 @@ body {
   height: 32px;
   white-space: nowrap;
   color: #7987a1;
+  border-radius: 5px;
 }
 .sidebar .sidebar-body .nav .nav-item .nav-link .link-icon {
   width: 16px;
@@ -19945,13 +19946,13 @@ body {
   margin-top: 20px;
 }
 .sidebar .sidebar-body .nav .nav-item:hover .nav-link {
-  color: #6571ff;
+  color: #fff;
 }
 .sidebar .sidebar-body .nav .nav-item:hover .nav-link .link-title {
   margin-left: 31px;
 }
 .sidebar .sidebar-body .nav .nav-item:hover .nav-link .link-icon {
-  color: #6571ff;
+  color: #fff;
   fill: rgba(101, 113, 255, 0.2);
 }
 .sidebar .sidebar-body .nav .nav-item.active .nav-link {
@@ -20029,6 +20030,7 @@ body {
     -webkit-transition: none;
     transition: none;
     margin: 0;
+    /* border-radius: 20px; */
   }
 }
 
@@ -21692,8 +21694,8 @@ div.apexcharts-canvas .apexcharts-yaxistooltip-left:after {
 }
 div.apexcharts-canvas .apexcharts-tooltip-marker {
   /*rtl:raw:
-  margin-right: 0; 
-  margin-left: 10px; 
+  margin-right: 0;
+  margin-left: 10px;
   */
 }
 
@@ -22543,7 +22545,7 @@ div.tox .tox-dialog__body {
 
 .wizard > .actions {
   /*rtl:raw:
-    text-align: left; 
+    text-align: left;
   */
 }
 
@@ -22591,5 +22593,15 @@ div.tox .tox-dialog__body {
 .wizard.vertical > .actions {
   margin: 0;
   width: 100%;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected], .select2-container--default .select2-results__option[aria-selected=true]{
+    background-color: #0d6efd;
+}
+.border-primary {
+    --bs-border-opacity: 1;
+    border-color: #0d6efd !important;
+}
+a{
+    color: #0d6efd;
 }
 /*# sourceMappingURL=../maps/demo2/style.css.map */

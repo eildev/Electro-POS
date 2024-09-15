@@ -16,7 +16,7 @@
 
     <style>
         .nav_active {
-            background: #ff541e;
+            background: #0d6efd;
             border-radius: 5px;
             color: #fff !important;
         }
@@ -31,6 +31,10 @@
         .sub-menu .nav-item .nav-link {
             padding-left: 5px !important;
         }
+        .nav-link:hover, .nav-link:focus {
+            background-color:#408dff
+        }
+
     </style>
     <div class="sidebar-body">
         <ul class="nav">

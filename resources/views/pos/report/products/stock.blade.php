@@ -23,19 +23,25 @@
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Category</th>
-                                    <th>Price</th>
                                     <th>Purchased</th>
                                     <th>Sold</th>
                                     <th>Damaged</th>
-                                    <th>Returned</th>
+                                    <th>Cost Price</th>
+                                    <th>Sell Price</th>
                                     <th>Available Stock</th>
                                     <th>Sell Value</th>
+                                    <th>Stock Value</th>
                                     <th>Profit</th>
                                 </tr>
                             </thead>
                             <tbody id="showData">
                                 @include('pos.report.products.stock_table')
                             </tbody>
+                            <tfoot>
+                                <td colspan="10"></td> <!-- Empty cells for alignment -->
+                                <td class="text-right"><strong>Total Stock Value:</strong></td> <!-- Label in second last column -->
+                                <td colspan="11"> <strong>৳ {{ $totalStockValueSum }}  </strong></td> <!-- Total value in last column -->
+                            </tfoot>
                         </table>
                     </div>
                 </div>

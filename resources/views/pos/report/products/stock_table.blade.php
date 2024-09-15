@@ -15,7 +15,6 @@
             <td>
                 {{ $data->category->name ?? '' }}
             </td>
-            <td>{{ $data->price ?? 0 }}</td>
             {{-- purchase --}}
             @php
                 $purchaseItems = App\Models\PurchaseItem::where('product_id', $data->id)->get();
@@ -42,6 +41,7 @@
             <td>
                 {{ $totalDamage ?? 0 }} {{ $data->unit->name }}
             </td>
+            <td>{{ $data->cost ?? 0 }}</td>
             <td>
                 ৳ {{ $data->price ?? 0 }}
             </td>
@@ -58,13 +58,17 @@
                 ৳ {{ $totalSalePrice ?? 0 }}
             </td>
             <td>
+                <span>৳</span> {{ $data->total_stock_value }}
+            </td>
+            <td>
                 ৳ {{ $totalProfit ?? 0 }}
             </td>
 
         </tr>
+
     @endforeach
 @else
     <tr>
-        <td colspan="9"> No Data Found</td>
+        <td colspan="9">No Data Found</td>
     </tr>
 @endif
