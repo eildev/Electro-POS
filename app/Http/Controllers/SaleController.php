@@ -918,8 +918,14 @@ class SaleController extends Controller
                     $unit->save();
                     $product->unit_id = $unit->id;
                 }
-                $product->stock = $request->stock;
+                // $product->stock = $request->stock;
                 $product->save();
+                // Via Sale Stock
+                $stock = new Stock();
+                $stock->branch_id = Auth::user()->branch_id ?? 1;
+                $stock->product_id = $product->id;
+                $stock->stock_quantity = $request->stock;
+                $stock->save();
 
                 $viaSale = new ViaSale;
                 $viaSale->invoice_date = Carbon::now();
