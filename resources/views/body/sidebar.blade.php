@@ -27,7 +27,6 @@
             color: #ffffff !important;
 
         }
-
         .sub-menu .nav-item .nav-link {
             padding-left: 5px !important;
         }

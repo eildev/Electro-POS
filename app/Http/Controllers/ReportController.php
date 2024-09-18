@@ -447,17 +447,8 @@ class ReportController extends Controller
     //stock Report function
     public function stockReport()
     {
-         if(Auth::user()->id == 1){
-            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
-                $query->where('branch_id', Auth::user()->branch_id);
-            }], 'stock_quantity')
-            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
-            ->get();
-            $products->each(function ($product) {
-                $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
-             });
-            }else{
-          $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+
+        $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
             $query->where('branch_id', Auth::user()->branch_id);
         }], 'stock_quantity')
         ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
@@ -465,15 +456,34 @@ class ReportController extends Controller
         $products->each(function ($product) {
             $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
          });
-        }
-
-                 //Show Stock Value
-
-                //Total stock Value
             $totalStockValueSum = $products->sum('total_stock_value');
         return view('pos.report.products.stock', compact('products','totalStockValueSum'));
     } //
+    public function stockShowByBranch($branchId){
+        $branch = Branch::findOrFail($branchId);
+        $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) use ($branch) {
+            $query->where('branch_id', $branch->id);
+        }], 'stock_quantity')
+        ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+        ->get();
+        $products->each(function ($product) {
+            $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+         });
+            $totalStockValueSum = $products->sum('total_stock_value');
 
+        return view('pos.report.products.superadmin-stock', compact('products', 'totalStockValueSum','branch'));
+    }
+    public function lowStockShowByBranch($branchId){
+        $stock = Stock::get();
+        $branch = Branch::findOrFail($branchId);
+            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query)  use ($branch) {
+                $query->where('branch_id', $branch->id);
+            }], 'stock_quantity')
+            ->having('stock_quantity_sum', '<=', 10)
+            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->get();
+        return view('pos.report.products.superadmin_low_stock', compact('products','branch'));
+    }
     ////////////////Account Transaction Method  //////////////
     public function AccountTransactionView()
     {
@@ -1126,4 +1136,5 @@ class ReportController extends Controller
         // Pass the monthly reports array to the view
         return view('pos.report.yearly.yearly', compact('monthlyReports'));
     }
+
 }

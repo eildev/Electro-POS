@@ -395,8 +395,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/damage/print', 'damageReportPrint')->name('damage.report.print');
             Route::get('/damage/product/filter', 'DamageProductFilter')->name('damage.product.filter.view');
 
-
-
             Route::get('/purchese/product/filter', 'PurchaseProductFilter')->name('purches.product.filter.view');
             Route::get('/purchese/details/invoice/{id}', 'PurchaseDetailsInvoice')->name('purchse.details.invoice');
             //////////////Account Transaction Route /////////////
@@ -421,6 +419,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/yearly/report', 'yearlyReport')->name('report.yearly');
             Route::get('/daily/balance', 'dailyBalance')->name('daily.balance');
         });
+        Route::get('/branch/{branch}/stock', 'stockShowByBranch')->name('branch.stock');
+        Route::get('/branch/{branch}/low-stock', 'lowStockShowByBranch')->name('branch.low.stock');
+
     });
     // Report related routes
     Route::controller(CompanyBalanceController::class)->group(function () {
