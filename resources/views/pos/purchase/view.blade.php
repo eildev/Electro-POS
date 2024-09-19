@@ -210,8 +210,6 @@
         </div>
     </div>
 
-
-
     {{-- Money Receipt Modal modal  --}}
     <div class="modal fade " id="moneyReceiptModal" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
@@ -323,9 +321,6 @@
                 // Restore the id attribute after printing
                 // $('#dataTableExample').attr('id', 'dataTableExample');
             });
-
-
-
             //    add payment
             $(document).on('click', '.add_payment', function(e) {
                 e.preventDefault();

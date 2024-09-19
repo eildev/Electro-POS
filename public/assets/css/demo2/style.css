@@ -19946,7 +19946,7 @@ body {
   margin-top: 20px;
 }
 .sidebar .sidebar-body .nav .nav-item:hover .nav-link {
-  color: #fff;
+  color: #fff!important;
 }
 .sidebar .sidebar-body .nav .nav-item:hover .nav-link .link-title {
   margin-left: 31px;

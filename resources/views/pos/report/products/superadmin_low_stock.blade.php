@@ -109,7 +109,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="9">No Data Found</td>
+                                    <td colspan="">No Data Found</td>
                                 </tr>
                             @endif
 
