@@ -302,16 +302,31 @@ class ReportController extends Controller
     public function topProducts()
     {
         if (Auth::user()->id == 1) {
-            $products = Product::withSum('stockQuantity', 'stock_quantity')
-                ->orderBy('total_sold', 'desc')
-                ->take(20)
-                ->get();
+            // $products = Product::withSum('stockQuantity', 'stock_quantity')
+            //     ->having('stock_quantity', '>=', 10)
+            //     ->orderBy('total_sold', 'desc')
+            //     ->take(20)
+            //     ->get();
+            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                // $query->where('branch_id', Auth::user()->branch_id);
+            }], 'stock_quantity')
+            ->having('stock_quantity_sum', '>=', 20)
+            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->get();
         } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->withSum('stockQuantity', 'stock_quantity')
-                ->orderBy('total_sold', 'desc')
-                ->take(20)
-                ->get();
+            // $products = Product::where('branch_id', Auth::user()->branch_id)
+            //     ->withSum('stockQuantity', 'stock_quantity')
+            //     ->having('stock_quantity', '>=', 10)
+            //     ->orderBy('total_sold', 'desc')
+
+            //     ->take(20)
+            //     ->get();
+            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+                $query->where('branch_id', Auth::user()->branch_id);
+            }], 'stock_quantity')
+            ->having('stock_quantity_sum', '>=', 20)
+            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->get();
         }
         return view('pos.report.products.top_products', compact('products'));
     }
