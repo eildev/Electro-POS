@@ -63,7 +63,6 @@
                 </a>
             </li>
 
-
             {{-- ///////////////////////////////////// ---- POS Start ---- //////////////////////////////////// --}}
             <li class="nav-item nav-category">POS (Point of Sale)</li>
             {{-- <li class="nav-item">

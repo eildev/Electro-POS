@@ -74,7 +74,7 @@
                                                             $formatted_time = $created_at
                                                                 ? $created_at->format('h:i A')
                                                                 : '-';
-                                                        @endphp
+                                                         @endphp
 
                                                         <td>{{ $formatted_date ?? '-' }} <Span style="color:brown">:</Span>
                                                             {{ $formatted_time ?? '' }}</td>
@@ -102,7 +102,6 @@
                                                 <tr>
                                                     <td colspan="12">
                                                         <div class="text-center text-warning mb-2">Data Not Found</div>
-
                                                     </td>
                                                 </tr>
 
@@ -258,6 +257,7 @@
                                             <select class="form-select" data-width="100%" name="type" id=""
                                                 aria-invalid="false">
                                                 <option selected="" disabled value="">Select Type</option>
+                                                <option value="add-balance">Add Balance</option>
                                                 <option value="investment">Investment</option>
                                                 <option value="loan">Loan</option>
                                                 <option value="borrow">Borrow</option>
