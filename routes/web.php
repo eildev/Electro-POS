@@ -148,8 +148,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/product/store', 'store')->name('product.store');
         Route::get('/product/all/view', 'view')->name('product.all.view');
         Route::get('/product/view', 'getData')->name('product.view');
-        Route::get('/product/testing/view', 'testIndex')->name('product.testing.view');
-        Route::get('/product/test/view', 'TestView')->name('product.test.view');
         Route::get('/product/edit/{id}', 'edit')->name('product.edit');
         Route::post('/product/update/{id}', 'update')->name('product.update');
         Route::get('/product/destroy/{id}', 'destroy')->name('product.destroy');

@@ -173,13 +173,6 @@
                         </a>
                     </li>
                 @endif
-                <li class="nav-item">
-                    <a href="{{ route('product.testing.view') }}"
-                        class="nav-link {{ request()->routeIs('product.testing.view') ? 'nav_active' : '' }}">
-                        <i class="ms-2 link-icon" data-feather="settings"></i>
-                        <span class="link-title"> Manage test Products</span>
-                    </a>
-                </li>
                 @if (Auth::user()->can('category.menu'))
                     <li class="nav-item">
                         <a href="{{ route('product.category') }}"
