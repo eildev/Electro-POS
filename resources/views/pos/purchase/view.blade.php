@@ -387,7 +387,6 @@
                 });
             })
 
-
             $(document).on('click', '.money_receipt', function(e) {
                 e.preventDefault();
                 let id = $(this).attr('data-id');
