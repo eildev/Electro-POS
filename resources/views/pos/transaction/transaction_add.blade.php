@@ -400,8 +400,10 @@
                     let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.add('d-none');
                     //
-                } else if (accountType === "other") {
-                    viewInvestor();
+                }
+
+                else if (accountType === "other") {
+                        viewInvestor();
                     //
                     let transactionTypeElement = document.getElementById('transaction_type');
                     transactionTypeElement.removeAttribute('disabled');
@@ -411,7 +413,7 @@
                     investmentCol.classList.remove('d-none');
                     let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.remove('d-none');
-                    // hideFunction()
+                    // hideFunction() //
                 }
                 document.getElementById("account_id").innerHTML = options;
             });
@@ -422,7 +424,7 @@
             // }
             $(document).on('change', '.select-account-id', function() {
                 let accountId = this.value;
-                console.log(accountId);
+                // console.log(accountId);
                 let account_type = document.querySelector('#account_type').value;
                 // $('.account-info').hide();
                 $.ajax({
@@ -433,15 +435,27 @@
                         account_type
                     },
                     success: function(data) {
-
-                        $('#account-details').text('Name: ' + data.info.name);
-                        $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
-                        if (data.info.wallet_balance > 0) {
-                            $('#total_due').text(`Total Due:  ${data.info.wallet_balance}`);
-                        } else {
-                            $('#total_due').text('Total Due: 0');
+                        paySelect =  document.getElementById('transaction_type').value == "pay";
+                        if(paySelect){
+                            $('#account-details').text('Name: ' + data.info.name);
+                            $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
+                            if (data.info.wallet_balance > 0) {
+                                $('#total_due').text(`Total Due:  ${data.info.wallet_balance}`);
+                            } else {
+                                $('#total_due').text('Total Due: 0');
+                            }
+                            $('.account-info').show();
+                        }else{
+                            document.getElementById('transaction_type').value = 'receive';
+                            $('.account-info').hide();
                         }
-                        $('.account-info').show();
+                        document.getElementById('transaction_type').addEventListener('change', function() {
+                        if (this.value === 'receive') {
+                            $('.account-info').hide();
+                        } else if (this.value === 'pay') {
+                            $('.account-info').show();
+                        }
+                        });
                     },
                     error: function(xhr, status, error) {
                         // Error handling
@@ -474,7 +488,7 @@
                     }
                 });
             });
-            /////Validation
+             /////Validation////
             $('#myValidForm').validate({
                 rules: {
                     account_type: {
