@@ -166,13 +166,20 @@
                 @endif
                 @if (Auth::user()->can('products.list'))
                     <li class="nav-item">
-                        <a href="{{ route('product.view') }}"
-                            class="nav-link {{ request()->routeIs('product.view') ? 'nav_active' : '' }}">
+                        <a href="{{ route('product.all.view') }}"
+                            class="nav-link {{ request()->routeIs('product.all.view') ? 'nav_active' : '' }}">
                             <i class="ms-2 link-icon" data-feather="settings"></i>
                             <span class="link-title"> Manage Products</span>
                         </a>
                     </li>
                 @endif
+                <li class="nav-item">
+                    <a href="{{ route('product.testing.view') }}"
+                        class="nav-link {{ request()->routeIs('product.testing.view') ? 'nav_active' : '' }}">
+                        <i class="ms-2 link-icon" data-feather="settings"></i>
+                        <span class="link-title"> Manage test Products</span>
+                    </a>
+                </li>
                 @if (Auth::user()->can('category.menu'))
                     <li class="nav-item">
                         <a href="{{ route('product.category') }}"
