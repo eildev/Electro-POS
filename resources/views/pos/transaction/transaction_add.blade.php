@@ -374,7 +374,6 @@
             document.getElementById("account_type").addEventListener("change", function() {
                 let accountType = this.value;
                 let options = '<option selected disabled value="">Select Account ID</option>';
-
                 if (accountType === "supplier") {
                     @foreach ($supplier as $supply)
                         options += '<option  value="{{ $supply->id }}">{{ $supply->name }} </option>';

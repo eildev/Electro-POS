@@ -7,11 +7,17 @@
             <td>{{ $data->purchase_date ?? 0 }}</td>
             <td>
                 <ul>
-                    @foreach ($data->purchaseItem as $items)
-                        <li>{{ $items->product->name ?? '' }}
-                            <br>({{ $items->product->barcode ?? '' }})
-                        </li>
+                    @php
+                    $totalItems = $data->purchaseItem->count();
+                    $displayItems = $data->purchaseItem->take(5);
+                    $remainingItems = $totalItems - 5;
+                    @endphp
+                    @foreach ($displayItems as $items)
+                        <li>{{ $items->product->name ?? '' }}</li>
                     @endforeach
+                    @if ($totalItems > 5)
+                        <li>and more {{ $remainingItems }}...</li>
+                    @endif
                 </ul>
             </td>
             <td>
