@@ -217,7 +217,7 @@ class SaleController extends Controller
             $category = Category::where('name', 'Via Sell')->first();
             foreach ($selectedItems as $item) {
                 $product = Product::findOrFail($item['product_id']);
-                $stock = Stock::where('product_id', $item['product_id'])->first();
+                $stock = Stock::where('branch_id',Auth::user()->branch_id)->where('product_id', $item['product_id'])->first();
                 if (!$stock) {
                     $stock = new Stock();
                     $stock->branch_id = Auth::user()->branch_id ?? 1;
@@ -829,13 +829,19 @@ class SaleController extends Controller
             'customer' => $customer
         ]);
     }
+
+    // $products  = Product::where('branch_id', Auth::user()->branch_id)
+    // ->withSum('stockQuantity', 'stock_quantity')
+    // // ->having('stock_quantity_sum_stock_quantity', '>', 0)
+    // ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+    // ->get();
+
     public function saleViewProduct()
     {
-        // $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
-        $products  = Product::where('branch_id', Auth::user()->branch_id)
-        ->withSum('stockQuantity', 'stock_quantity')
-        // ->having('stock_quantity_sum_stock_quantity', '>', 0)
-        ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
+        $products  = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+            $query->where('branch_id', Auth::user()->branch_id);
+        }], 'stock_quantity')
+        ->orderBy('stock_quantity_sum', 'asc')
         ->get();
         return response()->json([
             'status' => '200',
@@ -912,8 +918,14 @@ class SaleController extends Controller
                     $unit->save();
                     $product->unit_id = $unit->id;
                 }
-                $product->stock = $request->stock;
+                // $product->stock = $request->stock;
                 $product->save();
+                // Via Sale Stock
+                $stock = new Stock();
+                $stock->branch_id = Auth::user()->branch_id ?? 1;
+                $stock->product_id = $product->id;
+                $stock->stock_quantity = $request->stock;
+                $stock->save();
 
                 $viaSale = new ViaSale;
                 $viaSale->invoice_date = Carbon::now();

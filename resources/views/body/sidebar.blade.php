@@ -16,7 +16,7 @@
 
     <style>
         .nav_active {
-            background: #00a9f1;
+            background: #0d6efd;
             border-radius: 5px;
             color: #fff !important;
         }
@@ -27,10 +27,13 @@
             color: #ffffff !important;
 
         }
-
         .sub-menu .nav-item .nav-link {
             padding-left: 5px !important;
         }
+        .nav-link:hover, .nav-link:focus {
+            background-color:#408dff
+        }
+
     </style>
     <div class="sidebar-body">
         <ul class="nav">
@@ -60,7 +63,6 @@
                 </a>
             </li>
 
-
             {{-- ///////////////////////////////////// ---- POS Start ---- //////////////////////////////////// --}}
             <li class="nav-item nav-category">POS (Point of Sale)</li>
             {{-- <li class="nav-item">
@@ -77,7 +79,7 @@
             @if (Auth::user()->can('pos.menu'))
                 <li class="nav-item">
                     <a href="{{ route('sale') }}"
-                        class="nav-link {{ request()->routeIs('pos.sale') ? 'nav_active' : '' }}">
+                        class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
                         <i class="ms-2 link-icon" data-feather="shopping-cart"></i>
                         <span class="link-title">POS</span>
                     </a>
@@ -129,7 +131,7 @@
             @if (Auth::user()->can('damage.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('damage') ? 'nav_active' : '' }}"
-                        href="{{ route('damage.view') }}" role="button" aria-controls="general-pages">
+                        href="{{ route('damage') }}" role="button" aria-controls="general-pages">
                         <i class="ms-2 link-icon" data-feather="book"></i>
                         <span class="link-title">Damage</span>
                     </a>
@@ -164,13 +166,20 @@
                 @endif
                 @if (Auth::user()->can('products.list'))
                     <li class="nav-item">
-                        <a href="{{ route('product.view') }}"
-                            class="nav-link {{ request()->routeIs('product.view') ? 'nav_active' : '' }}">
+                        <a href="{{ route('product.all.view') }}"
+                            class="nav-link {{ request()->routeIs('product.all.view') ? 'nav_active' : '' }}">
                             <i class="ms-2 link-icon" data-feather="settings"></i>
                             <span class="link-title"> Manage Products</span>
                         </a>
                     </li>
                 @endif
+                <li class="nav-item">
+                    <a href="{{ route('product.testing.view') }}"
+                        class="nav-link {{ request()->routeIs('product.testing.view') ? 'nav_active' : '' }}">
+                        <i class="ms-2 link-icon" data-feather="settings"></i>
+                        <span class="link-title"> Manage test Products</span>
+                    </a>
+                </li>
                 @if (Auth::user()->can('category.menu'))
                     <li class="nav-item">
                         <a href="{{ route('product.category') }}"

@@ -52,7 +52,7 @@ class SupplierController extends Controller
     public function view()
     {
 
-        $suppliers = Supplier::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        $suppliers = Supplier::all();
 
         return response()->json([
             "status" => 200,

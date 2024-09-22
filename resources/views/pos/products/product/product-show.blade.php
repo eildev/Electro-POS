@@ -18,66 +18,27 @@
                             Product</a>
                     </div>
                     <div class="table-responsive">
-                        <table id="example" class="table">
+                        <table id="products-table" class="display table table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>SN</th>
-                                    <th>Image</th>
+                                    <th>ID</th>
                                     <th>Name</th>
-                                    @if ($barcode == 1)
-                                        <th>Barcode</th>
-                                    @endif
+                                    <th>Image</th>
+                                    <th>Price</th>
+                                    <th>Barcode</th>
                                     <th>Category</th>
+                                    <th>Subcategory</th>
                                     <th>Brand</th>
-                                    <th>Cost Price</th>
-                                    <th>Sale Price</th>
-                                    <th>Stock</th>
-                                    <th>Action</th>
+                                    <th>Cost</th>
+                                    <th>Total Sold</th>
+                                    <th>Color</th>
+                                    <th>Size</th>
+                                    <th>Unit</th>
+                                    <th>Action</th> <!-- This should be sufficient for your actions -->
                                 </tr>
                             </thead>
-                            <tbody>
-                                @if ($products->count() > 0)
-                                    @foreach ($products as $key => $product)
-                                        <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>
-                                                <img src="{{ $product->image ? asset('uploads/product/' . $product->image) : asset('dummy/image.jpg') }}"
-                                                    alt="product image">
-                                            </td>
-                                            <td>{{ $product->name ?? '' }}</td>
-                                            @if ($barcode == 1)
-                                                <td>{{ $product->barcode }}</td>
-                                            @endif
-                                            <td>{{ $product->category->name ?? '' }}</td>
-                                            <td>{{ $product->brand->name ?? '' }}</td>
-                                            <td>{{ $product->cost ?? 0 }}</td>
-                                            <td>{{ $product->price ?? 0 }}</td>
-                                            <td>{{ $product->stock_quantity_sum_stock_quantity ?? 0 }}
-                                                ({{ $product->unit->name ?? '' }})</td>
-                                            <td>
-                                                @if (Auth::user()->can('products.edit'))
-                                                    <a href="{{ route('product.edit', $product->id) }}"
-                                                        class="btn btn-primary btn-icon">
-                                                        <i data-feather="edit"></i>
-                                                    </a>
-                                                @endif
-                                                @if (Auth::user()->can('products.delete'))
-                                                    <a href="{{ route('product.destroy', $product->id) }}"
-                                                        class="btn btn-danger btn-icon" id="delete">
-                                                        <i data-feather="trash-2"></i>
-                                                    </a>
-                                                @endif
-                                                @if ($barcode == 1)
-                                                    <a target="_blank" href="{{ route('product.barcode', $product->id) }}"
-                                                        class="btn btn-info btn-icon">
-                                                        <i class="fa-solid fa-barcode"></i>
-                                                    </a>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
 
+                            <tbody>
                             </tbody>
                         </table>
                     </div>
@@ -108,4 +69,29 @@
             display: inline-block;
         }
     </style>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#products-table').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route('product.view') }}', // Your route to get the products data
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'image', name: 'image', orderable: false, searchable: false },
+                    { data: 'price', name: 'price' },
+                    { data: 'barcode', name: 'quantity' },
+                    { data: 'category_name', name: 'category_name' },
+                    { data: 'subcategory_name', name: 'subcategory_name' },
+                    { data: 'brand_name', name: 'brand_name' },
+                    { data: 'cost', name: 'cost' },
+                    { data: 'total_sold', name: 'total_sold' },
+                    { data: 'color', name: 'color' },
+                    { data: 'size_name', name: 'size_name' },
+                    { data: 'unit_name', name: 'unit_name' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false } // Action buttons
+                ]
+            });
+        });
+    </script>
 @endsection

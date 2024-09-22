@@ -18,7 +18,7 @@
                         <table id="example" class="table">
                             <thead>
                                 <tr>
-                                    <th class="id">#</th>
+                                    {{-- <th class="id">#</th>
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Category</th>
@@ -29,6 +29,19 @@
                                     <th>Returned</th>
                                     <th>Available Stock</th>
                                     <th>Sell Value</th>
+                                    <th>Profit</th> --}}
+                                    <th class="id">#</th>
+                                    <th>Image</th>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Purchased</th>
+                                    <th>Sold</th>
+                                    <th>Damaged</th>
+                                    <th>Cost Price</th>
+                                    <th>Sell Price</th>
+                                    <th>Available Stock</th>
+                                    <th>Sell Value</th>
+                                    <th>Stock Value</th>
                                     <th>Profit</th>
                                 </tr>
                             </thead>

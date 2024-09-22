@@ -51,7 +51,7 @@
                 {{-- <div class="input-group-text">
                     <i data-feather="search"></i>
                 </div> --}}
-                <input type="text" style="border: 1px solid #00a9f1" class="form-control py-2" id="global_search"
+                <input type="text" style="border: 1px solid #0d6efd" class="form-control py-2" id="global_search"
                     placeholder="Search here..." autocomplete="off">
             </div>
         </div>
@@ -69,7 +69,7 @@
             </table>
         </div>
         <ul class="navbar-nav">
-         
+
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle my_nav" href="#" id="notificationDropdown" role="button"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -162,23 +162,23 @@
                                 alt="Profile">
                         </div>
                         <div class="text-center">
-                            <p class="tx-16 fw-bolder">{{ Auth::user()->name }}</p>
+                             <p class="tx-16 fw-bolder">{{ Auth::user()->name }}</p>
                             <p class="tx-12 text-muted">{{ Auth::user()->email }}</p>
                         </div>
                     </div>
                     <ul class="list-unstyled p-1">
+                        <a href="{{ route('user.profile') }}" class="text-body ms-0">
                         <li class="dropdown-item py-2">
-                            <a href="{{ route('user.profile') }}" class="text-body ms-0">
-                                <i class="me-2 icon-md" data-feather="user"></i>
-                                <span>Profile</span>
-                            </a>
+                        <i class="me-2 icon-md" data-feather="user"></i>
+                        <span>Profile</span>
                         </li>
+                      </a>
+                      <a href="{{ route('user.change.password') }}" class="text-body ms-0">
                         <li class="dropdown-item py-2">
-                            <a href="{{ route('user.change.password') }}" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="repeat"></i>
                                 <span>Change Password</span>
-                            </a>
                         </li>
+                      </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <li class="dropdown-item py-2">

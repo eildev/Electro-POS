@@ -248,11 +248,15 @@ class TransactionController extends Controller
                     'wallet_balance' => $newBalance,
                 ]);
 
-                // account Transaction
+                // Account Transaction
                 $accountTransaction = new AccountTransaction;
                 $accountTransaction->branch_id =  Auth::user()->branch_id;
                 $accountTransaction->reference_id = $investor->id;
-                $accountTransaction->purpose =  'OthersReceive';
+                if($request->type == 'add-balance'){
+                 $accountTransaction->purpose = 'Add Bank Balance';
+                }else{
+                    $accountTransaction->purpose =  'OthersReceive';
+                }
                 $accountTransaction->account_id =  $request->payment_method;
                 $accountTransaction->credit = $request->amount;
                 $oldBalance = AccountTransaction::where('account_id', $request->payment_method)->latest('created_at')->first();

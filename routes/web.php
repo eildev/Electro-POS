@@ -44,9 +44,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/test', function () {
+    return view('test');
+});
 
 Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
@@ -146,7 +146,10 @@ Route::middleware('auth')->group(function () {
     Route::controller(ProductsController::class)->group(function () {
         Route::get('/product', 'index')->name('product');
         Route::post('/product/store', 'store')->name('product.store');
-        Route::get('/product/view', 'view')->name('product.view');
+        Route::get('/product/all/view', 'view')->name('product.all.view');
+        Route::get('/product/view', 'getData')->name('product.view');
+        Route::get('/product/testing/view', 'testIndex')->name('product.testing.view');
+        Route::get('/product/test/view', 'TestView')->name('product.test.view');
         Route::get('/product/edit/{id}', 'edit')->name('product.edit');
         Route::post('/product/update/{id}', 'update')->name('product.update');
         Route::get('/product/destroy/{id}', 'destroy')->name('product.destroy');
@@ -250,9 +253,9 @@ Route::middleware('auth')->group(function () {
         Route::post('/promotion/update/{id}', 'PromotionUpdate')->name('promotion.update');
         Route::get('/promotion/delete/{id}', 'PromotionDelete')->name('promotion.delete');
         Route::get('/promotion/find/{id}', 'find')->name('promotion.find');
-    });
-    // Promotion Details related route(n)
-    Route::controller(PromotionController::class)->group(function () {
+
+        // Promotion Details related route(n)
+
         Route::get('/promotion/details/add', 'PromotionDetailsAdd')->name('promotion.details.add');
         Route::post('/promotion/details/store', 'PromotionDetailsStore')->name('promotion.details.store');
         Route::get('/promotion/details/view', 'PromotionDetailsView')->name('promotion.details.view');
@@ -395,8 +398,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/damage/print', 'damageReportPrint')->name('damage.report.print');
             Route::get('/damage/product/filter', 'DamageProductFilter')->name('damage.product.filter.view');
 
-
-
             Route::get('/purchese/product/filter', 'PurchaseProductFilter')->name('purches.product.filter.view');
             Route::get('/purchese/details/invoice/{id}', 'PurchaseDetailsInvoice')->name('purchse.details.invoice');
             //////////////Account Transaction Route /////////////
@@ -421,6 +422,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/yearly/report', 'yearlyReport')->name('report.yearly');
             Route::get('/daily/balance', 'dailyBalance')->name('daily.balance');
         });
+        Route::get('/branch/{branch}/stock', 'stockShowByBranch')->name('branch.stock');
+        Route::get('/branch/{branch}/low-stock', 'lowStockShowByBranch')->name('branch.low.stock');
+
     });
     // Report related routes
     Route::controller(CompanyBalanceController::class)->group(function () {

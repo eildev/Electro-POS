@@ -25,18 +25,22 @@ class PurchaseController extends Controller
         $products = collect();
 
         if ($category) {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->withSum('stockQuantity', 'stock_quantity') // Sum the stock_quantity
+            $products = Product::
+                withSum('stockQuantity', 'stock_quantity') // Sum the stock_quantity
                 ->where('category_id', '!=', $category->id)
                 ->orderBy('stock_quantity_sum_stock_quantity', 'asc') // Explicitly reference the stock_quantity_sum
                 ->get();
         } else {
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->withSum('stockQuantity', 'stock_quantity')
+            $products = Product::
+                withSum('stockQuantity', 'stock_quantity')
                 ->orderBy('stock_quantity_sum_stock_quantity', 'asc')
                 ->get();
         }
-
+        $branchId = Auth::user()->branch_id;
+        $products = $products->map(function ($product) use ($branchId) {
+            $branchStockQuantity = $product->stockQuantity->where('branch_id', $branchId)->sum('stock_quantity');
+            return $product->setAttribute('branch_stock_quantity', $branchStockQuantity);
+        });
         return view('pos.purchase.purchase', compact('products'));
     }
     public function store(Request $request)
@@ -100,7 +104,7 @@ class PurchaseController extends Controller
                     $items->save();
 
                     $items2 = Product::findOrFail($request->product_id[$i]);
-                    $stock = Stock::where('product_id', $request->product_id[$i])->first();
+                    $stock = Stock::where('branch_id',Auth::user()->branch_id)->where('product_id', $request->product_id[$i])->first();
                     if ($stock) {
                         // If stock exists, update the quantity
                         $stock->stock_quantity += $request->quantity[$i];
@@ -256,9 +260,38 @@ class PurchaseController extends Controller
         $purchase = Purchase::findOrFail($id);
         return view('pos.purchase.edit', compact('purchase'));
     }
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
         $purchase = Purchase::findOrFail($id);
+        // account Transaction crud
+        $accountTransaction = new AccountTransaction;
+        $accountTransaction->branch_id =  Auth::user()->branch_id;
+        $accountTransaction->purpose =  'Purchase Delete';
+        $accountTransaction->reference_id = $id;
+        $accountTransaction->account_id = $purchase->payment_method;
+        $accountTransaction->credit =$purchase->paid;
+        $oldBalance = AccountTransaction::where('account_id', $purchase->payment_method)->latest('created_at')->first();
+        $accountTransaction->balance = $oldBalance->balance + $purchase->paid ?? 0;
+        $accountTransaction->created_at = Carbon::now();
+        $accountTransaction->save();
+
+        // get Transaction Model
+        $lastTransaction = Transaction::where('supplier_id', $purchase->supplier_id)->latest()->first();
+        $transaction = new Transaction;
+        $transaction->branch_id = Auth::user()->branch_id;
+        $transaction->date =   Carbon::now();
+        $transaction->payment_type = 'receive';
+        $transaction->particulars = 'PurchaseDelete#' .  $purchase->id;
+        $transaction->supplier_id =  $purchase->supplier_id;
+        $transaction->payment_method = $purchase->payment_method;
+        if ($lastTransaction) {
+            $transaction->credit = $lastTransaction->credit + $purchase->paid;
+            $transaction->balance = $lastTransaction->balance + $purchase->paid ?? 0;
+        } else {
+            $transaction->credit = $purchase->paid;
+            $transaction->balance = $purchase->paid ?? 0;
+        }
+        $transaction->save();
         $purchase->delete();
         return back()->with('message', "Purchase successfully Deleted");
     }

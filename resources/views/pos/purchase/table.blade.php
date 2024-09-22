@@ -7,11 +7,17 @@
             <td>{{ $data->purchase_date ?? 0 }}</td>
             <td>
                 <ul>
-                    @foreach ($data->purchaseItem as $items)
-                        <li>{{ $items->product->name ?? '' }}
-                            <br>({{ $items->product->barcode ?? '' }})
-                        </li>
+                    @php
+                    $totalItems = $data->purchaseItem->count();
+                    $displayItems = $data->purchaseItem->take(5);
+                    $remainingItems = $totalItems - 5;
+                    @endphp
+                    @foreach ($displayItems as $items)
+                        <li>{{ $items->product->name ?? '' }}</li>
                     @endforeach
+                    @if ($totalItems > 5)
+                        <li>and more {{ $remainingItems }}...</li>
+                    @endif
                 </ul>
             </td>
             <td>
@@ -37,9 +43,11 @@
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <a class="dropdown-item" href="{{ route('purchase.invoice', $data->id) }}"><i
                                 class="fa-solid fa-file-invoice me-2"></i> Invoice</a>
+                        @if ($data->document)
                         <a class="dropdown-item money_receipt" href="#" data-bs-toggle="modal"
                             data-bs-target="#moneyReceiptModal" data-id="{{ $data->id }}"><i
                                 class="fa-solid fa-receipt me-2"></i> Money Receipt</a>
+                        @endif
                         <a class="dropdown-item " href="{{ route('purchase.view.details', $data->id) }}"><i
                                 class="fa-solid fa-eye me-2"></i> Show</a>
                         {{-- @if ($data->due > 0)

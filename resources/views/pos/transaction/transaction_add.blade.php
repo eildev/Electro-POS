@@ -74,7 +74,7 @@
                                                             $formatted_time = $created_at
                                                                 ? $created_at->format('h:i A')
                                                                 : '-';
-                                                        @endphp
+                                                         @endphp
 
                                                         <td>{{ $formatted_date ?? '-' }} <Span style="color:brown">:</Span>
                                                             {{ $formatted_time ?? '' }}</td>
@@ -102,7 +102,6 @@
                                                 <tr>
                                                     <td colspan="12">
                                                         <div class="text-center text-warning mb-2">Data Not Found</div>
-
                                                     </td>
                                                 </tr>
 
@@ -258,6 +257,7 @@
                                             <select class="form-select" data-width="100%" name="type" id=""
                                                 aria-invalid="false">
                                                 <option selected="" disabled value="">Select Type</option>
+                                                <option value="add-balance">Add Balance</option>
                                                 <option value="investment">Investment</option>
                                                 <option value="loan">Loan</option>
                                                 <option value="borrow">Borrow</option>
@@ -374,7 +374,6 @@
             document.getElementById("account_type").addEventListener("change", function() {
                 let accountType = this.value;
                 let options = '<option selected disabled value="">Select Account ID</option>';
-
                 if (accountType === "supplier") {
                     @foreach ($supplier as $supply)
                         options += '<option  value="{{ $supply->id }}">{{ $supply->name }} </option>';
@@ -400,8 +399,10 @@
                     let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.add('d-none');
                     //
-                } else if (accountType === "other") {
-                    viewInvestor();
+                }
+
+                else if (accountType === "other") {
+                        viewInvestor();
                     //
                     let transactionTypeElement = document.getElementById('transaction_type');
                     transactionTypeElement.removeAttribute('disabled');
@@ -411,7 +412,7 @@
                     investmentCol.classList.remove('d-none');
                     let investmentCol2 = document.getElementById('investment-col2');
                     investmentCol2.classList.remove('d-none');
-                    // hideFunction()
+                    // hideFunction() //
                 }
                 document.getElementById("account_id").innerHTML = options;
             });
@@ -422,7 +423,7 @@
             // }
             $(document).on('change', '.select-account-id', function() {
                 let accountId = this.value;
-                console.log(accountId);
+                // console.log(accountId);
                 let account_type = document.querySelector('#account_type').value;
                 // $('.account-info').hide();
                 $.ajax({
@@ -433,15 +434,27 @@
                         account_type
                     },
                     success: function(data) {
-
-                        $('#account-details').text('Name: ' + data.info.name);
-                        $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
-                        if (data.info.wallet_balance > 0) {
-                            $('#total_due').text(`Total Due:  ${data.info.wallet_balance}`);
-                        } else {
-                            $('#total_due').text('Total Due: 0');
+                        paySelect =  document.getElementById('transaction_type').value == "pay";
+                        if(paySelect){
+                            $('#account-details').text('Name: ' + data.info.name);
+                            $('#due_invoice_count').text('Due Invoice Count: ' + data.count);
+                            if (data.info.wallet_balance > 0) {
+                                $('#total_due').text(`Total Due:  ${data.info.wallet_balance}`);
+                            } else {
+                                $('#total_due').text('Total Due: 0');
+                            }
+                            $('.account-info').show();
+                        }else{
+                            document.getElementById('transaction_type').value = 'receive';
+                            $('.account-info').hide();
                         }
-                        $('.account-info').show();
+                        document.getElementById('transaction_type').addEventListener('change', function() {
+                        if (this.value === 'receive') {
+                            $('.account-info').hide();
+                        } else if (this.value === 'pay') {
+                            $('.account-info').show();
+                        }
+                        });
                     },
                     error: function(xhr, status, error) {
                         // Error handling
@@ -474,7 +487,7 @@
                     }
                 });
             });
-            /////Validation
+             /////Validation////
             $('#myValidForm').validate({
                 rules: {
                     account_type: {
