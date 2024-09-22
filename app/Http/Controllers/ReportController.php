@@ -289,9 +289,9 @@ class ReportController extends Controller
         //     ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
         //     ->get();
         // } else {
-            $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
-                $query->where('branch_id', Auth::user()->branch_id);
-            }], 'stock_quantity')
+        $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+            $query->where('branch_id', Auth::user()->branch_id);
+        }], 'stock_quantity')
             ->having('stock_quantity_sum', '<=', 10)
             ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
             ->get();
@@ -364,10 +364,10 @@ class ReportController extends Controller
             $damageItem = Damage::where('branch_id', Auth::user()->branch_id)->with('product')->get();
         }
         foreach ($damageItem as $damage) {
-             $damage->total_cost = $damage->product->cost * $damage->qty;
+            $damage->total_cost = $damage->product->cost * $damage->qty;
         }
         $totalSum = $damageItem->sum('total_cost');
-        return view('pos.report.damages.damage', compact('damageItem','totalSum'));
+        return view('pos.report.damages.damage', compact('damageItem', 'totalSum'));
     }
 
     public function DamageProductFilter(Request $request)
@@ -445,34 +445,68 @@ class ReportController extends Controller
         return view('pos.report.bank.bank');
     }
     //stock Report function
+    // public function stockReport()
+    // {
+    //     if (Auth::user()->id == 1) {
+    //         $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+    //             $query->where('branch_id', Auth::user()->branch_id);
+    //         }], 'stock_quantity')
+    //             ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+    //             ->get();
+    //         $products->each(function ($product) {
+    //             $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+    //         });
+    //     } else {
+    //         $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
+    //             $query->where('branch_id', Auth::user()->branch_id);
+    //         }], 'stock_quantity')
+    //             ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+    //             ->get();
+    //         $products->each(function ($product) {
+    //             $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
+    //         });
+    //     }
+
+    //     //Show Stock Value
+
+    //     //Total stock Value
+    //     $totalStockValueSum = $products->sum('total_stock_value');
+    //     return view('pos.report.products.stock', compact('products', 'totalStockValueSum'));
+    // }
+
+
     public function stockReport()
     {
-         if(Auth::user()->id == 1){
+        // Check if the authenticated user is the super admin (user ID = 1)
+        if (Auth::user()->id == 1) {
+            // Fetch stock for all branches (no branch filter)
+            $products = Product::with('stockQuantity')  // Load stock quantity relationship
+                ->withSum('stockQuantity', 'stock_quantity')  // Sum stock quantities for all branches
+                ->orderBy('stock_quantity_sum', 'asc')  // Order by stock quantity sum
+                ->get();
+        } else {
+            // For regular users, filter stock quantities by the user's branch
             $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
-                $query->where('branch_id', Auth::user()->branch_id);
+                $query->where('branch_id', Auth::user()->branch_id);  // Filter by the authenticated user's branch
             }], 'stock_quantity')
-            ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
+            ->orderBy('stock_quantity_sum', 'asc')  // Order by stock quantity sum
             ->get();
-            $products->each(function ($product) {
-                $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
-             });
-            }else{
-          $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
-            $query->where('branch_id', Auth::user()->branch_id);
-        }], 'stock_quantity')
-        ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
-        ->get();
-        $products->each(function ($product) {
-            $product->total_stock_value = $product->cost * $product->stock_quantity_sum;
-         });
         }
 
-                 //Show Stock Value
+        // Calculate total stock value for each product
+        $products->each(function ($product) {
+            $product->total_stock_value = $product->cost * $product->stock_quantity_sum;  // Multiply cost by stock quantity
+        });
 
-                //Total stock Value
-            $totalStockValueSum = $products->sum('total_stock_value');
-        return view('pos.report.products.stock', compact('products','totalStockValueSum'));
-    } //
+        // Calculate the total stock value for all products
+        $totalStockValueSum = $products->sum('total_stock_value');  // Sum all total stock values
+
+        // Return the view with the products and total stock value
+        return view('pos.report.products.stock', compact('products', 'totalStockValueSum'));
+    }
+
+
+
 
     ////////////////Account Transaction Method  //////////////
     public function AccountTransactionView()

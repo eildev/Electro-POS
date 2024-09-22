@@ -6,6 +6,7 @@ use App\Imports\BrandImport;
 use App\Imports\CategoryImport;
 use App\Models\PosSetting;
 use App\Models\Product;
+use App\Models\NewUser;
 use App\Models\PromotionDetails;
 // use Validator;
 use Illuminate\Support\Facades\Validator;
@@ -16,6 +17,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\ProductsImport;
 use App\Imports\SubcategoryImport;
 use App\Jobs\ImportExcelDataJob;
+use DataTables;
+// use Yajra\DataTables\DataTables;
 
 class ProductsController extends Controller
 {
@@ -23,6 +26,21 @@ class ProductsController extends Controller
     {
         return view('pos.products.product.product');
     }
+    public function testIndex()
+    {
+        return view('test');
+    }
+
+    public function TestView()
+    {
+        if (request()->ajax()) {
+            $data = NewUser::query();  // Assuming you're fetching data from 'NewUser' model
+            return DataTables::eloquent($data)->make(true);
+        }
+
+        return view('test');  // Return view for non-Ajax requests
+    }
+
     public function store(Request $request)
     {
 
@@ -84,20 +102,64 @@ class ProductsController extends Controller
     }
     public function view()
     {
-        if (Auth::user()->id == 1) {
-            // $products = Product::all();
-            $products = Product::withSum('stockQuantity', 'stock_quantity')
-                ->latest()
-                ->get();
-        } else {
-            // $products = Product::where('branch_id', Auth::user()->branch_id)->latest()->get();
-            $products = Product::where('branch_id', Auth::user()->branch_id)
-                ->withSum('stockQuantity', 'stock_quantity')
-                ->latest()
-                ->get();
-        }
-        return view('pos.products.product.product-show', compact('products'));
+        return view('pos.products.product.product-show');
     }
+
+    public function getData(Request $request)
+    {
+
+        // Check if the user is an admin (user id == 1)
+        if (Auth::user()->id == 1) {
+            // Fetch all products with stock quantity sum and relationships
+            $products = Product::with(['category', 'brand', 'unit', 'subcategory', 'size'])
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->latest();
+        } else {
+            // Fetch only products for the logged-in user's branch with relationships
+            $products = Product::where('branch_id', Auth::user()->branch_id)
+                ->with(['category', 'brand', 'unit', 'subcategory', 'size'])
+                ->withSum('stockQuantity', 'stock_quantity')
+                ->latest();
+        }
+
+        // Check if the request is an AJAX call (DataTables request)
+        if ($request->ajax()) {
+            return DataTables::of($products)
+
+                ->addColumn('category_name', function ($product) {
+                    return $product->category->name ?? 'N/A'; // Show category name
+                })
+                ->addColumn('image', function ($product) {
+                    return '<img src="'.asset('uploads/product/' . $product->image).'" alt="Product Image" style="width: 50px; height: auto;">';
+                })
+                ->addColumn('brand_name', function ($product) {
+                    return $product->brand->name ?? 'N/A'; // Show brand name
+                })
+                ->addColumn('subcategory_name', function ($product) {
+                    return $product->subcategory->name ?? 'N/A'; // Add subcategory name
+                })
+                ->addColumn('size_name', function ($product) {
+                    return $product->size->name ?? 'N/A'; // Show unit name
+                })
+                ->addColumn('unit_name', function ($product) {
+                    return $product->unit->name ?? 'N/A'; // Show unit name
+                })
+                ->addColumn('action', function ($product) {
+                    $viewBtn = '<a href="'.route('product.find', $product->id).'" class="btn btn-sm btn-success">View</a>';
+                    $editBtn = '<a href="'.route('product.edit', $product->id).'" class="btn btn-sm btn-primary">Edit</a>';
+                    $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
+
+                    return $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn; // Concatenating the buttons
+                })
+                ->rawColumns(['image', 'action']) // Allow HTML in 'image' and 'action' columns
+                ->make(true);
+        }
+
+        return view('pos.products.product.product-show');
+    }
+
+
+
     public function edit($id)
     {
         $product = Product::findOrFail($id);
