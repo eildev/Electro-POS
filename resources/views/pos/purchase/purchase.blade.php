@@ -40,8 +40,8 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="ageSelect" class="form-label">Product</label>
-                                <select class="js-example-basic-single form-select product_select" data-width="100%"
-                                    onclick="errorRemove(this);">
+                                <select class="js-example-basic-single  form-select product_select" data-width="100%"
+                                    onclick="errorRemove(this);" >
                                     @if ($products->count() > 0)
                                         <option selected disabled>Select Product</option>
                                         @foreach ($products as $product)
@@ -469,8 +469,10 @@
 
             // select product
             $('.product_select').change(function() {
+                // alert('Ok');
                 let id = $(this).val();
                 let supplier = $('.select-supplier').val();
+
                 // alert(id);
                 if (supplier) {
                     if ($(`.data_row${id}`).length === 0 && id) {
@@ -520,7 +522,6 @@
                 }
 
             })
-
             // Function to recalculate total
             function calculateTotal() {
                 let total = 0;

@@ -17,19 +17,21 @@
             </td>
             {{-- purchase --}}
             @php
-                $purchaseItems = App\Models\PurchaseItem::where('product_id', $data->id)->get();
-                $totalPurchase = $purchaseItems->sum('quantity');
 
+                $branchId = Auth::user()->branch_id;
+                $totalPurchase = App\Models\PurchaseItem::whereHas('Purchas', function ($query) use ($branchId) {
+                    $query->where('branch_id', $branchId);
+                })->where('product_id', $data->id)
+                ->sum('quantity');
                 $saleItems = App\Models\SaleItem::where('product_id', $data->id)->get();
                 $totalSalePrice = $saleItems->sum('sub_total');
                 $totalsaleQuantity = $saleItems->sum('qty');
                 $totalCost = $data->cost * $totalsaleQuantity;
                 $totalProfit = $totalSalePrice - $totalCost;
-
                 $totalDamage = $data->damage->sum('qty');
-            @endphp
+              @endphp
             <td>
-                {{ $totalPurchase ?? 0 }} {{ $data->unit->name }}
+                {{ $totalPurchase  }} {{ $data->unit->name }}
             </td>
 
             {{-- sold  --}}
@@ -58,7 +60,7 @@
                 ৳ {{ $totalSalePrice ?? 0 }}
             </td>
             <td>
-                <span>৳</span> {{ $data->total_stock_value}}
+                <span>৳</span> {{ $data->total_stock_value ?? 0}}
             </td>
             <td>
                 ৳ {{ $totalProfit ?? 0 }}

@@ -7,9 +7,22 @@
             <li class="breadcrumb-item active" aria-current="page">Low Stock Report</li>
         </ol>
     </nav>
-
     <div class="row">
-
+        @if(Auth::user()->id == 1)
+        @php
+            $bracnhes = App\Models\Branch::all();
+        @endphp
+        <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Low Stock Table</h6>
+                        @foreach ($bracnhes as $branch)
+                            <a href="{{ route('branch.low.stock', ['branch' => $branch->id]) }}"  class="btn" style="background-color: #0d6efd">{{$branch->name}}</a>
+                        @endforeach
+                        </div>
+                    </div>
+                </div>
+        @else
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -42,5 +55,6 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 @endsection

@@ -107,7 +107,7 @@ class CategoryController extends Controller
     }
     public function status($id)
     {
-        dd($id);
+        // dd($id);
         $category = Category::findOrFail($id);
         $newStatus = $category->status == 0 ? 1 : 0;
         $category->update([

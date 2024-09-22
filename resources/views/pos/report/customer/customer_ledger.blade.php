@@ -9,7 +9,7 @@
     </nav>
 
     <div class="row">
-        <div class="col-md-12   grid-margin stretch-card filter_box">
+        <div class="col-md-12 grid-margin stretch-card filter_box">
             <div class="card">
                 <div class="card-body">
                     <div class="row mb-3">

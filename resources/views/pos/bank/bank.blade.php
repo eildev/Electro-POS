@@ -123,7 +123,6 @@
                             <label for="name" class="form-label">Branch Name</label>
                             <input id="defaultconfig" class="form-control edit_branch_name" maxlength="39"
                                 name="branch_name" type="text">
-
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="name" class="form-label">Manager Name/Owner Name</label>
@@ -138,7 +137,7 @@
 
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Account</label>
+                            <label for="name" class="form-label">Account Number</label>
                             <input id="defaultconfig" class="form-control edit_account" maxlength="39" name="account"
                                 type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger edit_account"></span>
@@ -159,7 +158,7 @@
         </div>
     </div>
     <!-- Modal add balance -->
-    <div class="modal fade" id="bank_money_add" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
+    {{-- <div class="modal fade" id="bank_money_add" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
             <div class="modal-content">
@@ -198,7 +197,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
     <script>
         // error remove
         function errorRemove(element) {
@@ -289,15 +288,11 @@
                                                 Manage
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <a href="#" class="dropdown-item add_money_modal_open" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
-                                                                        <i class="fas fa-money-bill"></i>
-                                                Add balance</a>
+
                                                 <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 Edit</a>
-                                                <a href="#" class="dropdown-item bank_delete" data-id=${bank.id}>
-                                                    <i class="fa-solid fa-trash-can"></i>
-                                                Delete</a>
+
                                             </div>
                                         </div>
                                     </td>
@@ -322,7 +317,9 @@
             bankView();
 
 
-
+            // <a href="#" class="dropdown-item bank_delete" data-id=${bank.id}>
+            //                                         <i class="fa-solid fa-trash-can"></i>
+            //                                     Delete</a>
 
             // edit Unit
             $(document).on('click', '.bank_edit', function(e) {
@@ -451,40 +448,42 @@
                 let id = this.getAttribute('data-id');
                 $('.add_balance').val(id);
             })
-
+            // <a href="#" class="dropdown-item add_money_modal_open" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#bank_money_add">
+            //                                                             <i class="fas fa-money-bill"></i>
+            //                                     Add balance</a>
             //Add
-            $('.add_balance').click(function(e) {
-                e.preventDefault();
-                let id = $(this).val();
-                // console.log(id);
-                let formData = new FormData($('#addBalaceForm')[0]);
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+            // $('.add_balance').click(function(e) {
+            //     e.preventDefault();
+            //     let id = $(this).val();
+            //     // console.log(id);
+            //     let formData = new FormData($('#addBalaceForm')[0]);
+            //     $.ajaxSetup({
+            //         headers: {
+            //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //         }
+            //     });
 
-                $.ajax({
-                    url: `/add/bank/balance/${id}`,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(res) {
-                        if (res.status == 200) {
-                            $('#bank_money_add').modal('hide');
-                            $('#addBalaceForm')[0].reset();
-                            bankView();
-                            toastr.success(res.message);
-                        } else {
-                            if (res.error.update_balance) {
-                                showError('.add_amount', res.error.update_balance);
-                            }
+            //     $.ajax({
+            //         url: `/add/bank/balance/${id}`,
+            //         type: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(res) {
+            //             if (res.status == 200) {
+            //                 $('#bank_money_add').modal('hide');
+            //                 $('#addBalaceForm')[0].reset();
+            //                 bankView();
+            //                 toastr.success(res.message);
+            //             } else {
+            //                 if (res.error.update_balance) {
+            //                     showError('.add_amount', res.error.update_balance);
+            //                 }
 
-                        }
-                    }
-                });
-            })
+            //             }
+            //         }
+            //     });
+            // })
         });
     </script>
 @endsection

@@ -9,7 +9,6 @@
                         @if ($barcode == 1)
                             <div class="mb-2 col-md-6">
                                 <label for="ageSelect" class="form-label">Barcode</label>
-
                                 <div class="input-group">
                                     <div class="input-group-text" id="btnGroupAddon"><i class="fa-solid fa-barcode"></i>
                                     </div>
@@ -460,7 +459,6 @@
             }
             viewViaSell();
 
-
             // add via Products
             $(document).on('click', '.save_via_product', function(e) {
                 e.preventDefault();
@@ -702,8 +700,7 @@
                     );
                 }
             }
-
-            // Function to calculate the subtotal for each product
+            // Function to calculate the subtotal for each product -
             function calculateTotal() {
                 $('.quantity').each(function() {
                     let $quantityInput = $(this);

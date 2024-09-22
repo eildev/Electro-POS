@@ -27,7 +27,6 @@
             color: #ffffff !important;
 
         }
-
         .sub-menu .nav-item .nav-link {
             padding-left: 5px !important;
         }
@@ -63,7 +62,6 @@
                     <span class="link-title">Dashboard</span>
                 </a>
             </li>
-
 
             {{-- ///////////////////////////////////// ---- POS Start ---- //////////////////////////////////// --}}
             <li class="nav-item nav-category">POS (Point of Sale)</li>
