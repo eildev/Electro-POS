@@ -6,7 +6,6 @@ use App\Imports\BrandImport;
 use App\Imports\CategoryImport;
 use App\Models\PosSetting;
 use App\Models\Product;
-use App\Models\NewUser;
 use App\Models\PromotionDetails;
 // use Validator;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +17,6 @@ use App\Imports\ProductsImport;
 use App\Imports\SubcategoryImport;
 use App\Jobs\ImportExcelDataJob;
 use DataTables;
-// use Yajra\DataTables\DataTables;
 
 class ProductsController extends Controller
 {
@@ -26,21 +24,6 @@ class ProductsController extends Controller
     {
         return view('pos.products.product.product');
     }
-    public function testIndex()
-    {
-        return view('test');
-    }
-
-    public function TestView()
-    {
-        if (request()->ajax()) {
-            $data = NewUser::query();  // Assuming you're fetching data from 'NewUser' model
-            return DataTables::eloquent($data)->make(true);
-        }
-
-        return view('test');  // Return view for non-Ajax requests
-    }
-
     public function store(Request $request)
     {
 
