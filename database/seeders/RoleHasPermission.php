@@ -109,6 +109,8 @@ class RoleHasPermission extends Seeder
             ['permission_id' => 94, 'role_id' => 2], ['permission_id' => 95, 'role_id' => 2],
             ['permission_id' => 96, 'role_id' => 2], ['permission_id' => 97, 'role_id' => 2],
             ['permission_id' => 98, 'role_id' => 2], ['permission_id' => 99, 'role_id' => 2],
+            ['permission_id' => 100, 'role_id' => 2],['permission_id' => 101, 'role_id' => 2],
+
             ['permission_id' => 1, 'role_id' => 3], ['permission_id' => 2, 'role_id' => 3],
             ['permission_id' => 3, 'role_id' => 3], ['permission_id' => 4, 'role_id' => 3],
             ['permission_id' => 5, 'role_id' => 3], ['permission_id' => 6, 'role_id' => 3],
