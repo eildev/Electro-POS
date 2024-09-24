@@ -13,8 +13,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Brand Table</h6>
+                        @if (Auth::user()->can('brand.add'))
                         <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
+                        @endif
                     </div>
                     <div id="" class="table-responsive">
                         <table class="table">
@@ -219,12 +221,16 @@
                                 <img src="${brand.image ? 'http://127.0.0.1:8000/uploads/brand/' + brand.image : 'http://127.0.0.1:8000/dummy/image.jpg'}" alt="Brand Image">
                             </td>
                             <td>
+                                 @can('brand.edit')
                                 <a href="#" class="btn btn-primary btn-icon brand_edit" data-id=${brand.id} data-bs-toggle="modal" data-bs-target="#edit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
+                                 @endcan
+                                 @can('brand.delete')
                                 <a href="#" class="btn btn-danger btn-icon brand_delete" data-id=${brand.id}>
                                     <i class="fa-solid fa-trash-can"></i>
                                 </a>
+                                @endcan
                             </td>
                             `;
                                 $('.showData').append(tr);
@@ -235,8 +241,10 @@
                                 <td colspan='8'>
                                     <div class="text-center text-warning mb-2">Data Not Found</div>
                                     <div class="text-center">
+                                         @can('brand.add')
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add
                                             Brand<i data-feather="plus"></i></button>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>`)

@@ -14,8 +14,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Product Table</h6>
+                        @if (Auth::user()->can('products.add'))
                         <a href="{{ route('product') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add
                             Product</a>
+                        @endif
                     </div>
                     <div class="table-responsive">
                         <table id="products-table" class="display table table-striped table-bordered" style="width:100%">

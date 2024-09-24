@@ -13,8 +13,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Unit Table</h6>
+                        @if (Auth::user()->can('unit.add'))
                         <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
+                            @endif
                     </div>
                     <div id="" class="table-responsive">
                         <table class="table">
@@ -227,12 +229,16 @@
                                 ${unit.related_by ?? 0 }
                             </td>
                             <td>
+                                @can('unit.edit')
                                 <a href="#" class="btn btn-primary btn-icon unit_edit" data-id=${unit.id} data-bs-toggle="modal" data-bs-target="#edit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
+                                @endcan
+                                @can('unit.delete')
                                 <a href="#" class="btn btn-danger btn-icon unit_delete" data-id=${unit.id}>
                                     <i class="fa-solid fa-trash-can"></i>
                                 </a>
+                                @endcan
                             </td>
                             `;
                                 $('.showData').append(tr);
@@ -243,8 +249,10 @@
                                 <td colspan='8'>
                                     <div class="text-center text-warning mb-2">Data Not Found</div>
                                     <div class="text-center">
+                                         @can('unit.add')
                                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add
                                             Unit<i data-feather="plus"></i></button>
+                                            @endcan
                                     </div>
                                 </td>
                             </tr>`)

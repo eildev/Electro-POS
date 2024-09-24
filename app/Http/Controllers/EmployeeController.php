@@ -57,7 +57,7 @@ class EmployeeController extends Controller
         $employee->nid = $request->nid;
         $employee->designation = $request->designation;
         $employee->status = 0;
-        $employee->pic = $imageName;
+        $employee->pic = $imageName ?? '';
         $employee->created_at = Carbon::now();
         $employee->save();
         $notification = array(

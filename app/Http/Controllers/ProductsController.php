@@ -129,8 +129,14 @@ class ProductsController extends Controller
                 })
                 ->addColumn('action', function ($product) {
                     $viewBtn = '<a href="'.route('product.find', $product->id).'" class="btn btn-sm btn-success">View</a>';
-                    $editBtn = '<a href="'.route('product.edit', $product->id).'" class="btn btn-sm btn-primary">Edit</a>';
-                    $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
+                    $editBtn = '';
+                    if (Auth::user()->can('products.edit')) {
+                        $editBtn = '<a href="'.route('product.edit', $product->id).'" class="btn btn-sm btn-primary">Edit</a>';
+                    }
+                    $deleteBtn = '';
+                    if (Auth::user()->can('products.delete')) {
+                        $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
+                    }
 
                     return $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn; // Concatenating the buttons
                 })

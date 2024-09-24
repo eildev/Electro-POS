@@ -34,7 +34,6 @@
             <label for="exampleInputBranchname2" class="col-sm-3 col-form-label">Product Size</label>
             <div class="col-sm-9 form-valid-groups">
                 <input type="text" name="size" class="form-control" id="exampleInputBranchname2" placeholder="Please Enter Size">
-
             </div>
         </div>
 

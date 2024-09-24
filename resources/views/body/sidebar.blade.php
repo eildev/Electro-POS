@@ -118,6 +118,7 @@
             @endif
             {{-- //Purchase End // --}}
             {{-- //Via Sale// --}}
+            @if (Auth::user()->can('via.purchase'))
             <li class="nav-item">
                 <a href="{{ route('via.sale') }}"
                     class="nav-link {{ request()->routeIs('via.sale') ? 'nav_active' : '' }}">
@@ -125,6 +126,7 @@
                     <span class="link-title">Via Purchase</span>
                 </a>
             </li>
+            @endif
             {{-- //Via Sale  End // --}}
 
             {{-- //Damage // --}}
@@ -172,6 +174,7 @@
                             <span class="link-title"> Manage Products</span>
                         </a>
                     </li>
+                @endif
                 @endif
                 @if (Auth::user()->can('category.menu'))
                     <li class="nav-item">
@@ -242,7 +245,7 @@
                 {{-- </ul>
                     </div>
                 </li> --}}
-            @endif
+
 
             {{-- ////////////////////////////////////---- Store Management End----//////////////////////////////// --}}
             {{-- ////////////////////////////////////---- Accounting----//////////////////////////////// --}}
@@ -316,6 +319,7 @@
             {{-- ////////////////////////////////////---- Accounting End----//////////////////////////////// --}}
 
             {{-- ////////////////////////////////////---- Inventory----//////////////////////////////// --}}
+            @if (Auth::user()->can('Inventory.menu'))
             <li class="nav-item nav-category">Inventory</li>
             {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('Inventory*') ? '' : 'collapsed' }}"
@@ -328,6 +332,7 @@
                 <div class="collapse {{ request()->routeIs('Inventory*') ? 'show' : '' }}" id="Inventory">
                     <ul class="nav sub-menu"> --}}
             <!---Stock --->
+            @if (Auth::user()->can('Inventory.stock.report'))
             <li class="nav-item">
                 <a href="{{ route('report.stock') }}"
                     class="nav-link {{ request()->routeIs('report.stock') ? 'nav_active' : '' }}">
@@ -335,6 +340,8 @@
                     <span class="link-title">Stock Report</span>
                 </a>
             </li>
+            @endif
+            @if (Auth::user()->can('Inventory.low.stock.report'))
             <li class="nav-item">
                 <a href="{{ route('report.low.stock') }}"
                     class="nav-link {{ request()->routeIs('report.low.stock') ? 'nav_active' : '' }}">
@@ -342,8 +349,10 @@
                     <span class="link-title"> Low Stock Report</span>
                 </a>
             </li>
+            @endif
             <!---Stock End--->
-            <!---Damage Product--->
+            <!--- Damage Product --->
+            @if (Auth::user()->can('Inventory.damage'))
             <li class="nav-item">
                 <a href="{{ route('report.damage') }}"
                     class="nav-link {{ request()->routeIs('report.damage') ? 'nav_active' : '' }}">
@@ -351,6 +360,8 @@
                     <span class="link-title"> Damage Report</span>
                 </a>
             </li>
+            @endif
+            @endif
             <!---Damage End--->
             <!---Return --->
             @if (Auth::user()->can('return.menu'))
@@ -645,6 +656,7 @@
                 </li>
             @endif
             <!---Admin Manage--->
+            @if (Auth::user()->can('setting.manage'))
             <li class="nav-item">
                 <a href="{{ route('pos.settings.add') }}"
                     class="nav-link {{ request()->routeIs('pos.settings.add') ? 'nav_active' : '' }}">
@@ -652,6 +664,7 @@
                     <span class="link-title">Setting Manage</span>
                 </a>
             </li>
+            @endif
             {{-- @if (Auth::user()->can('settings.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('setting*') ? '' : 'collapsed' }}"
@@ -717,6 +730,7 @@
                     </a>
                 </li>
             @endif
+            @if (Auth::user()->can('excel.file.import'))
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('products.imports') ? 'nav_active' : '' }}"
                     href="{{ route('products.imports') }}" role="button" aria-controls="general-pages">
@@ -724,6 +738,7 @@
                     <span class="link-title">Excel File Import</span>
                 </a>
             </li>
+            @endif
         </ul>
     </div>
 </nav>

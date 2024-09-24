@@ -65,8 +65,10 @@
                             <td colspan="12">
                                 <div class="text-center text-warning mb-2">Data Not Found</div>
                                 <div class="text-center">
+                                    @if(Auth::user()->can('promotion.add'))
                                     <a href="{{route('promotion.add')}}" class="btn btn-primary">Add Promotion<i
                                             data-feather="plus"></i></a>
+                                     @endif
                                 </div>
                             </td>
                         </tr>
