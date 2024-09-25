@@ -133,11 +133,13 @@ class ProductsController extends Controller
                     if (Auth::user()->can('products.edit')) {
                         $editBtn = '<a href="'.route('product.edit', $product->id).'" class="btn btn-sm btn-primary">Edit</a>';
                     }
-                    $deleteBtn = '';
-                    if (Auth::user()->can('products.delete')) {
-                        $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
-                    }
-
+                    // $deleteBtn = '';
+                    // if (Auth::user()->can('products.delete')) {
+                    //     $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
+                    // }
+                    $deleteBtn = Auth::user()->can('products.delete')
+                    ? '<a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmDelete('.$product->id.')">Delete</a>'
+                    : '';
                     return $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn; // Concatenating the buttons
                 })
                 ->rawColumns(['image', 'action']) // Allow HTML in 'image' and 'action' columns
@@ -146,7 +148,6 @@ class ProductsController extends Controller
 
         return view('pos.products.product.product-show');
     }
-
 
 
     public function edit($id)

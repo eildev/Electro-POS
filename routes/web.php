@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
-|
+
 */
 
 Route::get('/test', function () {
@@ -317,7 +317,7 @@ Route::middleware('auth')->group(function () {
     });
     // sale related routes
     Route::controller(SaleController::class)->group(function () {
-        Route::get('/sale', 'index')->name('sale');
+        Route::get('/sale', 'index')->name('sale')->middleware('can:pos.menu');
         Route::post('/sale/store', 'store')->name('sale.store');
         Route::get('/sale/view', 'view')->name('sale.view');
         Route::get('/sale/view-all', 'viewAll')->name('sale.view.all');
