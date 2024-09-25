@@ -64,6 +64,7 @@
             </li>
 
             {{-- ///////////////////////////////////// ---- POS Start ---- //////////////////////////////////// --}}
+            @if (Auth::user()->can('pos.menu'))
             <li class="nav-item nav-category">POS (Point of Sale)</li>
             {{-- <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('pos*') ? '' : 'collapsed' }}"
@@ -76,7 +77,6 @@
             <div class="collapse {{ request()->routeIs('pos*') ? 'show' : '' }}" id="uiComponen">
                 <ul class="nav sub-menu"> --}}
             {{-- //Pos// --}}
-            @if (Auth::user()->can('pos.menu'))
                 <li class="nav-item">
                     <a href="{{ route('sale') }}"
                         class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
@@ -145,8 +145,8 @@
         </li> --}}
             {{-- ///////////////////////////////////////////---- POS End ----//////////////////////////////////////// --}}
             {{-- //////////////////////////////---- Store Management ----/////////////////////////////// --}}
-            <li class="nav-item nav-category">Store Management</li>
             @if (Auth::user()->can('products.menu'))
+            <li class="nav-item nav-category">Store Management</li>
                 {{-- <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('product*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false"
@@ -249,6 +249,7 @@
 
             {{-- ////////////////////////////////////---- Store Management End----//////////////////////////////// --}}
             {{-- ////////////////////////////////////---- Accounting----//////////////////////////////// --}}
+            @if (Auth::user()->can('bank.menu'))
             <li class="nav-item nav-category">Accounting</li>
             {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('Accounting*') ? '' : 'collapsed' }}"
@@ -261,7 +262,6 @@
                 <div class="collapse {{ request()->routeIs('Accounting*') ? 'show' : '' }}" id="Accounting">
                     <ul class="nav sub-menu"> --}}
             <!---Bank--->
-            @if (Auth::user()->can('bank.menu'))
                 <li class="nav-item">
                     <a href="{{ route('bank') }}"
                         class="nav-link {{ request()->routeIs('bank') ? 'nav_active' : '' }}">
@@ -379,6 +379,7 @@
             </li> --}}
             {{-- ////////////////////////////////////---- Inventory End----//////////////////////////////// --}}
             {{-- //////////////////////--- Human Resource Management (HRM)----///////////////////// --}}
+            @if (Auth::user()->can('employee.menu'))
             <li class="nav-item nav-category">HRM</li>
             {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('employee*') ? '' : 'collapsed' }}"
@@ -390,7 +391,7 @@
                 </a>
                 <div class="collapse {{ request()->routeIs('employee*') ? 'show' : '' }}" id="employee">
                     <ul class="nav sub-menu"> --}}
-            @if (Auth::user()->can('employee.menu'))
+
                 <li class="nav-item ">
                     <a href="{{ route('employee.add') }}"
                         class="nav-link {{ request()->routeIs('employee.add') ? 'nav_active' : '' }}">
@@ -399,7 +400,6 @@
                     </a>
                 </li>
             @endif
-
             @if (Auth::user()->can('employee-salary.menu'))
                 <li class="nav-item">
                     <a href="{{ route('employee.salary.add') }}"
@@ -476,9 +476,8 @@
             </li> --}}
             @endif
             {{-- ///////////////////---- Customer Relationship Manager (CRM) End----////////////////// --}}
-
-            <li class="nav-item nav-category">All Reports</li>
             @if (Auth::user()->can('report.menu'))
+            <li class="nav-item nav-category">All Reports</li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('report*') ? '' : 'collapsed' }}"
                         data-bs-toggle="collapse" href="#majid" role="button" aria-expanded="false"
@@ -489,96 +488,124 @@
                     </a>
                     <div class="collapse {{ request()->routeIs('report*') ? 'show' : '' }}" id="majid">
                         <ul class="nav sub-menu">
+                            @if (Auth::user()->can('toady.report'))
                             <li class="nav-item">
                                 <a id="report" href="{{ route('report.today') }}"
                                     class="nav-link {{ request()->routeIs('report.today') ? 'nav_active' : '' }}">Today
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('product.info.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.product.info') }}"
                                     class="nav-link {{ request()->routeIs('report.product.info') ? 'nav_active' : '' }}">Product
                                     Info
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('summary.report'))
+
                             <li class="nav-item">
                                 <a href="{{ route('report.summary') }}"
                                     class="nav-link {{ request()->routeIs('report.summary') ? 'nav_active' : '' }}">Summary
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('customer.due.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.customer.due') }}"
                                     class="nav-link {{ request()->routeIs('report.customer.due') ? 'nav_active' : '' }}">Customer
                                     Due
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('supplier.due.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.supplier.due') }}"
                                     class="nav-link {{ request()->routeIs('report.supplier.due') ? 'nav_active' : '' }}">Supplier
                                     Due
                                     Report</a>
                             </li>
-
+                            @endif
+                            @if (Auth::user()->can('top.products.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.top.products') }}"
                                     class="nav-link {{ request()->routeIs('report.top.products') ? 'nav_active' : '' }}">Top
                                     Products</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('purchase.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.purchase') }}"
                                     class="nav-link {{ request()->routeIs('report.purchase') ? 'nav_active' : '' }}">Purchase
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('customer.ledger.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.customer.ledger') }}"
                                     class="nav-link {{ request()->routeIs('report.customer.ledger') ? 'nav_active' : '' }}">Customer
                                     Ledger</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('supplier.ledger.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.suppliers.ledger') }}"
                                     class="nav-link {{ request()->routeIs('report.suppliers.ledger') ? 'nav_active' : '' }}">Supplier
                                     Ledger</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('account.transaction.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.account.transaction') }}"
                                     class="nav-link {{ request()->routeIs('report.account.transaction') ? 'nav_active' : '' }}">Account
                                     Transaction</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('expense.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.expense') }}"
                                     class="nav-link {{ request()->routeIs('report.expense') ? 'nav_active' : '' }}">Expense
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('employee.salary.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.employee.salary.view') }}"
                                     class="nav-link {{ request()->routeIs('report.employee.salary.view') ? 'nav_active' : '' }}">Employee
                                     Salary
                                     Report</a>
                             </li>
-
+                            @endif
+                            @if (Auth::user()->can('sms.report'))
 
                             <li class="nav-item">
                                 <a href="{{ route('report.sms') }}"
                                     class="nav-link {{ request()->routeIs('report.sms') ? 'nav_active' : '' }}">Sms
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('monthly.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.monthly') }}"
                                     class="nav-link {{ request()->routeIs('report.monthly') ? 'nav_active' : '' }}">Monthly
                                     Report</a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('yearly.report'))
                             <li class="nav-item">
                                 <a href="{{ route('report.yearly') }}"
                                     class="nav-link {{ request()->routeIs('report.yearly') ? 'nav_active' : '' }}">Yearly
                                     Report</a>
                             </li>
+                            @endif
                         </ul>
                     </div>
                 </li>
             @endif
-
+            @if (Auth::user()->can('role-and-permission.menu'))
             <li class="nav-item nav-category">Software Control</li>
             <!---Role & Permission--->
-            @if (Auth::user()->can('role-and-permission.menu'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('role*') ? 'collapsed' : '' }}"
                         data-bs-toggle="collapse" href="#role_permission" role="button" aria-expanded="false"
@@ -720,8 +747,8 @@
                     </a>
                 </li>
             @endif
-            <li class="nav-item nav-category">Branch</li>
             @if (Auth::user()->can('branch.menu'))
+            <li class="nav-item nav-category">Branch</li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('branch.view') ? 'nav_active' : '' }}"
                         href="{{ route('branch.view') }}" role="button" aria-controls="general-pages">

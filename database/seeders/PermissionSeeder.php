@@ -163,6 +163,22 @@ class PermissionSeeder extends Seeder
             ['id' => 118, 'name' => 'damage.list', 'guard_name' => 'web', 'group_name' => 'damage'],
             ['id' => 119, 'name' => 'via.purchase.payment', 'guard_name' => 'web', 'group_name' => 'purchase'],
             ['id' => 120, 'name' => 'via.purchase.delete', 'guard_name' => 'web', 'group_name' => 'purchase'],
+            ['id' => 121, 'name' => 'toady.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 122, 'name' => 'product.info.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 123, 'name' => 'summary.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 124, 'name' => 'customer.due.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 125, 'name' => 'supplier.due.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 126, 'name' => 'top.products.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 127, 'name' => 'purchase.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 128, 'name' => 'customer.ledger.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 129, 'name' => 'supplier.ledger.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 130, 'name' => 'account.transaction.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 131, 'name' => 'expense.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 132, 'name' => 'employee.salary.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 133, 'name' => 'sms.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 134, 'name' => 'monthly.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 135, 'name' => 'yearly.report', 'guard_name' => 'web', 'group_name' => 'report'],
+
             // add more permissions as needed
         ];
 
