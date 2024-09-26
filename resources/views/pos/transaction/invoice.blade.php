@@ -40,15 +40,15 @@
                     </tr>
                     <tr>
                         <td>Name :</td>
-                        <td colspan="3"> {{$transaction['supplier']['name'] ?? $transaction['customer']['name'] ?? ''}}</td>
+                        <td colspan="3"> {{$transaction['supplier']['name'] ?? $transaction['customer']['name'] ?? $transaction['investor']['name'] ?? ''}}</td>
                     </tr>
                     <tr>
                         <td>Address :</td>
-                        <td colspan="3">{{$transaction['supplier']['address'] ?? $transaction['customer']['address'] ?? ''}}</td>
+                        <td colspan="3">{{$transaction['supplier']['address'] ?? $transaction['customer']['address'] ?? $transaction['investor']['address'] ??''}}</td>
                     </tr>
                     <tr>
                         <td>Mobile :</td>
-                        <td colspan="3">{{$transaction['supplier']['phone'] ?? $transaction['customer']['phone'] ?? ''}} </td>
+                        <td colspan="3">{{$transaction['supplier']['phone'] ?? $transaction['customer']['phone'] ?? $transaction['investor']['phone'] ??''}} </td>
                     </tr>
                     <tr>
                         <td>Account Type :</td>
@@ -88,7 +88,11 @@
                         <th>Date</th>
                         {{-- <th>Previous Due</th> --}}
                         <th>Paid</th>
-                        <th>Total Due</th>
+                        @if($transaction->others_id != null)
+                        @else
+                            <th>Total Due</th>
+                        @endif
+
                     </tr>
                     </tbody><tbody>
                         <tr>
@@ -101,10 +105,13 @@
                                 @endif
                             </td> --}}
                             <td>@if( $transaction->credit != null)
-                                {{ $transaction->credit }}</td>
+                                {{ $transaction->credit }}
                                 @elseif( $transaction->debit != null)
-                                {{ $transaction->debit }}</td>
+                                {{ $transaction->debit }}
                                 @endif
+                            </td>
+                                @if($transaction->others_id != null)
+                                @else
                             <td>
                                 @if(isset($transaction['customer']['wallet_balance']))
                                     {{ $transaction['customer']['wallet_balance'] }}
@@ -112,6 +119,7 @@
                                     {{  $transaction['supplier']['wallet_balance'] }}
                                 @endif
                             </td>
+                            @endif
                         </tr>
                     </tbody>
                 </table>
