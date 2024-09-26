@@ -21,7 +21,7 @@
 .product_search_result {
     position: absolute;
     background-color: #060C17;
-    width: 40%;
+    width: 45%;
     max-height: 300px;
     overflow-y: auto;
     border: 1px solid #0056b3;
@@ -102,9 +102,9 @@
                                     </table>
                                 </div>
                                 {{-- // --}}
-                                {{-- <select class="js-example-basic-single form-select product_select view_product"
+                                <select class="js-example-basic-single form-select product_select view_product"
                                     data-width="100%" onchange="errorRemove(this);">
-                                </select> --}}
+                                </select>
 
                                 <span class="text-danger product_select_error"></span>
                                 @if ($via_sale == 1)
@@ -481,7 +481,8 @@
             }
         });
 
-        //  jquery redy function
+
+        // jquery redy function
         $(document).ready(function() {
             // Barcode Focused
             $('.barcode_input').focus();
@@ -1338,3 +1339,21 @@
     });
     </script>
 @endsection
+{{--
+const products = res.products;
+                        $('.view_product').empty();
+
+                        if (products.length > 0) {
+                            $('.view_product').append(
+                                `<option selected disabled>Select Product</option>`
+                            );
+                            $.each(products, function(index, product) {
+                                $('.view_product').append(
+                                    `<option value="${product.id}">${product.name} (${product.stock_quantity_sum  || 0} pc Available)</option>`
+                                );
+                            })
+                        } else {
+                            $('.view_product').html(`
+                        <option selected disable>Please add Product</option>`)
+                        } --}}
+
