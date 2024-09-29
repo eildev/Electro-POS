@@ -13,6 +13,7 @@ use App\Models\PurchaseItem;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\Transaction;
+use PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
