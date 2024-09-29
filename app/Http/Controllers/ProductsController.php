@@ -113,7 +113,7 @@ class ProductsController extends Controller
                     return $product->category->name ?? 'N/A'; // Show category name
                 })
                 ->addColumn('image', function ($product) {
-                    return '<img src="'.asset('uploads/product/' . $product->image).'" alt="Product Image" style="width: 50px; height: auto;">';
+                    return '<img src="' . asset('uploads/product/' . $product->image) . '" alt="Product Image" style="width: 50px; height: auto;">';
                 })
                 ->addColumn('brand_name', function ($product) {
                     return $product->brand->name ?? 'N/A'; // Show brand name
@@ -128,18 +128,18 @@ class ProductsController extends Controller
                     return $product->unit->name ?? 'N/A'; // Show unit name
                 })
                 ->addColumn('action', function ($product) {
-                    $viewBtn = '<a href="'.route('product.find', $product->id).'" class="btn btn-sm btn-success">View</a>';
+                    $viewBtn = '<a href="' . route('product.find', $product->id) . '" class="btn btn-sm btn-success">View</a>';
                     $editBtn = '';
                     if (Auth::user()->can('products.edit')) {
-                        $editBtn = '<a href="'.route('product.edit', $product->id).'" class="btn btn-sm btn-primary">Edit</a>';
+                        $editBtn = '<a href="' . route('product.edit', $product->id) . '" class="btn btn-sm btn-primary">Edit</a>';
                     }
                     // $deleteBtn = '';
                     // if (Auth::user()->can('products.delete')) {
                     //     $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
                     // }
                     $deleteBtn = Auth::user()->can('products.delete')
-                    ? '<a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmDelete('.$product->id.')">Delete</a>'
-                    : '';
+                        ? '<a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmDelete(' . $product->id . ')">Delete</a>'
+                        : '';
                     return $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn; // Concatenating the buttons
                 })
                 ->rawColumns(['image', 'action']) // Allow HTML in 'image' and 'action' columns
@@ -219,30 +219,28 @@ class ProductsController extends Controller
     public function find($id)
     {
         $status = 'active';
-        $product = Product::findOrFail($id);
+        // Fetch product with its related unit
+        $product = Product::with('unit')->findOrFail($id);
+
+        // Check for active promotion details for the product
         $promotionDetails = PromotionDetails::whereHas('promotion', function ($query) use ($status) {
             return $query->where('status', '=', $status);
         })->where('promotion_type', 'products')->where('logic', 'like', '%' . $id . "%")->latest()->first();
-        // dd($promotionDetails->promotion);
-        $discountCheck = PosSetting::where('discount', '=', 1)->first();
 
+        // If promotion details exist, return them along with the product and unit
         if ($promotionDetails) {
-            if ($discountCheck) {
-                return response()->json([
-                    'status' => '200',
-                    'data' => $product,
-                ]);
-            } else {
-                return response()->json([
-                    'status' => '200',
-                    'data' => $product,
-                    'promotion' => $promotionDetails->promotion,
-                ]);
-            }
-        } else {
             return response()->json([
                 'status' => '200',
-                'data' => $product
+                'data' => $product,
+                'promotion' => $promotionDetails->promotion,
+                'unit' => $product->unit->name,  // Include unit in the response
+            ]);
+        } else {
+            // If no promotion details exist, still return the product with the unit
+            return response()->json([
+                'status' => '200',
+                'data' => $product,
+                'unit' => $product->unit->name,  // Include unit here as well
             ]);
         }
     }
