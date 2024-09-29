@@ -100,8 +100,10 @@
                                         <td colspan="12">
                                             <div class="text-center text-warning mb-2">Data Not Found</div>
                                             <div class="text-center">
+                                                @if(Auth::user()->can('promotion-details.add'))
                                                 <a href="{{ route('promotion.details.add') }}" class="btn btn-primary">Add
                                                     Promotion Details<i data-feather="plus"></i></a>
+                                                 @endif
                                             </div>
                                         </td>
                                     </tr>

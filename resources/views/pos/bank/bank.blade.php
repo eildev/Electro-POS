@@ -13,8 +13,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Bank Table</h6>
+                        @if (Auth::user()->can('bank.add'))
                         <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
+                        @endif
                     </div>
                     <div id="" class="table-responsive">
                         <table id="dataTableExample" class="table">
@@ -28,7 +30,10 @@
                                     <th>Account</th>
                                     {{-- <th>Opening Balance</th> --}}
                                     <th>Total Balance</th>
-                                    <th>Action</th>
+                                     @if (Auth::user()->can('bank.edit'))
+                                     <th>Action</th>
+                                    @endif
+
                                 </tr>
                             </thead>
                             <tbody class="showData">
@@ -282,19 +287,21 @@
                                     <td>${bank.account ?? 0}</td>
                                     <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
+                                          @can('bank.edit')
                                         <div class="dropdown">
                                             <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Manage
                                             </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 Edit</a>
-
                                             </div>
+
                                         </div>
+                                     @endcan
                                     </td>
                                 `;
                                 $('.showData').append(tr);

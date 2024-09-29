@@ -144,6 +144,41 @@ class PermissionSeeder extends Seeder
             ['id' => 102, 'name' => 'limit.user', 'guard_name' => 'web', 'group_name' => 'limit'],
             ['id' => 103, 'name' => 'limit.device', 'guard_name' => 'web', 'group_name' => 'limit'],
 
+            ['id' => 104, 'name' => 'via.purchase', 'guard_name' => 'web', 'group_name' => 'purchase'],
+
+            ['id' => 105, 'name' => 'Inventory.menu', 'guard_name' => 'web', 'group_name' => 'inventory'],
+            ['id' => 106, 'name' => 'Inventory.stock.report', 'guard_name' => 'web', 'group_name' => 'inventory'],
+            ['id' => 107, 'name' => 'Inventory.low.stock.report', 'guard_name' => 'web', 'group_name' => 'inventory'],
+            ['id' => 108, 'name' => 'Inventory.damage', 'guard_name' => 'web', 'group_name' => 'inventory'],
+
+            ['id' => 109, 'name' => 'setting.manage', 'guard_name' => 'web', 'group_name' => 'settings'],
+            ['id' => 110, 'name' => 'excel.file.import', 'guard_name' => 'web', 'group_name' => 'other'],
+            ['id' => 111, 'name' => 'bank.add', 'guard_name' => 'web', 'group_name' => 'bank'],
+            ['id' => 112, 'name' => 'category.add', 'guard_name' => 'web', 'group_name' => 'category'],
+            ['id' => 113, 'name' => 'subcategory.add', 'guard_name' => 'web', 'group_name' => 'subcategory'],
+            ['id' => 114, 'name' => 'brand.add', 'guard_name' => 'web', 'group_name' => 'brand'],
+            ['id' => 115, 'name' => 'unit.add', 'guard_name' => 'web', 'group_name' => 'unit'],
+            ['id' => 116, 'name' => 'tax.add', 'guard_name' => 'web', 'group_name' => 'taxes'],
+            ['id' => 117, 'name' => 'supplier.add', 'guard_name' => 'web', 'group_name' => 'supplier'],
+            ['id' => 118, 'name' => 'damage.list', 'guard_name' => 'web', 'group_name' => 'damage'],
+            ['id' => 119, 'name' => 'via.purchase.payment', 'guard_name' => 'web', 'group_name' => 'purchase'],
+            ['id' => 120, 'name' => 'via.purchase.delete', 'guard_name' => 'web', 'group_name' => 'purchase'],
+            ['id' => 121, 'name' => 'toady.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 122, 'name' => 'product.info.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 123, 'name' => 'summary.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 124, 'name' => 'customer.due.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 125, 'name' => 'supplier.due.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 126, 'name' => 'top.products.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 127, 'name' => 'purchase.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 128, 'name' => 'customer.ledger.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 129, 'name' => 'supplier.ledger.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 130, 'name' => 'account.transaction.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 131, 'name' => 'expense.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 132, 'name' => 'employee.salary.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 133, 'name' => 'sms.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 134, 'name' => 'monthly.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 135, 'name' => 'yearly.report', 'guard_name' => 'web', 'group_name' => 'report'],
+
             // add more permissions as needed
         ];
 

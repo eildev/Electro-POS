@@ -298,33 +298,21 @@ class ReportController extends Controller
         // }
         return view('pos.report.products.low_stock', compact('products'));
     }
-    // Top Products  function
+    // Top Products function
     public function topProducts()
     {
         if (Auth::user()->id == 1) {
-            // $products = Product::withSum('stockQuantity', 'stock_quantity')
-            //     ->having('stock_quantity', '>=', 10)
-            //     ->orderBy('total_sold', 'desc')
-            //     ->take(20)
-            //     ->get();
             $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
-                // $query->where('branch_id', Auth::user()->branch_id);
             }], 'stock_quantity')
-            ->having('stock_quantity_sum', '>=', 20)
+            ->where('total_sold', '>=', 10)
+            ->orderBy('total_sold', 'asc') // or 'desc' for descending order
             ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
             ->get();
         } else {
-            // $products = Product::where('branch_id', Auth::user()->branch_id)
-            //     ->withSum('stockQuantity', 'stock_quantity')
-            //     ->having('stock_quantity', '>=', 10)
-            //     ->orderBy('total_sold', 'desc')
-
-            //     ->take(20)
-            //     ->get();
             $products = Product::withSum(['stockQuantity as stock_quantity_sum' => function ($query) {
                 $query->where('branch_id', Auth::user()->branch_id);
             }], 'stock_quantity')
-            ->having('stock_quantity_sum', '>=', 20)
+            ->where('total_sold', '>=', 10)
             ->orderBy('stock_quantity_sum', 'asc') // or 'desc' for descending order
             ->get();
         }
@@ -398,7 +386,11 @@ class ReportController extends Controller
                 return $query->where('branch_id', $request->branchId);
             })
             ->get();
-        return view('pos.report.damages.damage-filter-table', compact('damageItem'))->render();
+            foreach ($damageItem as $damage) {
+                $damage->total_cost = $damage->product->cost * $damage->qty;
+           }
+           $totalSum = $damageItem->sum('total_cost');
+        return view('pos.report.damages.damage-filter-table', compact('damageItem','totalSum'))->render();
     } //
 
     // customer Ledger report function
@@ -425,6 +417,7 @@ class ReportController extends Controller
             'transactions' => $transactions,
             'customer' => $customer,
         ]);
+
         // return view("pos.report.supplier.show_ledger", compact('supplier', 'transactions'))->render();
     }
     // supplier Ledger report function

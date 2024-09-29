@@ -14,8 +14,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Product Table</h6>
+                        @if (Auth::user()->can('products.add'))
                         <a href="{{ route('product') }}" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add
                             Product</a>
+                        @endif
                     </div>
                     <div class="table-responsive">
                         <table id="products-table" class="display table table-striped table-bordered" style="width:100%">
@@ -93,5 +95,36 @@
                 ]
             });
         });
+
+        //Sweet Alert
+        function confirmDelete(productId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: '/product/destroy/' + productId,
+                type: 'GET',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function(response) {
+                    Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
+                    location.reload();
+
+                },
+                error: function(response) {
+                    Swal.fire('Error!', 'There was a problem deleting the product.', 'error');
+                }
+            });
+        }
+    });
+}
     </script>
 @endsection

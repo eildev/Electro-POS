@@ -4,7 +4,7 @@
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Via Sale</li>
+            <li class="breadcrumb-item active" aria-current="page">Via Purchase</li>
         </ol>
     </nav>
     <div class="row">
@@ -12,7 +12,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="card-title">Via Sale Table</h6>
+                        <h6 class="card-title">Via Purchase Table</h6>
                     </div>
                     <div class="table-responsive">
                         <table id="example" class="table">
@@ -59,14 +59,18 @@
                                                             href="{{ route('via.sale.invoice', $via->id) }}"><i
                                                                 class="fa-solid fa-file-invoice me-2"></i> Invoice</a>
                                                         @if ($via->status == 0)
+                                                        @if(Auth::user()->can('via.purchase.payment'))
                                                             <a class="dropdown-item add_payment" href="#"
                                                                 data-id="{{ $via->id }}" data-bs-toggle="modal"
                                                                 data-bs-target="#paymentModal"><i
                                                                     class="fa-solid fa-credit-card me-2"></i> Payment</a>
                                                         @endif
+                                                        @endif
+                                                        @if(Auth::user()->can('via.purchase.delete'))
                                                         <a class="dropdown-item delete_via_sale"
                                                             data-id="{{ $via->id }}" href="#"><i
                                                                 class="fa-solid fa-trash-can me-2"></i>Delete</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>

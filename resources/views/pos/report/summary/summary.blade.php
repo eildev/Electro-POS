@@ -230,7 +230,7 @@
 
     <div class="row">
         <!--//Top Sale Product Start// --->
-        <div class="col-md-6 grid-margin stretch-card">
+        {{-- <div class="col-md-6 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title text-info">Top Sale Product</h6>
@@ -309,9 +309,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-md-6 grid-margin stretch-card">
+        <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title text-info">Expense</h6>

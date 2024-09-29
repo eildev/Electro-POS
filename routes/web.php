@@ -41,7 +41,7 @@ use Illuminate\Support\Facades\Route;
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "web" middleware group. Make something great!
-|
+
 */
 
 Route::get('/test', function () {
@@ -148,8 +148,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/product/store', 'store')->name('product.store');
         Route::get('/product/all/view', 'view')->name('product.all.view');
         Route::get('/product/view', 'getData')->name('product.view');
-        Route::get('/product/testing/view', 'testIndex')->name('product.testing.view');
-        Route::get('/product/test/view', 'TestView')->name('product.test.view');
         Route::get('/product/edit/{id}', 'edit')->name('product.edit');
         Route::post('/product/update/{id}', 'update')->name('product.update');
         Route::get('/product/destroy/{id}', 'destroy')->name('product.destroy');
@@ -315,7 +313,7 @@ Route::middleware('auth')->group(function () {
     });
     // sale related routes
     Route::controller(SaleController::class)->group(function () {
-        Route::get('/sale', 'index')->name('sale');
+        Route::get('/sale', 'index')->name('sale')->middleware('can:pos.menu');
         Route::post('/sale/store', 'store')->name('sale.store');
         Route::get('/sale/view', 'view')->name('sale.view');
         Route::get('/sale/view-all', 'viewAll')->name('sale.view.all');

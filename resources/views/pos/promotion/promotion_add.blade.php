@@ -4,8 +4,9 @@
 <div class="row">
 <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
     <div class="">
-
+        @if(Auth::user()->can('promotion.menu'))
         <h4 class="text-right"><a href="{{route('promotion.view')}}" class="btn btn-primary">View All Promotion</a></h4>
+        @endif
     </div>
 </div>
 <div class="col-md-12 stretch-card">

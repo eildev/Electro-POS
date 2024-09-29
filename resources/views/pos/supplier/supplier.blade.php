@@ -13,8 +13,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Supplier Table</h6>
+                        @if (Auth::user()->can('supplier.add'))
                         <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
+                        @endif
                     </div>
                     @php
 
@@ -234,12 +236,16 @@
                                             </span>
                                         </td>
                                         <td>
+                                             @can('supplier.edit')
                                             <a href="#" class="btn btn-primary btn-icon supplier_edit" data-id="${supplier.id}" data-bs-toggle="modal" data-bs-target="#edit">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
+                                            @endcan
+                                             @can('supplier.delete')
                                             <a href="#" class="btn btn-danger btn-icon supplier_delete" data-id="${supplier.id}">
                                                 <i class="fa-solid fa-trash-can"></i>
                                             </a>
+                                            @endcan
                                         </td>
                                     `;
                                     $('.showData').append(tr);
@@ -249,9 +255,11 @@
                                     <tr>
                                         <td colspan='8'>
                                             <div class="text-center text-warning mb-2">Data Not Found</div>
+                                            @can('supplier.add')
                                             <div class="text-center">
                                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add Supplier<i data-feather="plus"></i></button>
                                             </div>
+                                            @endcan
                                         </td>
                                     </tr>`);
                             }

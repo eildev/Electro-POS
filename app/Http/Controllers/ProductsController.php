@@ -6,7 +6,6 @@ use App\Imports\BrandImport;
 use App\Imports\CategoryImport;
 use App\Models\PosSetting;
 use App\Models\Product;
-use App\Models\NewUser;
 use App\Models\PromotionDetails;
 // use Validator;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +17,6 @@ use App\Imports\ProductsImport;
 use App\Imports\SubcategoryImport;
 use App\Jobs\ImportExcelDataJob;
 use DataTables;
-// use Yajra\DataTables\DataTables;
 
 class ProductsController extends Controller
 {
@@ -26,21 +24,6 @@ class ProductsController extends Controller
     {
         return view('pos.products.product.product');
     }
-    public function testIndex()
-    {
-        return view('test');
-    }
-
-    public function TestView()
-    {
-        if (request()->ajax()) {
-            $data = NewUser::query();  // Assuming you're fetching data from 'NewUser' model
-            return DataTables::eloquent($data)->make(true);
-        }
-
-        return view('test');  // Return view for non-Ajax requests
-    }
-
     public function store(Request $request)
     {
 
@@ -145,10 +128,18 @@ class ProductsController extends Controller
                     return $product->unit->name ?? 'N/A'; // Show unit name
                 })
                 ->addColumn('action', function ($product) {
-                    $viewBtn = '<a href="' . route('product.find', $product->id) . '" class="btn btn-sm btn-success">View</a>';
-                    $editBtn = '<a href="' . route('product.edit', $product->id) . '" class="btn btn-sm btn-primary">Edit</a>';
-                    $deleteBtn = '<a href="' . route('product.destroy', $product->id) . '" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
-
+                    $viewBtn = '<a href="'.route('product.find', $product->id).'" class="btn btn-sm btn-success">View</a>';
+                    $editBtn = '';
+                    if (Auth::user()->can('products.edit')) {
+                        $editBtn = '<a href="'.route('product.edit', $product->id).'" class="btn btn-sm btn-primary">Edit</a>';
+                    }
+                    // $deleteBtn = '';
+                    // if (Auth::user()->can('products.delete')) {
+                    //     $deleteBtn = '<a href="'.route('product.destroy', $product->id).'" class="btn btn-sm btn-danger" onclick="return confirm(\'Are you sure?\')">Delete</a>';
+                    // }
+                    $deleteBtn = Auth::user()->can('products.delete')
+                    ? '<a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmDelete('.$product->id.')">Delete</a>'
+                    : '';
                     return $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn; // Concatenating the buttons
                 })
                 ->rawColumns(['image', 'action']) // Allow HTML in 'image' and 'action' columns
@@ -157,7 +148,6 @@ class ProductsController extends Controller
 
         return view('pos.products.product.product-show');
     }
-
 
 
     public function edit($id)

@@ -11,8 +11,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Purchase Report</h6>
-                        <a href="{{ route('purchase') }}" class="btn btn-rounded-primary btn-sm"><i
-                                data-feather="plus"></i></a>
+                        @if (Auth::user()->can('purchase.add'))
+                            <a href="{{ route('purchase') }}" class="btn btn-rounded-primary btn-sm"><i
+                                    data-feather="plus"></i></a>
+                        @endif
+
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-3">
@@ -225,6 +228,101 @@
                 // Restore the id attribute after printing
                 // $('#dataTableExample').attr('id', 'dataTableExample');
             });
+            //    add payment
+            $(document).on('click', '.add_payment', function(e) {
+                e.preventDefault();
+                // alert('ok');
+                let id = $(this).attr('data-id');
+                // console.log(`Purchase#${id}`);
+                var currentDate = new Date().toISOString().split('T')[0];
+                $('.payment_date').val(currentDate);
+                $('.save_payment').val(id);
+
+
+                $.ajax({
+                    url: '/purchase/find/' + id,
+                    method: "GET",
+                    success: function(res) {
+                        // console.log(res);
+                        if (res.status == 200) {
+                            // console.log(res);
+                            $('.amount').val(res.data.due);
+                            $('.amount').attr('maxlength', res.data.due);
+                        }
+                    }
+                })
+            });
+
+            // save payment
+            $(document).on('click', '.save_payment', function(e) {
+                e.preventDefault();
+                let id = $(this).val();
+                // alert(id);
+                let formData = new FormData($('.paymentForm')[0]);
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: `/transaction/edit-amount/${id}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(res) {
+                        if (res.status == 200) {
+                            // console.log(res.purchase);
+                            // jQuery('#showData').html(res.purchase);
+                            $('#paymentModal').modal('hide');
+                            $('.paymentForm')[0].reset();
+                            window.location.href = '{{ route('purchase.view') }}'
+                            toastr.success(res.message);
+                        } else {
+                            // console.log(res.error);
+                            if (res.error.paid) {
+                                showError('.amount', res.error.paid);
+                            }
+                            if (res.error.amount) {
+                                showError('.amount', res.error.amount);
+                            }
+                            if (res.error.payment_method) {
+                                showError('.transaction_account', res.error.payment_method);
+                            }
+                        }
+                    }
+                });
+            })
+
+            $(document).on('click', '.money_receipt', function(e) {
+                e.preventDefault();
+                let id = $(this).attr('data-id');
+                $.ajax({
+                    url: '/purchase/find/' + id,
+                    method: "GET",
+                    success: function(res) {
+                        // console.log(res);
+                        if (res.status == 200) {
+                            let imageUrl = `/uploads/purchase/${res.data.document}`;
+                            // Extract the file extension
+                            if (imageUrl) {
+                                let fileExtension = imageUrl.split('.').pop().toLowerCase();
+                                if (fileExtension !== 'pdf') {
+                                    $('.show_doc').html(
+                                        `<img src="${imageUrl}" width="100%" height="500px" alt="Image" />`
+                                    );
+                                } else {
+                                    $('.show_doc').html(
+                                        `<iframe src="${imageUrl}" width="100%" height="500px"></iframe>`
+                                    );
+                                }
+                            }
+                        } else {
+                            // Handle other status codes or errors if needed
+                        }
+                    }
+                })
+            })
         });
     </script>
 @endsection

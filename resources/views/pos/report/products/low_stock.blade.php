@@ -35,15 +35,15 @@
                                     <th>Image</th>
                                     <th>Product</th>
                                     <th>Category</th>
-                                    <th>Price</th>
                                     <th>Purchased</th>
                                     <th>Sold</th>
                                     <th>Damaged</th>
-                                    <th>Returned</th>
+                                    <th>Cost Price</th>
+                                    <th>Sell Price</th>
                                     <th>Available Stock</th>
                                     <th>Sell Value</th>
+                                    <th>Stock Value</th>
                                     <th>Profit</th>
-                                    <th class="id">Action</th>
                                 </tr>
                             </thead>
                             {{-- @dd($products) --}}

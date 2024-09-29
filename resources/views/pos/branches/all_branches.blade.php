@@ -6,7 +6,9 @@
     @if(Auth::user()->can('branch.menu'))
 <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
     <div class="">
+        @if(Auth::user()->can('branch.add'))
         <h4 class="text-right"><a href="{{route('branch')}}" class="btn btn-info">Add New Branch</a></h4>
+        @endif
     </div>
 </div>
 @endif

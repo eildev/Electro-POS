@@ -6,7 +6,9 @@
 
 <div class="col-md-12 grid-margin stretch-card d-flex justify-content-end">
     <div class="">
+        @if(Auth::user()->can('products-size.add'))
         <h4 class="text-right"><a href="{{route('product.size.add')}}" class="btn btn-info">Add New Product Size</a></h4>
+        @endif
     </div>
 </div>
 <div class="col-md-12 grid-margin stretch-card">
@@ -31,15 +33,17 @@
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $pSize['category']['name']}}</td>
                                 <td>{{ $pSize->size ?? ''}}</td>
-
-
                                 <td>
+                                    @if(Auth::user()->can('products-size.edit'))
                                     <a href="{{route('product.size.edit',$pSize->id)}}" class="btn btn-sm btn-primary btn-icon">
                                         <i data-feather="edit"></i>
                                     </a>
+                                    @endif
+                                    @if(Auth::user()->can('products-size.delete'))
                                     <a href="{{route('product.size.delete',$pSize->id)}}" id="delete" class="btn btn-sm btn-danger btn-icon">
                                         <i data-feather="trash-2"></i>
                                     </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

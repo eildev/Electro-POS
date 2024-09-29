@@ -66,6 +66,9 @@
                                         <option value="branch">Branch</option>
                                         <option value="return">Return</option>
                                         <option value="limit">Limitation</option>
+                                        <option value="inventory">Inventory</option>
+                                        <option value="other">Others</option>
+
                                     </select>
                                     @error('group_name')
                                         <div class="invalid-feedback">{{ $message }}</div>

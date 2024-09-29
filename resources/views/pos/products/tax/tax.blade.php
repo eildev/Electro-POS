@@ -13,8 +13,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Tax Table</h6>
+                        @if (Auth::user()->can('tax.add'))
                         <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
                             data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
+                        @endif
                     </div>
                     <div id="" class="table-responsive">
                         <table class="table">
@@ -178,12 +180,16 @@
                             </td>
 
                             <td>
+                                @can('tax.edit')
                                 <a href="#" class="btn btn-primary btn-icon tax_edit" data-id=${tax.id} data-bs-toggle="modal" data-bs-target="#edit">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
+                                  @endcan
+                                  @can('tax.delete')
                                 <a href="#" class="btn btn-danger btn-icon tax_delete" data-id=${tax.id}>
                                     <i class="fa-solid fa-trash-can"></i>
                                 </a>
+                                @endcan
                             </td>
                             `;
                                 $('.showData').append(tr);
