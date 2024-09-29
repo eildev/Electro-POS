@@ -27,13 +27,15 @@
             color: #ffffff !important;
 
         }
+
         .sub-menu .nav-item .nav-link {
             padding-left: 5px !important;
         }
-        .nav-link:hover, .nav-link:focus {
-            background-color:#408dff
-        }
 
+        .nav-link:hover,
+        .nav-link:focus {
+            background-color: #408dff
+        }
     </style>
     <div class="sidebar-body">
         <ul class="nav">
@@ -78,8 +80,7 @@
             {{-- //Pos// --}}
             @if (Auth::user()->can('pos.menu'))
                 <li class="nav-item">
-                    <a href="{{ route('sale') }}"
-                        class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
+                    <a href="{{ route('sale') }}" class="nav-link {{ request()->routeIs('sale') ? 'nav_active' : '' }}">
                         <i class="ms-2 link-icon" data-feather="shopping-cart"></i>
                         <span class="link-title">POS</span>
                     </a>
@@ -173,13 +174,6 @@
                         </a>
                     </li>
                 @endif
-                <li class="nav-item">
-                    <a href="{{ route('product.testing.view') }}"
-                        class="nav-link {{ request()->routeIs('product.testing.view') ? 'nav_active' : '' }}">
-                        <i class="ms-2 link-icon" data-feather="settings"></i>
-                        <span class="link-title"> Manage test Products</span>
-                    </a>
-                </li>
                 @if (Auth::user()->can('category.menu'))
                     <li class="nav-item">
                         <a href="{{ route('product.category') }}"

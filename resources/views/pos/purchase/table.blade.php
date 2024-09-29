@@ -2,19 +2,20 @@
     @foreach ($purchase as $index => $data)
         <tr>
             <td class="id">{{ $index + 1 }}</td>
-            <td>{{ $data->id ?? 0 }}</td>
+            <td><a href="{{ route('purchase.invoice', $data->id) }}">#{{ $data->invoice ?? 0 }}</a></td>
             <td>{{ $data->supplier->name ?? '' }}</td>
-            <td>{{ $data->purchase_date ?? 0 }}</td>
+            <td>{{ $data->purchse_date ?? 0 }}</td>
             <td>
-                <ul>
-                    @php
+                @php
                     $totalItems = $data->purchaseItem->count();
                     $displayItems = $data->purchaseItem->take(5);
                     $remainingItems = $totalItems - 5;
-                    @endphp
+                @endphp
+                <ul>
                     @foreach ($displayItems as $items)
                         <li>{{ $items->product->name ?? '' }}</li>
                     @endforeach
+
                     @if ($totalItems > 5)
                         <li>and more {{ $remainingItems }}...</li>
                     @endif
@@ -22,6 +23,12 @@
             </td>
             <td>
                 ৳ {{ $data->grand_total ?? 0 }}
+            </td>
+            <td>
+                ৳ {{ $data->carrying_cost ?? 0 }}
+            </td>
+            <td>
+                ৳ {{ number_format($data->grand_total + $data->carrying_cost, 2) ?? 0 }}
             </td>
             <td>
                 ৳ {{ $data->paid ?? 0 }}
@@ -44,17 +51,9 @@
                         <a class="dropdown-item" href="{{ route('purchase.invoice', $data->id) }}"><i
                                 class="fa-solid fa-file-invoice me-2"></i> Invoice</a>
                         @if ($data->document)
-                        <a class="dropdown-item money_receipt" href="#" data-bs-toggle="modal"
-                            data-bs-target="#moneyReceiptModal" data-id="{{ $data->id }}"><i
-                                class="fa-solid fa-receipt me-2"></i> Money Receipt</a>
+                            <a class="dropdown-item" href="{{ route('purchase.money.receipt', $data->id) }}"><i
+                                    class="fa-solid fa-receipt me-2"></i> Money Receipt</a>
                         @endif
-                        <a class="dropdown-item " href="{{ route('purchase.view.details', $data->id) }}"><i
-                                class="fa-solid fa-eye me-2"></i> Show</a>
-                        {{-- @if ($data->due > 0)
-                            <a class="dropdown-item add_payment" href="#" data-bs-toggle="modal"
-                            data-bs-target="#paymentModal" data-id="{{ $data->id }}"><i
-                                class="fa-solid fa-credit-card me-2"></i> Payment</a>
-                        @endif --}}
                         {{-- @if (Auth::user()->can('purchase.edit'))
                             <a class="dropdown-item" href="{{ route('purchase.edit', $data->id) }}"><i
                                     class="fa-solid fa-pen-to-square me-2"></i> Edit</a>
