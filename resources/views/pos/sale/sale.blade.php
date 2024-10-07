@@ -92,7 +92,7 @@
                             <label class="form-label">Product</label>
                             <div class="d-flex g-3">
                                 {{-- //--}}
-                                <input type="text" style="border: 1px solid #0d6efd" class="form-control py-2 product_select view_product" id="product_search"
+                                {{-- <input type="text" style="border: 1px solid #0d6efd" class="form-control py-2 product_select view_product" id="product_search"
                                 placeholder="Search here..." autocomplete="off" data-width="100%" onchange="errorRemove(this);">
 
                                 <div class="product_search_result">
@@ -100,7 +100,7 @@
                                         <tbody class="findData">
                                         </tbody>
                                     </table>
-                                </div>
+                                </div> --}}
                                 {{-- // --}}
                                 <select class="js-example-basic-single form-select product_select view_product"
                                     data-width="100%" onchange="errorRemove(this);">
@@ -538,7 +538,7 @@
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
+                      }
                 });
                 $.ajax({
                     url: '/via/product/add',
@@ -1263,97 +1263,81 @@
 
         //Search
 
-    const global_search1 = document.querySelector("#product_search");
-    const search_result1 = document.querySelector(".product_search_result");
-    // console.log(global_search);
-    global_search1.addEventListener('keyup', function() {
-        // console.log(global_search.value);
-        if (global_search1.value != '') {
-            $.ajax({
-                url: '/search/' + global_search1.value,
-                type: 'GET',
-                success: function(res) {
-                    // console.log(res);
-                    let findData = '';
-                    search_result1.style.display = 'block';
-                    if (res.products.length > 0) {
-                        $.each(res.products, function(key, value) {
-                            findData += `<tr>
-                                    <td>${value.name ?? ""}</td>
-                                    <td>${value.stock_quantity_sum_stock_quantity ?? 0}</td>
-                                    <td>${value.price ?? 0}</td>
-                                </tr>`
-                        });
+    // const global_search1 = document.querySelector("#product_search");
+    // const search_result1 = document.querySelector(".product_search_result");
+    // // console.log(global_search);
+    // global_search1.addEventListener('keyup', function() {
+    //     // console.log(global_search.value);
+    //     if (global_search1.value != '') {
+    //         $.ajax({
+    //             url: '/search/' + global_search1.value,
+    //             type: 'GET',
+    //             success: function(res) {
+    //                 // console.log(res);
+    //                 let findData = '';
+    //                 search_result1.style.display = 'block';
+    //                 if (res.products.length > 0) {
+    //                     $.each(res.products, function(key, value) {
+    //                         findData += `<tr>
+    //                                 <td>${value.name ?? ""}</td>
+    //                                 <td>${value.stock_quantity_sum_stock_quantity ?? 0}</td>
+    //                                 <td>${value.price ?? 0}</td>
+    //                             </tr>`
+    //                     });
 
-                        $('.findData').html(findData);
-                    } else {
-                        $('.table_header').hide();
-                        findData += `<tr>
-                                    <td colspan = "3" class = "text-center">Data not Found</td>
-                                </tr>`
-                        $('.findData').html(findData);
-                    }
-                }
-            });
-        } else {
-            search_result1.style.display = 'none';
-        }
-    })
+    //                     $('.findData').html(findData);
+    //                 } else {
+    //                     $('.table_header').hide();
+    //                     findData += `<tr>
+    //                                 <td colspan = "3" class = "text-center">Data not Found</td>
+    //                             </tr>`
+    //                     $('.findData').html(findData);
+    //                 }
+    //             }
+    //         });
+    //     } else {
+    //         search_result1.style.display = 'none';
+    //     }
+    // })
 
-    global_search1.addEventListener('click', function() {
-        // console.log(global_search.value);
-        if (global_search1.value != '') {
-            $.ajax({
-                url: '/search/' + global_search1.value,
-                type: 'GET',
-                success: function(res) {
-                    // console.log(res);
-                    let findData = '';
-                    search_result1.style.display = 'block';
-                    if (res.products.length > 0) {
-                        $.each(res.products, function(key, value) {
-                            findData += `<tr>
-                                            <td>${value.name}</td>
-                                            <td>${value.stock}</td>
-                                            <td>${value.price}</td>
-                                        </tr>`
-                        });
+    // global_search1.addEventListener('click', function() {
+    //     // console.log(global_search.value);
+    //     if (global_search1.value != '') {
+    //         $.ajax({
+    //             url: '/search/' + global_search1.value,
+    //             type: 'GET',
+    //             success: function(res) {
+    //                 // console.log(res);
+    //                 let findData = '';
+    //                 search_result1.style.display = 'block';
+    //                 if (res.products.length > 0) {
+    //                     $.each(res.products, function(key, value) {
+    //                         findData += `<tr>
+    //                                         <td>${value.name}</td>
+    //                                         <td>${value.stock}</td>
+    //                                         <td>${value.price}</td>
+    //                                     </tr>`
+    //                     });
 
-                        $('.findData').html(findData);
-                    } else {
-                        $('.table_header').hide();
-                        findData += `<tr>
-                                        <td colspan = "3" class = "text-center">Data not Found</td>
-                                    </tr>`
-                        $('.findData').html(findData);
-                    }
-                }
-            });
-        } else {
-            search_result1.style.display = 'none';
-        }
-    })
+    //                     $('.findData').html(findData);
+    //                 } else {
+    //                     $('.table_header').hide();
+    //                     findData += `<tr>
+    //                                     <td colspan = "3" class = "text-center">Data not Found</td>
+    //                                 </tr>`
+    //                     $('.findData').html(findData);
+    //                 }
+    //             }
+    //         });
+    //     } else {
+    //         search_result1.style.display = 'none';
+    //     }
+    // })
 
-    global_search1.addEventListener('blur', function() {
-        search_result1.style.display = 'none';
-    });
+    // global_search1.addEventListener('blur', function() {
+    //     search_result1.style.display = 'none';
+    // });
     </script>
 @endsection
-{{--
-const products = res.products;
-                        $('.view_product').empty();
 
-                        if (products.length > 0) {
-                            $('.view_product').append(
-                                `<option selected disabled>Select Product</option>`
-                            );
-                            $.each(products, function(index, product) {
-                                $('.view_product').append(
-                                    `<option value="${product.id}">${product.name} (${product.stock_quantity_sum  || 0} pc Available)</option>`
-                                );
-                            })
-                        } else {
-                            $('.view_product').html(`
-                        <option selected disable>Please add Product</option>`)
-                        } --}}
 

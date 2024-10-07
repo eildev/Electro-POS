@@ -178,7 +178,18 @@ class PermissionSeeder extends Seeder
             ['id' => 133, 'name' => 'sms.report', 'guard_name' => 'web', 'group_name' => 'report'],
             ['id' => 134, 'name' => 'monthly.report', 'guard_name' => 'web', 'group_name' => 'report'],
             ['id' => 135, 'name' => 'yearly.report', 'guard_name' => 'web', 'group_name' => 'report'],
-
+            ['id' => 136, 'name' => 'inventory.report', 'guard_name' => 'web', 'group_name' => 'report'],
+            ['id' => 137, 'name' => 'Make.Items', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 138, 'name' => 'make.items.manage', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 139, 'name' => 'make.category', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 140, 'name' => 'set.menu', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 141, 'name' => 'set.items', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 141, 'name' => 'set.items.manage', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 143, 'name' => 'top.sale.set.menu', 'guard_name' => 'web', 'group_name' => 'inventory'],
+            ['id' => 144, 'name' => 'top.sale.make.item', 'guard_name' => 'web', 'group_name' => 'inventory'],
+            ['id' => 145, 'name' => 'make.menu.and.item.menu', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 146, 'name' => 'ingredient.audit', 'guard_name' => 'web', 'group_name' => 'ingredient-audit'],
+            ['id' => 147, 'name' => 'audit.report', 'guard_name' => 'web', 'group_name' => 'ingredient-audit'],
             // add more permissions as needed
         ];
 
