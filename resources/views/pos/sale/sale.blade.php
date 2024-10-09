@@ -807,10 +807,8 @@
                 });
             }
 
-
-
             // when product price is Edit
-            $(document).on('change', '.unit_price', function() {
+            $(document).on('keyup', '.unit_price', function() {
                 let product_id = $(this).attr('product-id');
                 // alert(product_id);
                 let quantity = parseFloat($('.productQuantity' + product_id).val());
@@ -897,10 +895,6 @@
                 }
             });
 
-
-
-
-
             // Function to calculate the grand total from all products
             function calculateProductTotal() {
                 let allProductTotal = document.querySelectorAll('#productTotal');
@@ -922,7 +916,7 @@
                 calculateTotal();
                 updateTotalQuantity();
                 calculateProductTotal();
-            }
+              }
 
             // Product add with barcode
             $('.barcode_input').change(function() {
@@ -946,7 +940,6 @@
                     }
                 });
             });
-
             // Select product
             $('.product_select').change(function() {
                 let id = $(this).val();
