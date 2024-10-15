@@ -14,8 +14,8 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="card-title">Bank Table</h6>
                         @if (Auth::user()->can('bank.add'))
-                        <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
+                            <button class="btn btn-rounded-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#exampleModalLongScollable"><i data-feather="plus"></i></button>
                         @endif
                     </div>
                     <div id="" class="table-responsive">
@@ -27,17 +27,18 @@
                                     <th>Branch Name</th>
                                     <th>Manager/Owner Name</th>
                                     <th>Phone Number</th>
-                                    <th>Account</th>
-                                    {{-- <th>Opening Balance</th> --}}
-                                    <th>Total Balance</th>
-                                     @if (Auth::user()->can('bank.edit'))
-                                     <th>Action</th>
-                                    @endif
-
+                                    <th>Account No</th>
+                                    <th>Opening Balance</th>
+                                    <th>Balance</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody class="showData">
                             </tbody>
+                            <tr>
+                                <td colspan="7" style="text-align: right;"><strong>Total Balance:</strong></td>
+                                <td colspan="2" id="total-balance">0</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -45,7 +46,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!--Add Bank Modal -->
     <div class="modal fade" id="exampleModalLongScollable" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -107,6 +108,7 @@
             </div>
         </div>
     </div>
+
     {{-- //Edit Modal --}}
     <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
         aria-hidden="true">
@@ -162,47 +164,8 @@
             </div>
         </div>
     </div>
-    <!-- Modal add balance -->
-    {{-- <div class="modal fade" id="bank_money_add" tabindex="-1" aria-labelledby="exampleModalScrollableTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalScrollableTitle">Add Balane</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addBalaceForm" class="addBalaceForm row">
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Balance Amount <span
-                                    class="text-danger">*</span></label>
-                            <input id="defaultconfig" type="number" class="form-control add_amount"
-                                name="update_balance" type="text" onkeyup="errorRemove(this);"
-                                onblur="errorRemove(this);">
-                            <span class="text-danger add_amount_error"></span>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Purpose</label>
-                            <select class="form-control" name="purpose" id="">
-                                <option value="investment">Investment</option>
-                                <option value="loan">loan</option>
-                                <option value="borrow">Borrow</option>
-                                <option value="others">Others</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 col-md-12">
-                            <label for="name" class="form-label">Note</label>
-                            <textarea class="form-control" name="note" id="" cols="30" rows="5"></textarea>
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary add_balance">Add Balace</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div> --}}
+
+
     <script>
         // error remove
         function errorRemove(element) {
@@ -265,6 +228,64 @@
 
 
 
+            // function bankView() {
+            //     // console.log('hello');
+            //     $.ajax({
+            //         url: '/bank/view',
+            //         method: 'GET',
+            //         success: function(res) {
+            //             const banks = res.data;
+            //             // console.log(banks.account_transaction);
+            //             $('.showData').empty();
+            //             if (banks.length > 0) {
+            //                 $.each(banks, function(index, bank) {
+            //                     // Calculate the sum of account_transaction balances
+            //                     const tr = document.createElement('tr');
+            //                     tr.innerHTML = `
+        //                         <td>${index + 1}</td>
+        //                         <td>${bank.name ?? ""}</td>
+        //                         <td>${bank.branch_name ?? ""}</td>
+        //                         <td>${bank.manager_name ?? ""}</td>
+        //                         <td>${bank.phone_number ?? 0}</td>
+        //                         <td>${bank.account ?? 0}</td>
+        //                         <td>${bank?.latest_transaction?.balance ?? 0}</td>
+        //                         <td>
+        //                               @can('bank.edit')
+        //                             <div class="dropdown">
+        //                                 <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
+        //                                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        //                                     Manage
+        //                                 </button>
+
+        //                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        //                                     <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
+        //                                         <i class="fa-solid fa-pen-to-square"></i>
+        //                                     Edit</a>
+        //                                     ${bank?.latest_transaction?.purpose === "Bank" || !bank?.latest_transaction ? <a href="#" class="dropdown-item bank_delete" data-id="${bank.id}"><i class="fa-solid fa-trash-can"></i> Delete</a> : ""}
+        //                                 </div>
+
+        //                             </div>
+        //                          @endcan
+        //                         </td>
+        //                     `;
+            //                     $('.showData').append(tr);
+            //                 });
+            //             } else {
+            //                 $('.showData').html(`
+        //                 <tr>
+        //                     <td colspan='9'>
+        //                         <div class="text-center text-warning mb-2">Data Not Found</div>
+        //                         <div class="text-center">
+        //                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalLongScollable">Add Bank Info<i data-feather="plus"></i></button>
+        //                         </div>
+        //                     </td>
+        //                 </tr>
+        //                 `);
+            //             }
+            //         }
+            //     });
+            // }
+            // bankView();
             function bankView() {
                 // console.log('hello');
                 $.ajax({
@@ -285,27 +306,28 @@
                                     <td>${bank.manager_name ?? ""}</td>
                                     <td>${bank.phone_number ?? 0}</td>
                                     <td>${bank.account ?? 0}</td>
+                                    <td>${bank.opening_balance ?? 0}</td>
                                     <td>${bank?.latest_transaction?.balance ?? 0}</td>
                                     <td>
-                                          @can('bank.edit')
                                         <div class="dropdown">
                                             <button class="btn btn-warning dropdown-toggle" type="button" id="dropdownMenuButton1"
                                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 Manage
                                             </button>
-
                                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 <a href="#" class="dropdown-item bank_edit" data-id=${bank.id} data-bs-toggle="modal" data-bs-target="#edit">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 Edit</a>
+                                                ${bank?.latest_transaction?.purpose === "Bank" || !bank?.latest_transaction ? `<a href="#" class="dropdown-item bank_delete" data-id="${bank.id}"><i class="fa-solid fa-trash-can"></i> Delete</a>` : ""}
                                             </div>
-
                                         </div>
-                                     @endcan
                                     </td>
                                 `;
                                 $('.showData').append(tr);
                             });
+                            const totalBalances = res.totalBalance ?? 0;
+                            document.getElementById('total-balance').innerText = totalBalances;
+
                         } else {
                             $('.showData').html(`
                             <tr>
@@ -324,9 +346,7 @@
             bankView();
 
 
-            // <a href="#" class="dropdown-item bank_delete" data-id=${bank.id}>
-            //                                         <i class="fa-solid fa-trash-can"></i>
-            //                                     Delete</a>
+
 
             // edit Unit
             $(document).on('click', '.bank_edit', function(e) {

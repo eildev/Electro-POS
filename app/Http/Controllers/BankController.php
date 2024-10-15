@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use can;
+
 class BankController extends Controller
 {
     private $bankrepo;
@@ -96,6 +97,8 @@ class BankController extends Controller
             "totalBalance" => number_format($totalBalance, 2)
         ]);
     }
+
+
     public function edit($id)
     {
         $bank = $this->bankrepo->editBank($id);

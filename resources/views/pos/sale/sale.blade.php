@@ -1,65 +1,66 @@
 @extends('master')
 @section('title', '| Sale')
 @section('admin')
-<style>
-#product_search {
-    border: 1px solid #0d6efd;
-    border-radius: 5px;
-    padding: 10px;
-    width: 100%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-}
+    <style>
+        #product_search {
+            border: 1px solid #0d6efd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
 
-#product_search:focus {
-    border-color: #0056b3;
-    outline: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
+        #product_search:focus {
+            border-color: #0056b3;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
 
-.product_search_result {
-    position: absolute;
-    background-color: #060C17;
-    width: 45%;
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #0056b3;
-    border-top: 10;
-    margin-top: 40px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-}
+        .product_search_result {
+            position: absolute;
+            background-color: #060C17;
+            width: 45%;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #0056b3;
+            border-top: 10;
+            margin-top: 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
 
-.product_search_result table {
-    width: 100%;
-    /* margin: 0; */
-    border-collapse: collapse;
-}
+        .product_search_result table {
+            width: 100%;
+            /* margin: 0; */
+            border-collapse: collapse;
+        }
 
-.product_search_result table tbody tr {
-    border-bottom: 1px solid #0056b3;
-    padding: 10px;
+        .product_search_result table tbody tr {
+            border-bottom: 1px solid #0056b3;
+            padding: 10px;
 
-}
-.product_search_result table tbody tr:hover {
-    background-color: #0056b3;
-    cursor: pointer;
+        }
 
-}
+        .product_search_result table tbody tr:hover {
+            background-color: #0056b3;
+            cursor: pointer;
 
-.product_search_result table tbody tr td {
-    padding: 8px 12px;
-}
-.product_search_result {
-    display: none;
-}
-.product_search_result.active {
-    display: block;
-}
+        }
 
+        .product_search_result table tbody tr td {
+            padding: 8px 12px;
+        }
 
-</style>
+        .product_search_result {
+            display: none;
+        }
+
+        .product_search_result.active {
+            display: block;
+        }
+    </style>
     <div class="row mt-0">
         <div class="col-lg-12 grid-margin stretch-card mb-3">
             <div class="card">
@@ -91,7 +92,7 @@
                         <div class="mb-1 col-md-6">
                             <label class="form-label">Product</label>
                             <div class="d-flex g-3">
-                                {{-- //--}}
+                                {{-- // --}}
                                 {{-- <input type="text" style="border: 1px solid #0d6efd" class="form-control py-2 product_select view_product" id="product_search"
                                 placeholder="Search here..." autocomplete="off" data-width="100%" onchange="errorRemove(this);">
 
@@ -232,7 +233,7 @@
                                             </option>
                                         @endforeach
                                     @else
-                                        <option selected disabled>Please Add Transaction</option>
+                                        <option selected disabled>Please Add Tax</option>
                                     @endif
                                 </select>
                             </div>
@@ -538,7 +539,7 @@
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                      }
+                    }
                 });
                 $.ajax({
                     url: '/via/product/add',
@@ -749,7 +750,7 @@
                                                 `<span class="discount_amount${product.id} mt-2">${promotion.discount_value}</span>Tk`
                                         : `<span class="mt-2">00</span>`
                                     : `<input type="number" product-id="${product.id}" class="form-control product_discount${product.id} discountProduct" name="product_discount"  value="" />
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <input type="hidden" product-id="${product.id}" class="form-control produt_cost${product.id} productCost" name="produt_cost"  value="${product.cost}" />`
                                 }
                             </td>
                             <td>
@@ -916,7 +917,7 @@
                 calculateTotal();
                 updateTotalQuantity();
                 calculateProductTotal();
-              }
+            }
 
             // Product add with barcode
             $('.barcode_input').change(function() {
@@ -1256,81 +1257,79 @@
 
         //Search
 
-    // const global_search1 = document.querySelector("#product_search");
-    // const search_result1 = document.querySelector(".product_search_result");
-    // // console.log(global_search);
-    // global_search1.addEventListener('keyup', function() {
-    //     // console.log(global_search.value);
-    //     if (global_search1.value != '') {
-    //         $.ajax({
-    //             url: '/search/' + global_search1.value,
-    //             type: 'GET',
-    //             success: function(res) {
-    //                 // console.log(res);
-    //                 let findData = '';
-    //                 search_result1.style.display = 'block';
-    //                 if (res.products.length > 0) {
-    //                     $.each(res.products, function(key, value) {
-    //                         findData += `<tr>
+        // const global_search1 = document.querySelector("#product_search");
+        // const search_result1 = document.querySelector(".product_search_result");
+        // // console.log(global_search);
+        // global_search1.addEventListener('keyup', function() {
+        //     // console.log(global_search.value);
+        //     if (global_search1.value != '') {
+        //         $.ajax({
+        //             url: '/search/' + global_search1.value,
+        //             type: 'GET',
+        //             success: function(res) {
+        //                 // console.log(res);
+        //                 let findData = '';
+        //                 search_result1.style.display = 'block';
+        //                 if (res.products.length > 0) {
+        //                     $.each(res.products, function(key, value) {
+        //                         findData += `<tr>
     //                                 <td>${value.name ?? ""}</td>
     //                                 <td>${value.stock_quantity_sum_stock_quantity ?? 0}</td>
     //                                 <td>${value.price ?? 0}</td>
     //                             </tr>`
-    //                     });
+        //                     });
 
-    //                     $('.findData').html(findData);
-    //                 } else {
-    //                     $('.table_header').hide();
-    //                     findData += `<tr>
+        //                     $('.findData').html(findData);
+        //                 } else {
+        //                     $('.table_header').hide();
+        //                     findData += `<tr>
     //                                 <td colspan = "3" class = "text-center">Data not Found</td>
     //                             </tr>`
-    //                     $('.findData').html(findData);
-    //                 }
-    //             }
-    //         });
-    //     } else {
-    //         search_result1.style.display = 'none';
-    //     }
-    // })
+        //                     $('.findData').html(findData);
+        //                 }
+        //             }
+        //         });
+        //     } else {
+        //         search_result1.style.display = 'none';
+        //     }
+        // })
 
-    // global_search1.addEventListener('click', function() {
-    //     // console.log(global_search.value);
-    //     if (global_search1.value != '') {
-    //         $.ajax({
-    //             url: '/search/' + global_search1.value,
-    //             type: 'GET',
-    //             success: function(res) {
-    //                 // console.log(res);
-    //                 let findData = '';
-    //                 search_result1.style.display = 'block';
-    //                 if (res.products.length > 0) {
-    //                     $.each(res.products, function(key, value) {
-    //                         findData += `<tr>
+        // global_search1.addEventListener('click', function() {
+        //     // console.log(global_search.value);
+        //     if (global_search1.value != '') {
+        //         $.ajax({
+        //             url: '/search/' + global_search1.value,
+        //             type: 'GET',
+        //             success: function(res) {
+        //                 // console.log(res);
+        //                 let findData = '';
+        //                 search_result1.style.display = 'block';
+        //                 if (res.products.length > 0) {
+        //                     $.each(res.products, function(key, value) {
+        //                         findData += `<tr>
     //                                         <td>${value.name}</td>
     //                                         <td>${value.stock}</td>
     //                                         <td>${value.price}</td>
     //                                     </tr>`
-    //                     });
+        //                     });
 
-    //                     $('.findData').html(findData);
-    //                 } else {
-    //                     $('.table_header').hide();
-    //                     findData += `<tr>
+        //                     $('.findData').html(findData);
+        //                 } else {
+        //                     $('.table_header').hide();
+        //                     findData += `<tr>
     //                                     <td colspan = "3" class = "text-center">Data not Found</td>
     //                                 </tr>`
-    //                     $('.findData').html(findData);
-    //                 }
-    //             }
-    //         });
-    //     } else {
-    //         search_result1.style.display = 'none';
-    //     }
-    // })
+        //                     $('.findData').html(findData);
+        //                 }
+        //             }
+        //         });
+        //     } else {
+        //         search_result1.style.display = 'none';
+        //     }
+        // })
 
-    // global_search1.addEventListener('blur', function() {
-    //     search_result1.style.display = 'none';
-    // });
+        // global_search1.addEventListener('blur', function() {
+        //     search_result1.style.display = 'none';
+        // });
     </script>
 @endsection
-
-

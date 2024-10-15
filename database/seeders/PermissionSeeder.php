@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Seeders;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -184,7 +185,7 @@ class PermissionSeeder extends Seeder
             ['id' => 139, 'name' => 'make.category', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
             ['id' => 140, 'name' => 'set.menu', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
             ['id' => 141, 'name' => 'set.items', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
-            ['id' => 141, 'name' => 'set.items.manage', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
+            ['id' => 142, 'name' => 'set.items.manage', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
             ['id' => 143, 'name' => 'top.sale.set.menu', 'guard_name' => 'web', 'group_name' => 'inventory'],
             ['id' => 144, 'name' => 'top.sale.make.item', 'guard_name' => 'web', 'group_name' => 'inventory'],
             ['id' => 145, 'name' => 'make.menu.and.item.menu', 'guard_name' => 'web', 'group_name' => 'make-menu-and-item'],
