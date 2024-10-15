@@ -141,7 +141,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/product/size/update/{id}', 'ProductSizeUpdate')->name('product.size.update');
         Route::get('/product/size/delete/{id}', 'ProductSizeDelete')->name('product.size.delete');
     });
-
     // Product  related route(n)
     Route::controller(ProductsController::class)->group(function () {
         Route::get('/product', 'index')->name('product');

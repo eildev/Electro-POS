@@ -23,7 +23,6 @@
             .text-1 {
                 font-size: 13px
             }
-
             .mar-1 {
                 margin-bottom: 4px
             }
