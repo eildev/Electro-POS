@@ -81,7 +81,7 @@
                             <span class="text-danger phone_number_error"></span>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Account </label>
+                            <label for="name" class="form-label">Account Number</label>
                             <input id="defaultconfig" class="form-control account" maxlength="39" name="account"
                                 type="text" onkeyup="errorRemove(this);" onblur="errorRemove(this);">
                             <span class="text-danger account_error"></span>
