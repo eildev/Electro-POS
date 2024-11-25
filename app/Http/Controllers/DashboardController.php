@@ -317,6 +317,7 @@ class DashboardController extends Controller
 
             $totalCustomerDue = $sales->sum('change_amount') - $sales->sum('paid');
             $totalSupplierDue = $purchase->sum('sub_total') - $purchase->sum('paid');
+            $totalBonus = $sales->sum('actual_discount');
         } else {
             $sales = Sale::where('branch_id', Auth::user()->branch_id)->get();
             $purchase = Purchase::where('branch_id', Auth::user()->branch_id)->get();
@@ -342,6 +343,7 @@ class DashboardController extends Controller
 
             $totalCustomerDue = $sales->sum('change_amount') - $sales->sum('paid');
             $totalSupplierDue = $purchase->sum('sub_total') - $purchase->sum('paid');
+            $totalBonus = $sales->sum('actual_discount');
         }
 
         // weekly update Chart
@@ -460,6 +462,7 @@ class DashboardController extends Controller
             'grandTotal',
             'totalCustomerDue',
             'totalSupplierDue',
+            'totalBonus',
 
             // weekly summary 
             'salesByDay',

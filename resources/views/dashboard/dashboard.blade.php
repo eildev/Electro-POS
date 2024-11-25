@@ -27,6 +27,7 @@
             .text-1 {
                 font-size: 13px
             }
+
             .mar-1 {
                 margin-bottom: 4px
             }
@@ -315,6 +316,7 @@
                         </div>
                     </div>
                 @endif
+
                 {{-- ///////End Today Summary ////// --}}
                 {{-- /////// ToTal Summary ////// --}}
                 <div class="col-md-12 col-xl-6 col-12 new-margin grid-margin stretch-card">
@@ -391,6 +393,12 @@
                                     <tr>
                                         <td>Sales Profit</td>
                                         <td class="text-end">{{ number_format($sales->sum('profit'), 2) }}</td>
+                                        <td class="text-end">0.00</td>
+                                        <td class="text-end">0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Total Bonus</td>
+                                        <td class="text-end">{{ number_format($totalBonus, 2) }}</td>
                                         <td class="text-end">0.00</td>
                                         <td class="text-end">0.00</td>
                                     </tr>
