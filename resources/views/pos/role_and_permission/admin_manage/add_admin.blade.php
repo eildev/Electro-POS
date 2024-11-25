@@ -73,7 +73,7 @@
                                 <select class="js-example-basic-single form-select " id="exampleInputPassword2s"
                                     name="role_id" data-width="100%">
                                     <option selected disabled>----> Select Role <-----< /option>
-                                            @foreach ($role as $roles)
+                                    @foreach ($role as $roles)
                                                 @if ($roles->id === 1 || $roles->id === 4)
                                     <option value="{{ $roles->id }}" disabled>{{ $roles->name }}</option>
                                 @else
